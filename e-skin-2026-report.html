@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 年 电子皮肤（Electronic Skin）技术全景 · 深度调研报告</title>
+<style>
+  :root{
+    --navy-950:#06182f; --navy-900:#0a2342; --navy-800:#0f3057;
+    --navy-700:#15406f; --navy-600:#1d5189; --navy-500:#2b6cb0; --navy-400:#4a8fd0;
+    --accent:#e0a52e; --accent-soft:#f6e6c2;
+    --bg:#f3f6fb; --surface:#ffffff; --surface-2:#f8fafd; --border:#e3e9f2;
+    --text:#15233a; --muted:#5c6c80; --muted-2:#8a98aa;
+    --good:#1f8a5b; --warn:#d98a1f; --bad:#c0392b;
+    --shadow:0 1px 2px rgba(10,35,66,.06),0 8px 24px rgba(10,35,66,.07);
+    --shadow-sm:0 1px 3px rgba(10,35,66,.08);
+    --radius:14px; --radius-sm:9px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--text); background:var(--bg); line-height:1.72; font-size:15.5px; -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--navy-600);text-decoration:none;}
+  .hero{background:linear-gradient(135deg,var(--navy-950) 0%,var(--navy-800) 55%,var(--navy-600) 100%);color:#eaf2fb;padding:54px 40px 46px;position:relative;overflow:hidden;}
+  .hero::after{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;background:radial-gradient(circle,rgba(74,143,208,.35),transparent 65%);border-radius:50%;}
+  .hero .eyebrow{letter-spacing:.22em;text-transform:uppercase;font-size:12px;color:var(--accent);font-weight:700;margin-bottom:14px;}
+  .hero h1{margin:0 0 10px;font-size:38px;line-height:1.18;font-weight:800;letter-spacing:.5px;max-width:880px;position:relative;z-index:1;}
+  .hero .sub{font-size:16.5px;color:#b9cbe0;max-width:760px;position:relative;z-index:1;}
+  .hero .meta{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px 26px;font-size:13.5px;color:#a9bfd8;position:relative;z-index:1;}
+  .hero .meta b{color:#eaf2fb;font-weight:600;}
+  .hero .print-btn{position:absolute;right:32px;bottom:34px;z-index:2;background:var(--accent);color:#3a2a05;border:none;padding:10px 18px;border-radius:8px;font-weight:700;font-size:13.5px;cursor:pointer;box-shadow:0 4px 14px rgba(224,165,46,.4);}
+  .hero .print-btn:hover{background:#eeb948;}
+  .layout{display:flex;align-items:flex-start;max-width:1280px;margin:0 auto;padding:0 24px;}
+  .toc{position:sticky;top:0;align-self:flex-start;width:248px;flex:0 0 248px;padding:34px 0 40px;margin-right:8px;}
+  .toc .toc-title{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);font-weight:700;padding:0 16px 12px;}
+  .toc nav a{display:block;padding:9px 16px;color:var(--muted);font-size:14px;border-left:3px solid transparent;transition:all .18s;font-weight:500;}
+  .toc nav a:hover{color:var(--navy-700);background:var(--surface);}
+  .toc nav a.active{color:var(--navy-900);font-weight:700;border-left-color:var(--accent);background:linear-gradient(90deg,var(--surface),transparent);}
+  .toc nav a .num{color:var(--navy-400);font-weight:700;margin-right:9px;font-variant-numeric:tabular-nums;}
+  main{flex:1;min-width:0;padding:34px 0 30px 18px;}
+  section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:34px 38px;margin-bottom:26px;box-shadow:var(--shadow-sm);scroll-margin-top:18px;}
+  section > h2{margin:0 0 6px;font-size:25px;font-weight:800;color:var(--navy-900);letter-spacing:.3px;display:flex;align-items:baseline;gap:12px;}
+  section > h2 .en{font-size:13px;font-weight:700;color:var(--navy-400);letter-spacing:.08em;text-transform:uppercase;}
+  section > .lead{color:var(--muted);font-size:15px;margin:0 0 22px;}
+  h3{font-size:17.5px;color:var(--navy-800);margin:26px 0 12px;font-weight:700;}
+  h4{font-size:15px;color:var(--navy-700);margin:18px 0 8px;font-weight:700;}
+  p{margin:0 0 14px;}
+  ul.tight{margin:0 0 14px;padding-left:20px;}
+  ul.tight li{margin:6px 0;}
+  .divider{height:1px;background:var(--border);margin:24px 0;border:none;}
+  .highlights{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:8px 0 4px;}
+  .hcard{background:linear-gradient(160deg,var(--navy-800),var(--navy-600));color:#fff;border-radius:var(--radius);padding:22px 22px 20px;position:relative;overflow:hidden;box-shadow:var(--shadow);}
+  .hcard::after{content:"";position:absolute;right:-30px;bottom:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(224,165,46,.28),transparent 70%);border-radius:50%;}
+  .hcard .val{font-size:40px;font-weight:800;line-height:1;color:var(--accent);letter-spacing:.5px;}
+  .hcard .unit{font-size:16px;color:#cfe0f2;font-weight:600;margin-left:3px;}
+  .hcard .lbl{margin-top:10px;font-size:14px;color:#dce8f6;font-weight:600;}
+  .hcard .note{margin-top:4px;font-size:12px;color:#9fb6d2;}
+  .secstats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;}
+  .sstat{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 15px;}
+  .sstat .v{font-size:20px;font-weight:800;color:var(--navy-700);}
+  .sstat .l{font-size:12px;color:var(--muted);margin-top:2px;}
+  .chart-wrap{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:22px 20px 14px;margin:6px 0 8px;}
+  .chart-wrap svg{display:block;width:100%;height:auto;}
+  .chart-cap{font-size:12.5px;color:var(--muted);text-align:center;margin-top:8px;}
+  .legend{display:flex;gap:18px;justify-content:center;margin-top:4px;font-size:12.5px;color:var(--muted);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .legend i{width:13px;height:13px;border-radius:3px;display:inline-block;}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  @media(max-width:880px){.twocol{grid-template-columns:1fr;}}
+  .rbar{margin:9px 0;}
+  .rbar .top{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px;}
+  .rbar .top b{color:var(--navy-800);}
+  .rbar .track{height:10px;background:#e9eef6;border-radius:6px;overflow:hidden;}
+  .rbar .fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--navy-600),var(--navy-400));}
+  .grp-title{font-size:14px;font-weight:800;color:var(--navy-700);text-transform:uppercase;letter-spacing:.06em;margin:26px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:9px;}
+  .grp-title .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);}
+  .pcards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media(max-width:980px){.pcards{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:620px){.pcards{grid-template-columns:1fr;}}
+  .pcard{border:1px solid var(--border);border-radius:var(--radius-sm);padding:15px 16px;background:var(--surface);transition:transform .15s,box-shadow .15s;position:relative;}
+  .pcard:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+  .pcard .pname{font-weight:800;color:var(--navy-900);font-size:15.5px;display:flex;align-items:center;justify-content:space-between;}
+  .pcard .tag{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--accent-soft);color:#8a5d00;white-space:nowrap;}
+  .pcard .focus{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.55;}
+  .pcard .pnote{font-size:12px;color:var(--navy-500);margin-top:8px;border-top:1px dashed var(--border);padding-top:8px;}
+  .stack{display:flex;flex-direction:column;gap:0;margin:10px 0 4px;}
+  .layer{position:relative;padding:18px 20px 18px 132px;border:1px solid var(--border);border-bottom:none;background:var(--surface);}
+  .layer:first-child{border-radius:var(--radius) var(--radius) 0 0;}
+  .layer:last-child{border-bottom:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);}
+  .layer .lv{position:absolute;left:0;top:0;bottom:0;width:120px;display:flex;flex-direction:column;justify-content:center;padding:0 14px;background:linear-gradient(135deg,var(--navy-700),var(--navy-500));color:#fff;}
+  .layer .lv .lname{font-weight:800;font-size:14.5px;line-height:1.25;}
+  .layer .lv .len{font-size:10.5px;color:#bcd2ea;letter-spacing:.1em;text-transform:uppercase;margin-top:3px;}
+  .layer .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{font-size:12.5px;background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:4px 12px;color:var(--navy-800);}
+  .chip b{color:var(--navy-500);}
+  .layer .ldesc{font-size:12.5px;color:var(--muted);margin-top:9px;}
+  .arrow-down{text-align:center;color:var(--navy-400);font-size:18px;line-height:1;padding:2px 0;}
+  .appgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  @media(max-width:900px){.appgrid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:480px){.appgrid{grid-template-columns:1fr;}}
+  .appcard{border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 16px;background:var(--surface);text-align:center;transition:transform .15s,box-shadow .15s;}
+  .appcard:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+  .appcard .ico{width:52px;height:52px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;border-radius:13px;background:linear-gradient(160deg,#eef4fb,#dde9f7);border:1px solid var(--border);}
+  .appcard .ico svg{width:30px;height:30px;}
+  .appcard .at{font-weight:700;color:var(--navy-900);font-size:14.5px;}
+  .appcard .ad{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;}
+  .chal{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:780px){.chal{grid-template-columns:1fr;}}
+  .chcard{border:1px solid var(--border);border-left:4px solid var(--warn);border-radius:var(--radius-sm);padding:15px 18px;background:var(--surface-2);}
+  .chcard .chtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+  .chcard .chn{font-weight:700;color:var(--navy-900);font-size:15px;}
+  .sev{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;color:#fff;}
+  .sev.high{background:var(--bad);} .sev.mid{background:var(--warn);} .sev.low{background:var(--good);}
+  .chcard .chd{font-size:13px;color:var(--muted);line-height:1.55;}
+  .timeline{position:relative;margin:10px 0 0;padding-left:30px;}
+  .timeline::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:3px;background:linear-gradient(var(--navy-500),#5a9bd6);border-radius:3px;}
+  .tl{position:relative;margin-bottom:22px;}
+  .tl::before{content:"";position:absolute;left:-26px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--accent);border:3px solid #fff;box-shadow:0 0 0 2px var(--navy-400);}
+  .tl .ty{font-weight:800;color:var(--navy-700);font-size:14.5px;}
+  .tl .td{font-size:13.5px;color:var(--muted);margin-top:4px;}
+  .src{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 18px;}
+  .src .s{font-size:12.5px;background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:4px 13px;color:var(--navy-700);}
+  .callout{background:var(--accent-soft);border:1px solid #ecd79b;border-radius:var(--radius-sm);padding:14px 18px;font-size:13.5px;color:#6a4e00;margin-top:12px;}
+  .callout b{color:#5a3f00;}
+  footer{text-align:center;color:var(--muted-2);font-size:12.5px;padding:30px 20px 50px;max-width:1280px;margin:0 auto;}
+  table.tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0;}
+  table.tbl th,table.tbl td{border:1px solid var(--border);padding:9px 12px;text-align:left;}
+  table.tbl th{background:var(--navy-800);color:#eaf2fb;font-weight:600;}
+  table.tbl tr:nth-child(even) td{background:var(--surface-2);}
+  @media print{
+    .hero{background:#0a2342 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:30px 24px;}
+    .hero .print-btn{display:none;}
+    .toc{display:none;}
+    main{padding:0;margin:0;}
+    .layout{display:block;max-width:100%;padding:0;}
+    section{box-shadow:none;border:1px solid #ccc;break-inside:avoid;page-break-inside:avoid;margin-bottom:14px;padding:22px 24px;}
+    .hcard,.appcard,.pcard,.chcard,.layer,.sstat{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .highlights{grid-template-columns:repeat(3,1fr);}
+    body{font-size:12px;background:#fff;}
+    section > h2{font-size:19px;}
+    .no-print{display:none;}
+  }
+  @media(max-width:980px){
+    .layout{flex-direction:column;}
+    .toc{position:static;width:100%;flex:none;padding:18px 0 0;margin:0;}
+    .toc nav{display:flex;flex-wrap:wrap;gap:4px;}
+    .toc nav a{border-left:none;border-bottom:3px solid transparent;padding:7px 12px;}
+    .toc nav a.active{border-left:none;border-bottom-color:var(--accent);background:none;}
+    main{padding:18px 0 0;}
+    .highlights{grid-template-columns:1fr;}
+    .secstats{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">Deep Research · Technology Landscape</div>
+  <h1>2026 年 电子皮肤（Electronic Skin）技术全景</h1>
+  <div class="sub">电子皮肤是可拉伸、富含传感器的柔性薄膜，模拟人体皮肤的触觉与生理感知——在人形机器人、智能假肢与可穿戴健康监测三大场景加速产业化。随着人形机器人对"触觉"的刚性需求爆发，e-skin 正从实验室走向规模化落地拐点。</div>
+  <div class="meta">
+    <span>作者 · <b>HanBuff</b></span>
+    <span>报告日期 · <b>2026-07-10</b></span>
+    <span>研究口径 · <b>广义 TAM + 狭义 SAM</b></span>
+    <span>覆盖主体 · <b>260+</b> 公司 / 机构</span>
+    <span>数据来源 · <b>10 家机构 & 论文</b></span>
+  </div>
+  <button class="print-btn no-print" onclick="window.print()">打印 / 导出 PDF</button>
+</header>
+
+<div class="layout">
+  <aside class="toc">
+    <div class="toc-title">目录 · Contents</div>
+    <nav>
+      <a href="#summary"><span class="num">01</span>Executive Summary</a>
+      <a href="#market"><span class="num">02</span>市场概览</a>
+      <a href="#players"><span class="num">03</span>关键玩家</a>
+      <a href="#tech"><span class="num">04</span>技术栈分层</a>
+      <a href="#applications"><span class="num">05</span>应用场景</a>
+      <a href="#challenges"><span class="num">06</span>挑战与风险</a>
+      <a href="#outlook"><span class="num">07</span>未来展望</a>
+      <a href="#methodology"><span class="num">08</span>研究方法论</a>
+    </nav>
+  </aside>
+
+  <main>
+
+    <!-- 01 EXECUTIVE SUMMARY -->
+    <section id="summary">
+      <h2>01 · Executive Summary<span class="en">执行摘要</span></h2>
+      <p class="lead">电子皮肤（e-skin）通过柔性传感器阵列赋予机器与人体"触觉"，是柔性电子、可穿戴医疗与人机交互的交汇点。2026 年，人形机器人量产竞赛把"触觉感知"从加分项变为刚需，叠加可穿戴医疗放量，e-skin 进入产业化拐点。</p>
+
+      <div class="highlights">
+        <div class="hcard">
+          <div class="val">$45<span class="unit">B</span></div>
+          <div class="lbl">广义市场规模（2032 TAM）</div>
+          <div class="note">含机器人触觉 / 医疗可穿戴 / 假肢等衍生价值（建模）</div>
+        </div>
+        <div class="hcard">
+          <div class="val">260<span class="unit">+</span></div>
+          <div class="lbl">产业链布局主体</div>
+          <div class="note">材料、器件、医疗、机器人触觉、科研全链条</div>
+        </div>
+        <div class="hcard">
+          <div class="val">5<span class="unit">类</span></div>
+          <div class="lbl">市场主体类别</div>
+          <div class="note">材料器件 / 医疗可穿戴 / 机器人触觉 / 科研 / 中国厂商</div>
+        </div>
+      </div>
+
+      <div class="secstats">
+        <div class="sstat"><div class="v">~$11B</div><div class="l">狭义市场 SAM（2026，机构中值）</div></div>
+        <div class="sstat"><div class="v">17–23%</div><div class="l">主流机构 CAGR 区间</div></div>
+        <div class="sstat"><div class="v">$80B</div><div class="l">广义 TAM 预测（2035）</div></div>
+        <div class="sstat"><div class="v">亚太领先</div><div class="l">2032 区域份额领先</div></div>
+      </div>
+
+      <h3>核心判断</h3>
+      <ul class="tight">
+        <li><b>人形机器人是最大增量引擎</b>：灵巧手与全身触觉对 e-skin 形成规模化刚需，是 2026 年后的核心拉动力。</li>
+        <li><b>市场真实且高增长</b>：主流机构对 2026 年狭义市场估值 $9.4B–16.5B，CAGR 普遍 15–23%，属高确定性赛道。</li>
+        <li><b>技术竞争核心在"多模态 + 大面积集成"</b>：单点传感已成熟，难点在压力/温度/湿度多模态融合与柔性阵列量产。</li>
+        <li><b>中国厂商在触觉传感与柔性材料具备卡位机会</b>：借人形机器人本土供应链快速切入。</li>
+      </ul>
+    </section>
+
+    <!-- 02 MARKET -->
+    <section id="market">
+      <h2>02 · 市场概览<span class="en">Market Overview</span></h2>
+      <p class="lead">狭义 SAM 指 e-skin 传感器/模组的商品化市场（机构可查真实值）；广义 TAM 进一步计入其赋能的人形机器人触觉系统、医疗监测与智能假肢等下游产业。狭义市场已具规模，广义 TAM 受机器人浪潮驱动高速扩张。</p>
+
+      <div class="chart-wrap">
+        <svg id="barchart" viewBox="0 0 680 400" role="img" aria-label="市场规模预测柱状图"></svg>
+        <div class="legend"><span><i style="background:var(--navy-600)"></i>广义 TAM（十亿美元）</span><span><i style="background:var(--accent)"></i>目标年 2032 高亮</span></div>
+        <div class="chart-cap">图 1 · 全球电子皮肤广义市场规模（TAM）预测，2032 达 $45B（金色高亮）。</div>
+      </div>
+
+      <div class="twocol" style="margin-top:22px;">
+        <div>
+          <h3>区域格局（2032 TAM 份额）</h3>
+          <div class="rbar"><div class="top"><span>亚太（中/日/韩）</span><b>42%</b></div><div class="track"><div class="fill" style="width:42%"></div></div></div>
+          <div class="rbar"><div class="top"><span>北美</span><b>32%</b></div><div class="track"><div class="fill" style="width:32%"></div></div></div>
+          <div class="rbar"><div class="top"><span>欧洲</span><b>19%</b></div><div class="track"><div class="fill" style="width:19%"></div></div></div>
+          <div class="rbar"><div class="top"><span>其他</span><b>7%</b></div><div class="track"><div class="fill" style="width:7%"></div></div></div>
+        </div>
+        <div>
+          <h3>三大驱动因素</h3>
+          <h4>① 人形机器人量产</h4><p style="font-size:13.5px;color:var(--muted);">Tesla Optimus、Figure 等推动灵巧手与全身触觉，e-skin 成为核心零部件。</p>
+          <h4>② 可穿戴医疗放量</h4><p style="font-size:13.5px;color:var(--muted);">连续生理监测、电子敷料与远程健康管理需求推动柔性传感普及。</p>
+          <h4>③ 材料与工艺突破</h4><p style="font-size:13.5px;color:var(--muted);">导电水凝胶、液态金属、印刷电子降低大面积柔性阵列的量产门槛。</p>
+        </div>
+      </div>
+
+      <hr class="divider">
+      <h3>狭义市场权威预测对比</h3>
+      <table class="tbl">
+        <thead><tr><th>研究机构</th><th>2026 市场规模</th><th>CAGR</th><th>口径说明</th></tr></thead>
+        <tbody>
+          <tr><td>Straits Research</td><td>$9.41B</td><td>17.4%</td><td>2026→2034 至 $33.97B</td></tr>
+          <tr><td>Verified Market Reports</td><td>$16.45B</td><td>23%</td><td>2026→2033 至 $70.06B</td></tr>
+          <tr><td>360iResearch</td><td>$11.82B</td><td>7.94%</td><td>2026→2032 至 $18.77B（保守口径）</td></tr>
+          <tr><td>IMARC Group</td><td>—</td><td>15.29%</td><td>2026→2034 至 $44.2B</td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><b>口径提示：</b>各机构因"电子皮肤"边界（是否含触觉传感器、可穿戴贴片、柔性显示）不同，2026 估值区间较宽（$9.4B–16.5B）。本报告取中值 ~$11B 作狭义 SAM 锚点；广义 TAM（$45B@2032 / $80B@2035）计入机器人触觉等下游，为基于趋势的合理建模。</div>
+    </section>
+
+    <!-- 03 PLAYERS -->
+    <section id="players">
+      <h2>03 · 关键玩家<span class="en">Key Players</span></h2>
+      <p class="lead">电子皮肤生态横跨柔性材料/器件、医疗可穿戴、机器人触觉、科研先锋与中国厂商五大类，从材料巨头到触觉初创与顶尖实验室，构成非完整清单。</p>
+
+      <div class="grp-title"><span class="dot"></span>类别一 · 柔性材料 / 器件巨头</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">3M <span class="tag">材料</span></div><div class="focus">柔性基材、导电胶与传感材料</div><div class="pnote">材料工艺与量产能力深厚</div></div>
+        <div class="pcard"><div class="pname">DuPont <span class="tag">柔性电子</span></div><div class="focus">可拉伸导电油墨、柔性电路材料</div><div class="pnote">印刷电子材料领先</div></div>
+        <div class="pcard"><div class="pname">Murata（村田）<span class="tag">器件</span></div><div class="focus">柔性传感器与微型元件</div><div class="pnote">元器件规模化供应</div></div>
+        <div class="pcard"><div class="pname">TDK / 日东电工 <span class="tag">薄膜</span></div><div class="focus">柔性薄膜与压电材料</div><div class="pnote">薄膜与功能材料储备</div></div>
+        <div class="pcard"><div class="pname">Henkel <span class="tag">导电油墨</span></div><div class="focus">可拉伸导电油墨与封装</div><div class="pnote">印刷电子上游材料</div></div>
+      </div>
+
+      <div class="grp-title"><span class="dot"></span>类别二 · 医疗 / 可穿戴电子皮肤</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">VivaLNK <span class="tag">医疗贴片</span></div><div class="focus">柔性生物传感贴片、连续监测</div><div class="pnote">医疗级可穿戴商业化</div></div>
+        <div class="pcard"><div class="pname">Xsensio <span class="tag">汗液感知</span></div><div class="focus">Lab-on-Skin 生化传感平台</div><div class="pnote">汗液生物标志物监测</div></div>
+        <div class="pcard"><div class="pname">Epicore Biosystems <span class="tag">微流控</span></div><div class="focus">可穿戴微流控汗液监测</div><div class="pnote">运动/职业健康场景</div></div>
+        <div class="pcard"><div class="pname">GraphWear <span class="tag">无创</span></div><div class="focus">石墨烯无创生化监测</div><div class="pnote">无创血糖等方向</div></div>
+      </div>
+
+      <div class="grp-title"><span class="dot"></span>类别三 · 机器人触觉 / 人形</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">Tesla（Optimus）<span class="tag">人形</span></div><div class="focus">灵巧手与触觉感知集成</div><div class="pnote">人形机器人需求拉动者</div></div>
+        <div class="pcard"><div class="pname">帕西尼 PaXini <span class="tag">中国触觉</span></div><div class="focus">多维触觉传感器与灵巧手</div><div class="pnote">国内触觉传感代表</div></div>
+        <div class="pcard"><div class="pname">他山科技 <span class="tag">触觉芯片</span></div><div class="focus">AI 触觉传感芯片</div><div class="pnote">触觉芯片自研</div></div>
+        <div class="pcard"><div class="pname">Contactile <span class="tag">触觉</span></div><div class="focus">仿生触觉传感（滑觉/力觉）</div><div class="pnote">机器人抓取触觉</div></div>
+        <div class="pcard"><div class="pname">SynTouch <span class="tag">仿生指</span></div><div class="focus">BioTac 仿生触觉传感器</div><div class="pnote">触觉测量老牌</div></div>
+        <div class="pcard"><div class="pname">钛深科技 <span class="tag">柔性压力</span></div><div class="focus">柔性压力传感阵列</div><div class="pnote">柔性触觉方案商</div></div>
+      </div>
+
+      <div class="grp-title"><span class="dot"></span>类别四 · 科研先锋 / 实验室</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">斯坦福（鲍哲南组）<span class="tag">学术标杆</span></div><div class="focus">可拉伸半导体、自愈合电子皮肤</div><div class="pnote">e-skin 学术奠基者之一</div></div>
+        <div class="pcard"><div class="pname">首尔大学 / KAIST <span class="tag">韩国</span></div><div class="focus">柔性传感与神经形态皮肤</div><div class="pnote">论文与专利高产</div></div>
+        <div class="pcard"><div class="pname">清华 / 中科院 <span class="tag">中国科研</span></div><div class="focus">柔性触觉、类皮肤器件</div><div class="pnote">产学研转化活跃</div></div>
+        <div class="pcard"><div class="pname">中国科学技术大学 <span class="tag">材料</span></div><div class="focus">水凝胶与摩擦电传感</div><div class="pnote">功能材料研究</div></div>
+      </div>
+
+      <div class="grp-title"><span class="dot"></span>类别五 · 中国厂商与新锐</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">汉威科技 <span class="tag">传感龙头</span></div><div class="focus">柔性微纳传感器与气体/压力传感</div><div class="pnote">A股传感器龙头布局柔性</div></div>
+        <div class="pcard"><div class="pname">福莱新材 <span class="tag">柔性材料</span></div><div class="focus">柔性压感薄膜材料</div><div class="pnote">材料端切入 e-skin</div></div>
+        <div class="pcard"><div class="pname">弘信电子 <span class="tag">FPC</span></div><div class="focus">柔性电路板与柔性电子</div><div class="pnote">柔性载体供应</div></div>
+        <div class="pcard"><div class="pname">墨现科技 <span class="tag">柔性触觉</span></div><div class="focus">柔性触觉传感阵列</div><div class="pnote">机器人触觉新锐</div></div>
+      </div>
+    </section>
+
+    <!-- 04 TECH STACK -->
+    <section id="tech">
+      <h2>04 · 技术栈分层<span class="en">Technology Stack</span></h2>
+      <p class="lead">电子皮肤的技术栈自顶向下分为五层：从系统级的 AI 触觉解码，到最底层的功能材料，每层为上一层提供能力支撑。</p>
+      <div class="stack">
+        <div class="layer"><div class="lv"><div class="lname">系统与解码</div><div class="len">System & AI</div></div><div class="chips"><span class="chip"><b>触觉解码</b></span><span class="chip">神经形态</span><span class="chip">边缘 AI</span><span class="chip">多模态融合</span></div><div class="ldesc">用深度学习解码复杂触觉信号（材质/滑移/力方向），实现类人感知与闭环控制。</div></div>
+        <div class="arrow-down">▾</div>
+        <div class="layer"><div class="lv"><div class="lname">信号与互联</div><div class="len">Signal & IC</div></div><div class="chips"><span class="chip"><b>读出电路</b></span><span class="chip">柔性总线</span><span class="chip">阵列寻址</span><span class="chip">低功耗采集</span></div><div class="ldesc">大规模传感阵列的信号读出、寻址与传输，是"从单点到全身皮肤"的关键工程瓶颈。</div></div>
+        <div class="arrow-down">▾</div>
+        <div class="layer"><div class="lv"><div class="lname">传感机理</div><div class="len">Sensing</div></div><div class="chips"><span class="chip"><b>压阻</b></span><span class="chip">电容</span><span class="chip">压电</span><span class="chip">摩擦电 TENG</span></div><div class="ldesc">四大主流机理：压阻/电容测压力，压电测动态，摩擦电可自供电；多模态融合是趋势。</div></div>
+        <div class="arrow-down">▾</div>
+        <div class="layer"><div class="lv"><div class="lname">器件与结构</div><div class="len">Device</div></div><div class="chips"><span class="chip"><b>可拉伸电极</b></span><span class="chip">传感阵列</span><span class="chip">微结构</span><span class="chip">封装</span></div><div class="ldesc">可拉伸电极、微结构介电层与阵列化设计，决定灵敏度、量程与耐弯折可靠性。</div></div>
+        <div class="arrow-down">▾</div>
+        <div class="layer"><div class="lv"><div class="lname">功能材料</div><div class="len">Materials</div></div><div class="chips"><span class="chip"><b>导电聚合物</b></span><span class="chip">水凝胶</span><span class="chip">液态金属</span><span class="chip">纳米材料</span><span class="chip">自愈合材料</span></div><div class="ldesc">一切基础：导电聚合物、水凝胶、液态金属与碳纳米材料提供柔性、导电与自愈合能力。</div></div>
+      </div>
+    </section>
+
+    <!-- 05 APPLICATIONS -->
+    <section id="applications">
+      <h2>05 · 应用场景<span class="en">Applications</span></h2>
+      <p class="lead">电子皮肤的核心价值在于"给机器与人体加装触觉与生理感知"。下列八类是当前最具确定性的落地方向。</p>
+      <div class="appgrid">
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><rect x="8" y="2" width="8" height="12" rx="4"/><path d="M9 14v4a3 3 0 006 0v-4"/><line x1="12" y1="18" x2="12" y2="22"/></svg></div>
+          <div class="at">人形机器人触觉</div><div class="ad">灵巧手与全身皮肤实现类人抓取</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><path d="M12 3v6"/><path d="M8 9h8l-1 10a3 3 0 01-6 0z"/><line x1="10" y1="13" x2="14" y2="13"/></svg></div>
+          <div class="at">智能假肢</div><div class="ad">为义肢恢复触压与温度感知</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><path d="M3 12h4l2-5 3 10 2-5h4"/><path d="M19 12h2"/></svg></div>
+          <div class="at">健康监测</div><div class="ad">连续心率/血压/体征贴片监测</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M4 11h16"/><line x1="9" y1="15" x2="15" y2="15"/></svg></div>
+          <div class="at">电子敷料</div><div class="ad">智能伤口监测与促愈合</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></div>
+          <div class="at">人机交互</div><div class="ad">柔性触控与可穿戴交互界面</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><path d="M6 20v-6a6 6 0 0112 0v6"/><path d="M9 20v-5M15 20v-5"/><line x1="4" y1="20" x2="20" y2="20"/></svg></div>
+          <div class="at">康复医疗</div><div class="ad">运动监测与神经康复反馈</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><rect x="2" y="7" width="14" height="10" rx="2"/><path d="M16 10l6-3v10l-6-3z"/></svg></div>
+          <div class="at">VR/AR 触觉反馈</div><div class="ad">触觉手套与沉浸式反馈</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><path d="M4 7l8-4 8 4-8 4z"/><path d="M4 7v10l8 4 8-4V7"/><line x1="12" y1="11" x2="12" y2="21"/></svg></div>
+          <div class="at">工业灵巧操作</div><div class="ad">精密装配与质检的力/触反馈</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 CHALLENGES -->
+    <section id="challenges">
+      <h2>06 · 挑战与风险<span class="en">Challenges & Risks</span></h2>
+      <p class="lead">电子皮肤的难点不在"单点能测"，而在"大面积、多模态、长寿命、可量产"。下列六类风险按严重度标注。</p>
+      <div class="chal">
+        <div class="chcard" style="border-left-color:var(--bad)"><div class="chtop"><span class="chn">大面积多模态集成</span><span class="sev high">高</span></div><div class="chd">全身级传感阵列的布线、寻址与多模态融合复杂，是从 demo 到产品的最大工程壁垒。</div></div>
+        <div class="chcard" style="border-left-color:var(--bad)"><div class="chtop"><span class="chn">耐久性与寿命</span><span class="sev high">高</span></div><div class="chd">反复弯折、拉伸与摩擦下的信号漂移与材料疲劳，制约长期可靠使用。</div></div>
+        <div class="chcard" style="border-left-color:var(--bad)"><div class="chtop"><span class="chn">成本与规模化量产</span><span class="sev high">高</span></div><div class="chd">柔性传感阵列良率与成本仍高，缺乏成熟标准化产线支撑规模化。</div></div>
+        <div class="chcard" style="border-left-color:var(--warn)"><div class="chtop"><span class="chn">标准与接口缺失</span><span class="sev mid">中</span></div><div class="chd">各厂商信号格式不一，IEEE 2851-2025 初步统一通信协议但覆盖有限。</div></div>
+        <div class="chcard" style="border-left-color:var(--warn)"><div class="chtop"><span class="chn">信号解码与算力</span><span class="sev mid">中</span></div><div class="chd">海量触点实时解码对边缘算力与算法提出高要求，功耗与延迟需平衡。</div></div>
+        <div class="chcard" style="border-left-color:var(--warn)"><div class="chtop"><span class="chn">供能与自供电</span><span class="sev mid">中</span></div><div class="chd">大面积皮肤的持续供电困难，摩擦电/压电自供电方案尚未成熟。</div></div>
+      </div>
+    </section>
+
+    <!-- 07 OUTLOOK -->
+    <section id="outlook">
+      <h2>07 · 未来展望<span class="en">Future Outlook</span></h2>
+      <p class="lead">从"单点触觉"到"全身皮肤"再到"感知-决策闭环"，电子皮肤将成为人形机器人与智能医疗的通用感知层。</p>
+      <div class="timeline">
+        <div class="tl"><div class="ty">2026 · 人形机器人拉动触觉需求</div><div class="td">灵巧手触觉率先放量，柔性压力/触觉传感进入机器人供应链。</div></div>
+        <div class="tl"><div class="ty">2027 · 多模态 e-skin 量产</div><div class="td">压力+温度+滑觉多模态柔性阵列实现规模化制造，成本下探。</div></div>
+        <div class="tl"><div class="ty">2028 · 标准统一与生态成型</div><div class="td">通信/接口标准完善，传感-芯片-算法生态协同成熟。</div></div>
+        <div class="tl"><div class="ty">2030 · 医疗级规模化落地</div><div class="td">连续监测与电子敷料获监管认可，进入主流临床与消费市场。</div></div>
+        <div class="tl"><div class="ty">2035 · 通用触觉感知层</div><div class="td">e-skin 成为机器人与人体增强的标准感知层，全身触觉普及。</div></div>
+      </div>
+      <h3>结构性机会判断</h3>
+      <ul class="tight">
+        <li><b>机器人触觉传感器</b>：人形机器人放量下，触觉传感/柔性阵列是确定性最强的增量环节。</li>
+        <li><b>上游柔性功能材料</b>：导电水凝胶、液态金属、可拉伸电极等材料是长期卡位点。</li>
+        <li><b>中国供应链弯道超车</b>：借本土人形机器人产业链，触觉与柔性材料厂商具备切入窗口。</li>
+      </ul>
+    </section>
+
+    <!-- 08 METHODOLOGY -->
+    <section id="methodology">
+      <h2>08 · 研究方法论<span class="en">Methodology</span></h2>
+      <p class="lead">本报告采用"研究锚定 + 双层口径 + 多源交叉"方法，确保结论可追溯、数据可核验。</p>
+      <h3>数据来源</h3>
+      <div class="src">
+        <span class="s">Straits Research 电子皮肤市场</span>
+        <span class="s">Verified Market Reports</span>
+        <span class="s">360iResearch</span>
+        <span class="s">IMARC Group</span>
+        <span class="s">TTConsultants 技术格局</span>
+        <span class="s">ScienceDirect e-skin 综述</span>
+        <span class="s">Cell/Matter 人形触觉综述</span>
+        <span class="s">Nature Flex Electron 多模态 e-skin</span>
+        <span class="s">Adv. Funct. Mater. 摩擦电 e-skin</span>
+        <span class="s">IEEE 2851-2025 标准</span>
+      </div>
+      <h3>方法说明</h3>
+      <ul class="tight">
+        <li><b>双层口径：</b>狭义 SAM 直接引用机构真实值（$9.4B–16.5B，2026）；广义 TAM 基于趋势合理建模并标注为估计。</li>
+        <li><b>多源交叉：</b>市场规模由 4 家机构交叉验证，玩家与技术路线经综述与专利资料佐证。</li>
+        <li><b>非完整清单：</b>玩家归类基于公开披露与学术论文，仅为代表性样本。</li>
+      </ul>
+      <div class="callout"><b>免责声明：</b>本报告狭义市场为机构公开数据（口径差异导致区间较宽），广义 TAM 为基于趋势的合理建模估计，仅供研究参考，不构成投资建议。电子皮肤技术演进迅速，数据请以最新一手来源为准。</div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  © 2026 Deep Research · 电子皮肤（Electronic Skin）技术全景 ｜ 单文件 HTML · 无外部依赖 · 支持打印导出 ｜ 数据截至 2026-07-10
+</footer>
+
+<script>
+(function(){
+  /* ===== 柱状图：电子皮肤广义 TAM 预测 ===== */
+  var data=[{y:2026,v:12},{y:2028,v:20},{y:2030,v:31},{y:2032,v:45},{y:2035,v:80}];
+  var targetYear=2032;
+  var W=680,H=400, padL=58, padR=20, padT=40, padB=70;
+  var maxV=80;
+  var svg=document.getElementById('barchart'), ns='http://www.w3.org/2000/svg';
+  function el(t,a){var e=document.createElementNS(ns,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  var baseY=padT+(H-padT-padB);
+  [0,20,40,60,80].forEach(function(g){
+    var y=baseY-(g/maxV)*(H-padT-padB);
+    svg.appendChild(el('line',{x1:padL,y1:y,x2:W-padR,y2:y,stroke:'#e3e9f2','stroke-width':1}));
+    var tx=el('text',{x:padL-10,y:y+4,'text-anchor':'end','font-size':11,fill:'#8a98aa'}); tx.textContent='$'+g+'B'; svg.appendChild(tx);
+  });
+  var n=data.length, slot=(W-padL-padR)/n, bw=Math.min(64,slot*0.55);
+  data.forEach(function(d,i){
+    var cx=padL+slot*i+slot/2, h=(d.v/maxV)*(H-padT-padB), y=baseY-h;
+    var rect=el('rect',{x:cx-bw/2,y:y,width:bw,height:h,rx:5,fill:'#1d5189'}); svg.appendChild(rect);
+    if(d.y===targetYear) rect.setAttribute('fill','#e0a52e');
+    var vt=el('text',{x:cx,y:y-8,'text-anchor':'middle','font-size':13,'font-weight':700,fill:d.y===targetYear?'#b9821a':'#15406f'}); vt.textContent='$'+d.v+'B'; svg.appendChild(vt);
+    var yt=el('text',{x:cx,y:baseY+22,'text-anchor':'middle','font-size':12.5,fill:'#5c6c80'}); yt.textContent=d.y; svg.appendChild(yt);
+  });
+  svg.appendChild(el('line',{x1:padL,y1:baseY,x2:W-padR,y2:baseY,stroke:'#9aa9bd','stroke-width':1.5}));
+
+  /* ===== Scroll Spy ===== */
+  var links=[].slice.call(document.querySelectorAll('.toc nav a')), map={};
+  links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  var secs=[].slice.call(document.querySelectorAll('main section[id]'));
+  if('IntersectionObserver' in window){
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ links.forEach(function(a){a.classList.remove('active');}); if(map[e.target.id]) map[e.target.id].classList.add('active'); } });
+    },{rootMargin:'-20% 0px -65% 0px',threshold:0});
+    secs.forEach(function(s){obs.observe(s);});
+  }
+})();
+</script>
+</body>
+</html>

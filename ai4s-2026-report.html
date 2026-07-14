@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 年 AI4S 人工智能驱动科学发现技术全景 · 深度调研报告</title>
+<style>
+  :root{
+    --navy-950:#06182f; --navy-900:#0a2342; --navy-800:#0f3057;
+    --navy-700:#15406f; --navy-600:#1d5189; --navy-500:#2b6cb0; --navy-400:#4a8fd0;
+    --accent:#e0a52e; --accent-soft:#f6e6c2;
+    --bg:#f3f6fb; --surface:#ffffff; --surface-2:#f8fafd; --border:#e3e9f2;
+    --text:#15233a; --muted:#5c6c80; --muted-2:#8a98aa;
+    --good:#1f8a5b; --warn:#d98a1f; --bad:#c0392b;
+    --shadow:0 1px 2px rgba(10,35,66,.06),0 8px 24px rgba(10,35,66,.07);
+    --shadow-sm:0 1px 3px rgba(10,35,66,.08);
+    --radius:14px; --radius-sm:9px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--text);background:var(--bg);line-height:1.72;font-size:15.5px;-webkit-font-smoothing:antialiased;}
+  a{color:var(--navy-600);text-decoration:none;}
+  .hero{background:linear-gradient(135deg,var(--navy-950) 0%,var(--navy-800) 55%,var(--navy-600) 100%);color:#eaf2fb;padding:54px 40px 46px;position:relative;overflow:hidden;}
+  .hero::after{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;background:radial-gradient(circle,rgba(74,143,208,.35),transparent 65%);border-radius:50%;}
+  .hero .eyebrow{letter-spacing:.22em;text-transform:uppercase;font-size:12px;color:var(--accent);font-weight:700;margin-bottom:14px;}
+  .hero h1{margin:0 0 10px;font-size:38px;line-height:1.18;font-weight:800;letter-spacing:.5px;max-width:900px;position:relative;z-index:1;}
+  .hero .sub{font-size:16.5px;color:#b9cbe0;max-width:780px;position:relative;z-index:1;}
+  .hero .meta{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px 26px;font-size:13.5px;color:#a9bfd8;position:relative;z-index:1;}
+  .hero .meta b{color:#eaf2fb;font-weight:600;}
+  .hero .print-btn{position:absolute;right:32px;bottom:34px;z-index:2;background:var(--accent);color:#3a2a05;border:none;padding:10px 18px;border-radius:8px;font-weight:700;font-size:13.5px;cursor:pointer;box-shadow:0 4px 14px rgba(224,165,46,.4);}
+  .hero .print-btn:hover{background:#eeb948;}
+  .layout{display:flex;align-items:flex-start;max-width:1280px;margin:0 auto;padding:0 24px;}
+  .toc{position:sticky;top:0;align-self:flex-start;width:248px;flex:0 0 248px;padding:34px 0 40px;margin-right:8px;}
+  .toc .toc-title{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);font-weight:700;padding:0 16px 12px;}
+  .toc nav a{display:block;padding:9px 16px;color:var(--muted);font-size:14px;border-left:3px solid transparent;transition:all .18s;font-weight:500;}
+  .toc nav a:hover{color:var(--navy-700);background:var(--surface);}
+  .toc nav a.active{color:var(--navy-900);font-weight:700;border-left-color:var(--accent);background:linear-gradient(90deg,var(--surface),transparent);}
+  .toc nav a .num{color:var(--navy-400);font-weight:700;margin-right:9px;font-variant-numeric:tabular-nums;}
+  main{flex:1;min-width:0;padding:34px 0 30px 18px;}
+  section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:34px 38px;margin-bottom:26px;box-shadow:var(--shadow-sm);scroll-margin-top:18px;}
+  section > h2{margin:0 0 6px;font-size:25px;font-weight:800;color:var(--navy-900);letter-spacing:.3px;display:flex;align-items:baseline;gap:12px;}
+  section > h2 .en{font-size:13px;font-weight:700;color:var(--navy-400);letter-spacing:.08em;text-transform:uppercase;}
+  section > .lead{color:var(--muted);font-size:15px;margin:0 0 22px;}
+  h3{font-size:17.5px;color:var(--navy-800);margin:26px 0 12px;font-weight:700;}
+  h4{font-size:15px;color:var(--navy-700);margin:18px 0 8px;font-weight:700;}
+  p{margin:0 0 14px;}
+  ul.tight{margin:0 0 14px;padding-left:20px;}
+  ul.tight li{margin:6px 0;}
+  .divider{height:1px;background:var(--border);margin:24px 0;border:none;}
+  .highlights{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:8px 0 4px;}
+  .hcard{background:linear-gradient(160deg,var(--navy-800),var(--navy-600));color:#fff;border-radius:var(--radius);padding:22px 22px 20px;position:relative;overflow:hidden;box-shadow:var(--shadow);}
+  .hcard::after{content:"";position:absolute;right:-30px;bottom:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(224,165,46,.28),transparent 70%);border-radius:50%;}
+  .hcard .val{font-size:40px;font-weight:800;line-height:1;color:var(--accent);letter-spacing:.5px;}
+  .hcard .unit{font-size:16px;color:#cfe0f2;font-weight:600;margin-left:3px;}
+  .hcard .lbl{margin-top:10px;font-size:14px;color:#dce8f6;font-weight:600;}
+  .hcard .note{margin-top:4px;font-size:12px;color:#9fb6d2;}
+  .secstats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;}
+  .sstat{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 15px;}
+  .sstat .v{font-size:20px;font-weight:800;color:var(--navy-700);}
+  .sstat .l{font-size:12px;color:var(--muted);margin-top:2px;}
+  .chart-wrap{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:22px 20px 14px;margin:6px 0 8px;}
+  .chart-wrap svg{display:block;width:100%;height:auto;}
+  .chart-cap{font-size:12.5px;color:var(--muted);text-align:center;margin-top:8px;}
+  .legend{display:flex;gap:18px;justify-content:center;margin-top:4px;font-size:12.5px;color:var(--muted);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .legend i{width:13px;height:13px;border-radius:3px;display:inline-block;}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  @media(max-width:880px){.twocol{grid-template-columns:1fr;}}
+  .rbar{margin:9px 0;}
+  .rbar .top{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px;}
+  .rbar .top b{color:var(--navy-800);}
+  .rbar .track{height:10px;background:#e9eef6;border-radius:6px;overflow:hidden;}
+  .rbar .fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--navy-600),var(--navy-400));}
+  .grp-title{font-size:14px;font-weight:800;color:var(--navy-700);text-transform:uppercase;letter-spacing:.06em;margin:26px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:9px;}
+  .grp-title .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);}
+  .pcards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media(max-width:980px){.pcards{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:620px){.pcards{grid-template-columns:1fr;}}
+  .pcard{border:1px solid var(--border);border-radius:var(--radius-sm);padding:15px 16px;background:var(--surface);transition:transform .15s,box-shadow .15s;position:relative;}
+  .pcard:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+  .pcard .pname{font-weight:800;color:var(--navy-900);font-size:15.5px;display:flex;align-items:center;justify-content:space-between;}
+  .pcard .tag{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--accent-soft);color:#8a5d00;white-space:nowrap;}
+  .pcard .focus{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.55;}
+  .pcard .pnote{font-size:12px;color:var(--navy-500);margin-top:8px;border-top:1px dashed var(--border);padding-top:8px;}
+  .stack{display:flex;flex-direction:column;gap:0;margin:10px 0 4px;}
+  .layer{position:relative;padding:18px 20px 18px 132px;border:1px solid var(--border);border-bottom:none;background:var(--surface);}
+  .layer:first-child{border-radius:var(--radius) var(--radius) 0 0;}
+  .layer:last-child{border-bottom:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);}
+  .layer .lv{position:absolute;left:0;top:0;bottom:0;width:120px;display:flex;flex-direction:column;justify-content:center;padding:0 14px;background:linear-gradient(135deg,var(--navy-700),var(--navy-500));color:#fff;}
+  .layer .lv .lname{font-weight:800;font-size:14.5px;line-height:1.25;}
+  .layer .lv .len{font-size:10.5px;color:#bcd2ea;letter-spacing:.1em;text-transform:uppercase;margin-top:3px;}
+  .layer .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{font-size:12.5px;background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:4px 12px;color:var(--navy-800);}
+  .chip b{color:var(--navy-500);}
+  .layer .ldesc{font-size:12.5px;color:var(--muted);margin-top:9px;}
+  .arrow-down{text-align:center;color:var(--navy-400);font-size:18px;line-height:1;padding:2px 0;}
+  .appgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  @media(max-width:900px){.appgrid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:480px){.appgrid{grid-template-columns:1fr;}}
+  .appcard{border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 16px;background:var(--surface);text-align:center;transition:transform .15s,box-shadow .15s;}
+  .appcard:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+  .appcard .ico{width:52px;height:52px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;border-radius:13px;background:linear-gradient(160deg,#eef4fb,#dde9f7);border:1px solid var(--border);}
+  .appcard .ico svg{width:30px;height:30px;}
+  .appcard .at{font-weight:700;color:var(--navy-900);font-size:14.5px;}
+  .appcard .ad{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;}
+  .chal{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:780px){.chal{grid-template-columns:1fr;}}
+  .chcard{border:1px solid var(--border);border-left:4px solid var(--warn);border-radius:var(--radius-sm);padding:15px 18px;background:var(--surface-2);}
+  .chcard .chtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+  .chcard .chn{font-weight:700;color:var(--navy-900);font-size:15px;}
+  .sev{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;color:#fff;}
+  .sev.high{background:var(--bad);} .sev.mid{background:var(--warn);} .sev.low{background:var(--good);}
+  .chcard .chd{font-size:13px;color:var(--muted);line-height:1.55;}
+  .timeline{position:relative;margin:10px 0 0;padding-left:30px;}
+  .timeline::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:3px;background:linear-gradient(var(--navy-500),#5a9bd6);border-radius:3px;}
+  .tl{position:relative;margin-bottom:22px;}
+  .tl::before{content:"";position:absolute;left:-26px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--accent);border:3px solid #fff;box-shadow:0 0 0 2px var(--navy-400);}
+  .tl .ty{font-weight:800;color:var(--navy-700);font-size:14.5px;}
+  .tl .td{font-size:13.5px;color:var(--muted);margin-top:4px;}
+  .src{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 18px;}
+  .src .s{font-size:12.5px;background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:4px 13px;color:var(--navy-700);}
+  .callout{background:var(--accent-soft);border:1px solid #ecd79b;border-radius:var(--radius-sm);padding:14px 18px;font-size:13.5px;color:#6a4e00;margin-top:12px;}
+  .callout b{color:#5a3f00;}
+  footer{text-align:center;color:var(--muted-2);font-size:12.5px;padding:30px 20px 50px;max-width:1280px;margin:0 auto;}
+  table.tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0;}
+  table.tbl th,table.tbl td{border:1px solid var(--border);padding:9px 12px;text-align:left;}
+  table.tbl th{background:var(--navy-800);color:#eaf2fb;font-weight:600;}
+  table.tbl tr:nth-child(even) td{background:var(--surface-2);}
+  @media print{
+    .hero{background:#0a2342 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:30px 24px;}
+    .hero .print-btn{display:none;}
+    .toc{display:none;}
+    main{padding:0;margin:0;}
+    .layout{display:block;max-width:100%;padding:0;}
+    section{box-shadow:none;border:1px solid #ccc;break-inside:avoid;page-break-inside:avoid;margin-bottom:14px;padding:22px 24px;}
+    .hcard,.appcard,.pcard,.chcard,.layer,.sstat{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .highlights{grid-template-columns:repeat(3,1fr);}
+    body{font-size:12px;background:#fff;}
+    section > h2{font-size:19px;}
+    .no-print{display:none;}
+  }
+  @media(max-width:980px){
+    .layout{flex-direction:column;}
+    .toc{position:static;width:100%;flex:none;padding:18px 0 0;margin:0;}
+    .toc nav{display:flex;flex-wrap:wrap;gap:4px;}
+    .toc nav a{border-left:none;border-bottom:3px solid transparent;padding:7px 12px;}
+    .toc nav a.active{border-left:none;border-bottom-color:var(--accent);background:none;}
+    main{padding:18px 0 0;}
+    .highlights{grid-template-columns:1fr;}
+    .secstats{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">Deep Research · Technology Landscape</div>
+  <h1>2026 年 AI4S 人工智能驱动科学发现技术全景</h1>
+  <div class="sub">AI for Science 正从"辅助科研"跃迁为"科学发现的核心引擎"——以基础模型、生成式设计与自主实验闭环，重塑生命、物质、气候与数学的研究范式。2024 年 AlphaFold 摘得诺贝尔化学奖，标志范式变革正式到来。</div>
+  <div class="meta">
+    <span>作者 · <b>HanBuff</b></span>
+    <span>报告日期 · <b>2026-07-07</b></span>
+    <span>研究口径 · <b>广义 TAM + 狭义 SAM</b></span>
+    <span>覆盖主体 · <b>500+</b> 公司 / 机构</span>
+    <span>数据来源 · <b>9 家机构 & 论文</b></span>
+  </div>
+  <button class="print-btn no-print" onclick="window.print()">打印 / 导出 PDF</button>
+</header>
+
+<div class="layout">
+  <aside class="toc">
+    <div class="toc-title">目录 · Contents</div>
+    <nav>
+      <a href="#summary"><span class="num">01</span>Executive Summary</a>
+      <a href="#market"><span class="num">02</span>市场概览</a>
+      <a href="#players"><span class="num">03</span>关键玩家</a>
+      <a href="#tech"><span class="num">04</span>技术栈分层</a>
+      <a href="#applications"><span class="num">05</span>应用场景</a>
+      <a href="#challenges"><span class="num">06</span>挑战与风险</a>
+      <a href="#outlook"><span class="num">07</span>未来展望</a>
+      <a href="#methodology"><span class="num">08</span>研究方法论</a>
+    </nav>
+  </aside>
+
+  <main>
+
+    <!-- 01 EXECUTIVE SUMMARY -->
+    <section id="summary">
+      <h2>01 · Executive Summary<span class="en">执行摘要</span></h2>
+      <p class="lead">AI for Science（AI4S）指将机器学习、科学大模型与自动化实验相结合，直接加速科学发现全链条（假设生成 → 计算/仿真 → 实验验证 → 迭代）的新范式。2026 年，随基础模型成熟与算力成本下降，AI4S 已从零散应用演化为系统、可复用的科研创新路径。</p>
+
+      <div class="highlights">
+        <div class="hcard">
+          <div class="val">$72<span class="unit">B</span></div>
+          <div class="lbl">广义市场规模（2032 TAM）</div>
+          <div class="note">含 AI 制药 / 材料信息学 / 气候 AI / 科学大模型 / 算力云</div>
+        </div>
+        <div class="hcard">
+          <div class="val">500<span class="unit">+</span></div>
+          <div class="lbl">产业链公司 / 机构</div>
+          <div class="note">巨头 · 初创 · 大模型 · 实验室 · 算力云</div>
+        </div>
+        <div class="hcard">
+          <div class="val">5<span class="unit">类</span></div>
+          <div class="lbl">市场主体类别</div>
+          <div class="note">巨头 · 生物初创 · 科学大模型 · 国家实验室 · 算力云</div>
+        </div>
+      </div>
+
+      <div class="secstats">
+        <div class="sstat"><div class="v">~$18B</div><div class="l">狭义 AI in Science SAM（2026）</div></div>
+        <div class="sstat"><div class="v">≈21%</div><div class="l">广义 TAM CAGR（2026–2035）</div></div>
+        <div class="sstat"><div class="v">$118B</div><div class="l">广义 TAM 预测（2035）</div></div>
+        <div class="sstat"><div class="v">北美 42%</div><div class="l">2032 区域份额领先</div></div>
+      </div>
+
+      <h3>核心判断</h3>
+      <ul class="tight">
+        <li><b>范式确立：</b>AlphaFold（2024 诺贝尔化学）与 GNoME、GraphCast 等旗舰成果，证明 AI 已从"辅助工具"成为"发现引擎"。</li>
+        <li><b>闭环革命：</b>科学大模型 + AI Agent + 自主实验台（Autonomous Lab）正打通"计算—实验"闭环，研发周期有望压缩数倍。</li>
+        <li><b>制药领跑：</b>AI 药物发现率先跑通商业验证（Insilico ISM001-055 进入临床 IIa），成为最热、最易变现的赛道。</li>
+        <li><b>中国力量：</b>依托科学大模型（BAAI 智源、上海 AI 实验室）与完备算力，中国在基础模型与材料/气候方向具备突围潜力。</li>
+      </ul>
+    </section>
+
+    <!-- 02 MARKET -->
+    <section id="market">
+      <h2>02 · 市场概览<span class="en">Market Overview</span></h2>
+      <p class="lead">同样需区分两层口径：<b>狭义 SAM</b>（AI in Science 软件与服务）2024 年约 $13B（Consainsights），2026 年约 $18B；<b>广义 TAM</b> 叠加 AI 制药、材料信息学、气候 AI、科学大模型与算力云，是受基础模型与自主实验驱动的更高增长曲线。下方为广义 TAM 十年预测。</p>
+
+      <div class="chart-wrap">
+        <svg id="barchart" viewBox="0 0 680 400" role="img" aria-label="AI4S 广义市场规模预测柱状图"></svg>
+        <div class="legend">
+          <span><i style="background:var(--navy-600)"></i>广义 TAM（十亿美元）</span>
+        </div>
+        <div class="chart-cap">图 1 · 全球 AI4S 广义市场规模（TAM）预测，2026–2035，单位：十亿美元（USD Billions）。</div>
+      </div>
+
+      <div class="twocol" style="margin-top:22px;">
+        <div>
+          <h3>区域格局（2032 TAM 份额）</h3>
+          <div class="rbar"><div class="top"><span>北美 North America</span><b>42%</b></div><div class="track"><div class="fill" style="width:42%"></div></div></div>
+          <div class="rbar"><div class="top"><span>中国 China</span><b>26%</b></div><div class="track"><div class="fill" style="width:26%"></div></div></div>
+          <div class="rbar"><div class="top"><span>欧洲 Europe</span><b>22%</b></div><div class="track"><div class="fill" style="width:22%"></div></div></div>
+          <div class="rbar"><div class="top"><span>日韩及其他 RoW</span><b>10%</b></div><div class="track"><div class="fill" style="width:10%"></div></div></div>
+          <p style="font-size:12.5px;color:var(--muted);margin-top:10px;">北美由 DeepMind / Isomorphic、Recursion 与云算力主导；中国依托科学大模型与制造链快速追上；欧洲以顶尖高校与国家实验室见长。</p>
+        </div>
+        <div>
+          <h3>三大驱动因素</h3>
+          <h4>① 科学基础模型成熟</h4>
+          <p style="font-size:13.5px;color:var(--muted);">几何深度学习、扩散模型、物理信息神经网络（PINN）使"从数据直接学物理规律"成为可能。</p>
+          <h4>② 自主实验闭环</h4>
+          <p style="font-size:13.5px;color:var(--muted);">机器人湿实验 + 主动学习让"假设—验证"周期从月级压缩到天级。</p>
+          <h4>③ 算力成本下降</h4>
+          <p style="font-size:13.5px;color:var(--muted);">GPU 集群与科学计算库普及，训练大模型门槛持续降低，加速科研成果转化。</p>
+        </div>
+      </div>
+
+      <hr class="divider">
+      <h3>狭义 SAM 权威预测对比</h3>
+      <table class="tbl">
+        <thead><tr><th>研究机构</th><th>AI in Science 市场规模</th><th>预测期</th><th>口径说明</th></tr></thead>
+        <tbody>
+          <tr><td>Consainsights</td><td>$13B（2024）→ $32.2B</td><td>至 2033</td><td>AI in Science 软件与服务</td></tr>
+          <tr><td>MarketsandMarkets</td><td>整体 AI $602B（2026）</td><td>至 2033 CAGR 29.3%</td><td>广义 AI，AI4S 为子集</td></tr>
+          <tr><td>Precedence Research</td><td>整体 AI $758B（2025）</td><td>至 ~$4.2T</td><td>广义 AI，AI4S 为子集</td></tr>
+          <tr><td>行业综述（BAAI 等）</td><td>AI4S 进入范式变革期</td><td>2025 起系统化</td><td>科研路径成熟度</td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><b>口径提示：</b>上表"狭义 SAM"为 AI in Science 软件与服务市场规模（2026 约 $18B）。本报告 $72B 的广义 TAM（2032）叠加了 AI 制药、材料信息学、气候 AI、科学大模型与算力云等衍生价值，更符合 AI4S 作为"科研基础设施"的真实可达空间。</div>
+    </section>
+
+    <!-- 03 PLAYERS -->
+    <section id="players">
+      <h2>03 · 关键玩家<span class="en">Key Players</span></h2>
+      <p class="lead">AI4S 生态可分为 5 大类别、500+ 家公司 / 机构。以下为各梯队代表性主体（综合公开资料整理，非完整清单）。</p>
+
+      <div class="grp-title"><span class="dot"></span>类别一 · 全球科技巨头（Integrated Giants）</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">Google DeepMind / Isomorphic <span class="tag">旗舰</span></div><div class="focus">AlphaFold、GNoME、GraphCast；Isomorphic Labs 将能力注入药物设计。</div><div class="pnote">强项：基础研究与产业转化一体</div></div>
+        <div class="pcard"><div class="pname">Microsoft Research AI4Science <span class="tag">模拟</span></div><div class="focus">分子模拟、科学 ML、AI 加速量子化学与流体计算。</div><div class="pnote">强项：Azure 算力 + 研究院</div></div>
+        <div class="pcard"><div class="pname">NVIDIA <span class="tag">算力</span></div><div class="focus">BioNeMo、Earth-2、CUDA 科学计算生态，AI4S 的"卖铲人"。</div><div class="pnote">强项：全栈算力与软件</div></div>
+        <div class="pcard"><div class="pname">Meta AI <span class="tag">蛋白质</span></div><div class="focus">ESM 蛋白质语言模型、OpenFold 开源生态。</div><div class="pnote">强项：开源基础模型</div></div>
+        <div class="pcard"><div class="pname">华为 / 百度 <span class="tag">中国</span></div><div class="focus">盘古气象、飞桨 PaddleScience 科学计算框架。</div><div class="pnote">强项：本土算力与场景</div></div>
+        <div class="pcard"><div class="pname">AWS / Google Cloud <span class="tag">云</span></div><div class="focus">HealthOmics、Vertex AI 等托管科学 AI 服务。</div><div class="pnote">强项：云原生交付</div></div>
+      </div>
+
+      <div class="grp-title"><span class="dot"></span>类别二 · AI 制药与生物初创（Bio Startups）</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">Recursion <span class="tag">表型</span></div><div class="focus">基于表型组学 + ML 的高通量药物发现平台。</div><div class="pnote">强项：自动化实验规模</div></div>
+        <div class="pcard"><div class="pname">Insilico Medicine <span class="tag">生成式</span></div><div class="focus">生成式小分子发现，ISM001-055 进入临床 IIa（IPF）。</div><div class="pnote">强项：端到端管线验证</div></div>
+        <div class="pcard"><div class="pname">Absci <span class="tag">抗体</span></div><div class="focus">生成式抗体设计与蛋白工程。</div><div class="pnote">强项：生物大模型</div></div>
+        <div class="pcard"><div class="pname">Genesis Therapeutics <span class="tag">GNN</span></div><div class="focus">图神经网络驱动小分子药物设计。</div><div class="pnote">强项：几何深度学习</div></div>
+        <div class="pcard"><div class="pname">Cradle <span class="tag">蛋白/酶</span></div><div class="focus">生成式蛋白与酶设计，服务工业生物。</div><div class="pnote">强项：蛋白工程落地</div></div>
+      </div>
+
+      <div class="grp-title"><span class="dot"></span>类别三 · 科学大模型与基础模型（Scientific FMs）</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">BAAI 智源 <span class="tag">中国</span></div><div class="focus">OpenLAM、科学大模型矩阵，推动开放科学 AI。</div><div class="pnote">强项：开放生态</div></div>
+        <div class="pcard"><div class="pname">上海 AI 实验室 <span class="tag">中国</span></div><div class="focus">书生系列科学基础模型，跨模态科研。</div><div class="pnote">强项：多模态科研</div></div>
+        <div class="pcard"><div class="pname">Meta ESM / Google <span class="tag">基础</span></div><div class="focus">ESM、Gemini for Science 等通用科学能力底座。</div><div class="pnote">强项：底座模型</div></div>
+      </div>
+
+      <div class="grp-title"><span class="dot"></span>类别四 · 国家级实验室与高校 & 类别五 · 算力与云服务</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">MIT / Stanford <span class="tag">学术</span></div><div class="focus">AI4S 方法论策源地，几何深度学习、PINN 发源。</div><div class="pnote">强项：前沿论文与人才</div></div>
+        <div class="pcard"><div class="pname">清华 / 北大 / 之江 <span class="tag">中国</span></div><div class="focus">AI4S 研究中心，材料、气候、药物多线并进。</div><div class="pnote">强项：产学研协同</div></div>
+        <div class="pcard"><div class="pname">NVIDIA / 阿里云 / 华为云 <span class="tag">算力</span></div><div class="focus">GPU 集群、科学计算库与托管训练平台。</div><div class="pnote">强项：基础设施供给</div></div>
+      </div>
+    </section>
+
+    <!-- 04 TECH STACK -->
+    <section id="tech">
+      <h2>04 · 技术栈分层<span class="en">Technology Stack</span></h2>
+      <p class="lead">AI4S 是"算力—数据—方法—智能—闭环"五层垂直集成的系统。底层算力与数据决定上限，顶层自主实验闭环决定转化效率。</p>
+
+      <div class="stack">
+        <div class="layer">
+          <div class="lv"><div class="lname">科学发现闭环</div><div class="len">System</div></div>
+          <div class="chips">
+            <span class="chip"><b>假设生成</b></span><span class="chip"><b>自主实验台</b></span>
+            <span class="chip">机器人湿实验</span><span class="chip">验证闭环</span><span class="chip">主动学习迭代</span>
+          </div>
+          <div class="ldesc">将 AI 预测与真实实验无缝衔接，构成"计算—实验—再计算"的科研飞轮，是范式变革的终极形态。</div>
+        </div>
+        <div class="arrow-down">▾</div>
+        <div class="layer">
+          <div class="lv"><div class="lname">大模型与 Agent</div><div class="len">Intelligence</div></div>
+          <div class="chips">
+            <span class="chip"><b>科学 LLM</b></span><span class="chip"><b>AI Agent 工作流</b></span>
+            <span class="chip">多模态推理</span><span class="chip">可解释性</span><span class="chip">文献/知识挖掘</span>
+          </div>
+          <div class="ldesc">以科学基础模型为底座，编排实验设计与分析 Agent，实现科研流程自动化。</div>
+        </div>
+        <div class="arrow-down">▾</div>
+        <div class="layer">
+          <div class="lv"><div class="lname">核心 AI 方法</div><div class="en">Methods</div></div>
+          <div class="chips">
+            <span class="chip"><b>几何深度学习</b></span><span class="chip"><b>扩散模型</b></span>
+            <span class="chip">图神经网络 GNN</span><span class="chip">PINN 物理信息网络</span><span class="chip">Transformer</span>
+          </div>
+          <div class="ldesc">针对科学数据的结构（分子、晶体、流场）设计的专用架构，是 AI4S 的方法内核。</div>
+        </div>
+        <div class="arrow-down">▾</div>
+        <div class="layer">
+          <div class="lv"><div class="lname">科学数据与表征</div><div class="en">Data</div></div>
+          <div class="chips">
+            <span class="chip"><b>多模态数据库</b></span><span class="chip">表示学习</span>
+            <span class="chip">基准 Benchmark</span><span class="chip">仿真数据</span><span class="chip">文献结构化</span>
+          </div>
+          <div class="ldesc">高质量、可复用的科学数据（蛋白/材料/文献）与统一表征，是模型效果的命脉。</div>
+        </div>
+        <div class="arrow-down">▾</div>
+        <div class="layer">
+          <div class="lv"><div class="lname">算力与基础设施</div><div class="en">Compute</div></div>
+          <div class="chips">
+            <span class="chip"><b>GPU 集群</b></span><span class="chip">科学计算库</span>
+            <span class="chip">分子动力学引擎</span><span class="chip">量子化学引擎</span><span class="chip">ML 框架</span>
+          </div>
+          <div class="ldesc">算力与仿真软件构成 AI4S 的物理底座，决定训练规模与推理速度。</div>
+        </div>
+      </div>
+
+      <hr class="divider">
+      <h3>为什么"基础模型 + 闭环"是分水岭？</h3>
+      <p style="font-size:14px;color:var(--muted);">早期 AI4S 多为"单点模型 + 人工实验"，瓶颈在验证。2025 年后，科学大模型提供通用表征、自主实验台提供低成本的真实反馈，二者结合使"AI 提出假设 → 机器自动验证 → 模型自我改进"成为常态，研发效率实现数量级跃升。</p>
+    </section>
+
+    <!-- 05 APPLICATIONS -->
+    <section id="applications">
+      <h2>05 · 应用场景<span class="en">Applications</span></h2>
+      <p class="lead">AI4S 已渗透生命、物质、地球、数学与能源五大科学疆域。以下为 8 大核心应用。</p>
+
+      <div class="appgrid">
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><path d="M8 3c0 5 8 5 8 10s-8 5-8 10M16 3c0 5-8 5-8 10s8 5 8 10"/></svg></div>
+          <div class="at">蛋白质结构与设计</div>
+          <div class="ad">AlphaFold、RFdiffusion、ProteinMPNN 实现结构与 de novo 设计。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><rect x="3" y="9" width="18" height="6" rx="3"/><path d="M3 12h18" stroke="#e0a52e"/><path d="M12 9v6" stroke="#e0a52e"/></svg></div>
+          <div class="at">AI 药物发现</div>
+          <div class="ad">生成式小分子 / 抗体，缩短临床前周期。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><path d="M12 3l8 5v8l-8 5-8-5V8z"/><path d="M12 3v18M4 8l8 5 8-5"/></svg></div>
+          <div class="at">材料发现</div>
+          <div class="ad">GNoME 发现百万级新晶体，加速电池 / 催化。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></div>
+          <div class="at">气候与天气预测</div>
+          <div class="ad">GraphCast、盘古气象，分钟级高精度预报。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><circle cx="12" cy="12" r="2.2"/><ellipse cx="12" cy="12" rx="10" ry="4.2"/><ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(120 12 12)"/></svg></div>
+          <div class="at">量子化学与分子模拟</div>
+          <div class="ad">ML 势函数（DeePMD）替代昂贵 ab initio。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><path d="M5 19V9M5 9l4-4 4 4M13 19V5M13 5l4 4 2-2"/></svg></div>
+          <div class="at">数学与定理证明</div>
+          <div class="ad">AlphaProof、Lean 辅助形式化证明。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4" fill="#e0a52e" stroke="none"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/></svg></div>
+          <div class="at">核聚变与等离子体</div>
+          <div class="ad">AI 实时控制托卡马克等离子体形态。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><path d="M12 21C7 17 4 13 4 9a4 4 0 018-1 4 4 0 018 1c0 4-3 8-8 12z"/><path d="M12 8v6M9 11h6" stroke="#e0a52e"/></svg></div>
+          <div class="at">农业与合成生物</div>
+          <div class="ad">作物改良、酶工程与代谢途径设计。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 CHALLENGES -->
+    <section id="challenges">
+      <h2>06 · 挑战与风险<span class="en">Challenges & Risks</span></h2>
+      <p class="lead">AI4S 距离"科研基础设施"仍有硬约束。按影响程度分级如下（高 / 中 / 低）。</p>
+
+      <div class="chal">
+        <div class="chcard" style="border-left-color:var(--bad)">
+          <div class="chtop"><span class="chn">科学数据稀缺与质量</span><span class="sev high">高</span></div>
+          <div class="chd">高质量标注实验数据昂贵、小样本、分布偏倚，制约模型泛化与可信度。</div>
+        </div>
+        <div class="chcard" style="border-left-color:var(--bad)">
+          <div class="chtop"><span class="chn">可解释性与可信</span><span class="sev high">高</span></div>
+          <div class="chd">黑箱预测、外推失效与"幻觉"在科研场景代价极高，需物理约束与可解释方法。</div>
+        </div>
+        <div class="chcard" style="border-left-color:var(--warn)">
+          <div class="chtop"><span class="chn">实验验证闭环</span><span class="sev mid">中高</span></div>
+          <div class="chd">湿实验成本高、自主实验台尚未普及，计算到验证的闭环仍是瓶颈。</div>
+        </div>
+        <div class="chcard" style="border-left-color:var(--warn)">
+          <div class="chtop"><span class="chn">跨学科人才</span><span class="sev mid">中高</span></div>
+          <div class="chd">"物理 / 化学 + AI"复合人才稀缺，产学研协作机制待完善。</div>
+        </div>
+        <div class="chcard" style="border-left-color:var(--warn)">
+          <div class="chtop"><span class="chn">算力与成本</span><span class="sev mid">中</span></div>
+          <div class="chd">训练前沿大模型与高保真仿真耗资巨大，中小团队门槛高。</div>
+        </div>
+        <div class="chcard" style="border-left-color:var(--good)">
+          <div class="chtop"><span class="chn">知识产权与监管</span><span class="sev low">中</span></div>
+          <div class="chd">AI 设计分子的专利权属、制药监管路径与数据合规仍需厘清。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 OUTLOOK -->
+    <section id="outlook">
+      <h2>07 · 未来展望<span class="en">Future Outlook</span></h2>
+      <p class="lead">基于基础模型成熟度与自主实验进展，AI4S 将沿"工具 → 范式 → 基础设施"三阶段演进，2026–2035 年广义 TAM 有望以约 21% CAGR 增长至 $118B。</p>
+
+      <div class="timeline">
+        <div class="tl"><div class="ty">2026 · 范式确立</div><div class="td">科学大模型成为科研默认工具，蛋白质 / 材料 / 气候旗舰成果常态化。</div></div>
+        <div class="tl"><div class="ty">2027–2028 · 自主实验室</div><div class="td">"计算—实验"闭环从示范走向产业，研发周期压缩数倍。</div></div>
+        <div class="tl"><div class="ty">2029–2031 · 成果落地</div><div class="td">AI 设计分子进入临床、新材料量产，多领域出现标志性突破。</div></div>
+        <div class="tl"><div class="ty">2032 · TAM $72B</div><div class="td">广义市场规模达 720 亿美元，AI 成为科研基础设施常态。</div></div>
+        <div class="tl"><div class="ty">2035 · 突破常态化</div><div class="td">广义 TAM 突破 $118B，AI 驱动的重大科学发现成为常态。</div></div>
+      </div>
+
+      <h3>结构性机会判断</h3>
+      <ul class="tight">
+        <li><b>上游卡位：</b>算力（GPU / 科学计算）与高质量科学数据库是确定性最高的"卖铲人"环节。</li>
+        <li><b>场景优先：</b>AI 制药因需求刚性、付费意愿强，率先跑通商业模式与监管路径。</li>
+        <li><b>闭环整合者赢：</b>具备"基础模型 + 自动化实验 + 领域 know-how"的平台型主体最有可能成为赢家。</li>
+      </ul>
+    </section>
+
+    <!-- 08 METHODOLOGY -->
+    <section id="methodology">
+      <h2>08 · 研究方法论<span class="en">Methodology</span></h2>
+      <p class="lead">本报告综合公开行业研究、学术论文、企业披露与行业媒体，采用"双层口径 + 多源交叉验证"的方法构建。</p>
+
+      <h3>数据来源</h3>
+      <div class="src">
+        <span class="s">Consainsights</span><span class="s">MarketsandMarkets</span><span class="s">Precedence Research</span>
+        <span class="s">Nature（AlphaFold4 / Isomorphic）</span><span class="s">ScienceDirect</span><span class="s">BAAI 智源</span>
+        <span class="s">上海 AI 实验室</span><span class="s">AI4S 2025 综述</span><span class="s">行业媒体（36氪 / 知乎）</span>
+      </div>
+
+      <h3>方法说明</h3>
+      <ul class="tight">
+        <li><b>双层口径：</b>狭义 SAM（AI in Science 软件与服务）引用机构真实值；广义 TAM（含制药/材料/气候/大模型/算力云）基于公开趋势合理建模放大。</li>
+        <li><b>多源交叉：</b>市场规模取多家机构区间避免偏差；玩家与技术归类基于公开披露与学术论文。</li>
+        <li><b>区域与份额：</b>依据各国基础模型投入、算力供给与科研产出做加权估算。</li>
+      </ul>
+
+      <div class="callout"><b>免责声明：</b>本报告为技术全景调研，部分预测值（尤其广义 TAM 与区域份额）为基于公开信息的合理建模，用于趋势研判，<b>不构成任何投资建议</b>。具体投资决策请以最新一手数据为准。</div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  © 2026 Deep Research · AI4S 人工智能驱动科学发现技术全景 ｜ 单文件 HTML · 无外部依赖 · 支持打印导出 ｜ 数据截至 2026-07-07
+</footer>
+
+<script>
+(function(){
+  /* Bar Chart (SVG, inline) */
+  var data=[{y:2026,v:22},{y:2028,v:36},{y:2030,v:52},{y:2032,v:72},{y:2035,v:118}];
+  var targetYear=2032;
+  var W=680,H=400, padL=58, padR=20, padT=40, padB=70;
+  var plotW=W-padL-padR, plotH=H-padT-padB, maxV=120;
+  var svg=document.getElementById('barchart'), ns='http://www.w3.org/2000/svg';
+  function el(t,a){var e=document.createElementNS(ns,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  var baseY=padT+plotH;
+  [0,20,40,60,80,100,120].forEach(function(g){
+    var y=baseY-(g/maxV)*plotH;
+    svg.appendChild(el('line',{x1:padL,y1:y,x2:W-padR,y2:y,stroke:'#e3e9f2','stroke-width':1}));
+    var tx=el('text',{x:padL-10,y:y+4,'text-anchor':'end','font-size':11,fill:'#8a98aa'}); tx.textContent='$'+g+'B'; svg.appendChild(tx);
+  });
+  var n=data.length, slot=plotW/n, bw=Math.min(64,slot*0.55);
+  data.forEach(function(d,i){
+    var cx=padL+slot*i+slot/2, h=(d.v/maxV)*plotH, y=baseY-h;
+    var rect=el('rect',{x:cx-bw/2,y:y,width:bw,height:h,rx:5,fill:'#1d5189'}); svg.appendChild(rect);
+    if(d.y===targetYear) rect.setAttribute('fill','#e0a52e');
+    var vt=el('text',{x:cx,y:y-8,'text-anchor':'middle','font-size':13,'font-weight':700,fill:d.y===targetYear?'#b9821a':'#15406f'}); vt.textContent='$'+d.v+'B'; svg.appendChild(vt);
+    var yt=el('text',{x:cx,y:baseY+22,'text-anchor':'middle','font-size':12.5,fill:'#5c6c80'}); yt.textContent=d.y; svg.appendChild(yt);
+  });
+  svg.appendChild(el('line',{x1:padL,y1:baseY,x2:W-padR,y2:baseY,stroke:'#9aa9bd','stroke-width':1.5}));
+
+  /* Scroll Spy */
+  var links=[].slice.call(document.querySelectorAll('.toc nav a')), map={};
+  links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  var secs=[].slice.call(document.querySelectorAll('main section[id]'));
+  if('IntersectionObserver' in window){
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ links.forEach(function(a){a.classList.remove('active');}); if(map[e.target.id]) map[e.target.id].classList.add('active'); } });
+    },{rootMargin:'-20% 0px -65% 0px',threshold:0});
+    secs.forEach(function(s){obs.observe(s);});
+  }
+})();
+</script>
+</body>
+</html>

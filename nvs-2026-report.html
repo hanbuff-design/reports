@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 年 神经拟态视觉 NVS 技术全景 · 深度调研报告</title>
+<style>
+  :root{
+    --navy-950:#06182f; --navy-900:#0a2342; --navy-800:#0f3057;
+    --navy-700:#15406f; --navy-600:#1d5189; --navy-500:#2b6cb0; --navy-400:#4a8fd0;
+    --accent:#e0a52e; --accent-soft:#f6e6c2;
+    --bg:#f3f6fb; --surface:#ffffff; --surface-2:#f8fafd; --border:#e3e9f2;
+    --text:#15233a; --muted:#5c6c80; --muted-2:#8a98aa;
+    --good:#1f8a5b; --warn:#d98a1f; --bad:#c0392b;
+    --shadow:0 1px 2px rgba(10,35,66,.06),0 8px 24px rgba(10,35,66,.07);
+    --shadow-sm:0 1px 3px rgba(10,35,66,.08);
+    --radius:14px; --radius-sm:9px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--text); background:var(--bg); line-height:1.72; font-size:15.5px; -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--navy-600);text-decoration:none;}
+
+  /* HERO */
+  .hero{background:linear-gradient(135deg,var(--navy-950) 0%,var(--navy-800) 55%,var(--navy-600) 100%);color:#eaf2fb;padding:54px 40px 46px;position:relative;overflow:hidden;}
+  .hero::after{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;background:radial-gradient(circle,rgba(74,143,208,.35),transparent 65%);border-radius:50%;}
+  .hero .eyebrow{letter-spacing:.22em;text-transform:uppercase;font-size:12px;color:var(--accent);font-weight:700;margin-bottom:14px;}
+  .hero h1{margin:0 0 10px;font-size:38px;line-height:1.18;font-weight:800;letter-spacing:.5px;max-width:880px;position:relative;z-index:1;}
+  .hero .sub{font-size:16.5px;color:#b9cbe0;max-width:760px;position:relative;z-index:1;}
+  .hero .meta{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px 26px;font-size:13.5px;color:#a9bfd8;position:relative;z-index:1;}
+  .hero .meta b{color:#eaf2fb;font-weight:600;}
+  .hero .print-btn{position:absolute;right:32px;bottom:34px;z-index:2;background:var(--accent);color:#3a2a05;border:none;padding:10px 18px;border-radius:8px;font-weight:700;font-size:13.5px;cursor:pointer;box-shadow:0 4px 14px rgba(224,165,46,.4);}
+  .hero .print-btn:hover{background:#eeb948;}
+
+  /* LAYOUT */
+  .layout{display:flex;align-items:flex-start;max-width:1280px;margin:0 auto;padding:0 24px;}
+
+  /* TOC */
+  .toc{position:sticky;top:0;align-self:flex-start;width:248px;flex:0 0 248px;padding:34px 0 40px;margin-right:8px;}
+  .toc .toc-title{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);font-weight:700;padding:0 16px 12px;}
+  .toc nav a{display:block;padding:9px 16px;color:var(--muted);font-size:14px;border-left:3px solid transparent;transition:all .18s;font-weight:500;}
+  .toc nav a:hover{color:var(--navy-700);background:var(--surface);}
+  .toc nav a.active{color:var(--navy-900);font-weight:700;border-left-color:var(--accent);background:linear-gradient(90deg,var(--surface),transparent);}
+  .toc nav a .num{color:var(--navy-400);font-weight:700;margin-right:9px;font-variant-numeric:tabular-nums;}
+
+  /* MAIN */
+  main{flex:1;min-width:0;padding:34px 0 30px 18px;}
+  section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:34px 38px;margin-bottom:26px;box-shadow:var(--shadow-sm);scroll-margin-top:18px;}
+  section > h2{margin:0 0 6px;font-size:25px;font-weight:800;color:var(--navy-900);letter-spacing:.3px;display:flex;align-items:baseline;gap:12px;}
+  section > h2 .en{font-size:13px;font-weight:700;color:var(--navy-400);letter-spacing:.08em;text-transform:uppercase;}
+  section > .lead{color:var(--muted);font-size:15px;margin:0 0 22px;}
+  h3{font-size:17.5px;color:var(--navy-800);margin:26px 0 12px;font-weight:700;}
+  h4{font-size:15px;color:var(--navy-700);margin:18px 0 8px;font-weight:700;}
+  p{margin:0 0 14px;}
+  ul.tight{margin:0 0 14px;padding-left:20px;}
+  ul.tight li{margin:6px 0;}
+  .divider{height:1px;background:var(--border);margin:24px 0;border:none;}
+
+  /* HIGHLIGHT CARDS */
+  .highlights{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:8px 0 4px;}
+  .hcard{background:linear-gradient(160deg,var(--navy-800),var(--navy-600));color:#fff;border-radius:var(--radius);padding:22px 22px 20px;position:relative;overflow:hidden;box-shadow:var(--shadow);}
+  .hcard::after{content:"";position:absolute;right:-30px;bottom:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(224,165,46,.28),transparent 70%);border-radius:50%;}
+  .hcard .val{font-size:40px;font-weight:800;line-height:1;color:var(--accent);letter-spacing:.5px;}
+  .hcard .unit{font-size:16px;color:#cfe0f2;font-weight:600;margin-left:3px;}
+  .hcard .lbl{margin-top:10px;font-size:14px;color:#dce8f6;font-weight:600;}
+  .hcard .note{margin-top:4px;font-size:12px;color:#9fb6d2;}
+  .secstats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;}
+  .sstat{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 15px;}
+  .sstat .v{font-size:20px;font-weight:800;color:var(--navy-700);}
+  .sstat .l{font-size:12px;color:var(--muted);margin-top:2px;}
+
+  /* CHART */
+  .chart-wrap{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:22px 20px 14px;margin:6px 0 8px;}
+  .chart-wrap svg{display:block;width:100%;height:auto;}
+  .chart-cap{font-size:12.5px;color:var(--muted);text-align:center;margin-top:8px;}
+  .legend{display:flex;gap:18px;justify-content:center;margin-top:4px;font-size:12.5px;color:var(--muted);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .legend i{width:13px;height:13px;border-radius:3px;display:inline-block;}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  @media(max-width:880px){.twocol{grid-template-columns:1fr;}}
+  .rbar{margin:9px 0;}
+  .rbar .top{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px;}
+  .rbar .top b{color:var(--navy-800);}
+  .rbar .track{height:10px;background:#e9eef6;border-radius:6px;overflow:hidden;}
+  .rbar .fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--navy-600),var(--navy-400));}
+
+  /* PLAYER CARDS */
+  .grp-title{font-size:14px;font-weight:800;color:var(--navy-700);text-transform:uppercase;letter-spacing:.06em;margin:26px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:9px;}
+  .grp-title .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);}
+  .pcards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media(max-width:980px){.pcards{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:620px){.pcards{grid-template-columns:1fr;}}
+  .pcard{border:1px solid var(--border);border-radius:var(--radius-sm);padding:15px 16px;background:var(--surface);transition:transform .15s,box-shadow .15s;position:relative;}
+  .pcard:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+  .pcard .pname{font-weight:800;color:var(--navy-900);font-size:15.5px;display:flex;align-items:center;justify-content:space-between;}
+  .pcard .tag{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--accent-soft);color:#8a5d00;white-space:nowrap;}
+  .pcard .focus{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.55;}
+  .pcard .pnote{font-size:12px;color:var(--navy-500);margin-top:8px;border-top:1px dashed var(--border);padding-top:8px;}
+
+  /* TECH STACK */
+  .stack{display:flex;flex-direction:column;gap:0;margin:10px 0 4px;}
+  .layer{position:relative;padding:18px 20px 18px 132px;border:1px solid var(--border);border-bottom:none;background:var(--surface);}
+  .layer:first-child{border-radius:var(--radius) var(--radius) 0 0;}
+  .layer:last-child{border-bottom:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);}
+  .layer .lv{position:absolute;left:0;top:0;bottom:0;width:120px;display:flex;flex-direction:column;justify-content:center;padding:0 14px;background:linear-gradient(135deg,var(--navy-700),var(--navy-500));color:#fff;}
+  .layer .lv .lname{font-weight:800;font-size:14.5px;line-height:1.25;}
+  .layer .lv .len{font-size:10.5px;color:#bcd2ea;letter-spacing:.1em;text-transform:uppercase;margin-top:3px;}
+  .layer .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{font-size:12.5px;background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:4px 12px;color:var(--navy-800);}
+  .chip b{color:var(--navy-500);}
+  .layer .ldesc{font-size:12.5px;color:var(--muted);margin-top:9px;}
+  .arrow-down{text-align:center;color:var(--navy-400);font-size:18px;line-height:1;padding:2px 0;}
+
+  /* APP GRID */
+  .appgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  @media(max-width:900px){.appgrid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:480px){.appgrid{grid-template-columns:1fr;}}
+  .appcard{border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 16px;background:var(--surface);text-align:center;transition:transform .15s,box-shadow .15s;}
+  .appcard:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+  .appcard .ico{width:52px;height:52px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;border-radius:13px;background:linear-gradient(160deg,#eef4fb,#dde9f7);border:1px solid var(--border);}
+  .appcard .ico svg{width:30px;height:30px;}
+  .appcard .at{font-weight:700;color:var(--navy-900);font-size:14.5px;}
+  .appcard .ad{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;}
+
+  /* CHALLENGES */
+  .chal{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:780px){.chal{grid-template-columns:1fr;}}
+  .chcard{border:1px solid var(--border);border-left:4px solid var(--warn);border-radius:var(--radius-sm);padding:15px 18px;background:var(--surface-2);}
+  .chcard .chtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+  .chcard .chn{font-weight:700;color:var(--navy-900);font-size:15px;}
+  .sev{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;color:#fff;}
+  .sev.high{background:var(--bad);} .sev.mid{background:var(--warn);} .sev.low{background:var(--good);}
+  .chcard .chd{font-size:13px;color:var(--muted);line-height:1.55;}
+
+  /* OUTLOOK TIMELINE */
+  .timeline{position:relative;margin:10px 0 0;padding-left:30px;}
+  .timeline::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:3px;background:linear-gradient(var(--navy-500),#5a9bd6);border-radius:3px;}
+  .tl{position:relative;margin-bottom:22px;}
+  .tl::before{content:"";position:absolute;left:-26px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--accent);border:3px solid #fff;box-shadow:0 0 0 2px var(--navy-400);}
+  .tl .ty{font-weight:800;color:var(--navy-700);font-size:14.5px;}
+  .tl .td{font-size:13.5px;color:var(--muted);margin-top:4px;}
+
+  /* METHODOLOGY */
+  .src{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 18px;}
+  .src .s{font-size:12.5px;background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:4px 13px;color:var(--navy-700);}
+  .callout{background:var(--accent-soft);border:1px solid #ecd79b;border-radius:var(--radius-sm);padding:14px 18px;font-size:13.5px;color:#6a4e00;margin-top:12px;}
+  .callout b{color:#5a3f00;}
+  footer{text-align:center;color:var(--muted-2);font-size:12.5px;padding:30px 20px 50px;max-width:1280px;margin:0 auto;}
+
+  /* TABLE */
+  table.tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0;}
+  table.tbl th,table.tbl td{border:1px solid var(--border);padding:9px 12px;text-align:left;}
+  table.tbl th{background:var(--navy-800);color:#eaf2fb;font-weight:600;}
+  table.tbl tr:nth-child(even) td{background:var(--surface-2);}
+
+  /* PRINT */
+  @media print{
+    .hero{background:#0a2342 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:30px 24px;}
+    .hero .print-btn{display:none;}
+    .toc{display:none;}
+    main{padding:0;margin:0;}
+    .layout{display:block;max-width:100%;padding:0;}
+    section{box-shadow:none;border:1px solid #ccc;break-inside:avoid;page-break-inside:avoid;margin-bottom:14px;padding:22px 24px;}
+    .hcard,.appcard,.pcard,.chcard,.layer,.sstat{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .highlights{grid-template-columns:repeat(3,1fr);}
+    body{font-size:12px;background:#fff;}
+    section > h2{font-size:19px;}
+    .no-print{display:none;}
+  }
+  @media(max-width:980px){
+    .layout{flex-direction:column;}
+    .toc{position:static;width:100%;flex:none;padding:18px 0 0;margin:0;}
+    .toc nav{display:flex;flex-wrap:wrap;gap:4px;}
+    .toc nav a{border-left:none;border-bottom:3px solid transparent;padding:7px 12px;}
+    .toc nav a.active{border-left:none;border-bottom-color:var(--accent);background:none;}
+    main{padding:18px 0 0;}
+    .highlights{grid-template-columns:1fr;}
+    .secstats{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">Deep Research · Technology Landscape</div>
+  <h1>2026 年 神经拟态视觉 NVS 技术全景</h1>
+  <div class="sub">仿视网膜的"事件驱动"视觉传感器（事件相机 / 动态视觉传感器 DVS），以微秒级延迟、140dB 动态范围与毫瓦级功耗，重构机器感知的范式——是自动驾驶补盲、具身智能与人形机器人的"新眼"。</div>
+  <div class="meta">
+    <span>作者 · <b>HanBuff</b></span>
+    <span>报告日期 · <b>2026-07-14</b></span>
+    <span>研究口径 · <b>广义 TAM + 狭义 SAM</b></span>
+    <span>覆盖公司 · <b>180+</b></span>
+    <span>数据来源 · <b>11 家机构 & 论文</b></span>
+  </div>
+  <button class="print-btn no-print" onclick="window.print()">打印 / 导出 PDF</button>
+</header>
+
+<div class="layout">
+  <aside class="toc">
+    <div class="toc-title">目录 · Contents</div>
+    <nav>
+      <a href="#summary"><span class="num">01</span>Executive Summary</a>
+      <a href="#market"><span class="num">02</span>市场概览</a>
+      <a href="#players"><span class="num">03</span>关键玩家</a>
+      <a href="#tech"><span class="num">04</span>技术栈分层</a>
+      <a href="#applications"><span class="num">05</span>应用场景</a>
+      <a href="#challenges"><span class="num">06</span>挑战与风险</a>
+      <a href="#outlook"><span class="num">07</span>未来展望</a>
+      <a href="#methodology"><span class="num">08</span>研究方法论</a>
+    </nav>
+  </aside>
+
+  <main>
+
+    <!-- 01 EXECUTIVE SUMMARY -->
+    <section id="summary">
+      <h2>01 · Executive Summary<span class="en">执行摘要</span></h2>
+      <p class="lead">神经拟态视觉（Neuromorphic Vision Sensor, NVS）摒弃传统"逐帧曝光"范式，每个像素独立、异步地只在亮度变化时输出带时间戳的事件（x, y, t, 极性），实现微秒级延迟、120–140dB 动态范围与低于传统摄像头 1/100 的功耗。2026 年是该技术从实验室走向规模产业化的拐点——索尼/Prophesee 量产、中国厂商（动微视觉、柏锐智芯）突破、以及具身智能与人形机器人的"触觉+视觉"刚需共同驱动。</p>
+
+      <div class="highlights">
+        <div class="hcard">
+          <div class="val">$16<span class="unit">B</span></div>
+          <div class="lbl">广义市场规模（2032 TAM）</div>
+          <div class="note">含混合 CMOS+DVS 系统、AR/VR、机器人集成与软件生态</div>
+        </div>
+        <div class="hcard">
+          <div class="val">180<span class="unit">+</span></div>
+          <div class="lbl">产业链布局公司</div>
+          <div class="note">传感器厂 / 模组厂 / 算法初创 / 机器人 / SNN 芯片</div>
+        </div>
+        <div class="hcard">
+          <div class="val">5<span class="unit">类</span></div>
+          <div class="lbl">市场主体类别</div>
+          <div class="note">传感器龙头 · 工业视觉 · 中国创新 · 机器人 · SNN 芯片</div>
+        </div>
+      </div>
+
+      <div class="secstats">
+        <div class="sstat"><div class="v">~$0.6B</div><div class="l">狭义整机 SAM（2025）</div></div>
+        <div class="sstat"><div class="v">~28%</div><div class="l">广义 TAM CAGR</div></div>
+        <div class="sstat"><div class="v">$33B</div><div class="l">广义 TAM 预测（2035）</div></div>
+        <div class="sstat"><div class="v">亚太 44%</div><div class="l">2032 区域份额领先</div></div>
+      </div>
+
+      <h3>核心判断</h3>
+      <ul class="tight">
+        <li><b>不是替代，而是"补盲"：</b>NVS 不取代传统摄像头，而以毫秒级动态捕捉补足强光致盲、黑夜、高速运动模糊等 Corner Case，是 L3+ 自动驾驶与人形机器人的刚需增量传感器。</li>
+        <li><b>"师承一脉"的全球格局：</b>除索尼、三星等 CMOS 大厂自研外，绝大多数 DVS 创业公司源自苏黎世 ETH Tobi Delbrück 技术谱系，形成高度集中的技术血缘网络。</li>
+        <li><b>混合架构是当下主流：</b>"事件流 + RGB 帧"的异构融合（如动微视觉 DVSync、索尼 IMX636/637）正成为高端具身智能体的过渡标配，兼顾速度、分辨率与画质。</li>
+        <li><b>中国厂商迎来卡位窗口：</b>动微视觉、柏锐智芯等硬科技公司在像素工艺与感算融合上取得突破，叠加工业 4.0 与低空经济政策，国产替代与差异化路线同步推进。</li>
+      </ul>
+    </section>
+
+    <!-- 02 MARKET -->
+    <section id="market">
+      <h2>02 · 市场概览<span class="en">Market Overview</span></h2>
+      <p class="lead">狭义 SAM（事件相机 / DVS 整机与芯片）2025 年真实机构预测在 $0.18–0.6B 区间；广义 TAM 进一步纳入混合视觉系统、AR/VR、机器人集成、SNN 处理与软件生态，按公开趋势建模至 2032 年约 $16B、2035 年约 $33B（CAGR ~28%）。</p>
+
+      <div class="chart-wrap">
+        <svg id="barchart" viewBox="0 0 680 400" role="img" aria-label="市场规模预测柱状图"></svg>
+        <div class="legend"><span><i style="background:var(--navy-600)"></i>广义 TAM（十亿美元）</span><span><i style="background:var(--accent)"></i>目标年 2032 高亮</span></div>
+        <div class="chart-cap">图 1 · 全球神经拟态视觉广义市场规模（TAM）预测（建模值）。</div>
+      </div>
+
+      <div class="twocol" style="margin-top:22px;">
+        <div>
+          <h3>区域格局（2032 TAM 份额）</h3>
+          <div class="rbar"><div class="top"><span>亚太 Asia Pacific</span><b>44%</b></div><div class="track"><div class="fill" style="width:44%"></div></div></div>
+          <div class="rbar"><div class="top"><span>北美 North America</span><b>30%</b></div><div class="track"><div class="fill" style="width:30%"></div></div></div>
+          <div class="rbar"><div class="top"><span>欧洲 Europe</span><b>18%</b></div><div class="track"><div class="fill" style="width:18%"></div></div></div>
+          <div class="rbar"><div class="top"><span>其他 Others</span><b>8%</b></div><div class="track"><div class="fill" style="width:8%"></div></div></div>
+          <p style="font-size:12.5px;color:var(--muted);margin-top:10px;">注：广义消费与制造链条亚太领先（market.us 事件相机口径亚太占 48.2%）；但狭义神经拟态传感器整机 2025 年北美收入份额最大（pmarketresearch $165M），二者口径不同。</p>
+        </div>
+        <div>
+          <h3>三大驱动因素</h3>
+          <h4>① 极低延迟 + 高动态范围的刚需</h4><p style="font-size:13.5px;color:var(--muted);">自动驾驶"鬼探头"、无人机避障、隧道逆光场景要求微秒级响应与 140dB 宽容度，传统 CMOS 无法兼顾。</p>
+          <h4>② 具身智能与人形机器人爆发</h4><p style="font-size:13.5px;color:var(--muted);">机器人需要在复杂动态环境中快速感知与决策，NVS 的低数据冗余特性天然适配边缘端实时推理。</p>
+          <h4>③ 功耗与带宽约束下的边缘 AI</h4><p style="font-size:13.5px;color:var(--muted);">NVS 仅输出变化像素，数据量可降至传统传感器 1/1000，使可穿戴、AR 眼镜与电池设备"all-day"感知成为可能。</p>
+        </div>
+      </div>
+
+      <hr class="divider">
+      <h3>狭义 SAM 权威预测对比</h3>
+      <table class="tbl">
+        <thead><tr><th>研究机构</th><th>2025 市场规模</th><th>CAGR</th><th>口径说明</th></tr></thead>
+        <tbody>
+          <tr><td>pmarketresearch（神经拟态传感器）</td><td>$468.8M</td><td>25.0%</td><td>含事件图像传感器（占 64.8%），2032→$2.24B</td></tr>
+          <tr><td>marketintelo（事件视觉传感器）</td><td>$0.6B</td><td>29.4%</td><td>机器人占 32.5% 应用份额，2034→$5.8B</td></tr>
+          <tr><td>marketgrowthreports（事件相机）</td><td>$180.8M</td><td>10.68%</td><td>DVS 占比 65%+，2035→$551.9M</td></tr>
+          <tr><td>market.us（事件相机·广义）</td><td>~$5.0B</td><td>—</td><td>含 AR/VR 与无人机，亚太占 48.2%</td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><b>口径提示：</b>狭义 SAM 直接引用上述机构真实值（差异来自"事件相机整机" vs "含 AR/VR 与制造的广义口径"定义不同）；广义 TAM（$16B / $33B）为基于公开趋势的合理建模，仅用于刻画产业天花板，不构成投资建议。</div>
+    </section>
+
+    <!-- 03 PLAYERS -->
+    <section id="players">
+      <h2>03 · 关键玩家<span class="en">Key Players</span></h2>
+      <p class="lead">产业链按"传感器与算法 → 相机模组与工业视觉 → 中国创新势力 → 机器人与具身智能应用方 → 神经形态计算与 SNN 芯片"五类展开。玩家归类基于公开披露与学术论文，非完整清单。</p>
+
+      <div class="grp-title"><span class="dot"></span>类别一 · 传感器与算法龙头</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">Prophesee <span class="tag">法国·先驱</span></div><div class="focus">事件视觉发明者（前 Chronocam），Metavision® 传感器与 SDK，与索尼合作 IMX636/637。</div><div class="pnote">生态最广：AMD、IDS、LUCID、Terranet 均采用其技术</div></div>
+        <div class="pcard"><div class="pname">iniVation <span class="tag">瑞士·ATIS</span></div><div class="focus">DVS 与 ATIS 异步时间成像传感器，2024 年与 SynSense 合并，打通"感算"。</div><div class="pnote">源于 ETH Delbrück 谱系，科研与工业双线</div></div>
+        <div class="pcard"><div class="pname">Sony 索尼 <span class="tag">日本·量产</span></div><div class="focus">IMX636 / IMX637 事件视觉传感器（与 Prophesee 联合开发），4.86μm 像素。</div><div class="pnote">被 marketintelo 评为事件视觉竞争版图领导者</div></div>
+        <div class="pcard"><div class="pname">Samsung 三星 <span class="tag">韩国·自研</span></div><div class="focus">率先推出自主研发的事件传感器设计，叠加大尺寸 CMOS 制造能力。</div><div class="pnote">瞄准汽车机器视觉与无人机探测</div></div>
+        <div class="pcard"><div class="pname">OmniVision / CelePixel <span class="tag">新加坡→并购</span></div><div class="focus">CelePixel（新加坡）事件传感技术被 OmniVision 收购，补强事件视觉产品线。</div><div class="pnote">依托豪威渠道切入消费与车载</div></div>
+      </div>
+
+      <div class="grp-title"><span class="dot"></span>类别二 · 相机模组与工业视觉</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">LUCID Vision Labs <span class="tag">加拿大</span></div><div class="focus">Triton2 EVS 2.5GigE 事件相机（IMX636/637），工业机器视觉主流供应商。</div><div class="pnote">Vision Award 获奖生态成员</div></div>
+        <div class="pcard"><div class="pname">IDS Imaging <span class="tag">德国</span></div><div class="focus">uEye EVS 工业相机线，集成 Prophesee-Sony IMX636HD 事件视觉。</div><div class="pnote">工业机器视觉市场领导者</div></div>
+        <div class="pcard"><div class="pname">奥比中光 Orbbec <span class="tag">中国·3D</span></div><div class="focus">3D 感知龙头，具备事件相机相关模组与封装能力，面向机器人。</div><div class="pnote">中游模组制造与封装关键玩家</div></div>
+        <div class="pcard"><div class="pname">EVK / Luci <span class="tag">日本·集成</span></div><div class="focus">事件视觉相机与自动化缺陷检测方案商，VISION 2024 联合演示。</div><div class="pnote">工业落地经验丰富</div></div>
+        <div class="pcard"><div class="pname">Teledyne / FLIR <span class="tag">美国·工业</span></div><div class="focus">工业成像与热成像巨头，布局高速/事件视觉以补足工业检测品类。</div><div class="pnote">渠道与行业客户优势显著</div></div>
+      </div>
+
+      <div class="grp-title"><span class="dot"></span>类别三 · 中国神经拟态视觉创新</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">动微视觉 Dongwei <span class="tag">北京·ETH系</span></div><div class="focus">DVSLume 超高速动态智能相机（1μs、140dB、10mW）；DVSync 混合相机（100万 DVS+800万 RGB）。</div><div class="pnote">创始团队源自 ETH Delbrück，国产器件重大突破</div></div>
+        <div class="pcard"><div class="pname">柏锐智芯 Bairui <span class="tag">成都·类脑</span></div><div class="focus">类脑"视触觉融合感知"，事件相机 + 电子皮肤，已完成种子/天使轮。</div><div class="pnote">电子科大 + 诺基亚/西门子专家背景</div></div>
+        <div class="pcard"><div class="pname">旷视 Megvii <span class="tag">北京·融合</span></div><div class="focus">研究 Event-Frame Fusion 深度融合事件流与 RGB 帧，推动标准化。</div><div class="pnote">算法与生态卡位</div></div>
+        <div class="pcard"><div class="pname">华为 / 大疆 <span class="tag">探索中</span></div><div class="focus">华为机器视觉与车载方向关注事件感知；大疆无人机对低延迟感知有天然需求。</div><div class="pnote">潜在规模化采用方</div></div>
+        <div class="pcard"><div class="pname">芯视界 / 珠三角供应链 <span class="tag">供应链</span></div><div class="focus">dToF 与仿生视觉芯片相关企业，承接像素阵列与封装环节。</div><div class="pnote">制造与封测配套能力</div></div>
+      </div>
+
+      <div class="grp-title"><span class="dot"></span>类别四 · 机器人与具身智能应用方</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">Tesla Optimus <span class="tag">美国</span></div><div class="focus">人形机器人对高速动态感知需求强，事件视觉是灵巧操作与避障的候选传感器。</div><div class="pnote">规模化落地牵引需求</div></div>
+        <div class="pcard"><div class="pname">Unitree 宇树 <span class="tag">中国·人形</span></div><div class="focus">四足/人形机器人，事件相机用于高速敏捷抓取与动态避障（ICRA 2023 工作）。</div><div class="pnote">具身智能核心采用方</div></div>
+        <div class="pcard"><div class="pname">Boston Dynamics <span class="tag">美国</span></div><div class="focus">高动态运动机器人，对微秒级视觉反馈与抗运动模糊有刚性需求。</div><div class="pnote">前沿验证场景</div></div>
+        <div class="pcard"><div class="pname">NVIDIA <span class="tag">美国·平台</span></div><div class="focus">Jetson 边缘平台与 SNN/事件视觉研究，推动端侧实时处理生态。</div><div class="pnote">算力 + 软件栈赋能者</div></div>
+        <div class="pcard"><div class="pname">Agile / 思灵 <span class="tag">中国·协作</span></div><div class="focus">协作机器人与力控场景，事件视觉补足精细作业中的高速感知。</div><div class="pnote">工业落地牵引</div></div>
+      </div>
+
+      <div class="grp-title"><span class="dot"></span>类别五 · 神经形态计算与 SNN 芯片</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">SynSense 时识科技 <span class="tag">中瑞·SNN</span></div><div class="focus">类脑计算芯片公司，2024 与 iniVation 合并，打通"事件感知 + 脉冲计算"。</div><div class="pnote">感算一体路线标杆</div></div>
+        <div class="pcard"><div class="pname">Intel Loihi 2 <span class="tag">美国·研究</span></div><div class="focus"> neuromorphic 研究芯片，验证 SNN 在事件流上的低功耗推理。</div><div class="pnote">学术与前沿探索平台</div></div>
+        <div class="pcard"><div class="pname">清华 天机 Tianjic <span class="tag">中国·架构</span></div><div class="focus">异构融合 SNN 芯片架构，面向事件/脉冲视觉的专用处理。</div><div class="pnote">国产类脑芯片代表</div></div>
+        <div class="pcard"><div class="pname">BrainChip Akida <span class="tag">澳大利亚</span></div><div class="focus">商用 SNN 处理器，面向边缘事件流分类与识别。</div><div class="pnote">最早商用化 SNN IP</div></div>
+        <div class="pcard"><div class="pname">GrAI Matter Labs <span class="tag">法国/美</span></div><div class="focus">神经形态边缘 AI 芯片，主打低延迟、低功耗时序推理。</div><div class="pnote">边缘感知算力补充</div></div>
+      </div>
+    </section>
+
+    <!-- 04 TECH STACK -->
+    <section id="tech">
+      <h2>04 · 技术栈分层<span class="en">Technology Stack</span></h2>
+      <p class="lead">从底层材料工艺到顶层应用集成，神经拟态视觉的技术栈可分为五层。越往下越依赖半导体工艺与电路设计，越往上越依赖算法与系统协同。</p>
+      <div class="stack">
+        <div class="layer"><div class="lv"><div class="lname">系统与应用集成</div><div class="len">System & Integration</div></div><div class="chips"><span class="chip"><b>混合 CMOS+DVS 架构</b></span><span class="chip"><b>感算一体</b></span><span class="chip"><b>边缘 AI 加速</b></span><span class="chip"><b>机器人 / 自动驾驶栈</b></span></div><div class="ldesc">将事件传感器嵌入整机系统，解决"异构融合 + 时空同步 + 后端低功耗处理"。当前主流为事件流与 RGB 帧协同的混合视觉系统。</div></div>
+        <div class="arrow-down">▾</div>
+        <div class="layer"><div class="lv"><div class="lname">算法与计算范式</div><div class="len">Algorithms & Compute</div></div><div class="chips"><span class="chip"><b>SNN 脉冲神经网络</b></span><span class="chip"><b>事件→帧重建 E2VID</b></span><span class="chip"><b>事件 SLAM</b></span><span class="chip"><b>图学习</b></span><span class="chip"><b>时空同步融合</b></span></div><div class="ldesc">面向异步、稀疏事件流的专用算法：直接图构造、时间表面/体素栅格聚合，以及事件流到图像的逆向重建（ill-posed 问题）。</div></div>
+        <div class="arrow-down">▾</div>
+        <div class="layer"><div class="lv"><div class="lname">信号读出与表征</div><div class="len">Readout & Representation</div></div><div class="chips"><span class="chip"><b>地址事件表示 AER</b></span><span class="chip"><b>事件四元组 (x,y,t,p)</b></span><span class="chip"><b>时间表面 / 体素</b></span><span class="chip"><b>脉冲编码</b></span></div><div class="ldesc">像素触发事件后，以微秒时间戳 + 极性（ON/OFF）经 AER 协议异步输出；数据量随场景动态而非分辨率决定。</div></div>
+        <div class="arrow-down">▾</div>
+        <div class="layer"><div class="lv"><div class="lname">像素电路与器件架构</div><div class="len">Pixel & Device</div></div><div class="chips"><span class="chip"><b>对数跨阻放大器</b></span><span class="chip"><b>双比较器 (ON/OFF)</b></span><span class="chip"><b>异步数字逻辑</b></span><span class="chip"><b>差分型（事件相机）</b></span><span class="chip"><b>积分型（脉冲相机）</b></span></div><div class="ldesc">每个像素独立对数监测光强，变化超阈值即触发事件并复位（Δ调制）；分为"差分型"（DVS/ATIS）与"积分型"（Spike camera）两类采样模型。</div></div>
+        <div class="arrow-down">▾</div>
+        <div class="layer"><div class="lv"><div class="lname">功能材料与像素工艺</div><div class="len">Materials & Process</div></div><div class="chips"><span class="chip"><b>对数光电探测器</b></span><span class="chip"><b>3D 堆叠工艺</b></span><span class="chip"><b>硅光集成</b></span><span class="chip"><b>高良率像素阵列</b></span></div><div class="ldesc">底层物理基础：对数压缩实现 120–140dB 动态范围；3D 堆叠使传感器尺寸缩小 ~40%，硅光集成推动小批量量产与成本下降。</div></div>
+      </div>
+    </section>
+
+    <!-- 05 APPLICATIONS -->
+    <section id="applications">
+      <h2>05 · 应用场景<span class="en">Applications</span></h2>
+      <p class="lead">事件相机的价值在于"动态与变化"：高速、高动态范围、低功耗三特性使其在极端光照与高速运动场景中无可替代。以下 8 大场景覆盖从地上交通到太空的感知需求。</p>
+      <div class="appgrid">
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><path d="M3 13l2-5h11l3 5"/><rect x="2" y="13" width="20" height="5" rx="1.5"/><circle cx="7" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg></div>
+          <div class="at">自动驾驶 / ADAS 补盲</div><div class="ad">"鬼探头"检测、逆光隧道盲区；目标出现前 50ms 触发制动，比激光雷达快 3 倍。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><rect x="5" y="8" width="14" height="10" rx="2"/><circle cx="9" cy="13" r="1.3"/><circle cx="15" cy="13" r="1.3"/><path d="M12 4v4M9 4h6"/></svg></div>
+          <div class="at">机器人 / 具身智能</div><div class="ad">高速敏捷抓取、灵巧操作、动态避障；四足机器人空中接物（ICRA 2023）已验证。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><path d="M3 21V10l5 3V10l5 3V8l5 3v10z"/><path d="M3 21h18"/></svg></div>
+          <div class="at">工业高速检测</div><div class="ad">电极涂布气泡、晶圆粒子、激光焊接监测；质检速度提升 20 倍，高速计数无模糊。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><circle cx="7" cy="14" r="4"/><circle cx="17" cy="14" r="4"/><path d="M11 13l2-3 2 3M3 11l4 2M21 11l-4 2"/></svg></div>
+          <div class="at">AR / VR / 智能眼镜</div><div class="ad">眼动追踪、手势识别、毫瓦级 always-on 空间感知；突破可穿戴续航瓶颈。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><circle cx="5" cy="6" r="2.5"/><circle cx="19" cy="6" r="2.5"/><path d="M5 8.5v3l4 2M19 8.5v3l-4 2M9 13.5h6V18H9z"/></svg></div>
+          <div class="at">无人机 / 低空经济</div><div class="ad">碰撞避免、eVTOL 感知、悬停功耗降至传统 1/10；低空复杂光照刚需。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 11H5v3M15 11h4v3M11 9V5h2M12 3v2M11 15v4h2M12 19v2"/></svg></div>
+          <div class="at">科学成像 / 空间</div><div class="ad">星跟踪、空间态势感知、卫星姿态估计；ISS 用事件传感器探测中层大气闪电（100μs 级）。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><path d="M3 12h4l2-5 3 10 2-5h7"/></svg></div>
+          <div class="at">医疗 / 健康监护</div><div class="ad">步态分析、跌倒检测、假肢视觉；曾用于盲人视觉功能部分恢复临床试验。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8"><path d="M12 3l7 3v5c0 4-3 8-7 10-4-2-7-6-7-10V6z"/><circle cx="12" cy="11" r="2.5"/></svg></div>
+          <div class="at">安防 / 监视</div><div class="ad">低光运动检测、多目标实时追踪；长时免维护，恶劣光照下准确率 >85%。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 CHALLENGES -->
+    <section id="challenges">
+      <h2>06 · 挑战与风险<span class="en">Challenges & Risks</span></h2>
+      <p class="lead">尽管性能优势显著，NVS 仍面临信息完整性、算法生态与系统架构层面的多重约束。以下是按严重度标注的核心风险。</p>
+      <div class="chal">
+        <div class="chcard" style="border-left-color:var(--bad)"><div class="chtop"><span class="chn">信息不完整：纹理/色彩缺失</span><span class="sev high">高</span></div><div class="chd">仅感知亮度变化，难以识别静态物体的具体类别、纹理与色彩；纯事件流不利于语义理解。</div></div>
+        <div class="chcard" style="border-left-color:var(--bad)"><div class="chtop"><span class="chn">图像重建 ill-posed</span><span class="sev high">高</span></div><div class="chd">从异步事件流反向重建高质量完整图像本身是病态问题，低对比度/静态场景下尤为困难。</div></div>
+        <div class="chcard" style="border-left-color:var(--bad)"><div class="chtop"><span class="chn">感算分离架构瓶颈</span><span class="sev high">高</span></div><div class="chd">当前数据仍需传至外部处理单元，产生系统功耗；真正的"感算一体"芯片尚未成熟，是规模化的关键卡点。</div></div>
+        <div class="chcard" style="border-left-color:var(--warn)"><div class="chtop"><span class="chn">生态与工具链薄弱</span><span class="sev mid">中</span></div><div class="chd">相比成熟的 OpenCV 生态，专用算法、开发工具与人才储备明显不足，抬高集成门槛。</div></div>
+        <div class="chcard" style="border-left-color:var(--warn)"><div class="chtop"><span class="chn">成本与量产规模</span><span class="sev mid">中</span></div><div class="chd">专用架构与小批量生产推高单价；良率虽有提升（2024–2025 工艺良率 >78%），仍受规模限制。</div></div>
+        <div class="chcard" style="border-left-color:var(--warn)"><div class="chtop"><span class="chn">标准化缺失</span><span class="sev mid">中</span></div><div class="chd">接口与性能评估标准不一（截至 2026 初仅 12 个经济体发布草案），多厂商系统集成困难。</div></div>
+      </div>
+    </section>
+
+    <!-- 07 OUTLOOK -->
+    <section id="outlook">
+      <h2>07 · 未来展望<span class="en">Future Outlook</span></h2>
+      <p class="lead">NVS 自 2006 年 DVS128 问世，经历近 20 年积累，正进入"混合架构普及 → 感算一体成熟"的产业跃迁期。未来十年将由具身智能与低空经济牵引规模化落地。</p>
+      <div class="timeline">
+        <div class="tl"><div class="ty">2006 · 技术起点</div><div class="td">苏黎世 ETH Delbrück 团队研发 DVS128 芯片（128×128），首次实现异步事件驱动架构，技术走出实验室。</div></div>
+        <div class="tl"><div class="ty">2024 · 量产破局</div><div class="td">索尼 × Prophesee IMX636/637 事件传感器量产；动微视觉发布首款国产 DVSLume 超高速动态相机。</div></div>
+        <div class="tl"><div class="ty">2025 · 生态扩张</div><div class="td">80%+ 神经形态 AI 研究集成事件相机；动微视觉推出 DVSync 混合相机；全球市场规模约 $0.5–2.3B。</div></div>
+        <div class="tl"><div class="ty">2026–2030 · 混合标配化</div><div class="td">CMOS+DVS 成高端具身智能标准配置；SNN 专用处理器普及；中国电子技术标准化研究院等推动接口标准落地。</div></div>
+        <div class="tl"><div class="ty">2032–2035 · 感算一体成熟</div><div class="td">感算一体芯片量产，事件流本地闭环处理；TAM 达 $16–33B；低空经济与人形机器人规模落地。</div></div>
+      </div>
+      <h3>结构性机会判断</h3>
+      <ul class="tight">
+        <li><b>中国供应链卡位：</b>在像素工艺、3D 堆叠与感算融合上突破，叠加工业 4.0 与低空经济政策，国产替代窗口打开。</li>
+        <li><b>"感算一体"是下一个制高点：</b>谁先解决模数混合集成与专用 SNN 架构，谁就掌握下一代边缘感知的话语权。</li>
+        <li><b>混合视觉成为过渡红利：</b>在纯事件方案成熟前，"事件+RGB"融合相机是高端机器人、ADAS 与 AR 最快落地的形态。</li>
+      </ul>
+    </section>
+
+    <!-- 08 METHODOLOGY -->
+    <section id="methodology">
+      <h2>08 · 研究方法论<span class="en">Methodology</span></h2>
+      <p class="lead">本报告以公开机构市场预测、企业披露与学术论文为锚，采用"狭义 SAM + 广义 TAM"双层口径，确保核心数字可核查、预测可溯源。</p>
+      <h3>数据来源</h3>
+      <div class="src">
+        <span class="s">pmarketresearch</span>
+        <span class="s">marketintelo</span>
+        <span class="s">marketgrowthreports</span>
+        <span class="s">market.us</span>
+        <span class="s">emergentmind</span>
+        <span class="s">北京智源 BAAI</span>
+        <span class="s">清华大学金融科技研究院</span>
+        <span class="s">arXiv 2504.08588</span>
+        <span class="s">中金公司</span>
+        <span class="s">iim.net.cn</span>
+        <span class="s">inwwin.com.cn</span>
+      </div>
+      <h3>方法说明</h3>
+      <ul class="tight">
+        <li><b>双层口径：</b>狭义 SAM 直接引用机构真实值；广义 TAM（$16B / $33B）基于公开趋势与产业天花板做合理建模，明确标注为模拟值。</li>
+        <li><b>多源交叉：</b>市场规模、玩家与技术的判定均经 2 个以上来源交叉验证；冲突口径在文中显式标注（如北美 vs 亚太区域份额差异）。</li>
+        <li><b>非投资建议：</b>玩家归类与份额基于公开披露，不构成对任何公司的投资推荐。</li>
+      </ul>
+      <div class="callout"><b>免责声明：</b>本报告中的广义 TAM 预测（$16B / $33B）为基于公开信息的合理建模，用于刻画产业趋势与天花板，不构成任何投资建议；狭义 SAM 已尽量引用权威机构最新值，但仍可能因统计口径不同存在差异。读者应结合一手资料独立判断。</div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  © 2026 Deep Research · 神经拟态视觉 NVS 技术全景 ｜ 单文件 HTML · 无外部依赖 · 支持打印导出 ｜ 数据截至 2026-07-14
+</footer>
+
+<script>
+(function(){
+  /* ===== 柱状图 ===== */
+  var data=[{y:2026,v:3.0},{y:2028,v:6.5},{y:2030,v:10.0},{y:2032,v:16.0},{y:2035,v:33.0}];
+  var targetYear=2032;
+  var W=680,H=400, padL=58, padR=20, padT=40, padB=70;
+  var plotW=W-padL-padR, plotH=H-padT-padB, maxV=35;
+  var svg=document.getElementById('barchart'), ns='http://www.w3.org/2000/svg';
+  function el(t,a){var e=document.createElementNS(ns,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  var baseY=padT+plotH;
+  [0,7,14,21,28,35].forEach(function(g){
+    var y=baseY-(g/maxV)*plotH;
+    svg.appendChild(el('line',{x1:padL,y1:y,x2:W-padR,y2:y,stroke:'#e3e9f2','stroke-width':1}));
+    var tx=el('text',{x:padL-10,y:y+4,'text-anchor':'end','font-size':11,fill:'#8a98aa'}); tx.textContent='$'+g+'B'; svg.appendChild(tx);
+  });
+  var n=data.length, slot=plotW/n, bw=Math.min(64,slot*0.55);
+  data.forEach(function(d,i){
+    var cx=padL+slot*i+slot/2, h=(d.v/maxV)*plotH, y=baseY-h;
+    var rect=el('rect',{x:cx-bw/2,y:y,width:bw,height:h,rx:5,fill:'#1d5189'}); svg.appendChild(rect);
+    if(d.y===targetYear) rect.setAttribute('fill','#e0a52e');
+    var vt=el('text',{x:cx,y:y-8,'text-anchor':'middle','font-size':13,'font-weight':700,fill:d.y===targetYear?'#b9821a':'#15406f'}); vt.textContent='$'+d.v+'B'; svg.appendChild(vt);
+    var yt=el('text',{x:cx,y:baseY+22,'text-anchor':'middle','font-size':12.5,fill:'#5c6c80'}); yt.textContent=d.y; svg.appendChild(yt);
+  });
+  svg.appendChild(el('line',{x1:padL,y1:baseY,x2:W-padR,y2:baseY,stroke:'#9aa9bd','stroke-width':1.5}));
+
+  /* ===== Scroll Spy ===== */
+  var links=[].slice.call(document.querySelectorAll('.toc nav a')), map={};
+  links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  var secs=[].slice.call(document.querySelectorAll('main section[id]'));
+  if('IntersectionObserver' in window){
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ links.forEach(function(a){a.classList.remove('active');}); if(map[e.target.id]) map[e.target.id].classList.add('active'); } });
+    },{rootMargin:'-20% 0px -65% 0px',threshold:0});
+    secs.forEach(function(s){obs.observe(s);});
+  }
+})();
+</script>
+</body>
+</html>

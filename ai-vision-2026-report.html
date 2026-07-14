@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 年 AI视觉 技术全景 · 深度调研报告</title>
+<style>
+  :root{
+    --navy-950:#06182f; --navy-900:#0a2342; --navy-800:#0f3057;
+    --navy-700:#15406f; --navy-600:#1d5189; --navy-500:#2b6cb0; --navy-400:#4a8fd0;
+    --accent:#e0a52e; --accent-soft:#f6e6c2;
+    --bg:#f3f6fb; --surface:#ffffff; --surface-2:#f8fafd; --border:#e3e9f2;
+    --text:#15233a; --muted:#5c6c80; --muted-2:#8a98aa;
+    --good:#1f8a5b; --warn:#d98a1f; --bad:#c0392b;
+    --shadow:0 1px 2px rgba(10,35,66,.06),0 8px 24px rgba(10,35,66,.07);
+    --shadow-sm:0 1px 3px rgba(10,35,66,.08);
+    --radius:14px; --radius-sm:9px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--text); background:var(--bg); line-height:1.72; font-size:15.5px; -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--navy-600);text-decoration:none;}
+  .hero{background:linear-gradient(135deg,var(--navy-950) 0%,var(--navy-800) 55%,var(--navy-600) 100%);color:#eaf2fb;padding:54px 40px 46px;position:relative;overflow:hidden;}
+  .hero::after{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;background:radial-gradient(circle,rgba(74,143,208,.35),transparent 65%);border-radius:50%;}
+  .hero .eyebrow{letter-spacing:.22em;text-transform:uppercase;font-size:12px;color:var(--accent);font-weight:700;margin-bottom:14px;}
+  .hero h1{margin:0 0 10px;font-size:38px;line-height:1.18;font-weight:800;letter-spacing:.5px;max-width:880px;position:relative;z-index:1;}
+  .hero .sub{font-size:16.5px;color:#b9cbe0;max-width:760px;position:relative;z-index:1;}
+  .hero .meta{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px 26px;font-size:13.5px;color:#a9bfd8;position:relative;z-index:1;}
+  .hero .meta b{color:#eaf2fb;font-weight:600;}
+  .hero .print-btn{position:absolute;right:32px;bottom:34px;z-index:2;background:var(--accent);color:#3a2a05;border:none;padding:10px 18px;border-radius:8px;font-weight:700;font-size:13.5px;cursor:pointer;box-shadow:0 4px 14px rgba(224,165,46,.4);}
+  .hero .print-btn:hover{background:#eeb948;}
+  .layout{display:flex;align-items:flex-start;max-width:1280px;margin:0 auto;padding:0 24px;}
+  .toc{position:sticky;top:0;align-self:flex-start;width:248px;flex:0 0 248px;padding:34px 0 40px;margin-right:8px;}
+  .toc .toc-title{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);font-weight:700;padding:0 16px 12px;}
+  .toc nav a{display:block;padding:9px 16px;color:var(--muted);font-size:14px;border-left:3px solid transparent;transition:all .18s;font-weight:500;}
+  .toc nav a:hover{color:var(--navy-700);background:var(--surface);}
+  .toc nav a.active{color:var(--navy-900);font-weight:700;border-left-color:var(--accent);background:linear-gradient(90deg,var(--surface),transparent);}
+  .toc nav a .num{color:var(--navy-400);font-weight:700;margin-right:9px;font-variant-numeric:tabular-nums;}
+  main{flex:1;min-width:0;padding:34px 0 30px 18px;}
+  section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:34px 38px;margin-bottom:26px;box-shadow:var(--shadow-sm);scroll-margin-top:18px;}
+  section > h2{margin:0 0 6px;font-size:25px;font-weight:800;color:var(--navy-900);letter-spacing:.3px;display:flex;align-items:baseline;gap:12px;}
+  section > h2 .en{font-size:13px;font-weight:700;color:var(--navy-400);letter-spacing:.08em;text-transform:uppercase;}
+  section > .lead{color:var(--muted);font-size:15px;margin:0 0 22px;}
+  h3{font-size:17.5px;color:var(--navy-800);margin:26px 0 12px;font-weight:700;}
+  h4{font-size:15px;color:var(--navy-700);margin:18px 0 8px;font-weight:700;}
+  p{margin:0 0 14px;}
+  ul.tight{margin:0 0 14px;padding-left:20px;}
+  ul.tight li{margin:6px 0;}
+  .divider{height:1px;background:var(--border);margin:24px 0;border:none;}
+  .highlights{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:8px 0 4px;}
+  .hcard{background:linear-gradient(160deg,var(--navy-800),var(--navy-600));color:#fff;border-radius:var(--radius);padding:22px 22px 20px;position:relative;overflow:hidden;box-shadow:var(--shadow);}
+  .hcard::after{content:"";position:absolute;right:-30px;bottom:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(224,165,46,.28),transparent 70%);border-radius:50%;}
+  .hcard .val{font-size:40px;font-weight:800;line-height:1;color:var(--accent);letter-spacing:.5px;}
+  .hcard .unit{font-size:16px;color:#cfe0f2;font-weight:600;margin-left:3px;}
+  .hcard .lbl{margin-top:10px;font-size:14px;color:#dce8f6;font-weight:600;}
+  .hcard .note{margin-top:4px;font-size:12px;color:#9fb6d2;}
+  .secstats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;}
+  .sstat{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 15px;}
+  .sstat .v{font-size:20px;font-weight:800;color:var(--navy-700);}
+  .sstat .l{font-size:12px;color:var(--muted);margin-top:2px;}
+  .chart-wrap{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:22px 20px 14px;margin:6px 0 8px;}
+  .chart-wrap svg{display:block;width:100%;height:auto;}
+  .chart-cap{font-size:12.5px;color:var(--muted);text-align:center;margin-top:8px;}
+  .legend{display:flex;gap:18px;justify-content:center;margin-top:4px;font-size:12.5px;color:var(--muted);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .legend i{width:13px;height:13px;border-radius:3px;display:inline-block;}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  @media(max-width:880px){.twocol{grid-template-columns:1fr;}}
+  .rbar{margin:9px 0;}
+  .rbar .top{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px;}
+  .rbar .top b{color:var(--navy-800);}
+  .rbar .track{height:10px;background:#e9eef6;border-radius:6px;overflow:hidden;}
+  .rbar .fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--navy-600),var(--navy-400));}
+  .grp-title{font-size:14px;font-weight:800;color:var(--navy-700);text-transform:uppercase;letter-spacing:.06em;margin:26px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:9px;}
+  .grp-title .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);}
+  .pcards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media(max-width:980px){.pcards{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:620px){.pcards{grid-template-columns:1fr;}}
+  .pcard{border:1px solid var(--border);border-radius:var(--radius-sm);padding:15px 16px;background:var(--surface);transition:transform .15s,box-shadow .15s;position:relative;}
+  .pcard:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+  .pcard .pname{font-weight:800;color:var(--navy-900);font-size:15.5px;display:flex;align-items:center;justify-content:space-between;}
+  .pcard .tag{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--accent-soft);color:#8a5d00;white-space:nowrap;}
+  .pcard .focus{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.55;}
+  .pcard .pnote{font-size:12px;color:var(--navy-500);margin-top:8px;border-top:1px dashed var(--border);padding-top:8px;}
+  .stack{display:flex;flex-direction:column;gap:0;margin:10px 0 4px;}
+  .layer{position:relative;padding:18px 20px 18px 132px;border:1px solid var(--border);border-bottom:none;background:var(--surface);}
+  .layer:first-child{border-radius:var(--radius) var(--radius) 0 0;}
+  .layer:last-child{border-bottom:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);}
+  .layer .lv{position:absolute;left:0;top:0;bottom:0;width:120px;display:flex;flex-direction:column;justify-content:center;padding:0 14px;background:linear-gradient(135deg,var(--navy-700),var(--navy-500));color:#fff;}
+  .layer .lv .lname{font-weight:800;font-size:14.5px;line-height:1.25;}
+  .layer .lv .len{font-size:10.5px;color:#bcd2ea;letter-spacing:.1em;text-transform:uppercase;margin-top:3px;}
+  .layer .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{font-size:12.5px;background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:4px 12px;color:var(--navy-800);}
+  .chip b{color:var(--navy-500);}
+  .layer .ldesc{font-size:12.5px;color:var(--muted);margin-top:9px;}
+  .arrow-down{text-align:center;color:var(--navy-400);font-size:18px;line-height:1;padding:2px 0;}
+  .appgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  @media(max-width:900px){.appgrid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:480px){.appgrid{grid-template-columns:1fr;}}
+  .appcard{border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 16px;background:var(--surface);text-align:center;transition:transform .15s,box-shadow .15s;}
+  .appcard:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+  .appcard .ico{width:52px;height:52px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;border-radius:13px;background:linear-gradient(160deg,#eef4fb,#dde9f7);border:1px solid var(--border);}
+  .appcard .ico svg{width:30px;height:30px;}
+  .appcard .at{font-weight:700;color:var(--navy-900);font-size:14.5px;}
+  .appcard .ad{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;}
+  .chal{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:780px){.chal{grid-template-columns:1fr;}}
+  .chcard{border:1px solid var(--border);border-left:4px solid var(--warn);border-radius:var(--radius-sm);padding:15px 18px;background:var(--surface-2);}
+  .chcard .chtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+  .chcard .chn{font-weight:700;color:var(--navy-900);font-size:15px;}
+  .sev{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;color:#fff;}
+  .sev.high{background:var(--bad);} .sev.mid{background:var(--warn);} .sev.low{background:var(--good);}
+  .chcard .chd{font-size:13px;color:var(--muted);line-height:1.55;}
+  .timeline{position:relative;margin:10px 0 0;padding-left:30px;}
+  .timeline::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:3px;background:linear-gradient(var(--navy-500),#5a9bd6);border-radius:3px;}
+  .tl{position:relative;margin-bottom:22px;}
+  .tl::before{content:"";position:absolute;left:-26px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--accent);border:3px solid #fff;box-shadow:0 0 0 2px var(--navy-400);}
+  .tl .ty{font-weight:800;color:var(--navy-700);font-size:14.5px;}
+  .tl .td{font-size:13.5px;color:var(--muted);margin-top:4px;}
+  .src{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 18px;}
+  .src .s{font-size:12.5px;background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:4px 13px;color:var(--navy-700);}
+  .callout{background:var(--accent-soft);border:1px solid #ecd79b;border-radius:var(--radius-sm);padding:14px 18px;font-size:13.5px;color:#6a4e00;margin-top:12px;}
+  .callout b{color:#5a3f00;}
+  footer{text-align:center;color:var(--muted-2);font-size:12.5px;padding:30px 20px 50px;max-width:1280px;margin:0 auto;}
+  table.tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0;}
+  table.tbl th,table.tbl td{border:1px solid var(--border);padding:9px 12px;text-align:left;}
+  table.tbl th{background:var(--navy-800);color:#eaf2fb;font-weight:600;}
+  table.tbl tr:nth-child(even) td{background:var(--surface-2);}
+  @media print{
+    .hero{background:#0a2342 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:30px 24px;}
+    .hero .print-btn{display:none;}
+    .toc{display:none;}
+    main{padding:0;margin:0;}
+    .layout{display:block;max-width:100%;padding:0;}
+    section{box-shadow:none;border:1px solid #ccc;break-inside:avoid;page-break-inside:avoid;margin-bottom:14px;padding:22px 24px;}
+    .hcard,.appcard,.pcard,.chcard,.layer,.sstat{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .highlights{grid-template-columns:repeat(3,1fr);}
+    body{font-size:12px;background:#fff;}
+    section > h2{font-size:19px;}
+    .no-print{display:none;}
+  }
+  @media(max-width:980px){
+    .layout{flex-direction:column;}
+    .toc{position:static;width:100%;flex:none;padding:18px 0 0;margin:0;}
+    .toc nav{display:flex;flex-wrap:wrap;gap:4px;}
+    .toc nav a{border-left:none;border-bottom:3px solid transparent;padding:7px 12px;}
+    .toc nav a.active{border-left:none;border-bottom-color:var(--accent);background:none;}
+    main{padding:18px 0 0;}
+    .highlights{grid-template-columns:1fr;}
+    .secstats{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">Deep Research · Technology Landscape</div>
+  <h1>2026 年 AI视觉 技术全景</h1>
+  <div class="sub">AI视觉（计算机视觉 + 多模态视觉大模型）正从"单一感知"迈向"理解—生成—交互"融合的通用视觉智能，是具身智能与空间计算的核心底座。</div>
+  <div class="meta">
+    <span>作者 · <b>HanBuff</b></span>
+    <span>报告日期 · <b>2026-07-11</b></span>
+    <span>研究口径 · <b>广义 TAM + 狭义 SAM</b></span>
+    <span>覆盖公司 · <b>500+</b></span>
+    <span>数据来源 · <b>12 家机构 & 论文</b></span>
+  </div>
+  <button class="print-btn no-print" onclick="window.print()">打印 / 导出 PDF</button>
+</header>
+
+<div class="layout">
+  <aside class="toc">
+    <div class="toc-title">目录 · Contents</div>
+    <nav>
+      <a href="#summary"><span class="num">01</span>Executive Summary</a>
+      <a href="#market"><span class="num">02</span>市场概览</a>
+      <a href="#players"><span class="num">03</span>关键玩家</a>
+      <a href="#tech"><span class="num">04</span>技术栈分层</a>
+      <a href="#applications"><span class="num">05</span>应用场景</a>
+      <a href="#challenges"><span class="num">06</span>挑战与风险</a>
+      <a href="#outlook"><span class="num">07</span>未来展望</a>
+      <a href="#methodology"><span class="num">08</span>研究方法论</a>
+    </nav>
+  </aside>
+
+  <main>
+
+    <section id="summary">
+      <h2>01 · Executive Summary<span class="en">执行摘要</span></h2>
+      <p class="lead">AI视觉是人工智能中对物理与数字世界"看见并理解"的支柱能力。2025–2026 年，视觉基础模型（VFM）与视觉语言模型（VLM）的成熟，叠加边缘算力降本，使视觉从工业质检、安防等封闭场景，加速向自动驾驶、医疗、具身机器人、内容生成等开放场景扩散。</p>
+
+      <div class="highlights">
+        <div class="hcard">
+          <div class="val">$180<span class="unit">B</span></div>
+          <div class="lbl">广义市场规模（2032 TAM）</div>
+          <div class="note">含生成式视觉、机器人/具身视觉、边缘视觉芯片及行业衍生</div>
+        </div>
+        <div class="hcard">
+          <div class="val">500<span class="unit">+</span></div>
+          <div class="lbl">产业链布局公司</div>
+          <div class="note">基础模型 · 云 · 垂直应用 · 硬件 · 开源生态</div>
+        </div>
+        <div class="hcard">
+          <div class="val">5<span class="unit">类</span></div>
+          <div class="lbl">市场主体类别</div>
+          <div class="note">巨头 · 中国龙头 · 垂直厂商 · 开源 VLM · 硬件边缘</div>
+        </div>
+      </div>
+
+      <div class="secstats">
+        <div class="sstat"><div class="v">$30B</div><div class="l">狭义整机 SAM（2026）</div></div>
+        <div class="sstat"><div class="v">~21%</div><div class="l">广义 TAM CAGR</div></div>
+        <div class="sstat"><div class="v">$300B</div><div class="l">广义 TAM 预测（2035）</div></div>
+        <div class="sstat"><div class="v">北美 36%</div><div class="l">2032 区域份额领先</div></div>
+      </div>
+
+      <h3>核心判断</h3>
+      <ul class="tight">
+        <li><b>从"识别"到"理解—生成—交互"：</b>VLM（Qwen2.5-VL、InternVL-3、Gemini 3）让视觉系统具备推理与对话能力，CLIP→SAM→VLM 形成完整范式链。</li>
+        <li><b>生成式视觉打开新市场：</b>Sora 2、Imagen、Veo、可灵等文生视频/图像，使"理解"与"创造"双向融合，撬动内容产业。</li>
+        <li><b>边缘化与轻量化落地加速：</b>SmolVLM（2.56 亿参数）将视觉能力下沉到 AR 眼镜、机器人、车载端侧，实时本地推理成主流。</li>
+        <li><b>中国厂商全球竞争力凸显：</b>商汤/海康/虹软/华为在安防、工业、车载视觉形成优势，开源 VLM 生态已追平第一梯队。</li>
+      </ul>
+    </section>
+
+    <section id="market">
+      <h2>02 · 市场概览<span class="en">Market Overview</span></h2>
+      <p class="lead">狭义计算机视觉软件/服务市场 2026 年真实机构预测约 $24–33B；把生成式视觉、机器人/具身视觉、边缘视觉芯片及行业解决方案计入，广义 TAM 显著放大。</p>
+
+      <div class="chart-wrap">
+        <svg id="barchart" viewBox="0 0 680 400" role="img" aria-label="市场规模预测柱状图"></svg>
+        <div class="legend"><span><i style="background:var(--navy-600)"></i>广义 TAM（十亿美元）</span><span><i style="background:var(--accent)"></i>目标年份 2032</span></div>
+        <div class="chart-cap">图 1 · 全球 AI视觉 广义市场规模（TAM）预测。</div>
+      </div>
+
+      <div class="twocol" style="margin-top:22px;">
+        <div>
+          <h3>区域格局（2032 TAM 份额）</h3>
+          <div class="rbar"><div class="top"><span>北美</span><b>36%</b></div><div class="track"><div class="fill" style="width:36%"></div></div></div>
+          <div class="rbar"><div class="top"><span>亚太</span><b>30%</b></div><div class="track"><div class="fill" style="width:30%"></div></div></div>
+          <div class="rbar"><div class="top"><span>欧洲</span><b>22%</b></div><div class="track"><div class="fill" style="width:22%"></div></div></div>
+          <div class="rbar"><div class="top"><span>其他（拉美/中东非）</span><b>12%</b></div><div class="track"><div class="fill" style="width:12%"></div></div></div>
+        </div>
+        <div>
+          <h3>三大驱动因素</h3>
+          <h4>① 多模态大模型普及</h4><p style="font-size:13.5px;color:var(--muted);">VLM 将视觉理解、OCR、检测、问答统一到单一模型，大幅降低部署与集成成本，企业采用门槛骤降。</p>
+          <h4>② 边缘 AI 与端侧算力</h4><p style="font-size:13.5px;color:var(--muted);">NPU/GPU 降价叠加模型蒸馏量化，使实时视觉能在摄像头、机器人、车载本地运行，摆脱云依赖。</p>
+          <h4>③ 具身智能与空间计算</h4><p style="font-size:13.5px;color:var(--muted);">自动驾驶、人形机器人、AR 对"实时视觉理解"提出刚性需求，构成确定性增量引擎。</p>
+        </div>
+      </div>
+
+      <hr class="divider">
+      <h3>狭义 SAM 权威预测对比</h3>
+      <table class="tbl">
+        <thead><tr><th>研究机构</th><th>2026 市场规模</th><th>CAGR</th><th>口径说明</th></tr></thead>
+        <tbody>
+          <tr><td>Fortune Business Insights</td><td>$24.1B</td><td>14.8%</td><td>计算机视觉整体（硬件+软件服务），至 2034 达 $72.8B</td></tr>
+          <tr><td>Mordor Intelligence</td><td>$32.9B</td><td>15.8%</td><td>计算机视觉，2026–2031 预测，至 2031 达 $68.4B</td></tr>
+          <tr><td>Research and Markets</td><td>$55.4B</td><td>30.4%</td><td>"AI in CV"（含生成式/云），至 2030 达 $162.3B</td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><b>口径提示：</b>狭义 SAM 取商品化视觉软件/服务；广义 TAM 把生成式视觉、机器人视觉、边缘硬件与行业集成计入，二者量级差异大属正常现象。</div>
+    </section>
+
+    <section id="players">
+      <h2>03 · 关键玩家<span class="en">Key Players</span></h2>
+      <p class="lead">AI视觉产业链横跨基础模型、云服务、垂直应用、开源生态与硬件传感五大环节，参与者超过 500 家。以下按五类列举代表性主体（非完整清单）。</p>
+
+      <div class="grp-title"><span class="dot"></span>类别一 · 全球综合巨头（基础模型 + 云视觉）</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">Google <span class="tag">多模态旗舰</span></div><div class="focus">Gemini 3 多模态、Imagen 4 图像、Veo 3 视频生成，跨模态指令编辑。</div><div class="pnote">搜索/云/安卓生态闭环，70% 云客户已部署 AI 应用。</div></div>
+        <div class="pcard"><div class="pname">Microsoft <span class="tag">企业云</span></div><div class="focus">Azure AI Vision 服务、Florence-2 多任务 VLM、Windows Copilot Vision。</div><div class="pnote">服务超百万企业客户，与 OpenAI 深度绑定。</div></div>
+        <div class="pcard"><div class="pname">NVIDIA <span class="tag">算力+模型</span></div><div class="focus">Cosmos 世界模型、视觉 AI 工具链、Omniverse 仿真。</div><div class="pnote">GPU 底座 + 软硬一体，覆盖训练到部署全栈。</div></div>
+        <div class="pcard"><div class="pname">Meta <span class="tag">开源视觉</span></div><div class="focus">SAM / SAM2 分割、Emu 生成、V-JEPA 表征学习。</div><div class="pnote">开源开放策略，学术与产业双渗透。</div></div>
+        <div class="pcard"><div class="pname">OpenAI <span class="tag">生成+推理</span></div><div class="focus">多模态 GPT-4V、Sora 2 视频生成（60s 高一致性）。</div><div class="pnote">消费级入口强，筹备 2026–2027 IPO。</div></div>
+        <div class="pcard"><div class="pname">Apple <span class="tag">端侧</span></div><div class="focus">端侧视觉、GIGAFLOW 自动驾驶模拟器（16 亿公里数据）。</div><div class="pnote">端侧芯片 + 隐私叙事，消费硬件落地。</div></div>
+      </div>
+
+      <div class="grp-title"><span class="dot"></span>类别二 · 中国视觉龙头</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">商汤科技 <span class="tag">智慧城市</span></div><div class="focus">"日日新"多模态大模型，智慧城市方案覆盖 30+ 国家。</div><div class="pnote">自研昇腾合作降低对英伟达依赖，2024 智慧城市营收占比超 40%。</div></div>
+        <div class="pcard"><div class="pname">海康威视 <span class="tag">安防龙头</span></div><div class="focus">视觉大模型摄像机、工业视觉检测适配 100+ 灯塔工厂。</div><div class="pnote">全球安防龙头，AI Cloud 接入设备超 2000 万台。</div></div>
+        <div class="pcard"><div class="pname">旷视科技 <span class="tag">算法</span></div><div class="focus">Face++ 人脸识别（99.6%）、物流分拣效率提升 200%。</div><div class="pnote">自研 4TOPS SOC，支付宝/Uber 核心视觉供应商。</div></div>
+        <div class="pcard"><div class="pname">虹软科技 <span class="tag">手机视觉</span></div><div class="focus">智能手机视觉算法市占 80%+，DMS 舱内监测。</div><div class="pnote">前装量产车型 200+，舱内 DMS 市占 50%+。</div></div>
+        <div class="pcard"><div class="pname">华为 <span class="tag">工业</span></div><div class="focus">盘古 CV 3D 视觉+大模型，晶圆检测精度 ±0.1μm。</div><div class="pnote">昇腾算力 + 行业解决方案闭环。</div></div>
+      </div>
+
+      <div class="grp-title"><span class="dot"></span>类别三 · 视觉专用 / 垂直厂商</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">Clarifai <span class="tag">平台</span></div><div class="focus">视觉标注与模型管理平台，企业级 MLOps。</div><div class="pnote">覆盖从数据到部署全流程。</div></div>
+        <div class="pcard"><div class="pname">Scale AI <span class="tag">数据引擎</span></div><div class="focus">高质量标注与评测数据，自动驾驶/大模型训练底座。</div><div class="pnote">数据飞轮构筑壁垒。</div></div>
+        <div class="pcard"><div class="pname">Roboflow <span class="tag">开发者</span></div><div class="focus">数据集→模型一站式工作流。</div><div class="pnote">开源社区庞大，降低入门门槛。</div></div>
+        <div class="pcard"><div class="pname">Landing AI <span class="tag">工业</span></div><div class="focus">工业视觉检测（Andrew Ng 创立），零样本缺陷检测。</div><div class="pnote">制造业落地标杆。</div></div>
+        <div class="pcard"><div class="pname">Cognex / Keyence <span class="tag">机器视觉</span></div><div class="focus">工业相机与视觉系统，工厂自动化标配。</div><div class="pnote">硬件+算法双壁垒。</div></div>
+      </div>
+
+      <div class="grp-title"><span class="dot"></span>类别四 · 开源 VLM / 研究机构</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">Qwen-VL（阿里） <span class="tag">开源 SOTA</span></div><div class="focus">Qwen2.5-VL 视觉问答/文档理解/视频。</div><div class="pnote">中文生态领先，开源可商用。</div></div>
+        <div class="pcard"><div class="pname">InternVL（上海AI实验室） <span class="tag">开源</span></div><div class="focus">InternVL-3 多模态，评测对标一线闭源。</div><div class="pnote">国产开源代表。</div></div>
+        <div class="pcard"><div class="pname">DeepSeek-Janus-Pro <span class="tag">生成+理解</span></div><div class="focus">统一多模态理解与生成。</div><div class="pnote">开源、基准表现强。</div></div>
+        <div class="pcard"><div class="pname">SmolVLM（HuggingFace） <span class="tag">轻量</span></div><div class="focus">2.56 亿参数，端侧实时推理。</div><div class="pnote">推动视觉模型平民化。</div></div>
+        <div class="pcard"><div class="pname">LLaMA 4 / Florence-2 <span class="tag">多模态</span></div><div class="focus">视觉语言推理与生成。</div><div class="pnote">Meta/微软开源生态。</div></div>
+      </div>
+
+      <div class="grp-title"><span class="dot"></span>类别五 · 硬件与边缘</div>
+      <div class="pcards">
+        <div class="pcard"><div class="pname">Orbbec（奥比中光） <span class="tag">3D 传感</span></div><div class="focus">3D 视觉传感器，机器人/刷脸支付。</div><div class="pnote">国产 3D 传感龙头。</div></div>
+        <div class="pcard"><div class="pname">Basler <span class="tag">工业相机</span></div><div class="focus">机器视觉工业相机。</div><div class="pnote">全球工业标准供应商。</div></div>
+        <div class="pcard"><div class="pname">Matterport <span class="tag">空间捕获</span></div><div class="focus">3D 空间数字化与数字孪生。</div><div class="pnote">地产/建筑场景领先。</div></div>
+        <div class="pcard"><div class="pname">光学/传感器/NPU 供应链 <span class="tag">底座</span></div><div class="focus">摄像头模组、边缘 NPU、图像传感器。</div><div class="pnote">亚太制造集群高度成熟。</div></div>
+      </div>
+    </section>
+
+    <section id="tech">
+      <h2>04 · 技术栈分层<span class="en">Technology Stack</span></h2>
+      <p class="lead">AI视觉技术栈自上而下分为五层：从行业应用封装，到模型架构与表征学习，再到数据引擎与底层算力部署。每层能力下沉，共同支撑开放场景的通用视觉智能。</p>
+      <div class="stack">
+        <div class="layer"><div class="lv"><div class="lname">应用与场景层</div><div class="len">Applications</div></div><div class="chips"><span class="chip"><b>AI 质检</b></span><span class="chip"><b>自动驾驶</b></span><span class="chip"><b>医疗影像</b></span><span class="chip"><b>安防</b></span><span class="chip"><b>零售</b></span><span class="chip"><b>机器人</b></span><span class="chip"><b>内容生成</b></span></div><div class="ldesc">行业解决方案将底层能力封装为可部署产品，是商业价值兑现的最后一公里。</div></div>
+        <div class="arrow-down">▾</div>
+        <div class="layer"><div class="lv"><div class="lname">模型架构层</div><div class="len">Architectures</div></div><div class="chips"><span class="chip"><b>VFM</b> DINOv2 / SAM2</span><span class="chip"><b>VLM</b> CLIP→Qwen-VL / InternVL</span><span class="chip"><b>生成式</b> Diffusion / Transformer</span><span class="chip"><b>统一多模态</b> Any-to-Any</span></div><div class="ldesc">从"专用小模型"走向"统一多模态基础模型"，零样本/少样本能力成为标配。</div></div>
+        <div class="arrow-down">▾</div>
+        <div class="layer"><div class="lv"><div class="lname">训练与表征学习</div><div class="len">Training</div></div><div class="chips"><span class="chip"><b>自监督</b> DINO</span><span class="chip"><b>对比学习</b> CLIP</span><span class="chip"><b>多模态对齐</b></span><span class="chip"><b>指令微调</b> SFT / RLHF</span></div><div class="ldesc">海量图文对与无标注数据驱动表征学习，跨模态语义对齐是核心。</div></div>
+        <div class="arrow-down">▾</div>
+        <div class="layer"><div class="lv"><div class="lname">数据引擎</div><div class="len">Data Engine</div></div><div class="chips"><span class="chip"><b>大规模数据集</b></span><span class="chip"><b>标注 / 合成数据</b></span><span class="chip"><b>数据闭环</b></span></div><div class="ldesc">数据质量与规模决定能力上限；合成数据（仿真/扩散）缓解长尾与隐私问题。</div></div>
+        <div class="arrow-down">▾</div>
+        <div class="layer"><div class="lv"><div class="lname">算力与部署</div><div class="len">Compute</div></div><div class="chips"><span class="chip"><b>GPU / NPU</b></span><span class="chip"><b>边缘推理</b></span><span class="chip"><b>蒸馏 / 量化</b></span></div><div class="ldesc">软硬协同将视觉能力下沉到端侧，实时、低功耗、低成本是商业化关键。</div></div>
+      </div>
+    </section>
+
+    <section id="applications">
+      <h2>05 · 应用场景<span class="en">Applications</span></h2>
+      <p class="lead">AI视觉已渗透工业、医疗、交通、消费、安防、农业、机器人与内容创作八大场景，从封闭产线走向开放物理世界。</p>
+      <div class="appgrid">
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2-5h14l2 5v5H3z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/><path d="M5 13h14"/></svg></div>
+          <div class="at">自动驾驶 / ADAS</div><div class="ad">多摄像头实时感知、车道/行人/交通标志识别，特斯拉与 Waymo 核心使能技术。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg></div>
+          <div class="at">医疗影像诊断</div><div class="ad">CT/MRI/X光病灶检测（95%+ 精度）、手术引导、眼科与皮肤科早筛。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V8l5 3V8l5 3V5l5 3v13z"/><path d="M9 15l2 2 3-3"/></svg></div>
+          <div class="at">工业质检</div><div class="ad">产线高速缺陷检测、预测性维护，制造业占 CV 落地份额最大（约 26%）。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.5 12h10l2-8H6"/><circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/></svg></div>
+          <div class="at">零售与无人结算</div><div class="ad">Amazon Go 式无感支付、视觉搜索、货架盘点、虚拟试穿。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="at">安防与智能监控</div><div class="ad">人群分析、异常/武器检测、周界防范；隐私与监管争议并行。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20c0-8 6-13 14-14 1 9-5 14-14 14z"/><path d="M5 20c4-6 8-8 12-9"/></svg></div>
+          <div class="at">农业精准农业</div><div class="ad">无人机多光谱作物健康、自动采摘、牲畜健康监测，降本增产。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="11" rx="2"/><circle cx="9" cy="13" r="1.4"/><circle cx="15" cy="13" r="1.4"/><path d="M12 4v4M9 6h6"/></svg></div>
+          <div class="at">机器人视觉 / 具身</div><div class="ad">抓取与 SLAM 导航（Optimus 97.6% 抓取率）、π0 覆盖 7 类平台。</div>
+        </div>
+        <div class="appcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1d5189" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M5 19l5-5 4 4 2-2 3 3"/></svg></div>
+          <div class="at">内容生成</div><div class="ad">文生图（Imagen）、文生视频（Sora 2/Veo/可灵）、视觉创意与特效。</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="challenges">
+      <h2>06 · 挑战与风险<span class="en">Challenges & Risks</span></h2>
+      <p class="lead">AI视觉在性能与商业化快速推进的同时，仍面临偏见、可解释性、能耗与监管等多重结构性约束。</p>
+      <div class="chal">
+        <div class="chcard" style="border-left-color:var(--bad)"><div class="chtop"><span class="chn">数据偏见与公平性</span><span class="sev high">高</span></div><div class="chd">训练集在人口/场景上的偏差导致识别差异，在医疗诊断与安防等高影响场景后果严重。</div></div>
+        <div class="chcard" style="border-left-color:var(--bad)"><div class="chtop"><span class="chn">幻觉与可解释性</span><span class="sev high">高</span></div><div class="chd">VLM 生成的描述与推理可能失真，关键决策场景需可解释与可信机制支撑。</div></div>
+        <div class="chcard" style="border-left-color:var(--bad)"><div class="chtop"><span class="chn">算力与能耗</span><span class="sev high">高</span></div><div class="chd">大模型训练与推理能耗高，"绿色 AI"与边缘化部署是必答题。</div></div>
+        <div class="chcard" style="border-left-color:var(--warn)"><div class="chtop"><span class="chn">隐私与监管</span><span class="sev mid">中</span></div><div class="chd">大规模视觉采集触发 GDPR 与人脸识别立法，部署需透明合规。</div></div>
+        <div class="chcard" style="border-left-color:var(--warn)"><div class="chtop"><span class="chn">长尾与小样本泛化</span><span class="sev mid">中</span></div><div class="chd">罕见缺陷/场景样本稀少，零样本能力仍有上限，需数据闭环持续补强。</div></div>
+        <div class="chcard" style="border-left-color:var(--warn)"><div class="chtop"><span class="chn">评测标准缺失</span><span class="sev mid">中</span></div><div class="chd">跨任务/跨域缺乏统一基准，企业模型选型与效果对比困难。</div></div>
+      </div>
+    </section>
+
+    <section id="outlook">
+      <h2>07 · 未来展望<span class="en">Future Outlook</span></h2>
+      <p class="lead">2025–2032 年，AI视觉将从"对话式理解"走向"统一架构"与"具身智能"，最终逼近通用视觉智能，成为 AGI 的关键路径。</p>
+      <div class="timeline">
+        <div class="tl"><div class="ty">2025 · VLM 全面突破</div><div class="td">Qwen2.5-VL、InternVL-3、LLaMA 4、Gemini 3 密集发布，视觉进入"对话式理解"阶段。</div></div>
+        <div class="tl"><div class="ty">2026 · 端侧轻量化普及</div><div class="td">SmolVLM 类小模型 + NPU 下沉至 AR 眼镜/机器人/车载，实时本地视觉成为主流。</div></div>
+        <div class="tl"><div class="ty">2028 · 统一架构成型</div><div class="td">感知—生成—交互融合到单一模型，多模态任意转换（Any-to-Any）走向成熟。</div></div>
+        <div class="tl"><div class="ty">2030 · 具身与 Agent 化</div><div class="td">视觉成为机器人与智能体的"眼睛+大脑"，自主视觉闭环大规模普及。</div></div>
+        <div class="tl"><div class="ty">2032 · 通用视觉智能</div><div class="td">逼近人类水平的开放场景理解，成为通用人工智能的关键路径之一。</div></div>
+      </div>
+      <h3>结构性机会判断</h3>
+      <ul class="tight">
+        <li><b>端侧视觉芯片与轻量 VLM：</b>确定性增量，国产 NPU/光学供应链存在卡位窗口。</li>
+        <li><b>工业与医疗垂类"数据+模型"闭环：</b>壁垒高、黏性强，先发者护城河深。</li>
+        <li><b>中国开源 VLM 生态：</b>Qwen/InternVL/DeepSeek 有望形成标准话语权与出海能力。</li>
+      </ul>
+    </section>
+
+    <section id="methodology">
+      <h2>08 · 研究方法论<span class="en">Methodology</span></h2>
+      <p class="lead">本报告采用"研究锚定 + 双层口径 + 多源交叉"的方法，力求在零外部依赖的单文件报告中呈现合理可信的技术全景。</p>
+      <h3>数据来源</h3>
+      <div class="src">
+        <span class="s">Fortune Business Insights</span><span class="s">Mordor Intelligence</span><span class="s">Research and Markets</span>
+        <span class="s">GII</span><span class="s">TrendX Insights</span><span class="s">Market Research Future</span>
+        <span class="s">EmergentMind（VFM 综述）</span><span class="s">CSDN / 掘金（VLM 综述）</span><span class="s">百度资讯（视觉模型全景）</span>
+        <span class="s">NordicVision</span><span class="s">e2enetworks</span><span class="s">公开论文 arXiv</span>
+      </div>
+      <h3>方法说明</h3>
+      <ul class="tight">
+        <li><b>双层口径：</b>狭义 SAM 直接引用机构真实预测值；广义 TAM 基于公开趋势做合理建模，并在图中以金色年份标注。</li>
+        <li><b>多源交叉：</b>市场规模取多机构区间中值；玩家与技术归类基于公开披露与学术论文，为非完整清单。</li>
+      </ul>
+      <div class="callout"><b>免责声明：</b>本报告部分预测为基于公开数据的合理建模，不构成任何投资建议；不同机构因口径差异，市场规模数值可能显著不同，引用时请以原机构报告为准。</div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  © 2026 Deep Research · AI视觉 技术全景 ｜ 单文件 HTML · 无外部依赖 · 支持打印导出 ｜ 数据截至 2026-07-11
+</footer>
+
+<script>
+(function(){
+  var data=[{y:2026,v:55},{y:2028,v:92},{y:2030,v:135},{y:2032,v:180},{y:2035,v:300}];
+  var targetYear=2032;
+  var W=680,H=400, padL=58, padR=20, padT=40, padB=70;
+  var plotW=W-padL-padR, plotH=H-padT-padB, maxV=300;
+  var svg=document.getElementById('barchart'), ns='http://www.w3.org/2000/svg';
+  function el(t,a){var e=document.createElementNS(ns,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  var baseY=padT+plotH;
+  [0,50,100,150,200,250,300].forEach(function(g){
+    var y=baseY-(g/maxV)*plotH;
+    svg.appendChild(el('line',{x1:padL,y1:y,x2:W-padR,y2:y,stroke:'#e3e9f2','stroke-width':1}));
+    var tx=el('text',{x:padL-10,y:y+4,'text-anchor':'end','font-size':11,fill:'#8a98aa'}); tx.textContent='$'+g+'B'; svg.appendChild(tx);
+  });
+  var n=data.length, slot=plotW/n, bw=Math.min(64,slot*0.55);
+  data.forEach(function(d,i){
+    var cx=padL+slot*i+slot/2, h=(d.v/maxV)*plotH, y=baseY-h;
+    var rect=el('rect',{x:cx-bw/2,y:y,width:bw,height:h,rx:5,fill:'#1d5189'}); svg.appendChild(rect);
+    if(d.y===targetYear) rect.setAttribute('fill','#e0a52e');
+    var vt=el('text',{x:cx,y:y-8,'text-anchor':'middle','font-size':13,'font-weight':700,fill:d.y===targetYear?'#b9821a':'#15406f'}); vt.textContent='$'+d.v+'B'; svg.appendChild(vt);
+    var yt=el('text',{x:cx,y:baseY+22,'text-anchor':'middle','font-size':12.5,fill:'#5c6c80'}); yt.textContent=d.y; svg.appendChild(yt);
+  });
+  svg.appendChild(el('line',{x1:padL,y1:baseY,x2:W-padR,y2:baseY,stroke:'#9aa9bd','stroke-width':1.5}));
+
+  var links=[].slice.call(document.querySelectorAll('.toc nav a')), map={};
+  links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  var secs=[].slice.call(document.querySelectorAll('main section[id]'));
+  if('IntersectionObserver' in window){
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ links.forEach(function(a){a.classList.remove('active');}); if(map[e.target.id]) map[e.target.id].classList.add('active'); } });
+    },{rootMargin:'-20% 0px -65% 0px',threshold:0});
+    secs.forEach(function(s){obs.observe(s);});
+  }
+})();
+</script>
+</body>
+</html>

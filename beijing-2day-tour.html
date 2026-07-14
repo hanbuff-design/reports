@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>北京 2日深度游 · Travel Itinerary</title>
+<script src="https://map.qq.com/api/gljs?v=1.exp&key=HIRBZ-LO33T-53HXX-LDHB6-FCD6V-WQFIV"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --c-blue: #3B82F6;
+  --c-amber: #F59E0B;
+  --c-purple: #8B5CF6;
+  --c-green: #10B981;
+  --c-red: #DC2626;
+  --c-gold: #D4AF37;
+  --c-bg: #fafbfc;
+  --c-card: #ffffff;
+  --c-text: #1a1f36;
+  --c-muted: #6b7280;
+  --c-border: #e5e7eb;
+  --radius: 16px;
+  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,.08);
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(135deg, #fff5f5 0%, #fffbeb 30%, #faf5ff 60%, #f0fdf4 100%);
+  color: var(--c-text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== BANNER ===== */
+.banner {
+  max-width: 1400px;
+  margin: 32px auto 0;
+  padding: 48px 48px 36px;
+  background: linear-gradient(135deg, #0f0f23 0%, #b91c1c 42%, #7f1d1d 78%, #0f0f23 100%);
+  border-radius: 24px;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  overflow: hidden;
+}
+.banner::before {
+  content: '';
+  position: absolute;
+  top: -90px; right: -70px;
+  width: 420px; height: 420px;
+  background: radial-gradient(circle, rgba(212,175,55,.28) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.banner::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: 28%;
+  width: 360px; height: 360px;
+  background: radial-gradient(circle, rgba(220,38,38,.3) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.banner-left { position: relative; z-index: 1; }
+.banner-left .subtitle {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.55);
+  margin-bottom: 12px;
+}
+.banner-left .meta {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,.9);
+  margin-bottom: 10px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.16);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.banner-left h1 {
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #fff 0%, #fcd34d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.banner-left .tagline {
+  font-size: 16px;
+  color: rgba(255,255,255,.6);
+  margin-top: 4px;
+}
+.badges {
+  display: flex;
+  gap: 16px;
+  z-index: 1;
+  flex-shrink: 0;
+}
+.badge {
+  background: rgba(255,255,255,.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 20px;
+  padding: 20px 28px;
+  text-align: center;
+  min-width: 120px;
+}
+.badge .num {
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+.badge .label {
+  font-size: 12px;
+  color: rgba(255,255,255,.5);
+  margin-top: 6px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ===== CONTENT AREA ===== */
+.content {
+  max-width: 1400px;
+  margin: 24px auto 40px;
+  display: flex;
+  gap: 24px;
+  height: calc(100vh - 240px);
+  min-height: 700px;
+}
+
+/* ===== LEFT PANEL ===== */
+.left-panel {
+  width: 440px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: hidden;
+}
+
+/* Day Tabs */
+.day-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--c-card);
+  border-radius: var(--radius);
+  padding: 6px;
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+.day-tab {
+  flex: 1;
+  min-width: 64px;
+  padding: 10px 8px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-muted);
+  transition: all .2s;
+  white-space: nowrap;
+}
+.day-tab:hover { background: #f3f4f6; color: var(--c-text); }
+.day-tab.active {
+  background: linear-gradient(135deg, #DC2626, #D4AF37);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(220,38,38,.35);
+}
+
+/* Day Info Header */
+.day-info {
+  background: var(--c-card);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.day-info h2 { font-size: 20px; font-weight: 700; }
+.day-info .theme { font-size: 13px; color: var(--c-muted); }
+
+/* Timeline Cards */
+.timeline {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-right: 4px;
+}
+.timeline::-webkit-scrollbar { width: 4px; }
+.timeline::-webkit-scrollbar-track { background: transparent; }
+.timeline::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+
+.card {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  background: var(--c-card);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all .25s;
+  margin-bottom: 2px;
+  border-left: 4px solid transparent;
+  position: relative;
+}
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateX(2px);
+}
+.card.active-card {
+  border-left-color: currentColor;
+  box-shadow: 0 4px 20px rgba(0,0,0,.1);
+}
+.card-time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 48px;
+}
+.card-time .time-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-muted);
+  white-space: nowrap;
+}
+.card-time .dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  margin-top: 6px;
+}
+.card-time .line {
+  width: 2px;
+  flex: 1;
+  margin-top: 4px;
+  background: var(--c-border);
+}
+.card-body { flex: 1; min-width: 0; }
+.card-body .card-name {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.card-body .card-cat {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-top: 4px;
+}
+.card-body .card-desc {
+  font-size: 12px;
+  color: var(--c-muted);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+.card-body .card-tip {
+  font-size: 11px;
+  color: var(--c-muted);
+  margin-top: 4px;
+  font-style: italic;
+}
+.card-body .card-tip::before { content: '💡 '; }
+
+/* ===== RIGHT PANEL (MAP) ===== */
+.right-panel {
+  flex: 1;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  background: #e5e7eb;
+}
+#map-container {
+  width: 100%;
+  height: 100%;
+}
+
+/* Map overlay: legend */
+.map-legend {
+  position: absolute;
+  bottom: 20px; left: 20px;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 2px 12px rgba(0,0,0,.1);
+  font-size: 12px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #374151;
+}
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .content { flex-direction: column; height: auto; }
+  .left-panel { width: 100%; max-height: 50vh; }
+  .right-panel { height: 50vh; min-height: 400px; }
+  .banner { flex-direction: column; gap: 24px; padding: 32px 24px; }
+  .banner-left h1 { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <div class="banner-left">
+    <div class="subtitle">Beijing · 小众玩法</div>
+    <div class="meta">作者：HanBuff</div>
+    <h1>北京小众特色 2 日游</h1>
+    <div class="tagline">避开人潮 · 非标胡同 × 古刹壁画 × 工业赛博 × 深夜小酒馆 · 本地人视角</div>
+  </div>
+  <div class="badges">
+    <div class="badge"><div class="num">2</div><div class="label">天数</div></div>
+    <div class="badge"><div class="num">12</div><div class="label">POI</div></div>
+    <div class="badge"><div class="num">¥1.2-2k</div><div class="label">预算 /人</div></div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="left-panel">
+    <div class="day-tabs" id="dayTabs"></div>
+    <div class="day-info" id="dayInfo">
+      <h2 id="dayTitle"></h2>
+      <div class="theme" id="dayTheme"></div>
+    </div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+  <div class="right-panel">
+    <div id="map-container"></div>
+    <div class="map-legend">
+      <div class="legend-item"><span class="legend-dot" style="background:#3B82F6"></span>景点</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#F59E0B"></span>美食</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#8B5CF6"></span>文化</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#10B981"></span>购物</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DAYS = [
+  {
+    day: 1,
+    title: "胡同市井 · 古刹与深夜酒馆",
+    theme: "智化寺 × 五道营 × 牛街 × 西海 × 鼓楼",
+    pois: [
+      { time: "09:00", name: "智化寺", cat: "文化", lat: 39.9172, lng: 116.4175, desc: "明代木构古刹，藏有堪称壁画天花板的明代壁画真迹，还能听到传承五百年的'京音乐'——活着的非遗。", tip: "需在公众号预约，进殿看壁画要打手电，人极少" },
+      { time: "10:30", name: "五道营胡同", cat: "购物", lat: 39.9468, lng: 116.4078, desc: "南锣鼓巷的文艺平替，咖啡馆、买手店、独立工作室密度高，商业味淡很多，更适合慢逛。", tip: "拐进雍和宫大街旁的小院，常有隐藏展览" },
+      { time: "12:00", name: "牛街（清真小吃）", cat: "美食", lat: 39.8876, lng: 116.3740, desc: "北京清真美食一条街，洪记的牛肉粒、宝记的豆汁焦圈、年糕钱，一路吃过去才是老饕玩法。", tip: "午餐高峰人多，洪记可买现切牛肉带走" },
+      { time: "14:00", name: "西海湿地公园", cat: "景点", lat: 39.9428, lng: 116.3865, desc: "什刹海最北端的芦苇荡，野鸭水鸟、残荷垂柳，本地人遛弯划船的清净地，完全没有旅游团。", tip: "沿湖木栈道走到汇通祠，落日极美" },
+      { time: "16:00", name: "杨梅竹斜街", cat: "文化", lat: 39.8945, lng: 116.3958, desc: "大栅栏旁的老街，文艺书店、独立设计工作室、民国旧址，比南锣更安静更有内容。", tip: "模范书局、PageOne 都在这条街" },
+      { time: "19:00", name: "鼓楼胡同小酒馆", cat: "美食", lat: 39.9408, lng: 116.3972, desc: "鼓楼东大街一带的胡同小酒馆与 Livehouse，精酿、民谣、老北京夜色，避开三里屯的喧嚣。", tip: "Degree、乐空间常有小演出，早去占位" }
+    ]
+  },
+  {
+    day: 2,
+    title: "京西古寺 · 工业赛博夜景",
+    theme: "万寿寺 × 法海寺 × 首钢园",
+    pois: [
+      { time: "09:00", name: "万寿寺（北京艺术博物馆）", cat: "文化", lat: 39.9568, lng: 116.3120, desc: "刚大修完开放的'京西小故宫'，明清御用庙宇 + 艺术博物馆，游客还没反应过来，清净又有料。", tip: "公众号预约，进门先抬头看无量寿佛殿藻井" },
+      { time: "11:00", name: "法海寺", cat: "文化", lat: 39.9638, lng: 116.1580, desc: "翠微山中的明代壁画圣殿，大雄宝殿内的壁画可与欧洲文艺复兴壁画比肩，需打手电近距离看真迹。", tip: "门票含壁画真迹参观，务必请讲解" },
+      { time: "12:30", name: "首钢园午餐（京味）", cat: "美食", lat: 39.9210, lng: 116.1785, desc: "在旧钢厂改造的园区里吃一顿，园区餐厅多为京味家常与精酿餐吧，工业风环境很出片。", tip: "香啤坊、冬奥广场一带选择多" },
+      { time: "14:30", name: "首钢园 · 三高炉与大跳台", cat: "景点", lat: 39.9150, lng: 116.1850, desc: "冬奥大跳台'雪飞天'、保留完整的炼铁高炉群、星轨空中步道，硬核工业遗迹的赛博朋克感。", tip: "登上三高炉观景台俯瞰园区全貌" },
+      { time: "17:00", name: "新首钢大桥", cat: "景点", lat: 39.9180, lng: 116.1900, desc: "永定河上的网红双塔斜拉桥，钢构如蝴蝶展翼，傍晚亮灯后是工业浪漫的绝佳机位。", tip: "桥下步道可步行，落日+灯光同框" },
+      { time: "19:30", name: "首钢园夜景酒吧", cat: "美食", lat: 39.9180, lng: 116.1800, desc: "在园区高炉背景下喝一杯，夜色里钢铁骨架被灯光勾勒，是北京最新潮的夜生活打开方式。", tip: "周末有市集和露天演出，建议提前订位" }
+    ]
+  }
+];
+
+const CAT_COLORS = { "景点": "#3B82F6", "美食": "#F59E0B", "文化": "#8B5CF6", "购物": "#10B981" };
+let currentDay = 0;
+let map = null;
+let markerLayer = null;
+let polylineLayer = null;
+let infoWindow = null;
+let activeCardIdx = -1;
+
+// ====== INIT ======
+function init() {
+  initMap();
+  renderTabs();
+  switchDay(0);
+}
+
+// ====== MAP (Tencent Map JSAPI GL) ======
+function initMap() {
+  const center = new TMap.LatLng(39.9087, 116.3975);
+  map = new TMap.Map('map-container', {
+    center: center,
+    zoom: 11,
+    pitch: 0,
+    rotation: 0,
+    baseMap: { type: 'vector' }
+  });
+
+  infoWindow = new TMap.InfoWindow({
+    map: map,
+    position: center,
+    offset: { x: 0, y: -32 },
+    enableCustom: true
+  });
+  infoWindow.close();
+
+  markerLayer = new TMap.MultiMarker({
+    id: 'marker-layer',
+    map: map,
+    styles: {},
+    geometries: []
+  });
+
+  polylineLayer = new TMap.MultiPolyline({
+    id: 'polyline-layer',
+    map: map,
+    styles: {
+      route: new TMap.PolylineStyle({
+        color: '#DC2626',
+        width: 5,
+        borderWidth: 2,
+        borderColor: 'rgba(255,255,255,.7)',
+        lineCap: 'round',
+        dashArray: [10, 6]
+      })
+    },
+    geometries: []
+  });
+
+  markerLayer.on('click', function(evt) {
+    if (evt.geometry && evt.geometry.properties) {
+      const p = evt.geometry.properties;
+      activateCard(currentDay, p.idx);
+    }
+  });
+}
+
+function infoHtml(p) {
+  return '<div style="padding:10px 14px;font-size:13px;line-height:1.5;max-width:240px">' +
+    '<strong style="font-size:14px">' + p.time + ' &nbsp;' + p.name + '</strong>' +
+    '<div style="color:#6b7280;margin-top:4px;font-size:11px">' + (p.desc || '') + '</div>' +
+    '</div>';
+}
+
+function updateMapMarkers(dayIdx) {
+  const pois = DAYS[dayIdx].pois;
+
+  const styles = {};
+  const geometries = pois.map(function(p, i) {
+    const color = CAT_COLORS[p.cat] || '#DC2626';
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">' +
+      '<circle cx="16" cy="16" r="13" fill="' + color + '" stroke="#fff" stroke-width="3"/>' +
+      '<text x="16" y="20" font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">' + (i + 1) + '</text></svg>';
+    styles['poi_' + i] = new TMap.MarkerStyle({
+      width: 32, height: 32,
+      anchor: { x: 16, y: 16 },
+      src: 'data:image/svg+xml,' + encodeURIComponent(svg)
+    });
+    return {
+      id: 'poi_' + i,
+      styleId: 'poi_' + i,
+      position: new TMap.LatLng(p.lat, p.lng),
+      properties: { name: p.name, desc: p.desc, time: p.time, cat: p.cat, idx: i }
+    };
+  });
+
+  markerLayer.setStyles(styles);
+  markerLayer.setGeometries(geometries);
+
+  // Polyline connecting in order
+  if (pois.length > 1) {
+    const paths = pois.map(function(p) { return new TMap.LatLng(p.lat, p.lng); });
+    polylineLayer.setGeometries([{ id: 'day-route', styleId: 'route', paths: paths }]);
+  } else {
+    polylineLayer.setGeometries([]);
+  }
+
+  // Fit map to show all POIs
+  if (pois.length > 0) {
+    const bounds = new TMap.LatLngBounds();
+    pois.forEach(function(p) { bounds.extend(new TMap.LatLng(p.lat, p.lng)); });
+    map.fitBounds(bounds, { padding: 80, duration: 800 });
+  }
+}
+
+function flyToPoi(dayIdx, poiIdx) {
+  const p = DAYS[dayIdx].pois[poiIdx];
+  map.easeTo({ center: new TMap.LatLng(p.lat, p.lng), zoom: 15 }, { duration: 600 });
+  setTimeout(function() {
+    infoWindow.setPosition(new TMap.LatLng(p.lat, p.lng));
+    infoWindow.setContent(infoHtml(p));
+    infoWindow.open();
+  }, 400);
+}
+
+// ====== TABS & TIMELINE ======
+function renderTabs() {
+  const container = document.getElementById('dayTabs');
+  container.innerHTML = '';
+  DAYS.forEach(function(d, i) {
+    const btn = document.createElement('button');
+    btn.className = 'day-tab';
+    btn.textContent = 'DAY' + d.day;
+    btn.onclick = function() { switchDay(i); };
+    btn.dataset.day = i;
+    container.appendChild(btn);
+  });
+}
+
+function switchDay(dayIdx) {
+  currentDay = dayIdx;
+  activeCardIdx = -1;
+
+  document.querySelectorAll('.day-tab').forEach(function(t, i) {
+    t.classList.toggle('active', i === dayIdx);
+  });
+  const activeTab = document.querySelector('.day-tab.active');
+  if (activeTab) activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
+  const day = DAYS[dayIdx];
+
+  document.getElementById('dayTitle').textContent = 'Day ' + day.day + ' · ' + day.title;
+  document.getElementById('dayTheme').textContent = day.theme;
+
+  const timeline = document.getElementById('timeline');
+  timeline.innerHTML = '';
+
+  day.pois.forEach(function(p, i) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.borderLeftColor = CAT_COLORS[p.cat] || '#DC2626';
+    card.onclick = function() {
+      activateCard(dayIdx, i);
+    };
+
+    card.innerHTML =
+      '<div class="card-time">' +
+        '<span class="time-text">' + p.time + '</span>' +
+        '<div class="dot" style="background:' + (CAT_COLORS[p.cat] || '#DC2626') + '"></div>' +
+        '<div class="line"></div>' +
+      '</div>' +
+      '<div class="card-body">' +
+        '<div class="card-name">' + p.name + '</div>' +
+        '<span class="card-cat" style="background:' + (CAT_COLORS[p.cat] || '#DC2626') + '20;color:' + (CAT_COLORS[p.cat] || '#DC2626') + '">' + p.cat + '</span>' +
+        '<div class="card-desc">' + p.desc + '</div>' +
+        (p.tip ? '<div class="card-tip">' + p.tip + '</div>' : '') +
+      '</div>';
+
+    timeline.appendChild(card);
+  });
+
+  const lastCard = timeline.querySelector('.card:last-child');
+  if (lastCard) {
+    const line = lastCard.querySelector('.line');
+    if (line) line.style.display = 'none';
+  }
+
+  updateMapMarkers(dayIdx);
+  timeline.scrollTop = 0;
+}
+
+function activateCard(dayIdx, poiIdx) {
+  if (dayIdx !== currentDay) {
+    switchDay(dayIdx);
+    setTimeout(function() { doActivate(dayIdx, poiIdx); }, 120);
+  } else {
+    doActivate(dayIdx, poiIdx);
+  }
+}
+
+function doActivate(dayIdx, poiIdx) {
+  activeCardIdx = poiIdx;
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(function(c, i) {
+    c.classList.toggle('active-card', i === poiIdx);
+    if (i === poiIdx) c.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+  flyToPoi(dayIdx, poiIdx);
+}
+
+// ====== KEYBOARD NAVIGATION ======
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (activeCardIdx < DAYS[currentDay].pois.length - 1) {
+      activeCardIdx++;
+      doActivate(currentDay, activeCardIdx);
+    }
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (activeCardIdx > 0) {
+      activeCardIdx--;
+      doActivate(currentDay, activeCardIdx);
+    }
+  }
+});
+
+// ====== START ======
+window.onload = init;
+</script>
+</body>
+</html>
