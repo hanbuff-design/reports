@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<!-- 本报告由 industry-chain-report skill (v2) 生成：上中下游分层 + 第04章头部公司业务拆解与在研布局 + 真伪受益甄别。视觉系统（CSS / 导航 / 页脚 / 作者 HanBuff）遵循 skill 规范。涨跌条形图宽度公式：width% = abs(涨跌幅)/16×50。 -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>非侵入式脑机接口产业链分析 · 单页报告</title>
+<style>
+  :root{
+    --navy:#0f2c4c; --navy2:#1b3f6b; --navy-soft:#eaf1f8;
+    --ink:#1f2933; --muted:#6b7785; --line:#e3e8ee;
+    --bg:#f4f6f9; --card:#ffffff;
+    --red:#e23b3b; --red-soft:#fdecec;   /* 涨 = 红 */
+    --green:#1aa35a; --green-soft:#e9f7ef; /* 跌 = 绿 */
+    --gold:#c8932a; --gold-soft:#fbf3e2;
+    --chip:#eef3f9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px;}
+
+  /* ===== Top nav ===== */
+  .nav{position:sticky;top:0;z-index:50;background:rgba(15,44,76,.96);backdrop-filter:blur(6px);}
+  .nav .wrap{display:flex;align-items:center;gap:6px;height:52px;flex-wrap:wrap;}
+  .nav .brand{color:#fff;font-weight:700;margin-right:10px;letter-spacing:.5px;font-size:15px;}
+  .nav a{color:#cdd9e6;font-size:13px;padding:6px 10px;border-radius:6px;transition:.15s;}
+  .nav a:hover{background:rgba(255,255,255,.12);color:#fff;}
+
+  /* ===== Hero ===== */
+  .hero{background:linear-gradient(135deg,#0f2c4c 0%,#1b3f6b 60%,#27527f 100%);color:#fff;padding:46px 0 40px;}
+  .hero .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:#9ec3e6;border:1px solid rgba(158,195,230,.4);padding:4px 12px;border-radius:20px;margin-bottom:14px;}
+  .hero h1{margin:0 0 10px;font-size:34px;font-weight:800;letter-spacing:1px;}
+  .hero p.sub{margin:0;color:#c5d6e6;font-size:15px;max-width:760px;}
+  .hero .meta{margin-top:18px;display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:#a9c2dc;}
+  .hero .meta b{color:#fff;font-weight:600;}
+
+  /* ===== Section ===== */
+  section{padding:38px 0 8px;}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;}
+  .sec-head .no{font-size:13px;font-weight:700;color:#fff;background:var(--navy);width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:8px;flex:0 0 auto;}
+  .sec-head h2{margin:0;font-size:22px;font-weight:750;}
+  .sec-head .en{color:var(--muted);font-size:13px;font-weight:500;}
+
+  .lead{color:#3a4754;font-size:15px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:10px;padding:16px 20px;}
+
+  /* ===== Key takeaways cards ===== */
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
+  .kpi .h{font-size:13px;color:var(--muted);margin-bottom:6px;}
+  .kpi .v{font-size:17px;font-weight:750;color:var(--navy);}
+  .kpi .v small{font-size:12px;color:var(--muted);font-weight:500;}
+
+  /* ===== Chain diagram ===== */
+  .chain{display:flex;align-items:stretch;gap:0;margin-top:6px;flex-wrap:wrap;}
+  .tier{flex:1 1 0;min-width:230px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;position:relative;}
+  .tier .tname{font-weight:750;font-size:15px;color:var(--navy);display:flex;align-items:center;gap:8px;}
+  .tier .tname .dot{width:10px;height:10px;border-radius:50%;}
+  .tier .trole{font-size:12px;color:var(--muted);margin:4px 0 12px;}
+  .seg{margin-bottom:12px;}
+  .seg .lbl{font-size:12.5px;font-weight:600;color:#2c3a47;margin-bottom:6px;}
+  .pills{display:flex;flex-wrap:wrap;gap:6px;}
+  .pill{font-size:12px;background:var(--chip);color:#33414f;border:1px solid #dde6f0;padding:3px 9px;border-radius:14px;white-space:nowrap;}
+  .pill.real{background:var(--gold-soft);border-color:#e7d3a3;color:#8a6418;font-weight:600;}
+  .arrow{display:flex;align-items:center;justify-content:center;color:var(--navy);font-size:22px;font-weight:700;flex:0 0 34px;}
+  @media(max-width:860px){.arrow{transform:rotate(90deg);flex-basis:100%;height:30px;}}
+
+  .tier.up .dot{background:var(--navy);}
+  .tier.mid .dot{background:var(--gold);}
+  .tier.down .dot{background:#3f7bb0;}
+
+  /* ===== Tier detail cards ===== */
+  .tiercards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px;}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;}
+  .tcard .th{font-size:16px;font-weight:750;color:var(--navy);border-bottom:2px solid var(--navy-soft);padding-bottom:10px;margin-bottom:12px;}
+  .tcard h4{font-size:13px;margin:14px 0 5px;color:#2c3a47;}
+  .tcard p{margin:0;font-size:13.5px;color:#3a4754;}
+  .cert{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:6px 10px;border-radius:8px;font-size:13px;font-weight:700;align-self:flex-start;}
+  .cert.high{background:var(--green-soft);color:var(--green);}
+  .cert.mid{background:var(--gold-soft);color:var(--gold);}
+  .cert.low{background:#eef0f2;color:#6b7785;}
+  .stars{letter-spacing:2px;color:var(--gold);font-size:14px;}
+  .realpill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:10px;}
+  .realpill.t{background:var(--gold-soft);color:#8a6418;}
+  .realpill.f{background:#eef0f2;color:#7a8694;}
+
+  /* ===== Bar chart ===== */
+  .chart{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-top:6px;}
+  .chart .grp-title{font-size:13px;font-weight:700;color:var(--navy);margin:16px 0 8px;display:flex;align-items:center;gap:8px;}
+  .chart .grp-title:first-child{margin-top:2px;}
+  .chart .grp-title .sw{width:18px;height:4px;border-radius:2px;}
+  .row{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px;}
+  .row .name{width:104px;flex:0 0 auto;text-align:right;color:#33414f;}
+  .row .track{position:relative;flex:1 1 auto;height:18px;background:linear-gradient(90deg,#f0f3f7 0%,#f0f3f7 50%,#f0f3f7 100%);}
+  .row .track::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:#cfd8e2;}
+  .row .bar{position:absolute;top:2px;height:14px;border-radius:3px;}
+  .row .bar.pos{right:50%;background:var(--red);}
+  .row .bar.neg{left:50%;background:var(--green);}
+  .row .val{width:66px;flex:0 0 auto;font-weight:700;font-variant-numeric:tabular-nums;}
+  .row .val.pos{color:var(--red);}
+  .row .val.neg{color:var(--green);}
+  .legend{display:flex;gap:18px;margin-top:14px;font-size:12.5px;color:var(--muted);align-items:center;}
+  .legend .li{display:flex;align-items:center;gap:6px;}
+  .legend .sq{width:14px;height:14px;border-radius:3px;}
+
+  /* ===== Data table ===== */
+  .tbl-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 8px;margin-top:16px;overflow-x:auto;}
+  table{border-collapse:collapse;width:100%;font-size:13px;min-width:640px;}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;}
+  th{background:#f7f9fc;color:#51606e;font-weight:650;font-size:12.5px;}
+  td .up{color:var(--red);font-weight:700;}
+  td .down{color:var(--green);font-weight:700;}
+  .badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
+  .badge.t{background:var(--gold-soft);color:#8a6418;}
+  .badge.p{background:#eef0f2;color:#7a8694;}
+  tr:hover td{background:#fafcfe;}
+
+  /* ===== Real vs fake ===== */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px;}
+  .vscol{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;}
+  .vscol.real{border-top:4px solid var(--gold);}
+  .vscol.fake{border-top:4px solid #9aa6b2;}
+  .vscol h3{margin:0 0 4px;font-size:16px;}
+  .vscol.real h3{color:#8a6418;}
+  .vscol.fake h3{color:#5b6671;}
+  .vscol .desc{font-size:12.5px;color:var(--muted);margin:0 0 12px;}
+  .vscol ul{margin:0;padding-left:18px;}
+  .vscol li{font-size:13.5px;color:#3a4754;margin:7px 0;}
+  .vscol li b{color:var(--ink);}
+  .checklist{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin-top:16px;}
+  .checklist h4{margin:0 0 10px;font-size:15px;color:var(--navy);}
+  .checklist ol{margin:0;padding-left:20px;font-size:13.5px;color:#3a4754;}
+  .checklist ol li{margin:6px 0;}
+
+  /* ===== Verdict ===== */
+  .verdict{background:linear-gradient(135deg,#0f2c4c,#234e79);color:#eaf1f8;border-radius:14px;padding:24px 26px;}
+  .verdict h3{margin:0 0 12px;color:#fff;font-size:18px;}
+  .verdict p{margin:0 0 10px;font-size:14px;color:#d6e2ee;}
+  .verdict .points{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;margin-top:14px;}
+  .verdict .pt{font-size:13.5px;color:#e3edf6;display:flex;gap:8px;align-items:flex-start;}
+  .verdict .pt .n{background:var(--gold);color:#3a2a06;font-weight:800;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex:0 0 auto;margin-top:1px;}
+
+  /* ===== Footer ===== */
+  footer{border-top:1px solid var(--line);margin-top:34px;padding:22px 0 40px;color:var(--muted);font-size:12.5px;}
+  footer .wrap p{margin:5px 0;}
+  .disclaimer{background:#fff8f0;border:1px solid #f3e3cb;color:#8a6418;border-radius:10px;padding:12px 16px;font-size:12.5px;margin-top:12px;}
+
+  @media(max-width:820px){
+    .kpis,.tiercards,.vs,.verdict .points{grid-template-columns:1fr;}
+    .hero h1{font-size:27px;}
+  }
+  /* ===== Biz deep-dive (ch04: 头部公司业务拆解与在研布局) ===== */
+  .biz-sub{margin-top:24px;}
+  .biz-sub > h3{font-size:16px;color:var(--navy);margin:0 0 10px;display:flex;align-items:center;gap:9px;}
+  .biz-sub > h3 .k{background:var(--gold);color:#3a2a06;font-size:12px;font-weight:800;width:23px;height:23px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .biz-sub > h3 .note{font-size:12px;color:var(--muted);font-weight:500;}
+  .src{font-size:11.5px;color:var(--muted);margin-top:7px;line-height:1.5;}
+  .src b{color:#8a6418;font-weight:700;}
+  .prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:10px;}
+  .prod-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;}
+  .prod-card .ph{font-weight:700;color:var(--navy);font-size:14px;margin-bottom:6px;}
+  .prod-card .pd{font-size:12.5px;color:#3a4754;}
+  .prod-card .pm{font-size:12px;color:var(--gold);font-weight:700;margin-top:7px;}
+  .rnd-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:10px;}
+  .rnd{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;padding:14px 18px;}
+  .rnd .rh{font-weight:750;color:var(--navy);font-size:14.5px;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+  .rnd .rh .badge2{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:9px;background:var(--navy-soft);color:var(--navy);}
+  .rnd ul{margin:0;padding-left:18px;font-size:12.8px;color:#3a4754;}
+  .rnd li{margin:4px 0;}
+  .rnd .tag{display:inline-block;font-size:11px;background:var(--gold-soft);color:#8a6418;padding:2px 8px;border-radius:10px;margin-top:7px;font-weight:600;}
+  @media(max-width:820px){.prod-grid,.rnd-cards{grid-template-columns:1fr;}}
+  @media print{
+    .nav{display:none;}
+    body{background:#fff;}
+    .hero,.verdict{background:#0f2c4c !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .tier,.tcard,.chart,.vscol,.kpi,.tbl-wrap,.prod-card,.rnd{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="wrap">
+    <span class="brand">🧠 非侵入式脑机接口产业链</span>
+    <a href="#def">概念</a>
+    <a href="#map">产业链全景</a>
+    <a href="#layers">分层详解</a>
+    <a href="#biz">业务拆解</a>
+    <a href="#chart">涨跌全景</a>
+    <a href="#real">真伪受益</a>
+    <a href="#verdict">客观判断</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <span class="tag">脑科学 · 产业链研究</span>
+    <h1>非侵入式脑机接口产业链分析</h1>
+    <p class="sub">把"用脑电 / 近红外等非植入手段读懂大脑、让人脑直连设备"的能力，按上中下游拆开：谁在真正卖电极与算法、谁握有产品、谁只是贴了概念标签。附代表公司实时涨跌与真伪受益甄别。</p>
+    <div class="meta">
+      <span>作者：<b>HanBuff</b></span>
+      <span>数据日期：<b>2026-07-29 收盘</b></span>
+      <span>数据来源：<b>腾讯自选股 / NeoData 金融搜索</b></span>
+      <span>涨跌口径：<b>涨红 · 跌绿（A 股习惯）</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- KEY TAKEAWAYS -->
+  <section style="padding-top:30px;">
+    <div class="kpis">
+      <div class="kpi">
+        <div class="h">最受益环节</div>
+        <div class="v">上游 · 采集硬件与信号链 <small>确定性最高（卖铲人）</small></div>
+      </div>
+      <div class="kpi">
+        <div class="h">板块当日表现</div>
+        <div class="v">脑科学(脑机接口)分化 <small>世纪华通 +8.23% / 创新医疗 -10.02%</small></div>
+      </div>
+      <div class="kpi">
+        <div class="h">真伪结论</div>
+        <div class="v">真放量在 electrodes/设备未上市龙头 <small>A股多"早期+概念"</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. DEFINITION -->
+  <section id="def">
+    <div class="sec-head"><span class="no">1</span><h2>什么是非侵入式脑机接口</h2><span class="en">Non-invasive BCI</span></div>
+    <div class="lead">
+      <b>脑机接口（BCI）</b>是在大脑与外部设备之间建立直接信息通路的系统；按信号采集方式分为<b>侵入式 / 半侵入式 / 非侵入式</b>。本报告的<b>非侵入式（Non-invasive）</b>路线，指通过<b>脑电图（EEG）、功能性近红外（fNIRS）</b>等体外传感器，无创捕捉脑活动信号，无需手术——安全性高、易普及，是当前脑机接口产业化的<b>核心主流方向</b>。
+      <br><br>
+      主流信号载体是<b>头皮 EEG</b>（时间分辨率高、便携、成本低），配套<b>干 / 湿 / 半干 / 水凝胶电极</b>与<b>神经信号放大 / 模数转换芯片</b>；下游覆盖<b>医疗康复（卒中 / 脊髓损伤 / 癫痫 / 抑郁）、消费电子（睡眠 / 专注力 / 游戏）、科研教学</b>三大场景。
+      <br><br>
+      <b>投资视角的核心矛盾：</b>非侵入式 BCI 听着性感，但 A 股并无"脑机接口"独立板块，相关标的散落在<b>脑科学、医疗器械、智能穿戴、医疗服务</b>等大概念里；真正能拿出出货量、单价、毛利率的玩家多在<b>未上市龙头（强脑科技 / 博睿康）</b>，A 股多数公司只是<b>叙事受益方</b>而非<b>业绩受益方</b>。
+    </div>
+  </section>
+
+  <!-- 2. CHAIN MAP -->
+  <section id="map">
+    <div class="sec-head"><span class="no">2</span><h2>产业链全景图</h2><span class="en">Upstream · Midstream · Downstream</span></div>
+    <div class="chain">
+      <!-- 上游 -->
+      <div class="tier up">
+        <div class="tname"><span class="dot"></span>上游 · 脑电采集硬件与信号链</div>
+        <div class="trole">非侵入式 BCI 的"卖铲人"，无论谁做出脑机都要采购</div>
+        <div class="seg"><div class="lbl">电极 / 柔性传感材料</div><div class="pills"><span class="pill real">汉威科技</span><span class="pill">柔性电极材料厂</span></div></div>
+        <div class="seg"><div class="lbl">神经信号采集芯片 / 模拟前端</div><div class="pills"><span class="pill">ADI ADS 系国产替代</span><span class="pill">信号链芯片</span></div></div>
+        <div class="seg"><div class="lbl">可穿戴硬件 / 头戴终端</div><div class="pills"><span class="pill">乐心医疗</span><span class="pill">九安医疗</span><span class="pill">三诺生物</span></div></div>
+      </div>
+      <div class="arrow">→</div>
+      <!-- 中游 -->
+      <div class="tier mid">
+        <div class="tname"><span class="dot"></span>中游 · BCI 系统与算法平台</div>
+        <div class="trole">掌握脑电采集整机 + 解码算法，分化极大，多数早期</div>
+        <div class="seg"><div class="lbl">脑电采集设备 / 脑电图机</div><div class="pills"><span class="pill real">博睿康(未上市)</span><span class="pill real">翔宇医疗</span><span class="pill real">伟思医疗</span></div></div>
+        <div class="seg"><div class="lbl">解码算法 / 脑电大模型</div><div class="pills"><span class="pill real">科大讯飞</span><span class="pill real">岩山科技</span><span class="pill">强脑科技</span></div></div>
+        <div class="seg"><div class="lbl">神经反馈 / 康复系统</div><div class="pills"><span class="pill real">创新医疗(博灵)</span><span class="pill">爱朋医疗</span></div></div>
+      </div>
+      <div class="arrow">→</div>
+      <!-- 下游 -->
+      <div class="tier down">
+        <div class="tname"><span class="dot"></span>下游 · 应用场景</div>
+        <div class="trole">用 BCI 的人，最易蹭概念，受益传导最弱</div>
+        <div class="seg"><div class="lbl">医疗康复</div><div class="pills"><span class="pill real">三博脑科(临床)</span><span class="pill">康复医院</span></div></div>
+        <div class="seg"><div class="lbl">消费电子 / 健康</div><div class="pills"><span class="pill">强脑安睡仪</span><span class="pill">游戏 / 专注力</span></div></div>
+        <div class="seg"><div class="lbl">科研教学</div><div class="pills"><span class="pill">高校 / 院所</span></div></div>
+      </div>
+    </div>
+    <div class="lead" style="margin-top:16px;border-left-color:var(--gold);">
+      <b>价值链流向：</b>上游把电极 / 芯片 / 头戴硬件"喂"给中游，中游整合成脑电采集系统与解码算法，再赋能下游康复、消费与科研。越往上游，<b>受益越确定</b>（无论谁做出脑机都要买电极和信号链）；越往下游，<b>受益越间接</b>——且下游康复 / 消费应用方多为"用设备的人"，自身并不生产核心部件，蹭概念最集中。
+    </div>
+  </section>
+
+  <!-- 3. LAYER DETAIL -->
+  <section id="layers">
+    <div class="sec-head"><span class="no">3</span><h2>上中下游分层详解</h2><span class="en">Benefit Logic & Certainty</span></div>
+    <div class="tiercards">
+      <!-- 上游 -->
+      <div class="tcard">
+        <div class="th">上游 · 脑电采集硬件与信号链</div>
+        <h4>代表公司</h4>
+        <p>汉威科技（柔性微纳传感器 / 苏州能斯达超柔性脑电传感器，中标工信部"脑机接口关键器件"专项）；神经信号模拟前端芯片（ADI ADS1299 系国产替代）；乐心医疗 / 九安医疗 / 三诺生物（可穿戴头戴硬件底座）。</p>
+        <h4>受益逻辑</h4>
+        <p>非侵入式 BCI 的"卖铲人"——电极、柔性传感、信号放大 / ADC 芯片是所有脑电采集设备的底层刚需。无论中游谁做出脑机系统，都要向上游采购核心器件，订单可见、国产替代弹性足。</p>
+        <h4>确定性</h4>
+        <p><span class="stars">★★★★★</span> 最高。卖铲子逻辑，不依赖单一应用爆发；汉威传感器已获国家级专项背书。</p>
+        <span class="realpill t">真受益 · 强</span>
+        <span class="cert high">确定性：高</span>
+      </div>
+      <!-- 中游 -->
+      <div class="tcard">
+        <div class="th">中游 · BCI 系统与算法平台</div>
+        <h4>代表公司</h4>
+        <p>脑电采集设备：博睿康（未上市，2025 脑电图机国内第一）、翔宇医疗、伟思医疗；解码算法：科大讯飞（汉语言实时解码 95%）、岩山科技（岩思类脑数字孪生脑）、强脑科技（BrainCo）；神经反馈康复：创新医疗（控股博灵脑机 68.36%）。</p>
+        <h4>受益逻辑</h4>
+        <p>掌握整机 + 算法，可通过医疗器械销售、康复服务、消费级订阅变现。博睿康脑电图机已规模化（2025 销量 488 套），讯飞 / 岩山算法在医疗与消费两端落地。</p>
+        <h4>确定性</h4>
+        <p><span class="stars">★★★☆</span> 分化且多早期。头部有真实出货，但多数 A 股公司"脑机产品尚未规模化销售、营收占比小"（翔宇 / 伟思公告原话），仍处市场培育期。</p>
+        <span class="realpill t">真受益（少数）· 多数早期</span>
+        <span class="cert mid">确定性：中</span>
+      </div>
+      <!-- 下游 -->
+      <div class="tcard">
+        <div class="th">下游 · 应用场景</div>
+        <h4>代表公司</h4>
+        <p>医疗康复：三博脑科（神经专科临床，但明确"不做产品"）；消费电子：强脑科技安睡仪 / 头环、游戏脑控；科研教学：高校院所采购脑电设备。</p>
+        <h4>受益逻辑</h4>
+        <p>脑机在康复、睡眠、专注力、科研中确有刚需。但下游应用方多为"使用设备的人"，自身不生产核心部件——三博脑科是医疗服务商，强脑科技虽做产品但属未上市消费级，A 股纯下游标的受益传导极弱。</p>
+        <h4>确定性</h4>
+        <p><span class="stars">★★☆</span> 最易蹭概念。三博脑科（不做产品）、南京熊猫（课题完成尚无收入）等"概念股"与脑机业绩基本无直接关联。</p>
+        <span class="realpill f">真伪混杂 · 多蹭概念</span>
+        <span class="cert low">确定性：低~中</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. BIZ DEEP-DIVE -->
+  <section id="biz">
+    <div class="sec-head"><span class="no">4</span><h2>★ 头部公司业务拆解与在研布局</h2><span class="en">Business Breakdown & R&D Pipeline</span></div>
+    <div class="lead">
+      本章从投资视角把分析从"哪些板块涨"推进到"<b>谁真正有业务、产品怎么拆、量价利多少、技术路线怎么分、头部在研往哪走</b>"——这是区分"叙事受益"与"业绩受益"最硬的证据。
+    </div>
+
+    <!-- 4.1 谁有业务 -->
+    <div class="biz-sub">
+      <h3><span class="k">4.1</span>谁真正有该项业务<span class="note">· 上市 / 未上市头部清单</span></h3>
+      <div class="kpis" style="grid-template-columns:repeat(2,1fr);">
+        <div class="kpi">
+          <div class="h">上市公司（A 股）· 已有实质业务</div>
+          <div class="v" style="font-size:13.5px;line-height:1.9;">
+            • <b>创新医疗</b>：控股博灵脑机 68.36%，赛博灵科 AM5（医）/ AC5（消费）双产品，偏瘫康复，C 端 2025.9 启动预约，B 端临床 100+ 例<br>
+            • <b>翔宇医疗</b>：非侵入式路线，脑电图机 + 便携脑电图机 2025.7 获证已产生收入，60%+ 研发投脑机<br>
+            • <b>伟思医疗</b>：MagNeuroOne 导航经颅磁已取证，脑机版认知训练 / 功能电刺激在研<br>
+            • <b>汉威科技</b>：苏州能斯达超柔性脑电传感器，中标工信部"脑机接口关键器件"专项<br>
+            • <b>科大讯飞</b>：脑电情绪识别 92% / 汉语言实时解码 95%（偏瘫患者）<br>
+            • <b>岩山科技</b>：岩思类脑脑电大模型 + 数字孪生脑，LumiSleep 睡眠仪 2026 预售<br>
+            • <b>爱朋医疗</b>：围术期脑监测 / 失眠麻醉 / ADHD，参股瑞神安（神经调控）
+          </div>
+        </div>
+        <div class="kpi">
+          <div class="h">未上市头部 · 真实放量主力</div>
+          <div class="v" style="font-size:13.5px;line-height:1.9;">
+            • <b>强脑科技 BrainCo</b>：非侵入式龙头独角兽，估值约 92 亿元（13 亿美元），2025 年融资约 20 亿元（全球仅次于 Neuralink）；480+ 专利、FDA/CE 认证；产品含智能仿生手 / 膝、FocusXin 注意力训练、Easleep 安睡仪，与喜临门推脑机床垫<br>
+            • <b>博睿康</b>：冲刺"脑机接口第一股"，2025 脑电图机出货量 / 金额国内全行业第一，覆盖 500+ 医疗机构、300+ 科研机构；非侵入式脑电采集系统是唯一定金流来源<br>
+            • <b>概念贴牌（无实质）</b>：三博脑科（公告"不做产品"）、南京熊猫（课题完成尚无收入）、世纪华通 / 乐心 / 九安 / 三诺（可穿戴邻近，非 BCI 核心）
+          </div>
+        </div>
+      </div>
+      <p class="src"><b>来源口径：</b>上市公司主营与业务进展来自 NeoData 金融搜索（2025 年报主营构成 + 公司公告 / 互动易）；强脑科技 / 博睿康来自公开报道与招股书披露（行业研报 / 公司 IR）。</p>
+    </div>
+
+    <!-- 4.2 产品拆分 -->
+    <div class="biz-sub">
+      <h3><span class="k">4.2</span>产品种类拆分<span class="note">· 按形态 / 技术 / 场景多维度</span></h3>
+      <div class="prod-grid">
+        <div class="prod-card">
+          <div class="ph">医疗级脑电采集系统（脑电图机）</div>
+          <div class="pd">多通道 EEG 主机 + 电极帽，用于神经内科 / 外科 / 康复 / 睡眠 / 儿科。博睿康 1024 导高频机 2020 获全球首套注册证。单价 15–18 万/台。</div>
+          <div class="pm">代表：博睿康 / 翔宇医疗 / 伟思医疗</div>
+        </div>
+        <div class="prod-card">
+          <div class="ph">消费级头环 / 头戴 / 耳机</div>
+          <div class="pd">干/半干电极，用于睡眠监测、专注力训练、正念舒压、游戏交互。强脑 FocusZen / Easleep、岩山 LumiSleep、佳禾脑电耳机。</div>
+          <div class="pm">代表：强脑科技 / 岩山科技 / 佳禾智能</div>
+        </div>
+        <div class="prod-card">
+          <div class="ph">仿生外设（智能假肢）</div>
+          <div class="pd">脑机 + AI 驱动的智能仿生手 / 膝，残障辅助。强脑 BrainCo 仿生手已商用，单价数万至十万级。</div>
+          <div class="pm">代表：强脑科技</div>
+        </div>
+        <div class="prod-card">
+          <div class="ph">神经反馈训练系统</div>
+          <div class="pd">ADHD / 孤独症 / 抑郁的闭环神经反馈。强脑 FocusXin（ADHD）、StarKids（ASD）；创新医疗博灵灵巧手 / 气动手套（偏瘫康复）。</div>
+          <div class="pm">代表：强脑科技 / 创新医疗</div>
+        </div>
+        <div class="prod-card">
+          <div class="ph">经颅磁 / 电刺激（脑机融合）</div>
+          <div class="pd">MagNeuroOne 导航经颅磁（伟思已取证）、双模态（脑电 + 近红外）经颅磁（麦澜德在研，预计 2026Q1 首证）。</div>
+          <div class="pm">代表：伟思医疗 / 麦澜德 / 诚益通</div>
+        </div>
+        <div class="prod-card">
+          <div class="ph">脑机睡眠 / 健康硬件</div>
+          <div class="pd">脑电监测 + 光 / 声 / 电干预。强脑安睡仪（电商 4 万+ 销量）、与喜临门联合智能床垫（脑电识别睡眠阶段）。</div>
+          <div class="pm">代表：强脑科技 / 喜临门</div>
+        </div>
+      </div>
+      <p class="src"><b>来源口径：</b>产品矩阵与形态来自公司官网、招股书与公开报道整理（行业口径）；单价区间部分来自博睿康披露招股书（财报级），消费级为电商平台公开销量估算。</p>
+    </div>
+
+    <!-- 4.3 出货量·单价·毛利 -->
+    <div class="biz-sub">
+      <h3><span class="k">4.3</span>出货量 · 单价 · 毛利<span class="note">· 含行业总览 + 个股硬数据</span></h3>
+      <div class="kpis" style="grid-template-columns:repeat(3,1fr);">
+        <div class="kpi"><div class="h">中国 BCI 市场规模（赛迪顾问）</div><div class="v">2024 年 32 亿 → 2025 年破 38 亿<br><small>2027 年超 55 亿，CAGR 约 20%；医疗应用占比约 46%</small></div></div>
+        <div class="kpi"><div class="h">博睿康脑电采集系统 · 销量（套）</div><div class="v">361 / 296 / 488<br><small>2023 / 2024 / 2025；年产能约 1500 套</small></div></div>
+        <div class="kpi"><div class="h">博睿康均价 · 毛利率</div><div class="v">15.91 万/台 · 77.92%<br><small>2025 均价（元/台）；综合毛利率 78.18%</small></div></div>
+      </div>
+      <div class="tbl-wrap" style="margin-top:14px;">
+        <table>
+          <thead><tr><th>产品 / 细分</th><th>年出货量 / 产能</th><th>单价区间</th><th>毛利率</th><th>数据来源口径</th></tr></thead>
+          <tbody>
+            <tr><td>博睿康 脑电采集系统（EEG 机）</td><td>2025 销量 488 套 / 产能 1500 套</td><td class="up">15.91 万元/台</td><td class="up">77.9%</td><td><span class="badge t">财报披露（招股书）</span></td></tr>
+            <tr><td>博睿康 经颅电刺激设备</td><td>少量补充收入</td><td>估算 5–15 万</td><td>约 75–80%</td><td><span class="badge p">估算/行业口径</span></td></tr>
+            <tr><td>强脑科技 安睡仪（消费级）</td><td>电商 4 万+ 台（累计）</td><td>估算 2000–5000 元</td><td>未披露（消费电子）</td><td><span class="badge p">公开报道估算</span></td></tr>
+            <tr><td>强脑科技 智能仿生手</td><td>小批量（残障辅助）</td><td>估算 数万–十万级</td><td>未披露</td><td><span class="badge p">公开报道估算</span></td></tr>
+            <tr><td>翔宇 / 伟思 脑电图机（获证）</td><td>已产生收入，未披露量</td><td>估算 10–20 万</td><td>医疗器械整体 60–85%</td><td><span class="badge p">行业口径</span></td></tr>
+            <tr><td>A 股脑机产品（多数）</td><td>尚未规模化销售</td><td>—</td><td>营收占比极小</td><td><span class="badge p">公司公告（培育期）</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="src"><b>来源口径：</b>行业市场规模（赛迪顾问 / 公开报道，行业研报）；博睿康销量 / 单价 / 毛利率来自其招股书披露（财报级硬数据）；消费级量价来自电商平台与公司公开信息（估算）；A 股多数公司脑机产品"尚未规模化、营收占比小"为其异动公告原话。<b>非财报直接披露的均已标"估算/行业口径"，不作事实承诺。</b></p>
+    </div>
+
+    <!-- 4.4 技术路线对比 -->
+    <div class="biz-sub">
+      <h3><span class="k">4.4</span>技术路线对比<span class="note">· 电极路线 + 信号模态</span></h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>技术路线</th><th>原理 / 关键特征</th><th>核心指标</th><th>适用场景</th><th>代表玩家</th></tr></thead>
+          <tbody>
+            <tr><td><b>湿电极</b>（凝胶 / Ag-AgCl）</td><td>导电凝胶建立离表皮离子通道，金标准</td><td>阻抗 &lt;10 kΩ、信噪比高、可靠；但准备繁琐、不适</td><td>临床 / 科研 EEG 主流</td><td>博睿康 / 翔宇 / 伟思</td></tr>
+            <tr><td><b>干电极</b>（金属针 / 导电聚合物）</td><td>无凝胶，快戴、自戴、清洁</td><td>阻抗数百 kΩ、运动伪迹敏感、信号较差</td><td>消费级头环 / 快速筛查</td><td>强脑 / 岩山（部分）</td></tr>
+            <tr><td><b>半干电极</b>（控释电解质）</td><td>缓慢释放盐水，折中方案</td><td>阻抗 ~44 kΩ、稳定、可较长时佩戴</td><td>科研 + 准消费过渡</td><td>高校 / 初创</td></tr>
+            <tr><td><b>水凝胶电极</b></td><td>双层水凝胶，可贴附、抗运动伪迹</td><td>阻抗≈湿电极、可连续 12h、生物相容好</td><td>长时监测 / 消费健康</td><td>强脑（已应用）</td></tr>
+            <tr><td><b>EEG 信号</b>（主流模态）</td><td>头皮电位，时间分辨率高</td><td>毫秒级时间分辨率、空间分辨率低</td><td>通用非侵入式 BCI</td><td>全线玩家</td></tr>
+            <tr><td><b>fNIRS</b>（近红外）</td><td>血液动力学响应，空间分辨率高</td><td>空间好、时间亚秒级、无创</td><td>认知 / 情绪 / 语言研究</td><td>麦澜德（双模态）</td></tr>
+            <tr><td><b>fMRI</b>（功能核磁）</td><td>血氧信号，空间分辨率极高</td><td>空间优、设备庞大、单台数十万美元</td><td>科研，难普及</td><td>院所</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="src"><b>核心结论：</b>医疗 / 科研主流量产路线仍是<b>湿电极 EEG</b>（博睿康凭此拿下国内第一）；消费级走向<b>干 / 半干 / 水凝胶</b>以换取便捷性，代价是信号质量。多模态融合（EEG + fNIRS）是提升解码精度的明确方向。技术难点在<b>信号降噪、抗运动伪迹、个体自适应解码</b>——算法与电极材料是壁垒所在。<br><b>来源口径：</b>技术对比综合自 SCI 论文（ScienceDirect / Nature 子刊）、科普与行业资料（学术 / 行业口径）。</p>
+    </div>
+
+    <!-- 4.5 头部在研布局 -->
+    <div class="biz-sub">
+      <h3><span class="k">4.5</span>头部公司在研布局<span class="note">· R&D pipeline 与行业演进</span></h3>
+      <div class="rnd-cards">
+        <div class="rnd">
+          <div class="rh">强脑科技 BrainCo <span class="badge2">未上市·独角兽</span></div>
+          <ul>
+            <li>睡眠生态：与喜临门联合研发脑电智能床垫 / 枕，识别睡眠阶段并个性化干预</li>
+            <li>仿生外设迭代：智能仿生手 / 膝持续升级，拓展康复与日常辅助</li>
+            <li>神经反馈：FocusXin（ADHD）、StarKids（ASD）训练系统扩场景</li>
+          </ul>
+          <span class="tag">方向：消费健康 + 仿生 + 睡眠生态</span>
+        </div>
+        <div class="rnd">
+          <div class="rh">创新医疗 / 博灵脑机 <span class="badge2">控股 68.36%</span></div>
+          <ul>
+            <li>灵巧手原理样机通过验证（患肢手指单独控制）</li>
+            <li>气动手套（手部功能不佳患者）研制完成</li>
+            <li>B 端（AM5）临床推进，预计 2026 上半年报注册证</li>
+          </ul>
+          <span class="tag">方向：偏瘫康复闭环</span>
+        </div>
+        <div class="rnd">
+          <div class="rh">翔宇医疗 <span class="badge2">全产业链自研</span></div>
+          <ul>
+            <li>芯片—电极—算法—整机全自研，脑电机 2025.7 获证已收入</li>
+            <li>60%+ 研发投入投向脑机，已进入 500+ 三甲，目标 1000+ 家</li>
+            <li>精神心理类脑机产品以有源备案拓展院外</li>
+          </ul>
+          <span class="tag">方向：康复装备 + 临床渗透</span>
+        </div>
+        <div class="rnd">
+          <div class="rh">科大讯飞 <span class="badge2">AI+脑机</span></div>
+          <ul>
+            <li>汉语言实时解码准确率 95%（偏瘫患者，2026.1）</li>
+            <li>脑电情绪识别 92%，已用于车载疲劳监测</li>
+            <li>拓展儿童脑功能诊疗、老年认知障碍干预</li>
+          </ul>
+          <span class="tag">方向：语言康复 + 多场景解码</span>
+        </div>
+        <div class="rnd">
+          <div class="rh">岩山科技 / 岩思类脑 <span class="badge2">脑电大模型</span></div>
+          <ul>
+            <li>"数字孪生脑"闭环神经调控（耳鸣等），脑电采集—干预—预测—优化</li>
+            <li>LumiSleep 实时调控脑电睡眠仪 2026 预售</li>
+            <li>非侵入式脑控《黑神话：悟空》已验证娱乐交互</li>
+          </ul>
+          <span class="tag">方向：脑电大模型 + 消费交互</span>
+        </div>
+        <div class="rnd">
+          <div class="rh">汉威科技 <span class="badge2">上游器件</span></div>
+          <ul>
+            <li>苏州能斯达超柔性脑电传感器，中标工信部"脑机接口关键器件"专项</li>
+            <li>无创柔性材料、复杂脑信息协同监测、可植入柔性电极突破</li>
+            <li>与医疗机构 / 高校联合研发，储备早期</li>
+          </ul>
+          <span class="tag">方向：核心柔性传感国产替代</span>
+        </div>
+      </div>
+      <p class="src"><b>行业演进四方向：</b>①算法升级（深度学习将分类精度从 77–80% 推向 93%+）；②硬件创新（半干 / 高密度 / 水凝胶电极，兼顾便捷与信号）；③多模态融合（EEG + fNIRS）提升空间—时间分辨率；④成本下探 + 应用场景化（康复闭环先行、消费验证接力）。<br><b>来源口径：</b>各公司在研与产品进展来自 NeoData（年报 / 公告）+ 公开报道 / 公司 IR（行业口径）。</p>
+    </div>
+  </section>
+
+  <!-- 5. CHART -->
+  <section id="chart">
+    <div class="sec-head"><span class="no">5</span><h2>代表公司涨跌全景</h2><span class="en">2026-07-29 收盘 · 涨红跌绿</span></div>
+    <div class="chart">
+      <div class="grp-title"><span class="sw" style="background:var(--navy);"></span>上游 · 采集硬件与信号链（真受益确定性最高）</div>
+      <div class="row"><span class="name">汉威科技</span><div class="track"><div class="bar neg" style="width:4.6%;"></div></div><span class="val neg">-1.48%</span></div>
+      <div class="row"><span class="name">乐心医疗</span><div class="track"><div class="bar pos" style="width:5.5%;"></div></div><span class="val pos">+1.75%</span></div>
+      <div class="row"><span class="name">九安医疗</span><div class="track"><div class="bar neg" style="width:1.0%;"></div></div><span class="val neg">-0.33%</span></div>
+      <div class="row"><span class="name">三诺生物</span><div class="track"><div class="bar pos" style="width:6.6%;"></div></div><span class="val pos">+2.12%</span></div>
+
+      <div class="grp-title"><span class="sw" style="background:var(--gold);"></span>中游 · BCI 系统与算法平台（分化，多早期）</div>
+      <div class="row"><span class="name">创新医疗</span><div class="track"><div class="bar neg" style="width:31.3%;"></div></div><span class="val neg">-10.02%</span></div>
+      <div class="row"><span class="name">科大讯飞</span><div class="track"><div class="bar pos" style="width:2.0%;"></div></div><span class="val pos">+0.65%</span></div>
+      <div class="row"><span class="name">岩山科技</span><div class="track"><div class="bar neg" style="width:6.4%;"></div></div><span class="val neg">-2.05%</span></div>
+      <div class="row"><span class="name">伟思医疗</span><div class="track"><div class="bar neg" style="width:13.2%;"></div></div><span class="val neg">-4.23%</span></div>
+      <div class="row"><span class="name">翔宇医疗</span><div class="track"><div class="bar neg" style="width:25.1%;"></div></div><span class="val neg">-8.04%</span></div>
+      <div class="row"><span class="name">爱朋医疗</span><div class="track"><div class="bar neg" style="width:28.9%;"></div></div><span class="val neg">-9.24%</span></div>
+
+      <div class="grp-title"><span class="sw" style="background:#3f7bb0;"></span>下游 / 概念 · 应用与蹭概念（当日偏弱）</div>
+      <div class="row"><span class="name">世纪华通</span><div class="track"><div class="bar pos" style="width:25.7%;"></div></div><span class="val pos">+8.23%</span></div>
+      <div class="row"><span class="name">佳禾智能</span><div class="track"><div class="bar pos" style="width:7.0%;"></div></div><span class="val pos">+2.23%</span></div>
+      <div class="row"><span class="name">三博脑科</span><div class="track"><div class="bar neg" style="width:30.3%;"></div></div><span class="val neg">-9.71%</span></div>
+      <div class="row"><span class="name">南京熊猫</span><div class="track"><div class="bar neg" style="width:21.8%;"></div></div><span class="val neg">-6.96%</span></div>
+
+      <div class="legend">
+        <span class="li"><span class="sq" style="background:var(--red);"></span>上涨（红）</span>
+        <span class="li"><span class="sq" style="background:var(--green);"></span>下跌（绿）</span>
+        <span class="li" style="color:#9aa6b2;">注：当日涨跌幅仅反映单日情绪，不代表产业确定性；纵轴等比于涨跌幅绝对值（满刻度 ±16%）。</span>
+      </div>
+    </div>
+
+    <!-- Data table -->
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>公司</th><th>代码</th><th>环节</th><th>收盘价</th><th>当日</th><th>年初至今</th><th>市盈率TTM</th><th>总市值</th><th>真伪</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>汉威科技</td><td>300007.SZ</td><td>上游</td><td>31.92</td><td class="down">-1.48%</td><td class="down">-40.39%</td><td>62.7</td><td>104.5亿</td><td><span class="badge t">真受益</span></td></tr>
+          <tr><td>乐心医疗</td><td>300562.SZ</td><td>上游</td><td>13.35</td><td class="up">+1.75%</td><td class="up">+1.14%</td><td>32.0</td><td>29.2亿</td><td><span class="badge p">概念邻近</span></td></tr>
+          <tr><td>九安医疗</td><td>002432.SZ</td><td>上游</td><td>66.81</td><td class="down">-0.33%</td><td class="up">+73.28%</td><td>13.6</td><td>311.3亿</td><td><span class="badge p">概念邻近</span></td></tr>
+          <tr><td>三诺生物</td><td>300298.SZ</td><td>上游</td><td>15.89</td><td class="up">+2.12%</td><td class="down">-7.13%</td><td>74.9</td><td>88.5亿</td><td><span class="badge p">概念邻近</span></td></tr>
+          <tr><td>创新医疗</td><td>002173.SZ</td><td>中游</td><td>20.48</td><td class="down">-10.02%</td><td class="down">-4.79%</td><td>亏损</td><td>90.4亿</td><td><span class="badge t">真受益(早期)</span></td></tr>
+          <tr><td>科大讯飞</td><td>002230.SZ</td><td>中游</td><td>40.07</td><td class="up">+0.65%</td><td class="down">-20.16%</td><td>111.5</td><td>962.5亿</td><td><span class="badge t">真受益</span></td></tr>
+          <tr><td>岩山科技</td><td>002195.SZ</td><td>中游</td><td>6.69</td><td class="down">-2.05%</td><td class="down">-5.62%</td><td>463.7</td><td>379.1亿</td><td><span class="badge t">真但早期</span></td></tr>
+          <tr><td>伟思医疗</td><td>688580.SH</td><td>中游</td><td>46.83</td><td class="down">-4.23%</td><td class="down">-1.03%</td><td>27.0</td><td>44.9亿</td><td><span class="badge t">真但早期</span></td></tr>
+          <tr><td>翔宇医疗</td><td>688626.SH</td><td>中游</td><td>42.30</td><td class="down">-8.04%</td><td class="down">-29.88%</td><td>84.1</td><td>67.7亿</td><td><span class="badge t">真但早期</span></td></tr>
+          <tr><td>爱朋医疗</td><td>300753.SZ</td><td>中游</td><td>23.58</td><td class="down">-9.24%</td><td class="down">-15.03%</td><td>亏损</td><td>29.7亿</td><td><span class="badge t">真但早期</span></td></tr>
+          <tr><td>世纪华通</td><td>002602.SZ</td><td>下游/概念</td><td>13.55</td><td class="up">+8.23%</td><td class="down">-20.29%</td><td>15.9</td><td>998.7亿</td><td><span class="badge p">概念(游戏)</span></td></tr>
+          <tr><td>佳禾智能</td><td>300793.SZ</td><td>下游/概念</td><td>11.01</td><td class="up">+2.23%</td><td class="down">-32.50%</td><td>亏损</td><td>41.9亿</td><td><span class="badge p">概念(耳机)</span></td></tr>
+          <tr><td>三博脑科</td><td>301293.SZ</td><td>下游</td><td>54.56</td><td class="down">-9.71%</td><td class="down">-7.49%</td><td>184.5</td><td>112.4亿</td><td><span class="badge p">伪受益</span></td></tr>
+          <tr><td>南京熊猫</td><td>600775.SH</td><td>下游/概念</td><td>9.63</td><td class="down">-6.96%</td><td class="down">-21.13%</td><td>269.3</td><td>88.0亿</td><td><span class="badge p">伪受益</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="src"><b>行情来源：</b>腾讯自选股接口（经 WeStock Data 查询），截至 2026-07-29 收盘。港股以港元计、A 股以人民币计；本表含 A 股代表公司，未上市头部（强脑科技 / 博睿康）无公开行情。</p>
+  </section>
+
+  <!-- 6. REAL VS FAKE -->
+  <section id="real">
+    <div class="sec-head"><span class="no">6</span><h2>真受益 vs 伪受益</h2><span class="en">Genuine vs Hype</span></div>
+    <div class="vs">
+      <div class="vscol real">
+        <h3>✅ 真受益（业务 / 出货可验证）</h3>
+        <p class="desc">有真实产品、出货或订单，非侵入式 BCI 是确定性增量而非单纯叙事。</p>
+        <ul>
+          <li><b>上游卖铲子</b>：汉威科技（柔性脑电传感器中标工信部专项）——无论中游谁赢都先受益，确定性最高。</li>
+          <li><b>中游真有产品</b>：博睿康（未上市，2025 脑电图机国内第一、销量 488 套、毛利 78%）；翔宇医疗 / 伟思医疗（脑电机 / 经颅磁已获证产生收入）；创新医疗（控股博灵脑机，偏瘫康复双产品）。</li>
+          <li><b>算法真落地</b>：科大讯飞（汉语言解码 95%）、岩山科技（岩思类脑数字孪生脑 + LumiSleep 预售）。</li>
+          <li><b>消费级放量龙头</b>：强脑科技（安睡仪 4 万+ 销量、仿生手、与喜临门床垫）。</li>
+        </ul>
+      </div>
+      <div class="vscol fake">
+        <h3>⚠️ 伪受益 / 蹭概念（叙事 &gt; 业绩）</h3>
+        <p class="desc">与 BCI 关联弱或无实质产品 / 收入，主要靠"宣布布局 / 课题 / 板块标签"贴金。</p>
+        <ul>
+          <li><b>三博脑科</b>：明确公告"我们不做产品，做手术的"，神经调控收入占比极小、对业绩基本无影响——典型伪标的。</li>
+          <li><b>南京熊猫</b>：参与省级课题、脑控终端开发完成，但"尚未产生脑机接口相关销售收入"。</li>
+          <li><b>板块成分噪声</b>：寒武纪（算力）、物产中大都非 BCI 玩家，只是脑科学板块成分股，强行关联。</li>
+          <li><b>可穿戴邻近</b>：乐心 / 九安 / 三诺是健康硬件，非 BCI 核心；世纪华通（游戏）、佳禾智能（耳机）仅边缘相关。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="checklist">
+      <h4>🔍 三步甄别"真伪受益"清单（含量价利验证）</h4>
+      <ol>
+        <li><b>看收入来源</b>：有没有因 BCI 产生的真实订单 / 板块收入？纯"布局中 / 研发中 / 课题中"≠ 受益。<b>能拿出货量、单价、毛利率的公司可信度远高于只会"宣布布局"的</b>——博睿康（488 套 / 15.91 万 / 77.9%）即铁证。</li>
+        <li><b>看在链条的位置</b>：越靠上游（电极 / 芯片）越确定；中游看是否真有注册证与出货；下游应用方要确认是否卡住"不可替代"环节，而非只是普通使用方。</li>
+        <li><b>看估值与兑现节奏</b>：岩山科技 PE 464、三博脑科 PE 184、南京熊猫 PE 269 估值畸高却无脑机收入；多家公司公告"尚未规模化、营收占比小"，已透支预期，回调时最受伤。</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 7. VERDICT -->
+  <section id="verdict">
+    <div class="sec-head"><span class="no">7</span><h2>客观判断</h2><span class="en">Objective View · 非投资建议</span></div>
+    <div class="verdict">
+      <h3>非侵入式 BCI 是"长坡厚雪"的确定性赛道，但 A 股受益高度集中且多在早期</h3>
+      <p>在政策（工信部等七部委《关于推动脑机接口产业创新发展的实施意见》、"十五五"前瞻布局）、资本（2025 年脑机融资 26 起 / 17.78 亿元，同比大增）与临床需求（3 亿失眠人群、卒中康复刚需）三重驱动下，非侵入式 BCI 产业趋势确定、增速约 20%。但落到股票上，<b>受益分层且衰减明显</b>：上游最先最确定兑现，中游分化极大，下游多数为蹭概念。</p>
+      <div class="points">
+        <div class="pt"><span class="n">1</span><span><b>最受益的是上游采集硬件 / 信号链。</b>电极、柔性传感、模拟前端芯片是刚需卖铲子，汉威科技已获工信部专项背书，确定性最高，不依赖单一应用爆发。</span></div>
+        <div class="pt"><span class="n">2</span><span><b>真实放量主力在未上市龙头。</b>博睿康（脑电图机国内第一）、强脑科技（估值 92 亿独角兽）已拿出出货量 / 收入；A 股多数公司仍"产品未规模化、营收占比小"，是早期而非业绩受益。</span></div>
+        <div class="pt"><span class="n">3</span><span><b>中游认"有注册证 + 出货"而非"有概念"。</b>翔宇 / 伟思获证产生收入、讯飞 / 岩山算法落地，可信；单纯"脑机布局"PR 股需警惕。</span></div>
+        <div class="pt"><span class="n">4</span><span><b>伪标的重灾区是"路线错配 / 做服务不做产品"。</b>三博脑科（不做产品）、南京熊猫（无收入）最该点破；板块里的寒武纪 / 物产中大纯属成分噪声。</span></div>
+        <div class="pt"><span class="n">5</span><span><b>警惕高估值与伪标的。</b>岩山 PE 464、三博 PE 184、南京熊猫 PE 269 却无脑机收入，多家公告"尚未规模化"，已隐含大量预期，回调风险大。</span></div>
+        <div class="pt"><span class="n">6</span><span><b>单日涨跌不代表产业确定性。</b>当日世纪华通 +8.23%（游戏驱动）、创新医疗 -10.02%（高位回落），更多反映短线情绪；判断应看注册证、出货量、毛利率与兑现节奏，而非一日 K 线。</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <p><b>数据来源与方法：</b>行情与板块数据来自腾讯自选股接口（经 WeStock Data 查询），宏观 / 概念 / 年报主营检索经 NeoData 金融搜索；产品级量价利来自公司招股书（博睿康）、年报（翔宇 / 伟思 / 创新 / 讯飞 / 岩山等）、赛迪顾问行业报告与公开报道，均逐条标注来源口径。板块含脑科学（脑机接口 02251393）、医疗服务（01801156）、医疗器械（01801153）、智能穿戴（02003641）。数据截至 2026-07-29 收盘，A 股以人民币计。</p>
+      <p><b>口径说明：</b>涨红跌绿为 A 股习惯；"真 / 伪受益""确定性"为基于公开业务与数据的客观梳理，非评级。第 04 章中未标"财报披露"的量价利数据均为行业研报 / 公司 IR / 公开报道估算，不作事实承诺。</p>
+      <div class="disclaimer">
+        ⚠️ <b>免责声明：</b>本页面仅为产业链结构与公开数据的客观整理，<b>不构成任何投资建议、要约或承诺</b>。非侵入式脑机接口技术商业化存在高度不确定性，标注的"真 / 伪受益"会随产业进展变化。投资有风险，决策需谨慎，请以交易所及公司官方披露信息为准，并咨询持牌专业人士。
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
