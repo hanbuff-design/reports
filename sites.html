@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>我的发布站点 · 分类目录</title>
+<style>
+  :root{
+    --navy:#0f2747; --blue:#2563eb; --blue-d:#1d4ed8;
+    --bg:#f5f7fb; --card:#fff; --line:#e5e9f2; --muted:#6b7280; --ink:#111827;
+    --ok:#16a34a; --dead:#dc2626; --warn:#d97706;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.6;padding:32px 16px}
+  .wrap{max-width:1080px;margin:0 auto}
+  header{background:linear-gradient(135deg,var(--navy),#1c3a66);color:#fff;border-radius:18px;
+    padding:34px 36px;box-shadow:0 14px 40px rgba(15,39,71,.25)}
+  header h1{font-size:26px;margin-bottom:8px}
+  header .sub{font-size:14px;opacity:.85}
+  .stat{display:flex;gap:14px;margin-top:18px;flex-wrap:wrap}
+  .stat .pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);
+    border-radius:999px;padding:6px 14px;font-size:13px}
+  .perma{margin:22px 0;background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;
+    padding:16px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .perma b{color:var(--blue-d)}
+  .perma a{color:var(--blue);text-decoration:none;font-weight:600}
+  .perma a:hover{text-decoration:underline}
+  .group{margin-top:30px}
+  .group h2{font-size:19px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  .group h2 .tag{font-size:12px;font-weight:600;color:var(--muted);background:#eef1f7;
+    border-radius:999px;padding:3px 11px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;
+    display:flex;flex-direction:column;gap:10px;transition:.18s}
+  .card:hover{box-shadow:0 10px 26px rgba(15,39,71,.10);transform:translateY(-2px)}
+  .card .ttl{font-size:16px;font-weight:700}
+  .card .meta{display:flex;gap:8px;flex-wrap:wrap}
+  .badge{font-size:11px;font-weight:600;border-radius:999px;padding:3px 10px}
+  .b-plat{background:#eef2ff;color:#4338ca}
+  .b-open{background:#ecfdf5;color:#047857}
+  .b-pwd{background:#fff7ed;color:#c2410c}
+  .b-perm{background:#f0fdf4;color:#15803d}
+  .b-dead{background:#fef2f2;color:#b91c1c}
+  .status{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px}
+  .dot{width:9px;height:9px;border-radius:50%}
+  .dot.ok{background:var(--ok);box-shadow:0 0 0 3px rgba(22,163,74,.18)}
+  .dot.dead{background:var(--dead);box-shadow:0 0 0 3px rgba(220,38,38,.18)}
+  .card a.go{margin-top:auto;text-decoration:none;background:var(--blue);color:#fff;text-align:center;
+    padding:9px;border-radius:10px;font-size:14px;font-weight:600}
+  .card a.go:hover{background:var(--blue-d)}
+  .card a.go.disabled{background:#cbd5e1;pointer-events:none}
+  .note{font-size:12px;color:var(--muted);margin-top:4px}
+  footer{margin-top:36px;text-align:center;color:var(--muted);font-size:12px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>我的发布站点 · 分类目录</h1>
+    <div class="sub">状态截至 2026-08-05 · 由 WorkBuddy 整理</div>
+    <div class="stat">
+      <span class="pill">共 10 个站点</span>
+      <span class="pill">🟢 在线 9</span>
+      <span class="pill">🔴 失效 1</span>
+      <span class="pill">永久站 1</span>
+    </div>
+  </header>
+
+  <div class="perma">
+    <span>🔒 <b>永久管理站（GitHub Pages）</b></span>
+    <a href="https://hanbuff-design.github.io/reports/" target="_blank" rel="noopener">https://hanbuff-design.github.io/reports/</a>
+    <span class="note">内含 5 份报告 + 目录首页，不依赖沙箱、长期有效</span>
+  </div>
+
+  <section class="group">
+    <h2>技术全景报告 <span class="tag">5 个</span></h2>
+    <div class="grid">
+      <div class="card">
+        <div class="ttl">AI4S 2026 报告</div>
+        <div class="meta"><span class="badge b-plat">CloudStudio</span><span class="badge b-open">公开</span></div>
+        <div class="status"><span class="dot ok"></span>在线</div>
+        <a class="go" href="https://cc09062c9e724040aa77c34cd62204fd.app.codebuddy.work" target="_blank" rel="noopener">打开</a>
+      </div>
+      <div class="card">
+        <div class="ttl">电子皮肤技术全景</div>
+        <div class="meta"><span class="badge b-plat">CloudStudio</span><span class="badge b-open">公开</span></div>
+        <div class="status"><span class="dot ok"></span>在线</div>
+        <a class="go" href="https://c29b414e401346bbb58e8b6e4d1ee4eb.app.codebuddy.work" target="_blank" rel="noopener">打开</a>
+      </div>
+      <div class="card">
+        <div class="ttl">AI视觉技术全景</div>
+        <div class="meta"><span class="badge b-plat">CloudStudio</span><span class="badge b-open">公开</span></div>
+        <div class="status"><span class="dot ok"></span>在线</div>
+        <a class="go" href="https://765515887a114847ba9bb41237f5db3c.app.codebuddy.work" target="_blank" rel="noopener">打开</a>
+      </div>
+      <div class="card">
+        <div class="ttl">NVS 神经拟态视觉</div>
+        <div class="meta"><span class="badge b-plat">CloudStudio</span><span class="badge b-open">公开</span></div>
+        <div class="status"><span class="dot ok"></span>在线</div>
+        <a class="go" href="https://75921de36ba6446abe542c745d0f7c44.app.codebuddy.work" target="_blank" rel="noopener">打开</a>
+      </div>
+      <div class="card">
+        <div class="ttl">SST 固态变压器</div>
+        <div class="meta"><span class="badge b-plat">CloudStudio</span><span class="badge b-pwd">密码 2026</span></div>
+        <div class="status"><span class="dot ok"></span>在线</div>
+        <a class="go" href="https://877bbb64029743b49abc03fcfe488f8f.gz3.agentos-app.net" target="_blank" rel="noopener">打开</a>
+        <div class="note">历史特例密码 2026；新发默认 hanbuff</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="group">
+    <h2>脑机接口专题 <span class="tag">3 个</span></h2>
+    <div class="grid">
+      <div class="card">
+        <div class="ttl">非侵入式 BCI 产业链分析</div>
+        <div class="meta"><span class="badge b-plat">CloudStudio</span><span class="badge b-open">公开</span></div>
+        <div class="status"><span class="dot ok"></span>在线</div>
+        <a class="go" href="https://42820aa38af840e1876e03a78c84f4ea.sh2.agentos-app.net" target="_blank" rel="noopener">打开</a>
+      </div>
+      <div class="card">
+        <div class="ttl">BCI 产业链分析</div>
+        <div class="meta"><span class="badge b-plat">CloudStudio</span><span class="badge b-open">公开</span></div>
+        <div class="status"><span class="dot ok"></span>在线</div>
+        <a class="go" href="https://f20831170b604365ab73df45695f25f2.bj5.agentos-app.net" target="_blank" rel="noopener">打开</a>
+      </div>
+      <div class="card">
+        <div class="ttl">非侵入式 BCI 技术路线</div>
+        <div class="meta"><span class="badge b-plat">CloudStudio</span><span class="badge b-dead">已失效</span></div>
+        <div class="status"><span class="dot dead"></span>沙箱到期（000）</div>
+        <a class="go disabled" href="#" onclick="return false;">不可用</a>
+        <div class="note">可重新部署（默认密码 hanbuff）</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="group">
+    <h2>旅游攻略 <span class="tag">1 个</span></h2>
+    <div class="grid">
+      <div class="card">
+        <div class="ttl">北京小众特色 2 日游</div>
+        <div class="meta"><span class="badge b-plat">CloudStudio</span><span class="badge b-open">公开</span></div>
+        <div class="status"><span class="dot ok"></span>在线</div>
+        <a class="go" href="https://26fa4d1d2b9a48e18ac93229b739472e.app.codebuddy.work" target="_blank" rel="noopener">打开</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    本目录为静态快照，状态基于 2026-08-05 实测（HTTP 探测）。<br/>
+    CloudStudio 沙箱链接有时效，过期后状态会变红，可随时重新部署。<br/>
+    永久站：https://hanbuff-design.github.io/reports/ · 由 WorkBuddy 生成
+  </footer>
+</div>
+</body>
+</html>
