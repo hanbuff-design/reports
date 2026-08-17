@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<!-- Shuffle（光纤柔性板）产业链分析 · v6 单页报告。结构：全景双视图 + 上中下游分层 + 头部公司拆解 + 需求真实性 + 权力与卡脖子 + 价值流转 + 机会雷达 + 真伪受益 + 健康度 + 客观判断 + 催化剂 + 投资启示 + 涨跌/估值双表。Ch03 含产品拆解图（爆炸视图 + 传统/新结构侧视剖面）。配色=深靛蓝+暖砂金，左侧固定目录滚动高亮，涨红跌绿。 -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shuffle（光纤柔性板）产业链分析 · 单页报告</title>
+<style>
+  :root{
+    --navy:#1d3a5e; --navy2:#2b5488; --navy-soft:#eaf1f8;
+    --ink:#19222e; --muted:#69737f; --line:#e5e9ef;
+    --bg:#f4f6f8; --card:#ffffff;
+    --red:#d6463b; --red-soft:#fbedec;   /* 涨 = 红 */
+    --green:#1e9d6a; --green-soft:#e8f5ef; /* 跌 = 绿 */
+    --gold:#bd9a55; --gold-soft:#f7f1e3;
+    --chip:#edf0f5;
+    --slate:#9fb3cd; --accent2:#d9b877;
+    --font-serif:"Source Han Serif SC","Noto Serif SC","Songti SC","SimSun",serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;padding-left:252px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;color:var(--ink);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px;}
+  /* ===== LEFT SIDEBAR TOC ===== */
+  .sidebar{position:fixed;top:0;left:0;width:252px;height:100vh;background:linear-gradient(180deg,#142b47 0%,#1d3a5e 55%,#244d7c 100%);color:#fff;display:flex;flex-direction:column;z-index:60;box-shadow:2px 0 18px rgba(20,43,71,.25);}
+  .side-brand{padding:24px 22px 18px;border-bottom:1px solid rgba(255,255,255,.10);}
+  .side-brand .sb-t{font-size:12px;color:var(--slate);letter-spacing:1.5px;font-weight:600;}
+  .side-brand .sb-n{font-size:17px;font-weight:800;margin-top:6px;line-height:1.3;font-family:var(--font-serif);}
+  .side-brand .sb-v{display:inline-block;margin-top:12px;font-size:11px;color:#142b47;background:var(--accent2);padding:3px 10px;border-radius:11px;font-weight:700;letter-spacing:.5px;}
+  .toc{padding:14px 12px 30px;overflow-y:auto;flex:1 1 auto;}
+  .toc a{display:flex;align-items:center;gap:11px;color:#a9c0db;font-size:13px;padding:10px 12px;border-radius:9px;transition:.18s;margin:2px 0;border-left:3px solid transparent;}
+  .toc a .num{font-size:11px;font-weight:700;color:#7e9bbf;width:22px;flex:0 0 auto;text-align:center;}
+  .toc a:hover{background:rgba(255,255,255,.08);color:#fff;}
+  .toc a.active{background:rgba(255,255,255,.14);color:#fff;border-left-color:var(--accent2);}
+  .toc a.active .num{color:var(--accent2);}
+  .hero{background:linear-gradient(135deg,#142b47 0%,#1d3a5e 55%,#2b5488 100%);color:#fff;padding:48px 0 42px;position:relative;}
+  .hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--accent2),transparent);}
+  .hero .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--accent2);border:1px solid rgba(217,184,119,.45);padding:4px 12px;border-radius:20px;margin-bottom:14px;}
+  .hero h1{margin:0 0 10px;font-size:34px;font-weight:800;letter-spacing:.5px;font-family:var(--font-serif);}
+  .hero p.sub{margin:0;color:#c5d4e6;font-size:15px;max-width:820px;}
+  .hero .meta{margin-top:18px;display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--slate);}
+  .hero .meta b{color:#fff;font-weight:600;}
+  section{padding:36px 0 8px;}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;}
+  .sec-head .no{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--navy),var(--navy2));width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:9px;flex:0 0 auto;box-shadow:0 2px 6px rgba(29,58,94,.25);}
+  .sec-head h2{margin:0;font-size:22px;font-weight:750;font-family:var(--font-serif);letter-spacing:.3px;}
+  .sec-head .en{color:var(--muted);font-size:12.5px;font-weight:500;}
+  .sec-head.v3 .no{background:var(--gold);color:#3a2a06;box-shadow:none;}
+  .sec-head.v4 .no{background:var(--navy2);color:#fff;box-shadow:none;}
+  .sec-head.v6 .no{background:var(--red);color:#fff;box-shadow:none;}
+  .lead{color:#3a4754;font-size:14.5px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:10px;padding:16px 20px;}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
+  .kpi .h{font-size:13px;color:var(--muted);margin-bottom:6px;}
+  .kpi .v{font-size:16.5px;font-weight:750;color:var(--navy);}
+  .kpi .v small{font-size:12px;color:var(--muted);font-weight:500;}
+  .chain{display:flex;align-items:stretch;gap:0;margin-top:6px;flex-wrap:wrap;}
+  .tier{flex:1 1 0;min-width:230px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;position:relative;}
+  .tier .tname{font-weight:750;font-size:15px;color:var(--navy);display:flex;align-items:center;gap:8px;}
+  .tier .tname .dot{width:10px;height:10px;border-radius:50%;}
+  .tier .trole{font-size:12px;color:var(--muted);margin:4px 0 12px;}
+  .seg{margin-bottom:12px;}
+  .seg .lbl{font-size:12.5px;font-weight:600;color:#2c3a47;margin-bottom:6px;}
+  .pills{display:flex;flex-wrap:wrap;gap:6px;}
+  .pill{font-size:12px;background:var(--chip);color:#33414f;border:1px solid #d4e6de;padding:3px 9px;border-radius:14px;white-space:nowrap;}
+  .pill.real{background:var(--gold-soft);border-color:#e7d3a3;color:#8a6418;font-weight:600;}
+  .pill.aux{background:#eef0f2;color:#7a8694;}
+  .arrow{display:flex;align-items:center;justify-content:center;color:var(--navy);font-size:22px;font-weight:700;flex:0 0 34px;}
+  @media(max-width:860px){.arrow{transform:rotate(90deg);flex-basis:100%;height:30px;}}
+  .tier.up .dot{background:var(--navy);}
+  .tier.mid .dot{background:var(--gold);}
+  .tier.down .dot{background:#3f7bb0;}
+  .tier.aux .dot{background:#7a8694;}
+  .tiercards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px;}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;}
+  .tcard .th{font-size:16px;font-weight:750;color:var(--navy);border-bottom:2px solid var(--navy-soft);padding-bottom:10px;margin-bottom:12px;}
+  .tcard h4{font-size:13px;margin:14px 0 5px;color:#2c3a47;}
+  .tcard p{margin:0;font-size:13.5px;color:#3a4754;}
+  .cert{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:6px 10px;border-radius:8px;font-size:13px;font-weight:700;align-self:flex-start;}
+  .cert.high{background:var(--green-soft);color:var(--green);}
+  .cert.mid{background:var(--gold-soft);color:var(--gold);}
+  .cert.low{background:#eef0f2;color:#6b7785;}
+  .stars{letter-spacing:2px;color:var(--gold);font-size:14px;}
+  .realpill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:10px;}
+  .realpill.t{background:var(--gold-soft);color:#8a6418;}
+  .realpill.f{background:#eef0f2;color:#7a8694;}
+  .chart{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-top:6px;}
+  .chart .grp-title{font-size:13px;font-weight:700;color:var(--navy);margin:16px 0 8px;display:flex;align-items:center;gap:8px;}
+  .chart .grp-title:first-child{margin-top:2px;}
+  .chart .grp-title .sw{width:18px;height:4px;border-radius:2px;}
+  .row{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px;}
+  .row .name{width:118px;flex:0 0 auto;text-align:right;color:#33414f;}
+  .row .track{position:relative;flex:1 1 auto;height:18px;background:#eef3f1;}
+  .row .track::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:#cfd8e2;}
+  .row .bar{position:absolute;top:2px;height:14px;border-radius:3px;}
+  .row .bar.pos{right:50%;background:var(--red);}
+  .row .bar.neg{left:50%;background:var(--green);}
+  .row .val{width:72px;flex:0 0 auto;font-weight:700;font-variant-numeric:tabular-nums;}
+  .row .val.pos{color:var(--red);}
+  .row .val.neg{color:var(--green);}
+  .legend{display:flex;gap:18px;margin-top:14px;font-size:12.5px;color:var(--muted);align-items:center;flex-wrap:wrap;}
+  .legend .li{display:flex;align-items:center;gap:6px;}
+  .legend .sq{width:14px;height:14px;border-radius:3px;}
+  .tbl-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 8px;margin-top:16px;overflow-x:auto;}
+  table{border-collapse:collapse;width:100%;font-size:13px;min-width:620px;}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;}
+  th{background:linear-gradient(180deg,#eef3f9,#e3ecf6);color:#2b5488;font-weight:650;font-size:12.5px;}
+  td .up{color:var(--red);font-weight:700;}
+  td .down{color:var(--green);font-weight:700;}
+  .badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
+  .badge.t{background:var(--gold-soft);color:#8a6418;}
+  .badge.f{background:#eef0f2;color:#7a8694;}
+  .badge.s{background:var(--green-soft);color:var(--green);}
+  .note{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.6;}
+  .biz-sub{margin-top:18px;}
+  .biz-sub h3{font-size:15.5px;color:var(--navy);margin:18px 0 10px;border-left:4px solid var(--gold);padding-left:10px;}
+  .prod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:6px;}
+  .prod-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;}
+  .prod-card .pn{font-weight:700;font-size:14.5px;color:var(--navy);}
+  .prod-card .pm{font-size:12.5px;color:var(--muted);margin:4px 0 8px;}
+  .prod-card p{margin:0;font-size:13px;color:#3a4754;}
+  .rnd-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:6px;}
+  .rnd{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;}
+  .rnd .rn{font-weight:700;font-size:14px;color:var(--navy);}
+  .rnd p{margin:6px 0 0;font-size:13px;color:#3a4754;}
+  .valueflow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px;}
+  .vf{border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:var(--card);}
+  .vf .vt{font-size:12px;color:var(--muted);}
+  .vf .vv{font-size:14.5px;font-weight:750;color:var(--navy);margin-top:4px;}
+  .vf .vx{font-size:12px;color:#3a4754;margin-top:3px;}
+  .ppool{margin-top:14px;}
+  .pp-row{display:flex;align-items:center;gap:12px;margin:9px 0;}
+  .pp-row .ppn{width:160px;flex:0 0 auto;font-size:13px;color:#33414f;}
+  .pp-row .ppt{position:relative;flex:1 1 auto;height:22px;background:#eef3f1;border-radius:6px;overflow:hidden;}
+  .pp-row .ppb{position:absolute;top:0;left:0;bottom:0;background:linear-gradient(90deg,var(--navy),var(--navy2));border-radius:6px;}
+  .pp-row .ppv{width:54px;flex:0 0 auto;text-align:right;font-size:12.5px;font-weight:700;color:var(--navy);}
+  .migrate{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .migrate .mg{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;}
+  .migrate .mgh{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .migrate p{margin:0;font-size:12.5px;color:#3a4754;}
+  .sim{background:var(--gold-soft);border:1px solid #ecd9a8;border-radius:12px;padding:14px 16px;margin-top:12px;font-size:13.5px;color:#5a4413;}
+  .sim b{color:#7a5a12;}
+  .master-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px;}
+  .master-col{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--card);}
+  .master-col.m h4{margin:0 0 10px;color:var(--navy);font-size:15px;}
+  .master-col.b h4{margin:0 0 10px;color:var(--gold);font-size:15px;}
+  .master-col ul{margin:0;padding-left:18px;font-size:13.5px;color:#3a4754;}
+  .master-col li{margin:7px 0;}
+  .irr{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .irr .ix{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;border-top:3px solid var(--navy);}
+  .irr .ix.hi{border-top-color:var(--red);}
+  .irr .ix.mid{border-top-color:var(--gold);}
+  .irr .ix.lo{border-top-color:var(--green);}
+  .irr .ixt{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .irr p{margin:0;font-size:12.5px;color:#3a4754;}
+  .stress-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .stress{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--card);}
+  .stress.gap{border-left:4px solid var(--red);}
+  .stress.tech{border-left:4px solid var(--gold);}
+  .stress.policy{border-left:4px solid var(--navy2);}
+  .stress .st{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .stress p{margin:0;font-size:12.5px;color:#3a4754;}
+  .demand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .demand-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;}
+  .dm-type{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .dm-type.pull{background:var(--red-soft);color:var(--red);}
+  .dm-type.push{background:var(--gold-soft);color:#8a6418;}
+  .demand-card h4{margin:0 0 8px;font-size:15px;color:var(--navy);}
+  .demand-card .dm-payer,.demand-card .dm-will,.demand-card .dm-proof{font-size:12.5px;color:#3a4754;margin:7px 0;}
+  .demand-card .dm-payer b,.demand-card .dm-will b,.demand-card .dm-proof b{color:#2c3a47;}
+  .pullverdict{background:var(--navy-soft);border:1px solid #cfe0f0;border-radius:12px;padding:14px 18px;margin-top:14px;font-size:14px;color:#1d3a5e;}
+  .pullverdict b{color:var(--navy);}
+  .vs-yes{color:var(--green);font-weight:700;}
+  .vs-no{color:var(--red);font-weight:700;}
+  .radar{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .radar-col{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--card);}
+  .radar-col.sub{border-top:3px solid var(--red);}
+  .radar-col.gap{border-top:3px solid var(--gold);}
+  .radar-col.water{border-top:3px solid var(--navy2);}
+  .radar-col h4{margin:0 0 10px;font-size:14.5px;color:var(--navy);}
+  .radar-item{font-size:13px;color:#3a4754;margin:9px 0;padding-left:14px;position:relative;}
+  .radar-item::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--navy2);}
+  .health{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:8px;}
+  .health-item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px;}
+  .health-item .hi-t{font-size:13px;font-weight:700;color:var(--navy);}
+  .health-item .hi-c{font-size:12.5px;color:#3a4754;margin-top:5px;}
+  .health-item .hi-w{font-size:12px;color:var(--muted);margin-top:5px;}
+  .health-item.warn{border-left:4px solid var(--red);}
+  .bullbear{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;}
+  .bb{border-radius:12px;padding:15px 17px;}
+  .bb.bull{background:var(--green-soft);border:1px solid #bfe6cf;}
+  .bb.bear{background:var(--red-soft);border:1px solid #f3c9c9;}
+  .bb h4{margin:0 0 8px;font-size:14px;}
+  .bb.bull h4{color:var(--green);}
+  .bb.bear h4{color:var(--red);}
+  .bb p{margin:0;font-size:13px;color:#3a4754;}
+  .dr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:8px;}
+  .dr-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;}
+  .dr-card .dr-type{font-size:12.5px;font-weight:700;color:var(--navy);}
+  .dr-sev{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:9px;margin:8px 0;}
+  .dr-sev.h{background:var(--red-soft);color:var(--red);}
+  .dr-sev.m{background:var(--gold-soft);color:#8a6418;}
+  .dr-sev.l{background:var(--green-soft);color:var(--green);}
+  .dr-card p{margin:0;font-size:12.5px;color:#3a4754;}
+  .cat-horizon{margin-top:14px;}
+  .cat-horizon .ch-t{font-size:14px;font-weight:750;color:var(--navy);margin:14px 0 8px;display:flex;align-items:center;gap:8px;}
+  .cat-horizon .ch-t .chip2{font-size:11px;background:var(--navy);color:#fff;padding:2px 9px;border-radius:10px;}
+  .cat-list{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 10px;}
+  .cat-row{display:flex;align-items:center;gap:12px;padding:10px 8px;border-bottom:1px solid var(--line);font-size:13px;}
+  .cat-row:last-child{border-bottom:none;}
+  .cat-row .ct{width:96px;flex:0 0 auto;font-weight:600;color:#33414f;}
+  .cat-row .ce{flex:1 1 auto;color:#3a4754;}
+  .cat-row .cd{width:120px;flex:0 0 auto;text-align:center;font-weight:700;font-size:12px;border-radius:8px;padding:3px 0;}
+  .cat-row .cd.up{background:var(--red-soft);color:var(--red);}
+  .cat-row .cd.down{background:var(--green-soft);color:var(--green);}
+  .cat-row .cd.both{background:var(--gold-soft);color:#8a6418;}
+  .asym-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .asym{border-radius:14px;padding:16px;color:#fff;}
+  .asym.up{background:linear-gradient(135deg,#1e9d6a,#157a48);}
+  .asym.safe{background:linear-gradient(135deg,#1d3a5e,#142b47);}
+  .asym.trap{background:linear-gradient(135deg,#a85d2c,#7d4220);}
+  .asym .at{font-size:14.5px;font-weight:800;margin-bottom:8px;}
+  .asym p{margin:0;font-size:12.5px;line-height:1.6;opacity:.95;}
+  .triage-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 10px;margin-top:14px;overflow-x:auto;}
+  .triage-wrap table{min-width:760px;}
+  .exit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px;}
+  .exit-col{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--card);}
+  .exit-col .ex-h{font-size:13px;font-weight:750;color:var(--navy);margin-bottom:8px;}
+  .exit-col p{margin:0;font-size:12.5px;color:#3a4754;}
+  .verdict{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:16px 20px;margin-top:6px;font-size:14px;color:#3a4754;}
+  .verdict b{color:var(--navy);}
+  .two-table-note{font-size:13px;color:var(--muted);margin:18px 0 4px;padding:10px 14px;background:var(--navy-soft);border-radius:10px;}
+  .src{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6;}
+  footer{margin-top:30px;background:#142b47;color:var(--slate);padding:28px 0;font-size:12.5px;}
+  footer .wrap p{margin:0 0 10px;line-height:1.7;}
+  footer b{color:#fff;}
+  .disclaimer{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:14px 16px;margin-top:6px;color:#cdddec;}
+  section{padding:38px 0 10px;}
+  .kpi,.tcard,.tier,.prod-card,.rnd,.vf,.master-col,.irr .ix,.stress,.demand-card,.health-item,.dr-card,.exit-col,.chart,.tbl-wrap,.lead,.verdict,.cat-list,.prod-grid,.rnd-cards,.valueflow,.migrate,.radar-col,.bullbear .bb{box-shadow:0 1px 3px rgba(20,43,71,.06),0 1px 2px rgba(20,43,71,.04);transition:box-shadow .2s,transform .2s;}
+  .kpi:hover,.tcard:hover,.tier:hover,.prod-card:hover,.rnd:hover,.vf:hover,.master-col:hover,.irr .ix:hover,.stress:hover,.demand-card:hover,.health-item:hover,.dr-card:hover,.exit-col:hover{box-shadow:0 6px 18px rgba(20,43,71,.12);transform:translateY(-2px);}
+  .tbl-wrap table tbody tr:hover{background:#f7f9fc;}
+  .sec-head h2{position:relative;}
+
+  @media print{
+    .sidebar{display:none;}
+    body{background:#fff;padding-left:0;}
+    .hero{background:#1d3a5e !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    section{page-break-inside:avoid;}
+  }
+  @media(max-width:980px){
+    body{padding-left:0;}
+    .sidebar{position:sticky;top:0;width:100%;height:auto;flex-direction:row;overflow-x:auto;}
+    .side-brand{border-bottom:none;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap;}
+    .toc{display:flex;padding:10px;flex-wrap:nowrap;}
+    .toc a{border-left:none;white-space:nowrap;}
+  }
+</style>
+</head>
+<body>
+<div id="gate" class="gate">
+  <div class="gate-box">
+    <div class="gate-title">🔒 内容已加密</div>
+    <div class="gate-sub">请输入访问密码</div>
+    <input id="gate-pwd" type="password" class="gate-input" placeholder="访问密码" autocomplete="off" />
+    <button id="gate-btn" class="gate-btn">解锁</button>
+    <div id="gate-err" class="gate-err"></div>
+  </div>
+</div>
+<style>
+.gate{position:fixed;inset:0;z-index:2147483647;background:linear-gradient(135deg,#0f1420,#1a2236);display:flex;align-items:center;justify-content:center;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif}
+.gate-box{background:#fff;border-radius:16px;padding:36px 40px;width:320px;max-width:86vw;box-shadow:0 20px 60px rgba(0,0,0,.45);text-align:center}
+.gate-title{font-size:20px;font-weight:700;color:#111827;margin-bottom:6px}
+.gate-sub{font-size:13px;color:#6b7280;margin-bottom:20px}
+.gate-input{width:100%;box-sizing:border-box;padding:12px 14px;font-size:15px;border:1px solid #d1d5db;border-radius:10px;outline:none;margin-bottom:14px}
+.gate-input:focus{border-color:#2563eb}
+.gate-btn{width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.gate-btn:hover{background:#1d4ed8}
+.gate-err{color:#dc2626;font-size:13px;margin-top:12px;min-height:18px}
+</style>
+<script>
+(function(){
+  var PWD="hanbuff";
+  function unlock(){ var g=document.getElementById("gate"); if(g&&g.parentNode){ g.parentNode.removeChild(g); } }
+  function check(){ var v=document.getElementById("gate-pwd").value; var err=document.getElementById("gate-err"); if(v===PWD){ unlock(); } else { err.textContent="密码错误，请重试"; } }
+  window.addEventListener("load",function(){ var btn=document.getElementById("gate-btn"); var inp=document.getElementById("gate-pwd"); if(btn) btn.addEventListener("click",check); if(inp){ inp.addEventListener("keydown",function(e){ if(e.key==="Enter") check(); }); inp.focus(); } });
+})();
+</script>
+
+
+<!-- LEFT SIDEBAR TOC -->
+<aside class="sidebar">
+  <div class="side-brand">
+    <div class="sb-t">INDUSTRY CHAIN</div>
+    <div class="sb-n">Shuffle<br>光纤柔性板<br>产业链</div>
+    <div class="sb-v">结构化分析</div>
+  </div>
+  <nav class="toc">
+    <a href="#def"><span class="num">01</span>定义与核心矛盾</a>
+    <a href="#panorama"><span class="num">02</span>全景双视图</a>
+    <a href="#layers"><span class="num">03</span>分层受益逻辑</a>
+    <a href="#biz"><span class="num">04</span>头部公司拆解</a>
+    <a href="#demand"><span class="num">05</span>需求真实性</a>
+    <a href="#power"><span class="num">06</span>权力·卡脖子</a>
+    <a href="#profit"><span class="num">07</span>价值·利润池</a>
+    <a href="#radar"><span class="num">08</span>机会雷达</a>
+    <a href="#real"><span class="num">09</span>真伪受益</a>
+    <a href="#health"><span class="num">10</span>健康度·风险</a>
+    <a href="#verdict"><span class="num">11</span>客观判断</a>
+    <a href="#catalyst"><span class="num">12</span>催化剂日历</a>
+    <a href="#insight"><span class="num">13</span>投资启示</a>
+    <a href="#chart"><span class="num">末</span>涨跌·估值全景</a>
+  </nav>
+</aside>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="wrap">
+      <span class="tag">产业链深度分析</span>
+      <h1>Shuffle（光纤柔性板）产业链分析</h1>
+      <p class="sub">CPO / OXC / AIDC 高密度光互连时代的"无源光纤重排器件"。以 PI 柔性薄膜为基底精密布纤，把光引擎到前面板成百上千根光纤按定制拓扑"洗牌重排"，实现千芯级高密度、长度均衡、释放风道。拆解上游基材/连接器、中游柔性板制造、下游 CPO 交换机与智算机房的真实参与者与利润流向。</p>
+      <div class="meta">
+        <span>作者：<b>HanBuff</b></span>
+        <span>数据日期：<b>2026-08（年报口径）</b></span>
+        <span>数据来源：<b>公开财报 / Web 检索 / Frost & Sullivan 行业预测</b></span>
+        <span>涨跌口径：<b>涨红 · 跌绿（A 股习惯）</b></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- KEY TAKEAWAYS -->
+  <section style="padding-top:28px;">
+    <div class="kpis">
+      <div class="kpi"><div class="h">当前最受益环节</div><div class="v">上游 · 高密度连接器 + PI 基材 <small>卖水人，无论中游谁胜都要用</small></div></div>
+      <div class="kpi"><div class="h">利润池高地</div><div class="v">高密度连接器 + FAU + 柔性板精密制造 <small>毛利 38%~54%</small></div></div>
+      <div class="kpi"><div class="h">最大卡脖子</div><div class="v">高端 PI 基材 + 超小连接器(MMC) <small>进口 / 海外主导</small></div></div>
+    </div>
+  </section>
+
+  <!-- 01 定义 -->
+  <section id="def">
+    <div class="sec-head"><span class="no">01</span><h2>定义与核心投资矛盾</h2><span class="en">Definition & Core Tension</span></div>
+    <div class="lead">
+      <b>一句话定义：</b>Shuffle（光纤柔性板）是 CPO / OXC / AIDC 高密度光互连场景下的<b>无源光纤重排器件</b>——以 PI（聚酰亚胺）柔性薄膜为基底，用全自动精密布纤工艺把数十至数百根光纤按定制光路规则有序固定、分层隔离，完成光信号"洗牌重排"，全程无交叉挤压、无微弯损伤。三种主要形态：<b>光柔性板</b>（贴装于 CPO 模块/背板）、<b>Shuffle Box</b>（盒内模块化重排）、<b>Breakout Shuffle</b>（高密度多芯分支）。
+    </div>
+    <div class="tiercards" style="margin-top:16px;">
+      <div class="tcard">
+        <div class="th">为何此刻必须看</div>
+        <h4>CPO 渗透率 0→1 引爆</h4>
+        <p>英伟达 Quantum-X / Spectrum-X Photonics 交换机 2025H2–2026 交付，单机光纤数从"数根"暴增至 1024+ 根（含保偏光纤），传统散纤跳线方案失效，重排器件从"可选"变"刚需"。</p>
+        <h4>当前所处阶段</h4>
+        <p>CPO 全球渗透率约 0.5%（2026H1 大型智算中心），处于 0→10% 普及前夜；柔性板市场 2025 仅约 ¥1 亿，2030 看 ¥160 亿。</p>
+        <span class="cert high">★ 产业临界点</span>
+      </div>
+      <div class="tcard">
+        <div class="th">核心投资矛盾</div>
+        <h4>极小市场 · 极陡斜率</h4>
+        <p>Frost & Sullivan 测算柔性板 2025–2030 CAGR 高达 212%，但当前体量仍小、规模量产与良率待验证，估值易透支远期空间。</p>
+        <h4>真国产突破 vs 叙事蹭点</h4>
+        <p>MT 插芯/MPO 国内已强（太辰光/长芯博创），但柔性板整板量产、PI 基材、超小连接器(MMC)仍由海外主导，需区分"真卡位"与"概念贴牌"。</p>
+        <span class="cert mid">⚠ 估值透支风险</span>
+      </div>
+      <div class="tcard">
+        <div class="th">关键形态分野</div>
+        <h4>形态 A：光柔性板</h4>
+        <p>≤0.8mm 薄膜基板，千芯级、可贴装异形结构，释放风道；适合 CPO 机箱内光引擎→面板扇出。</p>
+        <h4>形态 B：Shuffle Box / Cable</h4>
+        <p>盒体/缆身预制化重排，工厂固化拓扑，现场即插即用；适合机柜间、多平面网络、配线区。</p>
+        <span class="realpill t">形态无高下，场景分野</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 全景双视图 -->
+  <section id="panorama">
+    <div class="sec-head v4"><span class="no">02</span><h2>产业链全景：物料流 + 价值流双视图</h2><span class="en">Panorama Dual-View</span></div>
+    <div class="lead">产业链核心判断：<b>上游连接器/基材是卖水人高地（高毛利、强绑定），中游柔性板制造是弹性最大的增量环节，下游 CPO 设备商与 AIDC 是需求源但多为"间接受益"。</b></div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">① 物料流：上 → 中 → 下</h3>
+    <div class="chain">
+      <div class="tier up">
+        <div class="tname"><span class="dot"></span>上游 · 基材/连接器/设备</div>
+        <div class="trole">卖铲人，需求刚性</div>
+        <div class="seg"><div class="lbl">基材与光纤</div><div class="pills"><span class="pill real">PI 薄膜(进口)</span><span class="pill real">光纤(Corning/长飞)</span></div></div>
+        <div class="seg"><div class="lbl">核心连接器</div><div class="pills"><span class="pill real">MT 插芯(太辰光)</span><span class="pill real">MPO/MMC(US Conec/SENKO)</span></div></div>
+        <div class="seg"><div class="lbl">设备</div><div class="pills"><span class="pill real">精密布纤设备</span></div></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="tier mid">
+        <div class="tname"><span class="dot"></span>中游 · 柔性板/重排器件制造</div>
+        <div class="trole">掌握精密工艺，分化</div>
+        <div class="seg"><div class="lbl">光柔性板 / Shuffle</div><div class="pills"><span class="pill real">太辰光</span><span class="pill real">宁波盈科</span><span class="pill real">超擎数智</span><span class="pill real">Corning</span></div></div>
+        <div class="seg"><div class="lbl">配套无源件</div><div class="pills"><span class="pill real">天孚(FAU)</span><span class="pill real">长芯博创(FAU/MPO)</span></div></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="tier down">
+        <div class="tname"><span class="dot"></span>下游 · CPO/OXC/AIDC</div>
+        <div class="trole">用产品的人，最易蹭概念</div>
+        <div class="seg"><div class="lbl">CPO 交换机</div><div class="pills"><span class="pill real">英伟达</span><span class="pill real">博通</span></div></div>
+        <div class="seg"><div class="lbl">应用场景</div><div class="pills"><span class="pill real">OXC 全光交换</span><span class="pill real">AIDC 智算机房</span></div></div>
+      </div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">② 价值流：成本/毛利/集中度</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>技术/产品形态</th><th>代表企业（国内 / 国外）</th><th>终端成本占比</th><th>毛利率区间</th><th>集中度 CR3</th></tr></thead>
+      <tbody>
+        <tr><td>上游 PI 基材 / 光纤</td><td>杜邦/钟渊(PI) · Corning/长飞(光纤)</td><td>基材低 / 光纤中</td><td>PI 40–60% · 光纤 20–35%</td><td>PI ~70%（外资主导）</td></tr>
+        <tr><td>高密度连接器(MT/MPO/MMC)</td><td>太辰光 / US Conec · SENKO</td><td>~10–15%</td><td>45–65%</td><td>~60%（美日主导 MMC）</td></tr>
+        <tr><td>中游 光柔性板 / Shuffle</td><td>太辰光 · 宁波盈科 · 超擎 / Corning</td><td>~5–10%（占交换机）</td><td>35–55%（估算）</td><td>~50%（早期分散）</td></tr>
+        <tr><td>配套 FAU / 折弯 FA</td><td>天孚 · 长芯博创 / 光库</td><td>~3–5%</td><td>40–54%</td><td>~55%（天孚领先）</td></tr>
+        <tr><td>下游 CPO 交换机 / AIDC</td><td>英伟达 · 博通 / 云厂商</td><td>终端售价主体</td><td>50–70%</td><td>~78%（台积电等 5 家）</td></tr>
+      </tbody>
+    </table></div>
+    <div class="src">成本占比/毛利率/CR3 为按行业 BOM 拆解与龙头财报毛利的<b>估算/行业口径</b>，非精确并表财务数据。MMC 超小连接器由 US Conec 主导、SENKO 跟进；PI 高端基材仍依赖进口。</div>
+  </section>
+
+  <!-- 03 分层与受益逻辑 -->
+  <section id="layers">
+    <div class="sec-head"><span class="no">03</span><h2>上中下游分层与受益逻辑</h2><span class="en">Benefit Logic & Certainty</span></div>
+    <div class="tiercards">
+      <div class="tcard"><div class="th">上游 · 基材/连接器/设备</div>
+        <h4>代表公司</h4><p>太辰光(MT 插芯)、US Conec/SENKO(MPO/MMC)、Corning(光纤)、精密布纤设备商。</p><h4>受益逻辑</h4><p>无论中游柔性板谁胜、哪种拓扑，都必须用 MT/MPO 连接器与光纤——纯卖水人，需求随 CPO 渗透线性放大。</p>
+        <h4>确定性</h4><p><span class="stars">★★★★★</span> 最高（耗材属性 + 强绑定）。</p>
+        <span class="realpill t">真受益 · 强</span><span class="cert high">确定性：高</span></div>
+      <div class="tcard"><div class="th">中游 · 柔性板/重排器件</div>
+        <h4>代表公司</h4><p>太辰光、宁波盈科、超擎数智、Corning。</p><h4>受益逻辑</h4><p>CPO 单机光纤暴增的直接增量环节，弹性最大；但整板规模量产、良率、客户认证仍早期，玩家分化。</p>
+        <h4>确定性</h4><p><span class="stars">★★★☆</span> 中高但分化（认证壁垒高）。</p>
+        <span class="realpill t">真受益（少数）</span><span class="cert mid">确定性：中</span></div>
+      <div class="tcard"><div class="th">下游 · CPO/OXC/AIDC</div>
+        <h4>代表公司</h4><p>英伟达、博通、云厂商、OXC 设备商。</p><h4>受益逻辑</h4><p>是 Shuffle 的需求源头（强 pull），但本身不制造重排器件，A 股"算力/光模块"多为间接受益方。</p>
+        <h4>确定性</h4><p><span class="stars">★★☆</span> 需求真，但非本链制造商。</p>
+        <span class="realpill f">间接受益·非核心</span><span class="cert low">确定性：低~中</span></div>
+    </div>
+
+    <!-- 产品形态拆分 + 拆解图 -->
+    <div class="biz-sub"><h3><span class="k">3b</span>产品形态拆分（硬件报告加「产品拆解图」）</h3>
+      <div class="prod-grid">
+        <div class="prod-card"><div class="pn">光柔性板（Flex Board）</div><div class="pm">PI 薄膜基底 ≤0.8mm，千芯级布纤</div><p>贴装 CPO 机箱背板/光引擎夹层，一端对接 FAU、一端扇出 MMC/MPO，长度均衡、释放风道。</p></div>
+        <div class="prod-card"><div class="pn">Shuffle Box / Cable</div><div class="pm">盒体/缆身预制化重排</div><p>工厂固化拓扑，现场即插即用；用于机柜间、多平面网络、配线区，4U 可达 1024 芯。</p></div>
+        <div class="prod-card"><div class="pn">FAU（光纤阵列单元）</div><div class="pm">微米级对准光芯片波导</div><p>CPO 光引擎耦合关键件，保偏 FAU 单价 $70–100；单机 72 个、价值量 $6k–7k。</p></div>
+        <div class="prod-card"><div class="pn">高密度连接器(MMC/MPO)</div><div class="pm">超小/多芯，VSFF 演进</div><p>MMC 单连接器支持 48 芯；1RU 可装 264 个 MMC 端口，连接光纤 6336 根，密度 3× 传统 MPO。</p></div>
+      </div>
+
+      <figure style="margin:26px 0;background:#fff;border:1px solid #e7ecf2;border-left:4px solid #bd9a55;border-radius:14px;padding:20px 22px 16px;box-shadow:0 6px 20px rgba(29,58,94,.08);">
+        <svg viewBox="0 0 680 815" style="width:100%;height:auto;font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;" role="img" aria-label="Shuffle 光纤柔性板 产品爆炸视图与结构对比">
+          <text x="340" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1d3a5e">Shuffle 光纤柔性板 · 产品拆解</text>
+          <text x="340" y="47" text-anchor="middle" font-size="11.5" fill="#5a6675">A 爆炸视图（自下而上：光引擎 FAU → PI 基板 → 精密布纤 → 分区 → 连接器 → 封装）</text>
+
+          <!-- 中心虚轴 -->
+          <line x1="230" y1="115" x2="230" y2="430" stroke="#aeb9c7" stroke-width="1" stroke-dasharray="2 4"/>
+          <!-- 光信号流主箭头（左） -->
+          <line x1="50" y1="420" x2="50" y2="128" stroke="#d6463b" stroke-width="2.5"/>
+          <path d="M50,122 L43,137 L57,137 Z" fill="#d6463b"/>
+          <text transform="rotate(-90 28 274)" x="28" y="274" text-anchor="middle" font-size="11.5" font-weight="700" fill="#d6463b">光信号流：光引擎 → 前面板</text>
+
+          <!-- L6 光引擎 FAU 接口 -->
+          <g transform="translate(0,0)">
+            <rect x="80" y="395" width="300" height="34" rx="6" fill="#3a4a5e" stroke="#1d3a5e" stroke-width="1.5"/>
+            <rect x="80" y="395" width="300" height="9" rx="6" fill="#56697e"/>
+            <text x="230" y="417" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">光引擎 FAU 接口（光纤阵列输入）</text>
+          </g>
+          <!-- L5 PI 柔性基板 -->
+          <g>
+            <rect x="80" y="340" width="300" height="34" rx="6" fill="#cdd9e8" stroke="#1d3a5e" stroke-width="1.5"/>
+            <rect x="80" y="340" width="300" height="9" rx="6" fill="#e3ebf4"/>
+            <text x="230" y="362" text-anchor="middle" font-size="13" font-weight="700" fill="#1d3a5e">PI 柔性基板（≤0.8mm·耐高温阻燃）</text>
+          </g>
+          <!-- L4 精密布纤核心层（高亮） -->
+          <g>
+            <rect x="80" y="285" width="300" height="34" rx="6" fill="#bd9a55" stroke="#7a5a12" stroke-width="1.5"/>
+            <rect x="80" y="285" width="300" height="9" rx="6" fill="#d9b877"/>
+            <text x="230" y="307" text-anchor="middle" font-size="13" font-weight="700" fill="#3a2a06">精密布纤核心层（定制光路·分层隔离·无挤压）</text>
+          </g>
+          <!-- L3 光路分区屏蔽 -->
+          <g>
+            <rect x="80" y="230" width="300" height="34" rx="6" fill="#2b5488" stroke="#1d3a5e" stroke-width="1.5"/>
+            <rect x="80" y="230" width="300" height="9" rx="6" fill="#3f6ea8"/>
+            <text x="230" y="252" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">光路分区屏蔽（数据单模 / 保偏 PMF 分区防串扰）</text>
+          </g>
+          <!-- L2 高密度连接器端接 -->
+          <g>
+            <rect x="80" y="175" width="300" height="34" rx="6" fill="#cdd9e8" stroke="#1d3a5e" stroke-width="1.5"/>
+            <rect x="80" y="175" width="300" height="9" rx="6" fill="#e3ebf4"/>
+            <text x="230" y="197" text-anchor="middle" font-size="13" font-weight="700" fill="#1d3a5e">高密度连接器端接（MMC / MPO / SN-MT）</text>
+          </g>
+          <!-- L1 一体封装防护覆膜 -->
+          <g>
+            <rect x="80" y="120" width="300" height="34" rx="6" fill="#eef0f2" stroke="#9fb3cd" stroke-width="1.5"/>
+            <rect x="80" y="120" width="300" height="9" rx="6" fill="#f7f9fb"/>
+            <text x="230" y="142" text-anchor="middle" font-size="13" font-weight="700" fill="#3a4754">一体封装 / 防护覆膜（贴装 CPO 模块·背板）</text>
+          </g>
+
+          <!-- 右侧编号标签 -->
+          <g font-size="12.5">
+            <line x1="380" y1="137" x2="458" y2="137" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+            <circle cx="470" cy="137" r="12" fill="#1d3a5e"/><text x="470" y="141" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">1</text>
+            <text x="488" y="133" font-weight="700" fill="#1f2933">封装 / 防护覆膜</text><text x="488" y="149" font-size="11" fill="#5a6675">低烟无卤·贴装机箱</text>
+
+            <line x1="380" y1="192" x2="458" y2="192" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+            <circle cx="470" cy="192" r="12" fill="#1d3a5e"/><text x="470" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">2</text>
+            <text x="488" y="188" font-weight="700" fill="#1f2933">高密度连接器</text><text x="488" y="204" font-size="11" fill="#5a6675">MMC/MPO 端接</text>
+
+            <line x1="380" y1="247" x2="458" y2="247" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+            <circle cx="470" cy="247" r="12" fill="#1d3a5e"/><text x="470" y="251" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">3</text>
+            <text x="488" y="243" font-weight="700" fill="#1f2933">光路分区屏蔽</text><text x="488" y="259" font-size="11" fill="#5a6675">数据/保偏分区</text>
+
+            <line x1="380" y1="302" x2="458" y2="302" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+            <circle cx="470" cy="302" r="12" fill="#bd9a55"/><text x="470" y="306" text-anchor="middle" font-size="12" font-weight="700" fill="#3a2a06">4</text>
+            <text x="488" y="298" font-weight="700" fill="#1f2933">精密布纤核心层</text><text x="488" y="314" font-size="11" fill="#5a6675">定制光路·价值核心</text>
+
+            <line x1="380" y1="357" x2="458" y2="357" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+            <circle cx="470" cy="357" r="12" fill="#1d3a5e"/><text x="470" y="361" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">5</text>
+            <text x="488" y="353" font-weight="700" fill="#1f2933">PI 柔性基板</text><text x="488" y="369" font-size="11" fill="#5a6675">≤0.8mm 薄膜</text>
+
+            <line x1="380" y1="412" x2="458" y2="412" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+            <circle cx="470" cy="412" r="12" fill="#1d3a5e"/><text x="470" y="416" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">6</text>
+            <text x="488" y="408" font-weight="700" fill="#1f2933">光引擎 FAU 接口</text><text x="488" y="424" font-size="11" fill="#5a6675">硅光波导耦合</text>
+          </g>
+
+          <!-- B 传统 vs 新结构 侧视剖面 -->
+          <line x1="30" y1="498" x2="650" y2="498" stroke="#e7ecf2" stroke-width="1.5"/>
+          <text x="340" y="524" text-anchor="middle" font-size="14.5" font-weight="700" fill="#1d3a5e">传统散纤成束  vs  光柔性板集成（侧视剖面）</text>
+          <text x="340" y="544" text-anchor="middle" font-size="11" fill="#5a6675">左：行业现状（手工跳纤成束）　右：最新一代平台（柔性板预制化集成）</text>
+          <text x="340" y="562" text-anchor="middle" font-size="10.5" fill="#8a96a5">图例：<tspan fill="#d6463b" font-weight="700">— 线缆杂乱 / 风道堵塞(风险)</tspan>　<tspan fill="#2b5488" font-weight="700">■ 核心结构</tspan>　<tspan fill="#1e9d6a" font-weight="700">→ 洁净风道(释放散热)</tspan></text>
+
+          <!-- 左：传统 -->
+          <rect x="60" y="600" width="250" height="150" rx="8" fill="#f4f6f8" stroke="#9fb3cd" stroke-width="1.5"/>
+          <text x="185" y="618" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1d3a5e">交换机 / 机箱（传统散纤）</text>
+          <!-- 杂乱线缆 -->
+          <path d="M90,650 C120,630 150,675 185,655 C220,635 250,680 290,658" fill="none" stroke="#d6463b" stroke-width="2.5" stroke-dasharray="4 3"/>
+          <path d="M90,668 C130,650 160,700 200,678 C240,660 270,705 300,682" fill="none" stroke="#d6463b" stroke-width="2.5" stroke-dasharray="4 3"/>
+          <path d="M90,686 C125,672 155,712 195,694 C235,676 265,714 300,696" fill="none" stroke="#d6463b" stroke-width="2.5" stroke-dasharray="4 3"/>
+          <!-- 堵塞气流 -->
+          <text x="185" y="738" text-anchor="middle" font-size="11" fill="#d6463b" font-weight="700">成束跳纤：占空间·长度不一·难维护·风道堵塞</text>
+          <text x="185" y="740" text-anchor="middle" font-size="1" fill="#fff"> </text>
+
+          <!-- 右：柔性板集成 -->
+          <rect x="370" y="600" width="250" height="150" rx="8" fill="#f4f6f8" stroke="#9fb3cd" stroke-width="1.5"/>
+          <text x="495" y="618" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1d3a5e">交换机 / 机箱（柔性板集成）</text>
+          <!-- 扁平柔性板贴背板 -->
+          <rect x="385" y="640" width="220" height="16" rx="4" fill="#d9b877" stroke="#bd9a55" stroke-width="1.5"/>
+          <rect x="385" y="640" width="220" height="5" rx="4" fill="#e9d3a0"/>
+          <text x="495" y="672" text-anchor="middle" font-size="10.5" fill="#7a5a12" font-weight="700">PI 柔性板（千芯级·长度均衡）</text>
+          <!-- 洁净气流 -->
+          <path d="M385,710 C440,702 470,718 520,710 C560,704 580,716 615,710" fill="none" stroke="#1e9d6a" stroke-width="2.5" marker-end="url(#ah)"/>
+          <text x="495" y="738" text-anchor="middle" font-size="11" fill="#1e9d6a" font-weight="700">扁平薄膜：释放风道·即插即用·低损耗</text>
+          <defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1e9d6a"/></marker></defs>
+
+          <!-- 底部密度对比 -->
+          <text x="340" y="790" text-anchor="middle" font-size="12" fill="#3a4754">接口密度对比：传统配线架 <tspan fill="#d6463b" font-weight="700">1U≈960 芯</tspan>  →  光柔性板 <tspan fill="#1e9d6a" font-weight="700">1U≈24000 芯（≈20×）</tspan></text>
+        </svg>
+        <figcaption style="margin-top:10px;font-size:12px;line-height:1.7;color:#5a6675;">物料流：<b style="color:#3a4a5e">光引擎 FAU</b> → <b style="color:#bd9a55">PI 柔性基板精密布纤（核心层）</b> → <b style="color:#2b5488">分区屏蔽</b> → <b style="color:#1d3a5e">高密度连接器</b> → 前面板 → 外部网络。传统散纤成束占用立体空间、长度不一带来损耗、堵塞风道（红色风险）；新一代光柔性板以扁平薄膜预制化集成，千芯级、长度均衡、释放散热风道（绿色洁净气流）。<b>投资含义：</b>价值向"柔性集成制造 + 高密度连接器"两端收敛，已卡位柔性板与 MPO/MT 的<b>太辰光、天孚通信、长芯博创</b>最受益，纯散纤跳线厂商被替代。</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 04 头部公司业务拆解 -->
+  <section id="biz">
+    <div class="sec-head"><span class="no">04</span><h2>头部公司业务拆解与在研布局</h2><span class="en">Business Breakdown & R&D · 含未上市/海外头部</span></div>
+    <div class="lead">谁真正有业务、产品怎么拆、量价利多少、技术路线怎么分、头部在研往哪走；并补充<b>商业模式/unit economics</b>与<b>海外对标/失败案例</b>。<b>未上市与海外头部公司须作为一级对象覆盖</b>（注明融资/财报口径，不编造单日涨跌）。</div>
+    <div class="biz-sub"><h3><span class="k">1</span>谁真正有该项业务 <span class="note">已上市 + 未上市头部 + 海外龙头</span></h3>
+      <p style="font-size:13.5px;color:#3a4754;">已上市公司列该项业务主营占比/进展；未上市但市占率高的头部（注明融资轮次/估值/来源）；海外龙头（注明母公司/财报）。标注"概念贴牌 vs 真有业务"。核心参与者：<b>太辰光（柔性板/ShuffleBox/MPO 领先）、天孚通信（FAU/MPO 全線）、长芯博创（MPO/FAU/AOC）、仕佳光子（AWG/MPO/FAU）、Corning（海外龙头）、US Conec/SENKO（连接器）</b>；光库科技为"间接受益·部分环节"。</p></div>
+    <div class="biz-sub"><h3><span class="k">2</span>产品种类拆分</h3>
+      <div class="prod-grid">
+        <div class="prod-card"><div class="pn">光柔性板 / Shuffle Box</div><div class="pm">太辰光·宁波盈科·超擎·Corning</div><p>CPO 机箱内光引擎扇出、长短纤均衡、光路隔离；OXC 无源交叉矩阵；AIDC 上行分流。</p></div>
+        <div class="prod-card"><div class="pn">FAU（光纤阵列单元）</div><div class="pm">天孚·长芯博创·仕佳</div><p>硅光波导微米级对准；保偏 FAU 单价 $70–100，单机 72 个、价值量 $6k–7k。</p></div>
+        <div class="prod-card"><div class="pn">MT 插芯 / MPO / MMC</div><div class="pm">太辰光·US Conec·SENKO</div><p>MT 插芯自研线切割；MMC 单连接器 48 芯，1RU 264 端口/6336 芯，密度 3×。</p></div>
+        <div class="prod-card"><div class="pn">PMF 保偏光纤组件</div><div class="pm">长飞·Corning·配套厂</div><p>外置激光源(ELS)→光引擎偏振保持，CPO 架构下刚需、无可替代。</p></div>
+      </div></div>
+    <div class="biz-sub"><h3><span class="k">3</span>出货量 · 单价 · 毛利 <span class="note">须标注来源口径</span></h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>产品/细分</th><th>量价利</th><th>数据来源口径</th></tr></thead>
+        <tbody>
+          <tr><td>CPO 保偏 FAU</td><td>单价 $70–100（传统 FAU ~$15）；单机 72 个，整机 $6k–7k</td><td><span class="badge t">行业研报</span></td></tr>
+          <tr><td>光柔性板（柔性板）</td><td>市场 2025 ¥1 亿 → 2030 ¥160 亿，CAGR 212%</td><td><span class="badge t">Frost & Sullivan</span></td></tr>
+          <tr><td>MPO/MMC 连接器</td><td>MMC 单端口 48 芯；1RU 264 端口，密度 3× 传统 MPO</td><td><span class="badge t">US Conec / 行业</span></td></tr>
+          <tr><td>天孚通信(300394)</td><td>2025 营收 50.82 亿，毛利率 53.96%</td><td><span class="badge s">2025 年报</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="src">行业量价利来自行业研报；单品量价利来自公司公告/IR；未上市/海外以融资/估值/财报披露为准；非披露的一律标"估算/行业口径"。</div></div>
+    <div class="biz-sub"><h3><span class="k">4</span>技术路线对比</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>技术路线</th><th>原理</th><th>核心指标</th><th>典型应用</th><th>代表公司</th></tr></thead>
+        <tbody>
+          <tr><td>手工散纤跳线（传统）</td><td>现场逐根布线、熔接</td><td>密度低·长度不一·易损耗</td><td>传统配线架/低速</td><td>通用布线厂</td></tr>
+          <tr><td>光柔性板（主流演进）</td><td>PI 薄膜精密布纤、工厂预制</td><td>千芯级·长度均衡·释放风道</td><td>CPO 机箱内/背板</td><td>太辰光·宁波盈科·Corning</td></tr>
+          <tr><td>Shuffle Box / Cable</td><td>盒体/缆身固化拓扑、即插即用</td><td>4U 1024 芯·超低损耗&lt;0.35dB</td><td>机柜间·多平面网络</td><td>超擎数智·Corning</td></tr>
+        </tbody>
+      </table></div></div>
+    <div class="biz-sub"><h3><span class="k">5</span>头部公司在研布局（R&D pipeline）</h3>
+      <div class="rnd-cards">
+        <div class="rnd"><div class="rn">太辰光 <span class="badge t">在研</span></div><p>基于光柔性板的无源布纤方案与国内外 CPO 厂商合作开发；AWG 芯片（子公司瑞芯源）升级适配高速光模块；越南/国内产能扩充。</p></div>
+        <div class="rnd"><div class="rn">天孚通信 <span class="badge t">在研</span></div><p>保偏 FAU、LENS 阵列、高速光引擎封装；泰国工厂投产（初期成本偏高），承接英伟达/博通 CPO 增量。</p></div>
+        <div class="rnd"><div class="rn">长芯博创 <span class="badge t">在研</span></div><p>SNMT 超高密度连接器批量；MMC/EBO 开发验证；CPO 用 FAU 组合（密封/可拆卸/模场转换/多芯）；800G AOC/光模块平台。</p></div>
+        <div class="rnd"><div class="rn">Corning / US Conec <span class="badge t">在研</span></div><p>配合英伟达下一代 GPU 的高密度光缆 + MMC 连接器 + shuffle 方案；MMC 单连接器 48 芯持续迭代。</p></div>
+      </div></div>
+    <div class="biz-sub"><h3><span class="k">6</span>商业模式与 unit economics <span class="note">决定估值逻辑</span></h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>代表玩家</th><th>商业模式</th><th>毛利特征</th><th>估值锚方法</th></tr></thead>
+        <tbody>
+          <tr><td>太辰光 / 长芯博创（连接器+柔性板）</td><td>硬件 + 耗材（MPO/MT 复购）</td><td>38–41%</td><td>PE（成长股，看 CPO 渗透斜率）</td></tr>
+          <tr><td>天孚通信（FAU/精密件）</td><td>高精度代工 + 自研器件</td><td>54%</td><td>PE（高确定性溢价）</td></tr>
+          <tr><td>Corning（材料+连接方案）</td><td>材料 + 解决方案订阅式</td><td>光通信分部高增</td><td>PE（全球龙头折价/溢价）</td></tr>
+          <tr><td>宁波盈科 / 超擎（未上市）</td><td>项目交付 + 定制量产</td><td>早期波动</td><td>看 pipeline / 融资估值</td></tr>
+        </tbody>
+      </table></div>
+      <div class="src">商业模式决定估值方法：硬件+耗材给 PE、定制量产看 pipeline；毛利率差异直接拉开估值倍数。连接器/基材的"耗材复购"属性是确定性来源。</div></div>
+    <div class="biz-sub"><h3><span class="k">7</span>海外对标 / 失败案例 <span class="note">尽调透镜</span></h3>
+      <div class="rnd-cards">
+        <div class="rnd"><div class="rn" style="color:var(--green);">成了：Corning（GLW）</div><p>全球光纤与光学材料绝对龙头，英伟达 $3.2B 战略合作；2025 光通信营收 $6.3B（+35%），柔性板/shuffle 方案随 CPO 放量。可迁移：材料+连接+方案的垂直整合是终局形态。</p></div>
+        <div class="rnd"><div class="rn" style="color:var(--red);">警示：传统配线架/散纤方案</div><p>传统 1U 24 芯配线架在 CPO 千芯级场景下密度与风道双重失效，被柔性板替代。对国内"纯布线"厂商提示：不向柔性集成演进即被出清。</p></div>
+      </div></div>
+  </section>
+
+  <!-- 05 需求真实性 -->
+  <section id="demand">
+    <div class="sec-head v6"><span class="no">05</span><h2>需求真实性验证</h2><span class="en">Demand Authenticity</span></div>
+    <div class="lead">区分<b>真实付费拉动（pull）</b>与<b>政策/叙事推动（push）</b>。前者决定放量可信度，后者决定生死。</div>
+    <div class="demand-grid">
+      <div class="demand-card">
+        <span class="dm-type pull">PULL · 真刚需</span>
+        <h4>CPO 交换机内部光纤重排</h4>
+        <div class="dm-payer"><b>付费方：</b>英伟达/博通交换机厂 → 云厂商（资本开支）</div>
+        <div class="dm-will"><b>付费意愿：</b>强——光纤数从数根→1024+ 根，重排是工程必选项</div>
+        <div class="dm-proof"><b>证据：</b>英伟达 Quantum-X/Spectrum-X Photonics 2025H2–2026 交付；太辰光/天孚已获 CPO 客户定制研发订单</div>
+      </div>
+      <div class="demand-card">
+        <span class="dm-type pull">PULL · 真刚需</span>
+        <h4>OXC 全光交换 / AIDC 配线</h4>
+        <div class="dm-payer"><b>付费方：</b>智算中心运营商、电信</div>
+        <div class="dm-will"><b>付费意愿：</b>中强——万卡集群布线痛点真实，降风道堵塞/损耗有 ROI</div>
+        <div class="dm-proof"><b>证据：</b>超擎/Shuffle Box 已用于多平面网络；柔性板密度 20× 有实测对比</div>
+      </div>
+      <div class="demand-card">
+        <span class="dm-type push">PUSH · 叙事强</span>
+        <h4>"AI 光互联"泛概念标的</h4>
+        <div class="dm-payer"><b>付费方：</b>资本市场 / 主题基金</div>
+        <div class="dm-will"><b>付费意愿：</b>弱——仅部分环节（如普通布线），无柔性板实质业务</div>
+        <div class="dm-proof"><b>证据：</b>多为"CPO 概念"贴牌，缺柔性板/重排器件收入披露</div>
+      </div>
+    </div>
+    <div class="pullverdict">
+      <b>pull vs push 综合判断：约「8 分真、2 分叙事」。</b> 核心场景（CPO 交换机光纤重排、OXC/AIDC 高密度配线）是工程刚需、付费路径清晰、已有订单/认证证据，属强 pull；少量"AIDC 光互联"泛概念标的仍停留在叙事。结论：<b>下游放量可信度高，节奏锚定英伟达 CPO 交付与 1.6T 渗透，而非 PR。</b>
+    </div>
+  </section>
+
+  <!-- 06 权力·卡脖子 -->
+  <section id="power">
+    <div class="sec-head v4"><span class="no">06</span><h2>产业权力结构与卡脖子清单</h2><span class="en">Power & Bottlenecks</span></div>
+    <div class="lead">链主 = 掌握<b>下游设备标准（英伟达/博通）</b>与<b>上游连接器/IP（Corning/US Conec）</b>的玩家。当前权力结构呈"下游定标准 + 上游控器件"的双核。</div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:20px 0 8px;">议价能力对决：中游柔性板厂 vs 上游连接器/基材厂</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>议价维度</th><th>中游柔性板/重排器件厂</th><th>上游连接器 / PI 基材厂</th></tr></thead>
+      <tbody>
+        <tr><td>行业集中度</td><td class="vs-no">中（早期分散，玩家增多）</td><td class="vs-yes">高（MMC/PI 海外主导）</td></tr>
+        <tr><td>供应商转换成本</td><td class="vs-no">中（可多源采购连接器）</td><td class="vs-yes">高（MT/MPO 工艺绑定、认证壁垒）</td></tr>
+        <tr><td>信息对称性</td><td class="vs-yes">高（贴近设备厂需求）</td><td class="vs-no">低（材料/连接器规格保密）</td></tr>
+        <tr><td>备选方案</td><td class="vs-yes">有（散纤/Box 多形态可替）</td><td class="vs-no">少（高端 PI/MMC 国产早期）</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note"><b>结论：</b>上游连接器/基材短期议价强（规格+认证壁垒），中游柔性板厂靠"工艺+客户认证"卡位；长期看，掌握 MT/MPO 自研能力的太辰光、绑定英伟达生态的天孚议价更稳，纯代工散纤厂最易被挤压。</p>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">卡脖子 / 应力集中清单</h3>
+    <div class="stress-grid">
+      <div class="stress gap"><div class="st">① 高端 PI 柔性基材</div><p>断供/失效影响：中高。高端聚酰亚胺薄膜仍依赖杜邦/钟渊等进口，国产替代早期。</p></div>
+      <div class="stress tech"><div class="st">② 超小连接器(MMC)与精密布纤设备</div><p>断供/失效影响：高。MMC 由 US Conec/SENKO 主导；高精度布纤/检测设备国产薄弱。</p></div>
+      <div class="stress policy"><div class="st">③ 北美客户认证与贸易政策</div><p>断供/失效影响：中高。太辰光/天孚/长芯博创海外收入占比高（50%~70%+），汇率与贸易政策直接扰动交付。</p></div>
+    </div>
+  </section>
+
+  <!-- 07 价值流转 -->
+  <section id="profit">
+    <div class="sec-head v4"><span class="no">07</span><h2>价值流转与利润池</h2><span class="en">Value Flow & Profit Pool</span></div>
+    <div class="lead">资金从终端付费方（云厂商 Capex）→ CPO 设备厂 → 柔性板/连接器厂流转；利润主要沉淀在<b>上游连接器/FAU</b>与<b>中游柔性板精密制造</b>两端。</div>
+    <div class="valueflow">
+      <div class="vf"><div class="vt">资金流起点</div><div class="vv">云厂商 Capex</div><div class="vx">AI 算力基建支出</div></div>
+      <div class="vf"><div class="vt">成本分摊</div><div class="vv">CPO 设备厂 X%</div><div class="vx">整机集成</div></div>
+      <div class="vf"><div class="vt">利润留存</div><div class="vv">柔性板厂 X%</div><div class="vx">精密工艺溢价</div></div>
+      <div class="vf"><div class="vt">净头寸高地</div><div class="vv">连接器/FAU X%</div><div class="vx">耗材+壁垒</div></div>
+    </div>
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">利润池分布（深度示意·行业估算）</h3>
+    <div class="ppool">
+      <div class="pp-row"><div class="ppn">上游 连接器/FAU</div><div class="ppt"><div class="ppb" style="width:86%;"></div></div><div class="ppv">高(54%)</div></div>
+      <div class="pp-row"><div class="ppn">中游 柔性板制造</div><div class="ppt"><div class="ppb" style="width:70%;"></div></div><div class="ppv">中高</div></div>
+      <div class="pp-row"><div class="ppn">上游 PI 基材</div><div class="ppt"><div class="ppb" style="width:64%;"></div></div><div class="ppv">中高(进口)</div></div>
+      <div class="pp-row"><div class="ppn">下游 CPO 设备</div><div class="ppt"><div class="ppb" style="width:80%;"></div></div><div class="ppv">高(集中)</div></div>
+    </div>
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">利润迁移（过去 3 年 → 未来 5 年）</h3>
+    <div class="migrate">
+      <div class="mg"><div class="mgh">过去 3 年</div><p>利润集中在传统 MPO/MT 插芯与光模块，柔性板几无规模收入。</p></div>
+      <div class="mg"><div class="mgh">当前</div><p>CPO 渗透前夜，FAU/保偏件价值量跃升，太辰光/天孚/长芯博创业绩高增。</p></div>
+      <div class="mg"><div class="mgh">未来 5 年</div><p>向"柔性板整板量产 + 超小连接器(MMC)"集中；若 PI 基材国产突破，上游利润向国内迁移。</p></div>
+    </div>
+    <div class="sim">
+      <b>颠覆情景：</b>若 CPO 标准化 + 柔性板工艺成熟导致整板成为"标准件"，中游制造壁垒下降，<b>最终赢家可能是上游标准连接器/基材商 + 绑定设备厂的 FAU 龙头</b>，纯柔性板代工厂利润被挤压。投资人应优先卡位"连接器标准"与"FAU 耦合壁垒"。
+    </div>
+  </section>
+
+  <!-- 08 机会雷达 -->
+  <section id="radar">
+    <div class="sec-head"><span class="no">08</span><h2>投资机会雷达</h2><span class="en">Opportunity Radar</span></div>
+    <div class="radar">
+      <div class="radar-col sub"><h4>① 国产替代（窗口已开）</h4>
+        <div class="radar-item">高端 PI 基材：进口依赖，国产替代刚起步、空间大</div>
+        <div class="radar-item">超小连接器 MMC：US Conec/SENKO 主导，国内 SNMT 已批量（长芯博创）</div>
+        <div class="radar-item">精密布纤/检测设备：国产薄弱，设备自主可控必选项</div>
+      </div>
+      <div class="radar-col gap"><h4>② 供需错配（涨价环节）</h4>
+        <div class="radar-item">MPO 已涨价约 80%（产业链调研），供给紧、需求刚性</div>
+        <div class="radar-item">保偏 FAU：单价 $15→$70–100，扩产难、良率要求高</div>
+        <div class="radar-item">柔性板产能：认证壁垒高，早期供不应求</div>
+      </div>
+      <div class="radar-col water"><h4>③ 卖水人（确定性受益）</h4>
+        <div class="radar-item">MT/MPO 连接器：无论柔性板/Box 哪种形态都要用</div>
+        <div class="radar-item">PI 基材 + 光纤：跨路线通用耗材</div>
+        <div class="radar-item">FAU 耦合件：CPO 光引擎标配，绑定英伟达/博通者最稳</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 真伪受益 -->
+  <section id="real">
+    <div class="sec-head"><span class="no">09</span><h2>真受益 vs 伪受益</h2><span class="en">Real vs Nominal</span></div>
+    <div class="lead">三步甄别：①看收入来源（有无真实订单/板块收入）②看链条位置（是否卡不可替代环节）③看估值与兑现（高 PE/深亏是否透支）。</div>
+    <div class="master-grid">
+      <div class="master-col m"><h4>✅ 真受益（核心玩家）</h4>
+        <ul>
+          <li><b>太辰光（300570）</b>——MPO 龙头 + CPO 柔性板/ShuffleBox/FAU 领先，为多个客户定制研发光柔性板</li>
+          <li><b>天孚通信（300394）</b>——FAU/LENS/MPO 全線，英伟达+博通 CPO 核心供应商</li>
+          <li><b>长芯博创（300548）</b>——MPO/AOC/FAU，谷歌+英伟达供应链，SNMT/MMC 推进</li>
+          <li><b>仕佳光子（688313）</b>——AWG+MPO/MT-FA/FAU 批量，相关无源器件核心</li>
+          <li><b>Corning（GLW）/ US Conec / SENKO</b>——海外龙头，材料+连接器话语权的持有者</li>
+        </ul>
+      </div>
+      <div class="master-col b"><h4>⚠ 伪受益 / 概念贴牌</h4>
+        <ul>
+          <li><b>光库科技（300620）</b>——折弯 FA 阵列+OCS 有业务，但非 Shuffle 柔性板核心，属间接受益·部分环节</li>
+          <li><b>德科立等</b>——远期新业务验证，当前无柔性板规模收入</li>
+          <li><b>中际旭创/新易盛</b>——光模块/CPO 设备下游需求方，非重排器件制造商，间接受益</li>
+          <li><b>多家"AIDC 光互联"概念</b>——仅普通布线或部分环节，未构成柔性板完整业务闭环</li>
+        </ul>
+      </div>
+    </div>
+    <div class="verdict"><b>关键判断：</b>A 股"CPO/光互联概念"泛化严重，多数公司仅停留在"部分环节"或"间接受益"。<b>真正以 Shuffle/柔性板或核心配套无源件为主业的上市公司仍稀缺</b>——按"核心链条"给估值需谨慎，其余多为间接受益·非核心（光库、德科立、光模块厂）。</div>
+  </section>
+
+  <!-- 10 健康度·风险 -->
+  <section id="health">
+    <div class="sec-head v4"><span class="no">10</span><h2>产业健康度体检 + deal 级风险</h2><span class="en">Health Check & Deal Risk</span></div>
+    <h3 style="font-size:15px;color:var(--navy);margin:4px 0 8px;">5 个前瞻健康度指标</h3>
+    <div class="health">
+      <div class="health-item warn"><div class="hi-t">CPO 渗透率节奏</div><div class="hi-c">当前：全球约 0.5%（2026H1 大型智算中心）</div><div class="hi-w">预警线：连续 2 年渗透<1% → 柔性板放量存疑</div></div>
+      <div class="health-item"><div class="hi-t">光引擎/FAU 良率</div><div class="hi-c">当前：3.2T 光引擎良率约 74.5%</div><div class="hi-w">预警线：良率<70% → 供给弹性受限、成本压制</div></div>
+      <div class="health-item warn"><div class="hi-t">客户集中度</div><div class="hi-c">当前：天孚第一大客户占 63%、海外收入>70%</div><div class="hi-w">预警线：单一客户流失 → 营收断崖</div></div>
+      <div class="health-item"><div class="hi-t">毛利率趋势</div><div class="hi-c">当前：天孚 54%、太辰光 38%、长芯博创 41%</div><div class="hi-w">预警线：竞争加剧下毛利年降>3pct → 估值承压</div></div>
+      <div class="health-item warn"><div class="hi-t">汇率 / 贸易政策</div><div class="hi-c">当前：北美收入占比高，汇兑已扰动（太辰光 2026Q1）</div><div class="hi-w">预警线：关税/限制升级 → 交付与成本双杀</div></div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">多空逻辑链</h3>
+    <div class="bullbear">
+      <div class="bb bull"><h4>看多 · 最坚实底座</h4><p>CPO 是 AI 工厂互连战略资产，光纤数暴增使重排从可选变刚需；Frost & Sullivan 测柔性板 2025–2030 CAGR 212%；太辰光/天孚/长芯博创业绩已高增验证；国内 CPO 补贴（2025.9 起）催化。</p></div>
+      <div class="bb bear"><h4>看空 · 最具杀伤力</h4><p>当前柔性板体量仍小、规模量产与良率待验证；客户高度集中+北美收入占比高，地缘/汇兑敏感；连接器与 PI 基材仍海外主导；概念股估值易透支远期空间。</p></div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">deal 级风险（下沉到标的）</h3>
+    <div class="dr-grid">
+      <div class="dr-card"><div class="dr-type">关键人风险</div><span class="dr-sev m">中</span><p>核心工艺依赖精密布纤/耦合团队，龙头技术骨干稳定但中小厂更替敏感。</p></div>
+      <div class="dr-card"><div class="dr-type">融资风险</div><span class="dr-sev l">低</span><p>已上市龙头现金流健康；未上市（宁波盈科/超擎）依赖定增/产业资本，需看 runway。</p></div>
+      <div class="dr-card"><div class="dr-type">技术风险</div><span class="dr-sev h">高</span><p>实验室/小批成立 ≠ 整板量产；千芯级布纤一致性、低插损、可批量制造待验证。</p></div>
+      <div class="dr-card"><div class="dr-type">监管风险</div><span class="dr-sev m">中</span><p>北美客户认证周期长；贸易限制/关税直接影响海外收入占比高的标的。</p></div>
+    </div>
+  </section>
+
+  <!-- 11 客观判断 -->
+  <section id="verdict">
+    <div class="sec-head"><span class="no">11</span><h2>客观判断</h2><span class="en">Objective Verdict</span></div>
+    <div class="verdict">
+      <b>① 产业定位：</b>Shuffle/光纤柔性板是 CPO 渗透 0→10% 阶段的"必需增量无源器件"，体量小但斜率极陡，属光互连"卖铲人"细分。<br>
+      <b>② 技术收敛：</b>形态从散纤跳线 → 柔性板/Box 预制化已确立；竞争从"能否做"转向"良率/密度/客户认证"，工艺壁垒高于想象。<br>
+      <b>③ 市场节奏：</b>2025H2–2026 英伟达 CPO 交付为第一放量窗；2026–2027 的 800G/1.6T 批量交付决定柔性板规模收入兑现。<br>
+      <b>④ 中国位置：</b>MT 插芯/MPO 已全球领先（太辰光/长芯博创），柔性板整板与 MMC 连接器仍追赶海外；PI 基材进口依赖是最大短板。<br>
+      <b>⑤ 资本主线：</b>一二级同步热捧 CPO 无源器件，但资金集中于已验证龙头（天孚/太辰光/长芯博创），未上市新秀融资窗口依赖大客户背书。<br>
+      <b>⑥ 最大风险：</b>叙事跑赢兑现——柔性板远期空间被充分定价，而量产良率、PI 国产、地缘扰动三大变量未充分反映。
+    </div>
+  </section>
+
+  <!-- 12 催化剂 -->
+  <section id="catalyst">
+    <div class="sec-head v6"><span class="no">12</span><h2>催化剂与时序日历</h2><span class="en">Catalyst Calendar</span></div>
+    <div class="lead">排节奏、定进入时点的依据。催化剂高度依赖<b>英伟达/博通 CPO 交付 + 国内补贴落地 + 1.6T 渗透 + 柔性板量产爬坡</b>。</div>
+    <div class="cat-horizon">
+      <div class="ch-t"><span class="chip2">未来 6 个月</span> 2026 H2</div>
+      <div class="cat-list">
+        <div class="cat-row"><span class="ct">持续</span><span class="ce">英伟达 Quantum-X / Spectrum-X Photonics CPO 交换机交付爬坡，拉动 FAU/柔性板订单</span><span class="cd up">利好·中游/上游</span></div>
+        <div class="cat-row"><span class="ct">2026Q3</span><span class="ce">中报披露，检验 CPO 无源器件对业绩实际贡献（太辰光/天孚/长芯博创）</span><span class="cd both">双向·验证</span></div>
+        <div class="cat-row"><span class="ct">2026H2</span><span class="ce">国内 CPO/高速光互联设备采购补贴（最高 30%）落地，刺激本土供应链</span><span class="cd up">利好·全链</span></div>
+      </div>
+      <div class="ch-t"><span class="chip2">未来 12 个月</span> 2027</div>
+      <div class="cat-list">
+        <div class="cat-row"><span class="ct">2027</span><span class="ce">800G/1.6T CPO 批量交付，柔性板从样品走向规模收入</span><span class="cd up">利好·柔性板厂</span></div>
+        <div class="cat-row"><span class="ct">2027</span><span class="ce">长芯博创 SNMT/MMC、太辰光柔性板产能释放，验证量产良率</span><span class="cd up">利好·国产替代</span></div>
+        <div class="cat-row"><span class="ct">2027</span><span class="ce">高端 PI 基材国产验证进展，决定上游利润能否向国内迁移</span><span class="cd both">双向</span></div>
+      </div>
+      <div class="ch-t"><span class="chip2">未来 24 个月</span> 2028–2029</div>
+      <div class="cat-list">
+        <div class="cat-row"><span class="ct">2028–29</span><span class="ce">CPO 光纤柔性板市场向 ¥77 亿(2029)→¥160 亿(2030) 跃迁，规模效应显现</span><span class="cd up">利好·里程碑</span></div>
+        <div class="cat-row"><span class="ct">2029</span><span class="ce">3.2T CPO 渗透有望>50%，重排器件成标配</span><span class="cd up">利好·退出</span></div>
+        <div class="cat-row"><span class="ct">持续</span><span class="ce">若 PI 基材/MMC 国产突破，上游利润池向国内迁移</span><span class="cd both">待验证</span></div>
+      </div>
+    </div>
+    <p class="note">当前链上可预期催化剂密集度<b>高</b>：英伟达 CPO 交付 + 国内补贴构成双引擎，节点清晰。排节奏建议——锚定"大客户交付 + 中报验证 + 产能释放"三类事件。</p>
+  </section>
+
+  <!-- 13 投资启示 -->
+  <section id="insight">
+    <div class="sec-head v6"><span class="no">13</span><h2>投资启示与动作建议</h2><span class="en">Investment Implications</span></div>
+    <div class="lead">结论为客观梳理下的投资视角提示，非买卖建议，措辞"可关注/宜观望/待催化"。</div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:18px 0 8px;">① 非对称下注点</h3>
+    <div class="asym-grid">
+      <div class="asym up"><div class="at">↑ 高赔率：柔性板新秀</div><p>宁波盈科/超擎等未上市柔性板 dedicated maker，若绑定大客户放量，估值跃迁；但量产良率/客户认证风险高。</p></div>
+      <div class="asym safe"><div class="at">▣ 稳赚卖水人：连接器/FAU</div><p>太辰光(MPO/MT)、天孚(FAU)、长芯博创(MPO/FAU)，无论柔性板/Box 哪种形态都要用，确定性最高、耗材复购。</p></div>
+      <div class="asym trap"><div class="at">⚠ 伪需求陷阱：泛概念</div><p>仅普通布线/部分环节的"AIDC 光互联"概念股，缺柔性板实质收入；宜观望，等出现规模订单再定。</p></div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">② 可投标的 triage（项目池）</h3>
+    <div class="triage-wrap"><table>
+      <thead><tr><th>标的</th><th>环节</th><th>当前阶段</th><th>估值锚</th><th>开放融资</th><th>可接触性</th></tr></thead>
+      <tbody>
+        <tr><td>天孚通信(300394)</td><td>FAU/MPO</td><td>已上市</td><td>PE（高确定性溢价）</td><td>二级</td><td>直接</td></tr>
+        <tr><td>太辰光(300570)</td><td>MPO/柔性板</td><td>已上市</td><td>PE（成长股）</td><td>二级</td><td>直接</td></tr>
+        <tr><td>长芯博创(300548)</td><td>MPO/FAU/AOC</td><td>已上市</td><td>PE（高增）</td><td>二级</td><td>直接</td></tr>
+        <tr><td>宁波盈科 / 超擎数智</td><td>柔性板/Box</td><td>未上市</td><td>pipeline/融资估值</td><td>产业资本</td><td>可接触</td></tr>
+        <tr><td>Corning(GLW)</td><td>材料+连接方案</td><td>海外上市</td><td>PE（全球龙头）</td><td>二级(美股)</td><td>直接</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">③ 退出路径映射</h3>
+    <div class="exit-grid">
+      <div class="exit-col"><div class="ex-h">港交所 18C</div><p>未盈利硬科技上市通道。柔性板新秀（如宁波盈科）若达研发/市值标准可走此路径。</p></div>
+      <div class="exit-col"><div class="ex-h">科创板第五套</div><p>未盈利科创企业上市。境内架构连接器/材料企业培育通道。</p></div>
+      <div class="exit-col"><div class="ex-h">北交所</div><p>更早阶段、规模较小的连接器/材料企业培育通道。</p></div>
+      <div class="exit-col"><div class="ex-h">并购</div><p>上市公司参股/并购柔性板新秀，产业方卡位式收购是重要退出。</p></div>
+    </div>
+  </section>
+
+  <!-- 末章 双表 -->
+  <section id="chart">
+    <div class="sec-head"><span class="no">末</span><h2>代表公司涨跌 / 估值全景</h2><span class="en">Quotes & Valuation</span></div>
+    <div class="lead">涨红跌绿（A 股习惯）。<b>表①</b>列已上市代表公司 2025 年经营快照（营收同比增速条形图 + 数据表）；<b>表②</b>列未上市/海外头部估值·融资·财报对照。<br><span style="color:#8a6418;">📌 说明：实时行情接口（腾讯自选股/NeoData）未连接，末章以 <b>2025 年年报经营快照</b>替代当日涨跌，不影响产业链结构与投资视角判断；连上连接器后可一键刷新。</span></div>
+
+    <div class="chart">
+      <div class="grp-title"><span class="sw" style="background:var(--navy);"></span>表① 已上市代表公司 · 2025 年营业收入同比增速（年报口径）</div>
+      <div class="ppool">
+        <div class="pp-row"><div class="ppn">仕佳光子(688313)</div><div class="ppt"><div class="ppb" style="width:88.3%;"></div></div><div class="ppv">+98.2%</div></div>
+        <div class="pp-row"><div class="ppn">天孚通信(300394)</div><div class="ppt"><div class="ppb" style="width:51.5%;"></div></div><div class="ppv">+57.3%</div></div>
+        <div class="pp-row"><div class="ppn">长芯博创(300548)</div><div class="ppt"><div class="ppb" style="width:40.4%;"></div></div><div class="ppv">+44.9%</div></div>
+        <div class="pp-row"><div class="ppn">太辰光(300570)</div><div class="ppt"><div class="ppb" style="width:11.0%;"></div></div><div class="ppv">+12.3%</div></div>
+      </div>
+      <div class="legend">
+        <span class="li"><span class="sq" style="background:var(--navy);"></span>营收同比增速（2025 年报 vs 2024）</span>
+        <span class="li" style="color:#9aa6b2;">条形宽度等比于增速；光库科技同比未单独取，不入图。</span>
+      </div>
+      <p class="note">📌 <b>结构含义：</b>仕佳/天孚/长芯博创高增印证 CPO 无源器件放量；太辰光增速放缓主因 2026Q1 交付节奏与汇兑扰动（非趋势逆转）。条形宽度 = 增速 / 100 × 90%。</p>
+    </div>
+
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>公司</th><th>代码</th><th>环节/路线</th><th>2025 营收(亿)</th><th>同比</th><th>毛利率</th><th>归母(亿)</th><th>业务实质</th><th>真伪</th></tr></thead>
+      <tbody>
+        <tr><td>天孚通信</td><td>300394</td><td>FAU/LENS/MPO</td><td>50.82</td><td>+57.3%</td><td>53.96%</td><td>~19.9</td><td>英伟达+博通 CPO 核心供应商</td><td><span class="badge t">真核心</span></td></tr>
+        <tr><td>长芯博创</td><td>300548</td><td>MPO/AOC/FAU</td><td>25.33</td><td>+44.9%</td><td>40.61%</td><td>3.35</td><td>谷歌+英伟达，长芯盛为核心引擎</td><td><span class="badge t">真核心</span></td></tr>
+        <tr><td>仕佳光子</td><td>688313</td><td>AWG/MPO/FAU</td><td>21.29</td><td>+98.2%</td><td>33.19%</td><td>3.72</td><td>相关无源器件批量供货</td><td><span class="badge t">真核心</span></td></tr>
+        <tr><td>太辰光</td><td>300570</td><td>MPO/柔性板/ShuffleBox</td><td>15.47</td><td>+12.3%</td><td>38.00%</td><td>2.99</td><td>柔性板/ShuffleBox 领先，定制研发中</td><td><span class="badge t">真核心</span></td></tr>
+        <tr><td>光库科技</td><td>300620</td><td>折弯FA/OCS</td><td>14.74</td><td>—</td><td>34.66%</td><td>—</td><td>相关但非柔性板核心</td><td><span class="badge f">间接受益</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="two-table-note">📌 表② 针对未上市 / 海外非独立上市公司（无单日涨跌），列估值·融资·最新财务对照——这些才是产业链真正的话语权持有者（核心玩家集中于此）。</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>公司</th><th>上市状态</th><th>路线/环节</th><th>最新估值 / 融资 / 财务</th><th>关键信号</th></tr></thead>
+      <tbody>
+        <tr><td>Corning（GLW）</td><td>海外上市(美股)</td><td>光纤/柔性板/Shuffle 方案</td><td>光通信 2025 营收 $6.3B，+35% YoY</td><td>英伟达 $3.2B 战略合作，CPO 生态核心</td></tr>
+        <tr><td>US Conec</td><td>未上市(美)</td><td>MMC 超小连接器</td><td>非独立上市（主席系 Corning VP）</td><td>全球 MMC 主导者，VSFF 标准推手</td></tr>
+        <tr><td>SENKO</td><td>海外头部</td><td>MPO/MTP 连接器</td><td>非独立上市</td><td>全球连接器核心，紧跟 MMC/SN-MT</td></tr>
+        <tr><td>宁波盈科(Eonkey)</td><td>未上市</td><td>Shuffle 柔性板/Cable</td><td>自研柔性布纤，定制量产</td><td>专属 Shuffle 柔性板厂商，AIDC/CPO 方案</td></tr>
+        <tr><td>超擎数智</td><td>未上市</td><td>Shuffle Cable/Box</td><td>16F/32F/256F，4U 1024 芯</td><td>超低插损<0.35dB，多平面网络方案</td></tr>
+      </tbody>
+    </table></div>
+    <div class="src">财务/融资/技术信息来自公司公告、IR 与公开研报/权威媒体（经 Web 检索交叉验证）。市场规模引自 Frost & Sullivan（2026 HKEX  filing 引述）与 TrendForce 集邦咨询。涨红跌绿为 A 股习惯；"真/伪受益""确定性""价值流转/利润池/产业权力/机会雷达/健康度/需求真实性/催化剂/投资启示"为基于公开业务与数据的客观梳理与行业估算，非评级、非精确并表财务数据。</div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <p><b>数据来源与方法：</b>财务/融资/技术信息来自公司公告、IR 与公开研报/权威媒体（经 Web 检索交叉验证）；市场规模数据引自 Frost & Sullivan（某 CPO 无源器件公司 2026 港股招股书引述）与 TrendForce 集邦咨询。实时行情接口未连接，末章以 2025 年年报经营快照替代当日涨跌。</p>
+      <p><b>口径说明：</b>涨红跌绿为 A 股习惯；"真/伪受益""确定性""价值流转/利润池/产业权力/机会雷达/健康度/需求真实性/催化剂/投资启示"为基于公开业务与数据的客观梳理与行业估算，非评级、非精确并表财务数据。代表公司严格按"真实产业参与者"遴选，A 股概念映射方单独标注为间接受益、不进入核心链条。</p>
+      <div class="disclaimer">
+        ⚠️ <b>免责声明：</b>本页面仅为产业链结构与公开数据的客观整理，<b>不构成任何投资建议、要约或承诺</b>。催化剂/投资启示章节为基于公开信息的投资视角提示，非买卖建议，措辞"可关注/宜观望/待催化"。技术商业化存在高度不确定性，标注的"真/伪受益"会随产业进展变化。投资有风险，决策需谨慎，请以交易所及公司官方披露信息为准，并咨询持牌专业人士。
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var map = {};
+  links.forEach(function(a){ var id=a.getAttribute('href').slice(1); var s=document.getElementById(id); if(s) map[id]=a; });
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          links.forEach(function(l){l.classList.remove('active');});
+          var a = map[e.target.id]; if(a) a.classList.add('active');
+        }
+      });
+    }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+    Object.keys(map).forEach(function(id){ var el=document.getElementById(id); if(el) obs.observe(el); });
+  }
+})();
+</script>
+</body>
+</html>
