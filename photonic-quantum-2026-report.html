@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<!-- 光量子计算（Photonic Quantum Computing）产业链分析 · v6 单页报告 -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>光量子计算产业链分析 · 单页报告</title>
+<style>
+  :root{
+    --navy:#1d3a5e; --navy2:#2b5488; --navy-soft:#eaf1f8;
+    --ink:#19222e; --muted:#69737f; --line:#e5e9ef;
+    --bg:#f4f6f8; --card:#ffffff;
+    --red:#d6463b; --red-soft:#fbedec;
+    --green:#1e9d6a; --green-soft:#e8f5ef;
+    --gold:#bd9a55; --gold-soft:#f7f1e3;
+    --chip:#edf0f5;
+    --slate:#9fb3cd; --accent2:#d9b877;
+    --font-serif:"Source Han Serif SC","Noto Serif SC","Songti SC","SimSun",serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;padding-left:252px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;color:var(--ink);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px;}
+  .sidebar{position:fixed;top:0;left:0;width:252px;height:100vh;background:linear-gradient(180deg,#142b47 0%,#1d3a5e 55%,#244d7c 100%);color:#fff;display:flex;flex-direction:column;z-index:60;box-shadow:2px 0 18px rgba(20,43,71,.25);}
+  .side-brand{padding:24px 22px 18px;border-bottom:1px solid rgba(255,255,255,.10);}
+  .side-brand .sb-t{font-size:12px;color:var(--slate);letter-spacing:1.5px;font-weight:600;}
+  .side-brand .sb-n{font-size:17px;font-weight:800;margin-top:6px;line-height:1.3;font-family:var(--font-serif);}
+  .side-brand .sb-v{display:inline-block;margin-top:12px;font-size:11px;color:#142b47;background:var(--accent2);padding:3px 10px;border-radius:11px;font-weight:700;letter-spacing:.5px;}
+  .toc{padding:14px 12px 30px;overflow-y:auto;flex:1 1 auto;}
+  .toc a{display:flex;align-items:center;gap:11px;color:#a9c0db;font-size:13px;padding:10px 12px;border-radius:9px;transition:.18s;margin:2px 0;border-left:3px solid transparent;}
+  .toc a .num{font-size:11px;font-weight:700;color:#7e9bbf;width:22px;flex:0 0 auto;text-align:center;}
+  .toc a:hover{background:rgba(255,255,255,.08);color:#fff;}
+  .toc a.active{background:rgba(255,255,255,.14);color:#fff;border-left-color:var(--accent2);}
+  .toc a.active .num{color:var(--accent2);}
+  .hero{background:linear-gradient(135deg,#142b47 0%,#1d3a5e 55%,#2b5488 100%);color:#fff;padding:48px 0 42px;position:relative;}
+  .hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--accent2),transparent);}
+  .hero .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--accent2);border:1px solid rgba(217,184,119,.45);padding:4px 12px;border-radius:20px;margin-bottom:14px;}
+  .hero h1{margin:0 0 10px;font-size:34px;font-weight:800;letter-spacing:.5px;font-family:var(--font-serif);}
+  .hero p.sub{margin:0;color:#c5d4e6;font-size:15px;max-width:820px;}
+  .hero .meta{margin-top:18px;display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--slate);}
+  .hero .meta b{color:#fff;font-weight:600;}
+  section{padding:36px 0 8px;}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;}
+  .sec-head .no{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--navy),var(--navy2));width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:9px;flex:0 0 auto;box-shadow:0 2px 6px rgba(29,58,94,.25);}
+  .sec-head h2{margin:0;font-size:22px;font-weight:750;font-family:var(--font-serif);letter-spacing:.3px;}
+  .sec-head .en{color:var(--muted);font-size:12.5px;font-weight:500;}
+  .sec-head.v3 .no{background:var(--gold);color:#3a2a06;box-shadow:none;}
+  .sec-head.v4 .no{background:var(--navy2);color:#fff;box-shadow:none;}
+  .sec-head.v6 .no{background:var(--red);color:#fff;box-shadow:none;}
+  .lead{color:#3a4754;font-size:14.5px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:10px;padding:16px 20px;}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
+  .kpi .h{font-size:13px;color:var(--muted);margin-bottom:6px;}
+  .kpi .v{font-size:16.5px;font-weight:750;color:var(--navy);}
+  .kpi .v small{font-size:12px;color:var(--muted);font-weight:500;}
+  .chain{display:flex;align-items:stretch;gap:0;margin-top:6px;flex-wrap:wrap;}
+  .tier{flex:1 1 0;min-width:230px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;position:relative;}
+  .tier .tname{font-weight:750;font-size:15px;color:var(--navy);display:flex;align-items:center;gap:8px;}
+  .tier .tname .dot{width:10px;height:10px;border-radius:50%;}
+  .tier .trole{font-size:12px;color:var(--muted);margin:4px 0 12px;}
+  .seg{margin-bottom:12px;}
+  .seg .lbl{font-size:12.5px;font-weight:600;color:#2c3a47;margin-bottom:6px;}
+  .pills{display:flex;flex-wrap:wrap;gap:6px;}
+  .pill{font-size:12px;background:var(--chip);color:#33414f;border:1px solid #d4e6de;padding:3px 9px;border-radius:14px;white-space:nowrap;}
+  .pill.real{background:var(--gold-soft);border-color:#e7d3a3;color:#8a6418;font-weight:600;}
+  .pill.aux{background:#eef0f2;color:#7a8694;}
+  .arrow{display:flex;align-items:center;justify-content:center;color:var(--navy);font-size:22px;font-weight:700;flex:0 0 34px;}
+  @media(max-width:860px){.arrow{transform:rotate(90deg);flex-basis:100%;height:30px;}}
+  .tier.up .dot{background:var(--navy);}
+  .tier.mid .dot{background:var(--gold);}
+  .tier.down .dot{background:#3f7bb0;}
+  .tier.aux .dot{background:#7a8694;}
+  .tiercards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px;}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;}
+  .tcard .th{font-size:16px;font-weight:750;color:var(--navy);border-bottom:2px solid var(--navy-soft);padding-bottom:10px;margin-bottom:12px;}
+  .tcard h4{font-size:13px;margin:14px 0 5px;color:#2c3a47;}
+  .tcard p{margin:0;font-size:13.5px;color:#3a4754;}
+  .cert{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:6px 10px;border-radius:8px;font-size:13px;font-weight:700;align-self:flex-start;}
+  .cert.high{background:var(--green-soft);color:var(--green);}
+  .cert.mid{background:var(--gold-soft);color:var(--gold);}
+  .cert.low{background:#eef0f2;color:#6b7785;}
+  .stars{letter-spacing:2px;color:var(--gold);font-size:14px;}
+  .realpill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:10px;}
+  .realpill.t{background:var(--gold-soft);color:#8a6418;}
+  .realpill.f{background:#eef0f2;color:#7a8694;}
+  .chart{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-top:6px;}
+  .chart .grp-title{font-size:13px;font-weight:700;color:var(--navy);margin:16px 0 8px;display:flex;align-items:center;gap:8px;}
+  .chart .grp-title:first-child{margin-top:2px;}
+  .chart .grp-title .sw{width:18px;height:4px;border-radius:2px;}
+  .row{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px;}
+  .row .name{width:118px;flex:0 0 auto;text-align:right;color:#33414f;}
+  .row .track{position:relative;flex:1 1 auto;height:18px;background:#eef3f1;}
+  .row .track::before{content:"";position:absolute;left:0;top:0;bottom:0;width:1px;background:#cfd8e2;}
+  .row .bar{position:absolute;top:2px;height:14px;border-radius:3px;}
+  .row .bar.pos{right:0;background:var(--red);}
+  .row .val{width:78px;flex:0 0 auto;font-weight:700;font-variant-numeric:tabular-nums;}
+  .row .val.pos{color:var(--red);}
+  .legend{display:flex;gap:18px;margin-top:14px;font-size:12.5px;color:var(--muted);align-items:center;flex-wrap:wrap;}
+  .legend .li{display:flex;align-items:center;gap:6px;}
+  .legend .sq{width:14px;height:14px;border-radius:3px;}
+  .tbl-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 8px;margin-top:16px;overflow-x:auto;}
+  table{border-collapse:collapse;width:100%;font-size:13px;min-width:640px;}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;}
+  th{background:linear-gradient(180deg,#eef3f9,#e3ecf6);color:#2b5488;font-weight:650;font-size:12.5px;}
+  td .up{color:var(--red);font-weight:700;}
+  td .down{color:var(--green);font-weight:700;}
+  .badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
+  .badge.t{background:var(--gold-soft);color:#8a6418;}
+  .badge.f{background:#eef0f2;color:#7a8694;}
+  .badge.s{background:var(--green-soft);color:var(--green);}
+  .note{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.6;}
+  .biz-sub{margin-top:18px;}
+  .biz-sub h3{font-size:15.5px;color:var(--navy);margin:18px 0 10px;border-left:4px solid var(--gold);padding-left:10px;}
+  .prod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:6px;}
+  .prod-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;}
+  .prod-card .pn{font-weight:700;font-size:14.5px;color:var(--navy);}
+  .prod-card .pm{font-size:12.5px;color:var(--muted);margin:4px 0 8px;}
+  .prod-card p{margin:0;font-size:13px;color:#3a4754;}
+  .rnd-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:6px;}
+  .rnd{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;}
+  .rnd .rn{font-weight:700;font-size:14px;color:var(--navy);}
+  .rnd p{margin:6px 0 0;font-size:13px;color:#3a4754;}
+  .valueflow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px;}
+  .vf{border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:var(--card);}
+  .vf .vt{font-size:12px;color:var(--muted);}
+  .vf .vv{font-size:14.5px;font-weight:750;color:var(--navy);margin-top:4px;}
+  .vf .vx{font-size:12px;color:#3a4754;margin-top:3px;}
+  .ppool{margin-top:14px;}
+  .pp-row{display:flex;align-items:center;gap:12px;margin:9px 0;}
+  .pp-row .ppn{width:160px;flex:0 0 auto;font-size:13px;color:#33414f;}
+  .pp-row .ppt{position:relative;flex:1 1 auto;height:22px;background:#eef3f1;border-radius:6px;overflow:hidden;}
+  .pp-row .ppb{position:absolute;top:0;left:0;bottom:0;background:linear-gradient(90deg,var(--navy),var(--navy2));border-radius:6px;}
+  .pp-row .ppv{width:54px;flex:0 0 auto;text-align:right;font-size:12.5px;font-weight:700;color:var(--navy);}
+  .migrate{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .migrate .mg{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;}
+  .migrate .mgh{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .migrate p{margin:0;font-size:12.5px;color:#3a4754;}
+  .sim{background:var(--gold-soft);border:1px solid #ecd9a8;border-radius:12px;padding:14px 16px;margin-top:12px;font-size:13.5px;color:#5a4413;}
+  .sim b{color:#7a5a12;}
+  .master-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px;}
+  .master-col{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--card);}
+  .master-col.m h4{margin:0 0 10px;color:var(--navy);font-size:15px;}
+  .master-col.b h4{margin:0 0 10px;color:var(--gold);font-size:15px;}
+  .master-col ul{margin:0;padding-left:18px;font-size:13.5px;color:#3a4754;}
+  .master-col li{margin:7px 0;}
+  .irr{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .irr .ix{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;border-top:3px solid var(--navy);}
+  .irr .ix.hi{border-top-color:var(--red);}
+  .irr .ix.mid{border-top-color:var(--gold);}
+  .irr .ix.lo{border-top-color:var(--green);}
+  .irr .ixt{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .irr p{margin:0;font-size:12.5px;color:#3a4754;}
+  .stress-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .stress{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--card);}
+  .stress.gap{border-left:4px solid var(--red);}
+  .stress.tech{border-left:4px solid var(--gold);}
+  .stress.policy{border-left:4px solid var(--navy2);}
+  .stress .st{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .stress p{margin:0;font-size:12.5px;color:#3a4754;}
+  .demand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .demand-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;}
+  .dm-type{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .dm-type.pull{background:var(--red-soft);color:var(--red);}
+  .dm-type.push{background:var(--gold-soft);color:#8a6418;}
+  .demand-card h4{margin:0 0 8px;font-size:15px;color:var(--navy);}
+  .demand-card .dm-payer,.demand-card .dm-will,.demand-card .dm-proof{font-size:12.5px;color:#3a4754;margin:7px 0;}
+  .demand-card .dm-payer b,.demand-card .dm-will b,.demand-card .dm-proof b{color:#2c3a47;}
+  .pullverdict{background:var(--navy-soft);border:1px solid #cfe0f0;border-radius:12px;padding:14px 18px;margin-top:14px;font-size:14px;color:#1d3a5e;}
+  .pullverdict b{color:var(--navy);}
+  .vs-yes{color:var(--green);font-weight:700;}
+  .vs-no{color:var(--red);font-weight:700;}
+  .radar{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .radar-col{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--card);}
+  .radar-col.sub{border-top:3px solid var(--red);}
+  .radar-col.gap{border-top:3px solid var(--gold);}
+  .radar-col.water{border-top:3px solid var(--navy2);}
+  .radar-col h4{margin:0 0 10px;font-size:14.5px;color:var(--navy);}
+  .radar-item{font-size:13px;color:#3a4754;margin:9px 0;padding-left:14px;position:relative;}
+  .radar-item::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--navy2);}
+  .health{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:8px;}
+  .health-item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px;}
+  .health-item .hi-t{font-size:13px;font-weight:700;color:var(--navy);}
+  .health-item .hi-c{font-size:12.5px;color:#3a4754;margin-top:5px;}
+  .health-item .hi-w{font-size:12px;color:var(--muted);margin-top:5px;}
+  .health-item.warn{border-left:4px solid var(--red);}
+  .bullbear{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;}
+  .bb{border-radius:12px;padding:15px 17px;}
+  .bb.bull{background:var(--green-soft);border:1px solid #bfe6cf;}
+  .bb.bear{background:var(--red-soft);border:1px solid #f3c9c9;}
+  .bb h4{margin:0 0 8px;font-size:14px;}
+  .bb.bull h4{color:var(--green);}
+  .bb.bear h4{color:var(--red);}
+  .bb p{margin:0;font-size:13px;color:#3a4754;}
+  .dr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:8px;}
+  .dr-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;}
+  .dr-card .dr-type{font-size:12.5px;font-weight:700;color:var(--navy);}
+  .dr-sev{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:9px;margin:8px 0;}
+  .dr-sev.h{background:var(--red-soft);color:var(--red);}
+  .dr-sev.m{background:var(--gold-soft);color:#8a6418;}
+  .dr-sev.l{background:var(--green-soft);color:var(--green);}
+  .dr-card p{margin:0;font-size:12.5px;color:#3a4754;}
+  .cat-horizon{margin-top:14px;}
+  .cat-horizon .ch-t{font-size:14px;font-weight:750;color:var(--navy);margin:14px 0 8px;display:flex;align-items:center;gap:8px;}
+  .cat-horizon .ch-t .chip2{font-size:11px;background:var(--navy);color:#fff;padding:2px 9px;border-radius:10px;}
+  .cat-list{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 10px;}
+  .cat-row{display:flex;align-items:center;gap:12px;padding:10px 8px;border-bottom:1px solid var(--line);font-size:13px;}
+  .cat-row:last-child{border-bottom:none;}
+  .cat-row .ct{width:96px;flex:0 0 auto;font-weight:600;color:#33414f;}
+  .cat-row .ce{flex:1 1 auto;color:#3a4754;}
+  .cat-row .cd{width:120px;flex:0 0 auto;text-align:center;font-weight:700;font-size:12px;border-radius:8px;padding:3px 0;}
+  .cat-row .cd.up{background:var(--red-soft);color:var(--red);}
+  .cat-row .cd.down{background:var(--green-soft);color:var(--green);}
+  .cat-row .cd.both{background:var(--gold-soft);color:#8a6418;}
+  .asym-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .asym{border-radius:14px;padding:16px;color:#fff;}
+  .asym.up{background:linear-gradient(135deg,#1e9d6a,#157a48);}
+  .asym.safe{background:linear-gradient(135deg,#1d3a5e,#142b47);}
+  .asym.trap{background:linear-gradient(135deg,#a85d2c,#7d4220);}
+  .asym .at{font-size:14.5px;font-weight:800;margin-bottom:8px;}
+  .asym p{margin:0;font-size:12.5px;line-height:1.6;opacity:.95;}
+  .triage-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 10px;margin-top:14px;overflow-x:auto;}
+  .triage-wrap table{min-width:760px;}
+  .exit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px;}
+  .exit-col{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--card);}
+  .exit-col .ex-h{font-size:13px;font-weight:750;color:var(--navy);margin-bottom:8px;}
+  .exit-col p{margin:0;font-size:12.5px;color:#3a4754;}
+  .verdict{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:16px 20px;margin-top:6px;font-size:14px;color:#3a4754;}
+  .verdict b{color:var(--navy);}
+  .two-table-note{font-size:13px;color:var(--muted);margin:18px 0 4px;padding:10px 14px;background:var(--navy-soft);border-radius:10px;}
+  .src{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6;}
+  footer{margin-top:30px;background:#142b47;color:var(--slate);padding:28px 0;font-size:12.5px;}
+  footer .wrap p{margin:0 0 10px;line-height:1.7;}
+  footer b{color:#fff;}
+  .disclaimer{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:14px 16px;margin-top:6px;color:#cdddec;}
+  section{padding:38px 0 10px;}
+  .kpi,.tcard,.tier,.prod-card,.rnd,.vf,.master-col,.irr .ix,.stress,.demand-card,.health-item,.dr-card,.exit-col,.chart,.tbl-wrap,.lead,.verdict,.cat-list,.prod-grid,.rnd-cards,.valueflow,.migrate,.radar-col,.bullbear .bb{box-shadow:0 1px 3px rgba(20,43,71,.06),0 1px 2px rgba(20,43,71,.04);transition:box-shadow .2s,transform .2s;}
+  .kpi:hover,.tcard:hover,.tier:hover,.prod-card:hover,.rnd:hover,.vf:hover,.master-col:hover,.irr .ix:hover,.stress:hover,.demand-card:hover,.health-item:hover,.dr-card:hover,.exit-col:hover{box-shadow:0 6px 18px rgba(20,43,71,.12);transform:translateY(-2px);}
+  .tbl-wrap table tbody tr:hover{background:#f7f9fc;}
+  .sec-head h2{position:relative;}
+  /* teardown figure */
+  figure.tf{margin:26px 0;background:#fff;border:1px solid #e7ecf2;border-left:4px solid #bd9a55;border-radius:14px;padding:20px 22px 16px;box-shadow:0 6px 20px rgba(29,58,94,.08);}
+  figure.tf figcaption{margin-top:10px;font-size:12px;line-height:1.7;color:#5a6675;}
+  @media print{
+    .sidebar{display:none;}
+    body{background:#fff;padding-left:0;}
+    .hero{background:#1d3a5e !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    section{page-break-inside:avoid;}
+  }
+  @media(max-width:980px){
+    body{padding-left:0;}
+    .sidebar{position:sticky;top:0;width:100%;height:auto;flex-direction:row;overflow-x:auto;}
+    .side-brand{border-bottom:none;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap;}
+    .toc{display:flex;padding:10px;flex-wrap:nowrap;}
+    .toc a{border-left:none;white-space:nowrap;}
+  }
+</style>
+</head>
+<body>
+<div id="gate" class="gate">
+  <div class="gate-box">
+    <div class="gate-title">🔒 内容已加密</div>
+    <div class="gate-sub">请输入访问密码</div>
+    <input id="gate-pwd" type="password" class="gate-input" placeholder="访问密码" autocomplete="off" />
+    <button id="gate-btn" class="gate-btn">解锁</button>
+    <div id="gate-err" class="gate-err"></div>
+  </div>
+</div>
+<style>
+.gate{position:fixed;inset:0;z-index:2147483647;background:linear-gradient(135deg,#0f1420,#1a2236);display:flex;align-items:center;justify-content:center;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif}
+.gate-box{background:#fff;border-radius:16px;padding:36px 40px;width:320px;max-width:86vw;box-shadow:0 20px 60px rgba(0,0,0,.45);text-align:center}
+.gate-title{font-size:20px;font-weight:700;color:#111827;margin-bottom:6px}
+.gate-sub{font-size:13px;color:#6b7280;margin-bottom:20px}
+.gate-input{width:100%;box-sizing:border-box;padding:12px 14px;font-size:15px;border:1px solid #d1d5db;border-radius:10px;outline:none;margin-bottom:14px}
+.gate-input:focus{border-color:#2563eb}
+.gate-btn{width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.gate-btn:hover{background:#1d4ed8}
+.gate-err{color:#dc2626;font-size:13px;margin-top:12px;min-height:18px}
+</style>
+<script>
+(function(){
+  var PWD="hanbuff";
+  function unlock(){ var g=document.getElementById("gate"); if(g&&g.parentNode){ g.parentNode.removeChild(g); } }
+  function check(){ var v=document.getElementById("gate-pwd").value; var err=document.getElementById("gate-err"); if(v===PWD){ unlock(); } else { err.textContent="密码错误，请重试"; } }
+  window.addEventListener("load",function(){ var btn=document.getElementById("gate-btn"); var inp=document.getElementById("gate-pwd"); if(btn) btn.addEventListener("click",check); if(inp){ inp.addEventListener("keydown",function(e){ if(e.key==="Enter") check(); }); inp.focus(); } });
+})();
+</script>
+
+
+<!-- LEFT SIDEBAR TOC -->
+<aside class="sidebar">
+  <div class="side-brand">
+    <div class="sb-t">INDUSTRY CHAIN</div>
+    <div class="sb-n">光量子计算<br>产业链分析</div>
+    <div class="sb-v">结构化分析</div>
+  </div>
+  <nav class="toc">
+    <a href="#def"><span class="num">01</span>定义与核心矛盾</a>
+    <a href="#panorama"><span class="num">02</span>全景双视图</a>
+    <a href="#layers"><span class="num">03</span>分层受益逻辑</a>
+    <a href="#biz"><span class="num">04</span>头部公司拆解</a>
+    <a href="#demand"><span class="num">05</span>需求真实性</a>
+    <a href="#power"><span class="num">06</span>权力·卡脖子</a>
+    <a href="#profit"><span class="num">07</span>价值·利润池</a>
+    <a href="#radar"><span class="num">08</span>机会雷达</a>
+    <a href="#real"><span class="num">09</span>真伪受益</a>
+    <a href="#health"><span class="num">10</span>健康度·风险</a>
+    <a href="#verdict"><span class="num">11</span>客观判断</a>
+    <a href="#catalyst"><span class="num">12</span>催化剂日历</a>
+    <a href="#insight"><span class="num">13</span>投资启示</a>
+    <a href="#chart"><span class="num">末</span>涨跌·估值全景</a>
+  </nav>
+</aside>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="wrap">
+      <span class="tag">产业链深度分析</span>
+      <h1>光量子计算（Photonic Quantum Computing）产业链分析</h1>
+      <p class="sub">以光子为量子比特载体、室温运行、复用半导体硅光/薄膜铌酸锂工艺的新一代计算路线。报告拆解"光子芯片/单光子源/探测器 → 光量子处理器/整机/量子云 → 量子化学/优化/金融/安全通信"全链条，并聚焦谁真正卡住环节、谁在叙事、钱往哪走。结构：全景双视图 + 产品拆解图 + 头部公司拆解 + 需求真实性 + 权力与卡脖子 + 价值流转 + 机会雷达 + 真伪受益 + 健康度 + 客观判断 + 催化剂 + 投资启示 + 涨跌/估值双表。</p>
+      <div class="meta">
+        <span>作者：<b>HanBuff</b></span>
+        <span>数据日期：<b>2026-08-18</b></span>
+        <span>数据来源：<b>公开研报 / Web 检索交叉验证（行情接口未连接，末章用 2025 年报经营快照）</b></span>
+        <span>涨跌口径：<b>涨红 · 跌绿（A 股习惯）</b></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- KEY TAKEAWAYS -->
+  <section style="padding-top:28px;">
+    <div class="kpis">
+      <div class="kpi"><div class="h">当前最受益环节</div><div class="v">上游 · 光子芯片 / 单光子源 / 探测器 <small>确定性最高（卖水人）</small></div></div>
+      <div class="kpi"><div class="h">利润池高地</div><div class="v">光子芯片制造 + 确定性单光子源 <small>壁垒+复用半导体生态双护城河</small></div></div>
+      <div class="kpi"><div class="h">最大卡脖子</div><div class="v">确定性单光子源 + 低损耗集成 + 架构标准化缺位 <small>国产替代刚起步</small></div></div>
+    </div>
+  </section>
+
+  <!-- 01 定义 -->
+  <section id="def">
+    <div class="sec-head"><span class="no">01</span><h2>定义与核心投资矛盾</h2><span class="en">Definition & Core Tension</span></div>
+    <div class="lead">
+      <b>一句话定义：</b>光量子计算以<b>光子（光的最小能量单元）</b>为量子比特载体，通过精准操控光子的偏振、相位、路径、时间-bin 等量子自由度（自由度越多 = 可编码维度越丰富）完成量子比特编码、量子门操作与量子态演化；依托量子叠加与纠缠实现指数级并行计算。<b>核心物理优势是"传输即计算、结构即功能"</b>——光子在波导中传输的同时即完成计算，无需存算分离；且与现有光通信/半导体工艺天然兼容。
+    </div>
+    <div class="tiercards" style="margin-top:16px;">
+      <div class="tcard">
+        <div class="th">为何此刻必须看</div>
+        <h4>量子优越性已验证 + 资本密集下注</h4>
+        <p>2026.5 中科大"九章四号"操纵 3050 光子、求解高斯玻色取样比超算快 10^54 倍；PsiQuantum 2025 完成 10 亿美元 E 轮（英伟达入局）；Xanadu 2025.11 签 36 亿美元 SPAC；"十五五"规划将量子科技列为未来产业核心。</p>
+        <h4>当前所处阶段</h4>
+        <p>NISQ（含噪声中尺度）→ 工程化爬坡期；通用容错路线仍需 5–10 年，专用/优化路线已可商用交付。</p>
+        <span class="cert high">★ 产业临界点（专用先行）</span>
+      </div>
+      <div class="tcard">
+        <div class="th">核心投资矛盾</div>
+        <h4>宏大叙事 vs 极早期兑现</h4>
+        <p>远期市场空间巨大（2035 看数十亿美元级），但当前全球市场仅约 1.8–8.6 亿美元（口径分歧大），多数整机厂 0 收入/深亏，估值易透支。</p>
+        <h4>真刚需 vs 伪叙事</h4>
+        <p>量子化学/材料模拟、金融优化、量子安全通信是真实 pull；"通用容错量子计算改写一切"更多是远期叙事，需警惕把概念贴牌当核心玩家。</p>
+        <span class="cert mid">⚠ 估值透支风险</span>
+      </div>
+      <div class="tcard">
+        <div class="th">关键路线/形态分野</div>
+        <h4>离散变量（单光子路线）</h4>
+        <p>用确定性单光子编码（PsiQuantum、Xanadu、图灵量子），可扩展性好，是通用路线主流候选。</p>
+        <h4>连续变量（压缩光）/ 专用相干伊辛机</h4>
+        <p>压缩光编码（Xanadu Borealis）；玻色量子的相干伊辛机仅适配组合优化窄场景，无法向通用演进。</p>
+        <span class="realpill t">路线未收敛，场景分野</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 全景双视图 -->
+  <section id="panorama">
+    <div class="sec-head v4"><span class="no">02</span><h2>产业链全景：物料流 + 价值流双视图</h2><span class="en">Panorama Dual-View</span></div>
+    <div class="lead">产业链核心判断：<b>上游光子芯片/单光子源/探测器是卖水人高地，中游整机/云是当前估值博弈主战场，下游应用放量仍处验证期。</b></div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">① 物料流：上 → 中 → 下</h3>
+    <div class="chain">
+      <div class="tier up">
+        <div class="tname"><span class="dot"></span>上游 · 光子芯片与核心器件</div>
+        <div class="trole">卖铲人，需求刚性（无论中游谁胜都要用）</div>
+        <div class="seg"><div class="lbl">材料平台</div><div class="pills"><span class="pill real">硅光 SiPh</span><span class="pill real">薄膜铌酸锂 TFLN</span><span class="pill real">氮化硅 SiN</span><span class="pill real">III-V 量子点</span></div></div>
+        <div class="seg"><div class="lbl">核心器件</div><div class="pills"><span class="pill real">单光子源</span><span class="pill real">SNSPD 探测器</span><span class="pill real">调制器/分束器</span><span class="pill real">控制电子</span></div></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="tier mid">
+        <div class="tname"><span class="dot"></span>中游 · 光量子处理器 / 整机 / 云</div>
+        <div class="trole">掌握核心架构，分化（平台型 vs 整机型）</div>
+        <div class="seg"><div class="lbl">硬件形态</div><div class="pills"><span class="pill real">可编程光子芯片</span><span class="pill real">整机</span><span class="pill real">相干伊辛机</span></div></div>
+        <div class="seg"><div class="lbl">软件/服务</div><div class="pills"><span class="pill real">量子云</span><span class="pill real">PennyLane/DeepQuantum</span><span class="pill real">混合求解器</span></div></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="tier down">
+        <div class="tname"><span class="dot"></span>下游 · 应用场景</div>
+        <div class="trole">用算力的人，付费仍在培育</div>
+        <div class="seg"><div class="lbl">行业场景</div><div class="pills"><span class="pill real">量子化学/材料</span><span class="pill real">组合优化</span><span class="pill real">金融建模</span><span class="pill real">量子安全通信</span></div></div>
+        <div class="seg"><div class="lbl">终端用户</div><div class="pills"><span class="pill real">药企/材料厂</span><span class="pill real">金融机构</span><span class="pill real">政府/国防</span><span class="pill real">科研机构</span></div></div>
+      </div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">② 价值流：成本/毛利/集中度</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>技术/产品形态</th><th>代表企业（国内 / 国外）</th><th>终端成本占比</th><th>毛利率区间</th><th>集中度 CR3（估算）</th></tr></thead>
+      <tbody>
+        <tr><td>薄膜铌酸锂 / 硅光材料与晶圆</td><td>光库科技 / 福晶科技 / 国外 Lumentum、Sumitomo</td><td>衬底占芯片 BOM ~15–25%</td><td>50–75%（晶体高）</td><td>~60%（海外主导材料）</td></tr>
+        <tr><td>单光子源 / SNSPD 探测器</td><td>国盾量子 / Quandela / 国外 SNSPD 供应商</td><td>整机核心器件 ~20–30%</td><td>55–75%</td><td>~70%（高壁垒）</td></tr>
+        <tr><td>光量子处理器 / 整机</td><td>图灵量子 / 玻色量子 / PsiQuantum / Xanadu</td><td>整机售价主体</td><td>30–60%（早期波动）</td><td>~60%（前五合计）</td></tr>
+        <tr><td>量子云 / 软件平台</td><td>图灵量子 / Xanadu(PennyLane) / 云服务</td><td>~5–10%（服务层）</td><td>70–85%（软）</td><td>低分散</td></tr>
+        <tr><td>下游应用 / 系统集成</td><td>药企/金融机构（自用）+ 集成商</td><td>终端付费主体</td><td>30–55%</td><td>~35%（分散）</td></tr>
+      </tbody>
+    </table></div>
+    <div class="src">成本占比/毛利率/CR3 为按行业 BOM 拆解与龙头财报毛利的<b>估算/行业口径</b>，非精确并表财务数据。光子量子计算整机厂多未盈利，毛利率为工程样机/部件口径。</div>
+    <div class="verdict" style="margin-top:14px;"><b>利润池形态（双峰）：</b>利润同时沉淀在<b>上游光子芯片/核心器件（卖水人）</b>与<b>中游整机/云平台（品牌+数据）</b>两端，下游应用目前利润薄、付费未规模化。微笑曲线左侧（材料/器件）明显高于右侧（应用），与"上游卡脖子、下游未放量"一致。</div>
+  </section>
+
+  <!-- 03 分层与受益逻辑 -->
+  <section id="layers">
+    <div class="sec-head"><span class="no">03</span><h2>上中下游分层与受益逻辑</h2><span class="en">Benefit Logic & Certainty</span></div>
+
+    <!-- 产品形态拆分（硬件报告加产品拆解图） -->
+    <div class="biz-sub"><h3><span class="k">3b</span>产品形态拆分（光量子处理器拆解图）</h3></div>
+    <figure class="tf">
+      <svg viewBox="0 0 680 815" style="width:100%;height:auto;font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;" role="img" aria-label="光量子处理器产品爆炸视图与离散光学对比拆解">
+        <!-- A. 爆炸视图 -->
+        <text x="340" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1d3a5e">光量子处理器 · 产品爆炸视图拆解</text>
+        <text x="340" y="47" text-anchor="middle" font-size="11.5" fill="#5a6675">自上而下：泵浦光 → 集成单光子源 → 波导干涉网络 → 相位调制 → 单光子探测 → 光纤 I/O + 控制电子</text>
+        <!-- 中心虚轴 -->
+        <line x1="240" y1="447" x2="290" y2="137" stroke="#aeb9c7" stroke-width="1" stroke-dasharray="2 4"/>
+        <!-- 主链路箭头（左）：泵浦光 → 源 → 网络 → 探测 -->
+        <line x1="64" y1="458" x2="64" y2="120" stroke="#d6463b" stroke-width="2.5"/>
+        <path d="M64,114 L57,129 L71,129 Z" fill="#d6463b"/>
+        <text transform="rotate(-90 40 290)" x="40" y="290" text-anchor="middle" font-size="11.5" font-weight="700" fill="#d6463b">光子链路（泵浦 → 源 → 网络 → 探测）</text>
+
+        <!-- L6 光纤阵列 I/O + 控制电子 -->
+        <g transform="translate(110,100)">
+          <polygon points="300,0 314,-14 314,20 300,34" fill="#cbd6e4" stroke="#1d3a5e" stroke-width="1"/>
+          <polygon points="0,0 14,-14 314,-14 300,0" fill="#eaf0f6" stroke="#1d3a5e" stroke-width="1"/>
+          <rect x="0" y="0" width="300" height="34" rx="5" fill="#dde5ef" stroke="#1d3a5e" stroke-width="1.5"/>
+          <text x="150" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#1d3a5e">光纤阵列 I/O + 控制电子</text>
+        </g>
+        <!-- L5 单光子探测器 (SNSPD) -->
+        <g transform="translate(110,160)">
+          <polygon points="300,0 314,-14 314,20 300,34" fill="#c9d3e0" stroke="#1d3a5e" stroke-width="1"/>
+          <polygon points="0,0 14,-14 314,-14 300,0" fill="#eef2f7" stroke="#1d3a5e" stroke-width="1"/>
+          <rect x="0" y="0" width="300" height="34" rx="5" fill="#dde5ef" stroke="#1d3a5e" stroke-width="1.5"/>
+          <text x="150" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#1d3a5e">单光子探测器（SNSPD 集成）</text>
+        </g>
+        <!-- L4 集成单光子源 -->
+        <g transform="translate(110,220)">
+          <polygon points="300,0 314,-14 314,20 300,34" fill="#e7d3a3" stroke="#8a6418" stroke-width="1"/>
+          <polygon points="0,0 14,-14 314,-14 300,0" fill="#f7f1e3" stroke="#8a6418" stroke-width="1"/>
+          <rect x="0" y="0" width="300" height="34" rx="5" fill="#f3e9cf" stroke="#8a6418" stroke-width="1.5"/>
+          <text x="150" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#8a6418">集成单光子源（量子点 / SPDC）</text>
+        </g>
+        <!-- L3 相位调制层 -->
+        <g transform="translate(110,280)">
+          <polygon points="300,0 314,-14 314,20 300,34" fill="#cbd6e4" stroke="#1d3a5e" stroke-width="1"/>
+          <polygon points="0,0 14,-14 314,-14 300,0" fill="#eaf0f6" stroke="#1d3a5e" stroke-width="1"/>
+          <rect x="0" y="0" width="300" height="34" rx="5" fill="#dde5ef" stroke="#1d3a5e" stroke-width="1.5"/>
+          <text x="150" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#1d3a5e">可控相位调制层（热光 / 电光移相器）</text>
+        </g>
+        <!-- L2 波导/干涉网络 -->
+        <g transform="translate(110,340)">
+          <polygon points="300,0 314,-14 314,20 300,34" fill="#c9d3e0" stroke="#1d3a5e" stroke-width="1"/>
+          <polygon points="0,0 14,-14 314,-14 300,0" fill="#eef2f7" stroke="#1d3a5e" stroke-width="1"/>
+          <rect x="0" y="0" width="300" height="34" rx="5" fill="#dde5ef" stroke="#1d3a5e" stroke-width="1.5"/>
+          <text x="150" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#1d3a5e">波导 / 干涉网络（MMI 分束器、定向耦合）</text>
+        </g>
+        <!-- L1 基底衬底 -->
+        <g transform="translate(110,400)">
+          <polygon points="300,0 314,-14 314,20 300,34" fill="#b9c2cd" stroke="#1d3a5e" stroke-width="1"/>
+          <polygon points="0,0 14,-14 314,-14 300,0" fill="#e3e9f1" stroke="#1d3a5e" stroke-width="1"/>
+          <rect x="0" y="0" width="300" height="34" rx="5" fill="#d4dbe6" stroke="#1d3a5e" stroke-width="1.5"/>
+          <text x="150" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#1d3a5e">基底衬底（Si / SiO₂ 或 薄膜铌酸锂晶圆）</text>
+        </g>
+
+        <!-- 右侧编号标签 -->
+        <g font-size="12.5">
+          <line x1="424" y1="117" x2="458" y2="117" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+          <circle cx="470" cy="117" r="12" fill="#1d3a5e"/><text x="470" y="121" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">6</text>
+          <text x="488" y="113" font-weight="700" fill="#1f2933">光纤阵列 I/O + 控制电子</text>
+          <text x="488" y="129" font-size="11" fill="#5a6675">对外光接口 + 同步锁定</text>
+
+          <line x1="424" y1="177" x2="458" y2="177" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+          <circle cx="470" cy="177" r="12" fill="#1d3a5e"/><text x="470" y="181" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">5</text>
+          <text x="488" y="173" font-weight="700" fill="#1f2933">SNSPD 单光子探测器</text>
+          <text x="488" y="189" font-size="11" fill="#5a6675">读出光量子态（高探测效率）</text>
+
+          <line x1="424" y1="237" x2="458" y2="237" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+          <circle cx="470" cy="237" r="12" fill="#bd9a55"/><text x="470" y="241" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">4</text>
+          <text x="488" y="233" font-weight="700" fill="#8a6418">集成单光子源</text>
+          <text x="488" y="249" font-size="11" fill="#5a6675">确定性发射是最大难点</text>
+
+          <line x1="424" y1="297" x2="458" y2="297" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+          <circle cx="470" cy="297" r="12" fill="#1d3a5e"/><text x="470" y="301" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">3</text>
+          <text x="488" y="293" font-weight="700" fill="#1f2933">相位调制层</text>
+          <text x="488" y="309" font-size="11" fill="#5a6675">热光/电光移相做量子门</text>
+
+          <line x1="424" y1="357" x2="458" y2="357" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+          <circle cx="470" cy="357" r="12" fill="#1d3a5e"/><text x="470" y="361" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">2</text>
+          <text x="488" y="353" font-weight="700" fill="#1f2933">波导 / 干涉网络</text>
+          <text x="488" y="369" font-size="11" fill="#5a6675">分束/合束构成逻辑</text>
+
+          <line x1="424" y1="417" x2="458" y2="417" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+          <circle cx="470" cy="417" r="12" fill="#1d3a5e"/><text x="470" y="421" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">1</text>
+          <text x="488" y="413" font-weight="700" fill="#1f2933">基底衬底</text>
+          <text x="488" y="429" font-size="11" fill="#5a6675">复用 CMOS 半导体工艺</text>
+        </g>
+
+        <!-- 分隔 -->
+        <line x1="30" y1="498" x2="650" y2="498" stroke="#e7ecf2" stroke-width="1.5"/>
+        <text x="340" y="524" text-anchor="middle" font-size="14.5" font-weight="700" fill="#1d3a5e">传统离散光学平台  vs  集成光子芯片（俯视示意）</text>
+        <text x="340" y="544" text-anchor="middle" font-size="11" fill="#5a6675">左：行业早期主流（光学平台 + 分立元件 + 大量光纤耦合，footprint 大、损耗高）；右：最新集成平台（单片 PIC，体积小、可晶圆级量产）</text>
+        <text x="340" y="562" text-anchor="middle" font-size="10.5" fill="#8a96a5">图例：<tspan fill="#d6463b" font-weight="700">— 分立光路/损耗风险</tspan>　<tspan fill="#2b5488" font-weight="700">■ 核心结构（波导网络）</tspan>　<tspan fill="#1e9d6a" font-weight="700">— 集成 I/O（低损耗）</tspan></text>
+
+        <!-- B 左：传统离散光学平台 -->
+        <rect x="45" y="600" width="285" height="180" rx="8" fill="#fbf3ed" stroke="#d9b877" stroke-width="1.5"/>
+        <text x="187" y="620" text-anchor="middle" font-size="12.5" font-weight="700" fill="#8a6418">传统：分立光学平台（光学平台 + 自由空间/光纤）</text>
+        <!-- 元件散点 -->
+        <circle cx="90" cy="660" r="9" fill="#3a4a5e"/>
+        <circle cx="150" cy="645" r="9" fill="#3a4a5e"/>
+        <circle cx="210" cy="670" r="9" fill="#3a4a5e"/>
+        <circle cx="265" cy="650" r="9" fill="#3a4a5e"/>
+        <circle cx="110" cy="720" r="9" fill="#3a4a5e"/>
+        <circle cx="175" cy="735" r="9" fill="#3a4a5e"/>
+        <circle cx="240" cy="715" r="9" fill="#3a4a5e"/>
+        <circle cx="290" cy="735" r="9" fill="#3a4a5e"/>
+        <!-- 红色虚线长光路 -->
+        <path d="M90,660 Q150,620 210,670 T290,735" fill="none" stroke="#d6463b" stroke-width="2" stroke-dasharray="5 4"/>
+        <path d="M150,645 Q200,700 265,650 T240,715" fill="none" stroke="#d6463b" stroke-width="2" stroke-dasharray="5 4"/>
+        <text x="187" y="770" text-anchor="middle" font-size="11" fill="#b0413a">footprint 大 · 耦合点 >10 · 插入损耗累计高</text>
+
+        <!-- B 右：集成光子芯片 -->
+        <rect x="378" y="638" width="252" height="104" rx="8" fill="#eef4fb" stroke="#2b5488" stroke-width="1.5"/>
+        <text x="504" y="658" text-anchor="middle" font-size="12.5" font-weight="700" fill="#2b5488">新：单片集成光子芯片（PIC）</text>
+        <!-- 波导网络（蓝） -->
+        <path d="M398,685 H620" stroke="#2b5488" stroke-width="3" fill="none"/>
+        <path d="M430,700 q40,-22 80,0 q40,22 80,0 q40,-22 80,0" stroke="#2b5488" stroke-width="2.5" fill="none"/>
+        <circle cx="430" cy="700" r="6" fill="#3a4a5e"/>
+        <circle cx="510" cy="700" r="6" fill="#3a4a5e"/>
+        <circle cx="590" cy="700" r="6" fill="#3a4a5e"/>
+        <!-- 绿色低损耗 I/O -->
+        <line x1="398" y1="685" x2="378" y2="685" stroke="#1e9d6a" stroke-width="3"/>
+        <line x1="620" y1="685" x2="640" y2="685" stroke="#1e9d6a" stroke-width="3"/>
+        <text x="504" y="732" text-anchor="middle" font-size="11" fill="#157a52">footprint ↓90%+ · 损耗↓ · 可晶圆级量产</text>
+      </svg>
+      <figcaption style="margin-top:10px;font-size:12px;line-height:1.7;color:#5a6675;">物料流：<b style="color:#8a6418">泵浦光</b> 激发 <b style="color:#8a6418">集成单光子源（④）</b> 产生光子 → 进入 <b style="color:#1d3a5e">波导干涉网络（②）</b> 与 <b style="color:#1d3a5e">相位调制层（③）</b> 完成量子门 → <b style="color:#1d3a5e">SNSPD 探测器（⑤）</b> 读出量子态 → 经 <b style="color:#1d3a5e">光纤 I/O 与控制电子（⑥）</b> 输出；整片基于 <b style="color:#1d3a5e">Si/薄膜铌酸锂衬底（①）</b> 复用 CMOS 工艺。<b style="color:#1d3a5e">传统 vs 新结构：</b>左为早期分立光学平台（大量光纤耦合、插入损耗累计、难以规模）；右为单片集成光子芯片——体积压缩 90%+、损耗骤降、可走晶圆代工量产。投资含义：价值向"集成光子芯片制造 + 确定性单光子源（④，最难点）"两端收敛，纯整机集成商壁垒下降。</figcaption>
+    </figure>
+
+    <div class="tiercards">
+      <div class="tcard"><div class="th">上游 · 光子芯片/器件</div>
+        <h4>代表公司</h4><p>光库科技（TFLN 调制器）、福晶科技（非线性晶体）、国盾量子（SNSPD 探测器）、源杰科技（激光器光源）、腾景科技（精密光学）；海外 Lumentum、Quandela（量子点源）。</p><h4>受益逻辑</h4><p>无论中游哪条整机路线胜出，光子芯片/源/探测器都是刚需；复用硅光+半导体代工生态，量产成本曲线陡峭。</p>
+        <h4>确定性</h4><p><span class="stars">★★★★★</span> 最高（卖水人）。</p>
+        <span class="realpill t">真受益 · 强</span><span class="cert high">确定性：高</span></div>
+      <div class="tcard"><div class="th">中游 · 处理器/整机/云</div>
+        <h4>代表公司</h4><p>图灵量子、玻色量子（未上市）；PsiQuantum、Xanadu、ORCA、QuiX（海外）。</p><h4>受益逻辑</h4><p>掌握架构 IP 与整机交付，但分化严重——平台型（芯片+云）估值高，专用伊辛机天花板低。</p>
+        <h4>确定性</h4><p><span class="stars">★★★☆</span> 中高但分化。</p>
+        <span class="realpill t">真受益（少数）</span><span class="cert mid">确定性：中</span></div>
+      <div class="tcard"><div class="th">下游 · 应用场景</div>
+        <h4>代表方</h4><p>药企/材料厂（量子化学）、金融机构（组合优化/风险）、政府/国防（量子安全通信）、科研机构。</p><h4>受益逻辑</h4><p>付费仍处验证→采购过渡期，客户集中于政务/科研/央国企；应用放量决定上游终局空间。</p>
+        <h4>确定性</h4><p><span class="stars">★★☆</span> 易蹭概念。</p>
+        <span class="realpill f">真伪混杂</span><span class="cert low">确定性：低~中</span></div>
+    </div>
+  </section>
+
+  <!-- 04 头部公司业务拆解 -->
+  <section id="biz">
+    <div class="sec-head"><span class="no">04</span><h2>头部公司业务拆解与在研布局</h2><span class="en">Business Breakdown & R&D · 含未上市/海外头部</span></div>
+    <div class="lead">谁真正有该项业务、产品怎么拆、量价利多少、技术路线怎么分、头部在研往哪走；并补充<b>商业模式/unit economics</b>与<b>海外对标</b>。<b>未上市与海外头部公司须作为一级对象覆盖</b>（注明融资轮次/估值/财报口径，不编造单日涨跌）。</div>
+
+    <div class="biz-sub"><h3><span class="k">1</span>谁真正有该项业务 <span class="note">已上市 + 未上市头部 + 海外龙头</span></h3>
+      <p style="font-size:13.5px;color:#3a4754;">A 股"光量子/量子"概念庞大，但<b>真正卡光子量子计算核心环节</b>的国内上市公司极少：多数为上游光子器件（硅光/铌酸锂/晶体/探测器）的<b>间接受益·非核心</b>。真正的整机/芯片核心玩家集中在<b>未上市（图灵量子、玻色量子）</b>与<b>海外（PsiQuantum、Xanadu 等）</b>。</p></div>
+
+    <div class="biz-sub"><h3><span class="k">2</span>产品种类拆分</h3>
+      <div class="prod-grid">
+        <div class="prod-card"><div class="pn">可编程光子芯片 / 整机</div><div class="pm">图灵量子 Gen1/Gen2、PsiQuantum Omega 芯片组、Xanadu Aurora</div><p>通用/可扩展路线核心硬件；量价利见下表（多为工程样机定价）。</p></div>
+        <div class="prod-card"><div class="pn">专用相干伊辛机</div><div class="pm">玻色量子相干光量子计算真机</div><p>仅适配组合优化窄场景，毫秒级求解，无法向通用演进。</p></div>
+        <div class="prod-card"><div class="pn">上游光子器件（卖水人）</div><div class="pm">TFLN 调制器（光库）、非线性晶体（福晶）、SNSPD（国盾）、激光器（源杰）</div><p>跨路线通用，无论中游谁胜都需采购。</p></div>
+        <div class="prod-card"><div class="pn">量子云 / 软件框架</div><div class="pm">PennyLane（Xanadu）、QuantumPeak / DeepQuantum（图灵）</div><p>降低开发门槛、绑定开发者生态，毛利高。</p></div>
+      </div></div>
+
+    <div class="biz-sub"><h3><span class="k">3</span>出货量 · 单价 · 毛利 <span class="note">须标注来源口径</span></h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>产品/细分</th><th>年出货量/产能</th><th>单价区间</th><th>毛利率</th><th>数据来源口径</th></tr></thead>
+        <tbody>
+          <tr><td>光量子整机（图灵/玻色）</td><td>数十~数百台（工程/科研）</td><td>数百万~千万级/台</td><td>30–60%（早期）</td><td><span class="badge t">公司披露/媒体</span></td></tr>
+          <tr><td>TFLN 调制器（光库）</td><td>放量中（光通讯为主）</td><td>数千~数万元/件</td><td>~35%（含光通讯）</td><td><span class="badge t">2025 年报</span></td></tr>
+          <tr><td>非线性光学晶体（福晶）</td><td>吨级晶体/年</td><td>按规格万元级</td><td>74%（晶体类）</td><td><span class="badge t">2025 年报</span></td></tr>
+          <tr><td>SNSPD 探测器（国盾）</td><td>四通道机型量产交付</td><td>数十~数百万/台</td><td>~51%（综合）</td><td><span class="badge t">2025 年报</span></td></tr>
+          <tr><td>CW 激光器光源（源杰）</td><td>百万颗级（数据中心为主）</td><td>数十~数百元/颗</td><td>58%（综合）</td><td><span class="badge t">2025 年报</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="src">整机量价利为工程样机/科研采购口径，非标准消费定价；上游器件毛利取自 2025 年报（光子量子计算仅占其营收极小部分）。</div></div>
+
+    <div class="biz-sub"><h3><span class="k">4</span>技术路线对比</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>技术路线</th><th>原理</th><th>核心指标</th><th>典型应用</th><th>代表公司</th></tr></thead>
+        <tbody>
+          <tr><td>离散变量（单光子）</td><td>确定性单光子编码，线性光学门</td><td>逻辑门保真度 >99%（实验室）</td><td>通用可扩展计算</td><td>PsiQuantum、Xanadu、图灵量子</td></tr>
+          <tr><td>连续变量（压缩光）</td><td>压缩真空态编码，连续变量门</td><td>高斯玻色取样优势已验证</td><td>采样/优化</td><td>Xanadu（Borealis）</td></tr>
+          <tr><td>相干伊辛机</td><td>简并光学参量振荡，模拟伊辛哈密顿量</td><td>千级规模、毫秒求解</td><td>组合优化窄场景</td><td>玻色量子</td></tr>
+          <tr><td>融合基（Fusion-based）</td><td>小资源态融合 + 测量，容错架构</td><td>室温+可容错路径</td><td>通用容错</td><td>PsiQuantum</td></tr>
+        </tbody>
+      </table></div></div>
+
+    <div class="biz-sub"><h3><span class="k">5</span>头部公司在研布局（R&D pipeline）</h3>
+      <div class="rnd-cards">
+        <div class="rnd"><div class="rn">PsiQuantum <span class="badge t">在研</span></div><p>百万量子比特容错整机，硅光芯片 GlobalFoundries 代工；2027–2029 目标 utility-scale；2025 完成 10 亿美元 E 轮（英伟达入局）。</p></div>
+        <div class="rnd"><div class="rn">Xanadu <span class="badge t">在研</span></div><p>容错光量子 2029 目标；Aurora 模块化联网；PennyLane 开发者生态（全球 ~47% 量子程序员）；2026.3 纳斯达克+多伦多上市。</p></div>
+        <div class="rnd"><div class="rn">图灵量子 <span class="badge t">在研</span></div><p>薄膜铌酸锂晶圆级光子芯片中试线（2025.6 量产，研发周期压缩至数周）；Gen2 整机；QAgent 混合智能体平台（2026 WAIC 发布）。</p></div>
+        <div class="rnd"><div class="rn">国盾量子 <span class="badge t">在研</span></div><p>超导路线为主（与光量子不同路），但自研 SNSPD 单光子探测器（效率 35%、四通道量产）是上游核心器件；量子计算业务 2025 营收 1.2 亿（+111.8%）。</p></div>
+      </div></div>
+
+    <div class="biz-sub"><h3><span class="k">6</span>商业模式与 unit economics <span class="note">决定估值逻辑</span></h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>代表玩家</th><th>商业模式</th><th>毛利特征</th><th>估值锚方法</th></tr></thead>
+        <tbody>
+          <tr><td>PsiQuantum / Xanadu（平台型）</td><td>整机 + 量子云订阅 + 算法定制</td><td>软件 70–85% / 硬件波动</td><td>前瞻 PS / 战略估值（未盈利）</td></tr>
+          <tr><td>图灵量子 / 玻色（整机型）</td><td>整机交付 + 算力基建项目 + 云</td><td>30–60%（早期）</td><td>看订单/pipeline 折现</td></tr>
+          <tr><td>光库/福晶/源杰（器件型）</td><td>器件销售（硅光/晶体/激光）</td><td>35–75%</td><td>PE / PS（已盈利，光子量子占比小）</td></tr>
+          <tr><td>国盾量子（器件+系统）</td><td>量子通信为主 + 计算组件 + 探测器</td><td>51%（综合）</td><td>PS（政策+概念溢价高）</td></tr>
+        </tbody>
+      </table></div>
+      <div class="src">商业模式决定估值方法：平台给前瞻 PS、整机给 pipeline、器件给 PE/PS。光子量子整机厂多未盈利，估值看战略卡位而非当期利润。</div></div>
+
+    <div class="biz-sub"><h3><span class="k">7</span>海外对标 / 失败案例 <span class="note">尽调透镜</span></h3>
+      <div class="rnd-cards">
+        <div class="rnd"><div class="rn" style="color:var(--green);">成了：PsiQuantum（晶圆厂路线）</div><p>成因为何：押注"直接造百万比特容错整机 + 复用 GlobalFoundries 半导体代工"，把工程化量产前置，获英伟达/贝莱德 10 亿美元背书。可迁移经验：光子量子的胜负在<b>制造可扩展性</b>而非论文指标。</p></div>
+        <div class="rnd"><div class="rn" style="color:var(--red);">警示：离散光学/纯原理验证路线证伪风险</div><p>败因为何：早期大量光量子原型靠"光学平台+分立元件"堆指标，footprint 大、损耗累计、无法规模；市场已向集成 PIC 收敛。对国内同类标的提示：<b>没有 IDM/代工闭环与集成能力，易被淘汰</b>。</p></div>
+      </div></div>
+  </section>
+
+  <!-- 05 需求真实性 -->
+  <section id="demand">
+    <div class="sec-head v6"><span class="no">05</span><h2>需求真实性验证</h2><span class="en">Demand Authenticity</span></div>
+    <div class="lead">区分<b>真实付费拉动（pull）</b>与<b>政策/叙事推动（push）</b>。前者决定放量可信度，后者决定生死。光量子当前处于"专用/优化场景已出现真实订单，通用容错仍属远期叙事"的过渡带。</div>
+    <div class="demand-grid">
+      <div class="demand-card">
+        <span class="dm-type pull">PULL · 真刚需（专用）</span>
+        <h4>量子化学 / 材料模拟</h4>
+        <div class="dm-payer"><b>付费方：</b>药企、材料厂、能源企业</div>
+        <div class="dm-will"><b>付费意愿：</b>中高——研发降本刚需，2025 该场景市场价值 3.7 亿美元（IIM 口径）</div>
+        <div class="dm-proof"><b>证据：</b>与 Top20 药企合作、分子筛选真实项目；优化/金融订单 2025 同比 +112%</div>
+      </div>
+      <div class="demand-card">
+        <span class="dm-type pull">PULL · 真刚需（安全）</span>
+        <h4>量子安全通信 / 国防</h4>
+        <div class="dm-payer"><b>付费方：</b>政府、国防、银行、关键基础设施</div>
+        <div class="dm-will"><b>付费意愿：</b>强——光子天然适配 QKD，政策驱动明确</div>
+        <div class="dm-proof"><b>证据：</b>国盾量子支撑 40+ 城市量子安全基建；政府"千家场景"行动方案</div>
+      </div>
+      <div class="demand-card">
+        <span class="dm-type push">PUSH · 叙事强</span>
+        <h4>通用容错量子计算</h4>
+        <div class="dm-payer"><b>付费方：</b>远期—企业/科研（当前以 gov 采购为主）</div>
+        <div class="dm-will"><b>付费意愿：</b>弱——需 5–10 年，NISQ 阶段难跑高精度大规模算法</div>
+        <div class="dm-proof"><b>证据：</b>多为 PR/里程碑，缺规模化商业订单；收入集中于政务/科研</div>
+      </div>
+    </div>
+    <div class="pullverdict">
+      <b>pull vs push 综合判断：约「5 分真、5 分叙事」。</b> 真实 pull 集中在<b>量子化学/材料模拟、组合优化、量子安全通信</b>三类专用场景，且 2025 年优化类商业订单已首超科研采购（IIM）；但<b>通用容错</b>仍是远期叙事，下游客户高度依赖政务/科研/央国企，应用场景待扩展、复购待验证。投资节奏应锚定"专用场景规模化订单"而非"通用突破 PR"。
+    </div>
+  </section>
+
+  <!-- 06 权力·卡脖子 -->
+  <section id="power">
+    <div class="sec-head v4"><span class="no">06</span><h2>产业权力结构与卡脖子清单</h2><span class="en">Power & Bottlenecks</span></div>
+    <div class="lead">链主 = 掌握<b>光子芯片集成 IP</b>与<b>确定性单光子源</b>的玩家（图灵量子/PsiQuantum 等）。当前权力结构为<b>中游平台型 + 上游器件型双核</b>，下游分散。</div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:20px 0 8px;">议价能力对决：上游器件商 vs 中游整机厂</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>议价维度</th><th>上游器件商（光子芯片/源/探测器）</th><th>中游整机厂</th></tr></thead>
+      <tbody>
+        <tr><td>行业集中度</td><td class="vs-yes">高（确定性源/SNSPD 壁垒高，第三方少）</td><td class="vs-no">中（整机厂多，路线分化）</td></tr>
+        <tr><td>供应商转换成本</td><td class="vs-yes">高（工艺/接口绑定）</td><td class="vs-no">中（可自研反制上游）</td></tr>
+        <tr><td>信息对称性</td><td class="vs-no">低（器件工艺保密）</td><td class="vs-yes">高（系统集成主导）</td></tr>
+        <tr><td>备选方案</td><td class="vs-no">少（国产化早期，高端依赖海外）</td><td class="vs-yes">有（可切换材料平台/自研器件）</td></tr>
+      </tr>
+    </table></div>
+    <p class="note"><b>结论：</b>上游短期议价强（技术壁垒 + 跨路线通用），但头部整机厂（图灵/PsiQuantum）以 IDM/代工闭环自研核心器件会削弱外采依赖；长期议价向"掌握集成制造+自研器件"的平台方倾斜。</p>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">卡脖子 / 应力集中清单</h3>
+    <div class="stress-grid">
+      <div class="stress gap"><div class="st">① 确定性单光子源</div><p>断供/失效影响：高。概率性光子生成限制门保真度与可扩展性；量子点/SPDC 确定性发射仍是全球难题，国产依赖少数团队。</p></div>
+      <div class="stress tech"><div class="st">② 低损耗集成与晶圆代工</div><p>断供/失效影响：高。波导损耗、芯片良率、铌酸锂晶圆代工能力决定量产成本；国产晶圆级中试线刚拉通（图灵 2025.6）。</p></div>
+      <div class="stress policy"><div class="st">③ 架构标准化与人才</div><p>断供/失效影响：中高。缺乏统一接口/封装/软件标准，交叉学科人才极度稀缺（全球缺口），制约规模化落地。</p></div>
+    </div>
+  </section>
+
+  <!-- 07 价值流转 -->
+  <section id="profit">
+    <div class="sec-head v4"><span class="no">07</span><h2>价值流转与利润池</h2><span class="en">Value Flow & Profit Pool</span></div>
+    <div class="lead">资金从终端付费方 → 云/整机 → 芯片/器件 → 材料流转；利润主要沉淀在<b>上游光子芯片/器件</b>与<b>中游整机/云平台</b>两端。</div>
+    <div class="valueflow">
+      <div class="vf"><div class="vt">资金流起点</div><div class="vv">终端付费方</div><div class="vx">科研/企业/政府</div></div>
+      <div class="vf"><div class="vt">成本分摊</div><div class="vv">云/整机 X%</div><div class="vx">系统集成溢价</div></div>
+      <div class="vf"><div class="vt">利润留存</div><div class="vv">芯片/器件 X%</div><div class="vx">壁垒+跨路线</div></div>
+      <div class="vf"><div class="vt">净头寸高地</div><div class="vv">材料 X%</div><div class="vx">晶体/衬底</div></div>
+    </div>
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">利润池分布（深度示意·行业估算）</h3>
+    <div class="ppool">
+      <div class="pp-row"><div class="ppn">光子芯片/晶圆制造</div><div class="ppt"><div class="ppb" style="width:88%;"></div></div><div class="ppv">高</div></div>
+      <div class="pp-row"><div class="ppn">确定性单光子源/探测器</div><div class="ppt"><div class="ppb" style="width:82%;"></div></div><div class="ppv">高</div></div>
+      <div class="pp-row"><div class="ppn">中游整机/云平台</div><div class="ppt"><div class="ppb" style="width:70%;"></div></div><div class="ppv">中高</div></div>
+      <div class="pp-row"><div class="ppn">下游应用集成</div><div class="ppt"><div class="ppb" style="width:55%;"></div></div><div class="ppv">中（分散）</div></div>
+    </div>
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">利润迁移（过去 3 年 → 未来 5 年）</h3>
+    <div class="migrate">
+      <div class="mg"><div class="mgh">过去 3 年</div><p>利润集中在科研仪器/量子通信器件（国盾等），光量子计算整机几乎无营收。</p></div>
+      <div class="mg"><div class="mgh">当前</div><p>上游光子器件（硅光/铌酸锂/晶体）随 AI 算力光互联放量先兑现；整机仍深亏。</p></div>
+      <div class="mg"><div class="mgh">未来 5 年</div><p>向"集成光子芯片标准 + 量子云订阅"集中；若专用场景规模放量，整机/云利润抬升。</p></div>
+    </div>
+    <div class="sim">
+      <b>颠覆情景：</b>若光子芯片架构标准化 + 晶圆代工成熟（PsiQuantum 已验证路径），中游纯集成壁垒下降，<b>最终赢家可能是上游标准芯片商 + 下游量子云平台</b>，无芯片能力的整机集成商利润被挤压。投资人应优先卡位"集成芯片制造"或"云/软件生态"。
+    </div>
+  </section>
+
+  <!-- 08 机会雷达 -->
+  <section id="radar">
+    <div class="sec-head"><span class="no">08</span><h2>投资机会雷达</h2><span class="en">Opportunity Radar</span></div>
+    <div class="radar">
+      <div class="radar-col sub"><h4>① 国产替代（窗口已开）</h4>
+        <div class="radar-item">薄膜铌酸锂调制器/晶圆：国产刚起步，光库等突破小批量</div>
+        <div class="radar-item">SNSPD 单光子探测器：国盾四通道量产，效率达国际前列</div>
+        <div class="radar-item">非线性晶体（SPDC 源材料）：福晶全球份额领先</div>
+      </div>
+      <div class="radar-col gap"><h4>② 供需错配（涨价环节）</h4>
+        <div class="radar-item">确定性单光子源：全球稀缺，量子点源被 Quandela 等卡位</div>
+        <div class="radar-item">晶圆级光子芯片代工：产能稀缺，IDM/中试线是核心壁垒</div>
+        <div class="radar-item">高端调制器/探测器：良率与稳定性待提升，国产替代溢价</div>
+      </div>
+      <div class="radar-col water"><h4>③ 卖水人（确定性受益）</h4>
+        <div class="radar-item">上游光子芯片/器件——无论中游哪条路线胜都要用</div>
+        <div class="radar-item">硅光/铌酸锂代工生态——复用 AI 光互联成熟产能</div>
+        <div class="radar-item">量子云/软件框架——跨场景、跨整机通用</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 真伪受益 -->
+  <section id="real">
+    <div class="sec-head"><span class="no">09</span><h2>真受益 vs 伪受益</h2><span class="en">Real vs Nominal</span></div>
+    <div class="lead">三步甄别：①看收入来源（有无真实订单/板块收入）②看链条位置（是否卡不可替代环节）③看估值与兑现（高 PS/深亏是否透支）。</div>
+    <div class="master-grid">
+      <div class="master-col m"><h4>✅ 真受益（核心玩家）</h4>
+        <ul>
+          <li><b>图灵量子</b>——国内光量子整机+光子芯片龙头，IDM 全链条，2025 订单破亿，已启动 A 股 IPO 辅导</li>
+          <li><b>玻色量子</b>——相干光量子计算真机，专用优化场景商用交付，2026 完成 IPO 辅导备案</li>
+          <li><b>国盾量子（688027）</b>——SNSPD 单光子探测器量产（上游核心器件真有业务），量子计算组件营收增长</li>
+          <li><b>光库科技（300620）/ 福晶科技（002222）</b>——薄膜铌酸锂/非线性晶体，跨路线卖水人（光子量子占比小但技术同源）</li>
+          <li><b>PsiQuantum / Xanadu（海外）</b>——全球产业链话语权持有者</li>
+        </ul>
+      </div>
+      <div class="master-col b"><h4>⚠ 伪受益 / 概念贴牌</h4>
+        <ul>
+          <li><b>多数"A股量子概念"</b>——仅量子通信/测绘邻近业务，非光量子计算核心</li>
+          <li><b>纯消费级/泛 AI 贴牌</b>——无真实光子芯片业务，蹭"量子"叙事</li>
+          <li><b>上游器件厂中"极小占比"者</b>——光子量子仅占营收个位数%，属间接受益·非核心</li>
+          <li><b>相干伊辛机单一场景厂商</b>——无法向通用演进，天花板有限</li>
+        </ul>
+      </div>
+    </div>
+    <div class="verdict"><b>关键判断：</b>A 股"量子概念"泛化严重，多数公司仅停留在"量子通信/邻近器件"或"参股早期团队"。<b>真正以光量子计算为核心业务的国内上市公司仍稀缺</b>——核心玩家集中在未上市（图灵/玻色）；已上市者多属上游器件"间接受益·非核心"，按核心链条给估值需谨慎。</div>
+  </section>
+
+  <!-- 10 健康度·风险 -->
+  <section id="health">
+    <div class="sec-head v4"><span class="no">10</span><h2>产业健康度体检 + deal 级风险</h2><span class="en">Health Check & Deal Risk</span></div>
+    <h3 style="font-size:15px;color:var(--navy);margin:4px 0 8px;">5 个前瞻健康度指标</h3>
+    <div class="health">
+      <div class="health-item warn"><div class="hi-t">专用场景订单转化</div><div class="hi-c">当前：优化/化学订单初现（2025 超科研采购）</div><div class="hi-w">预警线：连续 2 年无规模商业订单 → 叙事未兑现</div></div>
+      <div class="health-item"><div class="hi-t">光子芯片中试/量产</div><div class="hi-c">当前：图灵中试线 2025.6 量产，研发周期数周</div><div class="hi-w">预警线：良率/产能长期不达标 → 工程化存疑</div></div>
+      <div class="health-item warn"><div class="hi-t">融资节奏 / runway</div><div class="hi-c">当前：图灵 8 轮>10 亿、玻色多轮；海外 PsiQuantum 10 亿美元 E 轮</div><div class="hi-w">预警线：18 个月无下一轮 → 烧钱断裂风险</div></div>
+      <div class="health-item"><div class="hi-t">技术路线收敛度</div><div class="hi-c">当前：超导/光/离子阱/中性原子并行，未收敛</div><div class="hi-w">预警线：路线证伪潮 → 单路线标的归零</div></div>
+      <div class="health-item warn"><div class="hi-t">政策/上市窗口</div><div class="hi-c">当前：科创板第五套+量子重点支持，2026 IPO 元年</div><div class="hi-w">预警线：上市政策收紧 → 退出路径收窄</div></div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">多空逻辑链</h3>
+    <div class="bullbear">
+      <div class="bb bull"><h4>看多 · 最坚实底座</h4><p>室温运行免极低温、复用半导体代工生态、天然适配光通信与量子网络；PsiQuantum/Xanadu 获顶级产业资本背书；政策列为未来产业；专用场景订单已出现真实 pull。</p></div>
+      <div class="bb bear"><h4>看空 · 最具杀伤力</h4><p>光子损耗与探测效率限制可扩展性；架构未标准化；通用容错需 5–10 年、NISQ 难跑高精度；多数整机厂 0 收入/深亏，估值透支；技术路线未收敛，存在证伪风险。</p></div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">deal 级风险（下沉到标的）</h3>
+    <div class="dr-grid">
+      <div class="dr-card"><div class="dr-type">关键人风险</div><span class="dr-sev h">高</span><p>图灵（金贤敏）、玻色等高度依赖核心科学家/创始人，变动影响技术路线与融资。</p></div>
+      <div class="dr-card"><div class="dr-type">融资风险</div><span class="dr-sev h">高</span><p>长周期高 burn，须看 runway 与下一轮领投方（图灵/玻色仍处上市前爬坡）。</p></div>
+      <div class="dr-card"><div class="dr-type">技术风险</div><span class="dr-sev m">中</span><p>实验室指标成立 ≠ 规模可扩展；波导损耗、探测效率、良率待工程验证。</p></div>
+      <div class="dr-card"><div class="dr-type">监管/上市风险</div><span class="dr-sev m">中</span><p>未盈利硬科技上市依赖科创板第五套/18C 政策；出口管制与量子技术管制具不确定性。</p></div>
+    </div>
+  </section>
+
+  <!-- 11 客观判断 -->
+  <section id="verdict">
+    <div class="sec-head"><span class="no">11</span><h2>客观判断</h2><span class="en">Objective Verdict</span></div>
+    <div class="verdict">
+      <b>① 产业定位：</b>光量子是量子计算四大路线之一，凭室温+复用半导体生态成为资本竞逐焦点；当前全球市场仅约 1.8–8.6 亿美元（口径分歧大），属极早期未来产业。<br>
+      <b>② 技术收敛：</b>超导/光/离子阱/中性原子四线并行，光量子内部离散变量为主流、连续变量与相干伊辛机并存；竞争从"论文指标"转向"集成制造与工程化量产"。<br>
+      <b>③ 市场节奏：</b>专用/优化/化学/安全通信场景最先出真实订单，通用容错需 5–10 年；2026 被视为国内量子 IPO 元年，上市节奏先于收入放量。<br>
+      <b>④ 中国位置：</b>科研与欧美并跑（九章四号 3050 光子），产业化/资源投入有差距；图灵光子芯片中试线、国盾探测器量产代表工程化突破，但高端材料/确定性源仍依赖突破。<br>
+      <b>⑤ 资本主线：</b>一级市场密集下注平台型（PsiQuantum 70 亿美元、图灵 8 轮>10 亿），二级市场以"量子概念+上游器件"映射为主；一二级热度差显著。<br>
+      <b>⑥ 最大风险：</b>叙事跑赢兑现——估值依赖远期空间，当期收入薄、技术未收敛，需基本面（订单/良率/上市）持续承接，否则易回调。
+    </div>
+  </section>
+
+  <!-- 12 催化剂 -->
+  <section id="catalyst">
+    <div class="sec-head v6"><span class="no">12</span><h2>催化剂与时序日历</h2><span class="en">Catalyst Calendar</span></div>
+    <div class="lead">排节奏、定进入时点的依据。催化剂高度依赖<b>技术里程碑 + IPO/融资 + 政策 + 订单验证</b>。</div>
+    <div class="cat-horizon">
+      <div class="ch-t"><span class="chip2">未来 6 个月</span> 2026 H2</div>
+      <div class="cat-list">
+        <div class="cat-row"><span class="ct">持续</span><span class="ce">图灵量子 IPO 辅导推进、玻色 IPO 备案后进展</span><span class="cd up">利好·国内核心</span></div>
+        <div class="cat-row"><span class="ct">2026H2</span><span class="ce">科创板第五套/量子重点支持落地，量子企业上市窗口</span><span class="cd up">利好·全链</span></div>
+        <div class="cat-row"><span class="ct">2026H2</span><span class="ce">光子芯片中试线良率/产能爬坡、专用场景订单披露</span><span class="cd both">双向·验证</span></div>
+      </div>
+      <div class="ch-t"><span class="chip2">未来 12 个月</span> 2027</div>
+      <div class="cat-list">
+        <div class="cat-row"><span class="ct">2027</span><span class="ce">PsiQuantum 百万比特 utility-scale 站点建设里程碑</span><span class="cd up">利好·海外映射</span></div>
+        <div class="cat-row"><span class="ct">2027</span><span class="ce">国内量子企业 A 股 IPO 实质性推进（图灵/玻色/国仪等）</span><span class="cd up">利好·退出</span></div>
+        <div class="cat-row"><span class="ct">2027</span><span class="ce">量子安全通信"千家场景"行动方案阶段性落地</span><span class="cd up">利好·安全通信</span></div>
+      </div>
+      <div class="ch-t"><span class="chip2">未来 24 个月</span> 2028</div>
+      <div class="cat-list">
+        <div class="cat-row"><span class="ct">2028</span><span class="ce">Xanadu/PsyQuantum 容错目标节点逼近，技术读出</span><span class="cd up">利好·里程碑</span></div>
+        <div class="cat-row"><span class="ct">2028</span><span class="ce">专用光量子在金融/化学规模化采购信号</span><span class="cd both">待验证</span></div>
+        <div class="cat-row"><span class="ct">持续</span><span class="ce">若通用路线证伪/路线收敛，单路线标的重估</span><span class="cd down">双向·风险</span></div>
+      </div>
+    </div>
+    <p class="note">当前链上可预期催化剂密集度<b>中高</b>：IPO 窗口 + 政策 + 海外里程碑构成主线，但"通用突破"缺明确引爆点，排节奏建议——锚定"IPO/融资 + 专用订单验证 + 中试线良率"三类事件。</p>
+  </section>
+
+  <!-- 13 投资启示 -->
+  <section id="insight">
+    <div class="sec-head v6"><span class="no">13</span><h2>投资启示与动作建议</h2><span class="en">Investment Implications</span></div>
+    <div class="lead">结论为客观梳理下的投资视角提示，非买卖建议，措辞"可关注/宜观望/待催化"。</div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:18px 0 8px;">① 非对称下注点</h3>
+    <div class="asym-grid">
+      <div class="asym up"><div class="at">↑ 高赔率：平台型整机/芯片</div><p>图灵/玻色/PsiQuantum 类——每推进一步（中试线/订单/IPO）估值跃迁；但周期长、关键人/技术风险高，宜小比例配置。</p></div>
+      <div class="asym safe"><div class="at">▣ 稳赚卖水人：上游器件</div><p>光库（TFLN）/福晶（晶体）/国盾（探测器）/源杰（激光）——无论中游谁胜都要用，且已随 AI 光互联盈利兑现；确定性最高。</p></div>
+      <div class="asym trap"><div class="at">⚠ 伪需求陷阱：纯概念贴牌</div><p>无真实光子芯片业务、蹭"量子"叙事的标的——宜观望，等出现规模订单/上市披露再定。</p></div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">② 可投标的 triage（项目池）</h3>
+    <div class="triage-wrap"><table>
+      <thead><tr><th>标的</th><th>路线/环节</th><th>当前轮次/阶段</th><th>估值锚</th><th>开放融资</th><th>可接触性</th></tr></thead>
+      <tbody>
+        <tr><td>PsiQuantum（海外）</td><td>硅光·容错整机</td><td>E 轮后</td><td>~70 亿美元（战略）</td><td>已不开放</td><td>难</td></tr>
+        <tr><td>图灵量子（未上市）</td><td>薄膜铌酸锂·整机+芯片</td><td>IPO 辅导（国泰海通）</td><td>8 轮>10 亿融资</td><td>Pre-IPO</td><td>可关注打新</td></tr>
+        <tr><td>玻色量子（未上市）</td><td>相干伊辛机·专用</td><td>IPO 辅导备案</td><td>多轮数亿融资</td><td>Pre-IPO</td><td>可关注打新</td></tr>
+        <tr><td>光库/福晶/源杰/国盾</td><td>上游器件（卖水人）</td><td>已上市</td><td>PE/PS</td><td>二级</td><td>直接</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">③ 退出路径映射</h3>
+    <div class="exit-grid">
+      <div class="exit-col"><div class="ex-h">科创板第五套 / 科成长层</div><p>未盈利量子硬科技上市通道。图灵/玻色/国仪等受益 2026 量子重点支持新政。</p></div>
+      <div class="exit-col"><div class="ex-h">港交所 18C</div><p>未盈利硬科技上市。Xanadu 已同步纳斯达克+多伦多，海外映射参照。</p></div>
+      <div class="exit-col"><div class="ex-h">北交所</div><p>更早阶段、规模较小的光子器件/材料企业培育通道。</p></div>
+      <div class="exit-col"><div class="ex-h">并购</div><p>上市公司参股/并购光子芯片早期团队，产业方卡位式收购是重要退出。</p></div>
+    </div>
+  </section>
+
+  <!-- 末章 双表 -->
+  <section id="chart">
+    <div class="sec-head"><span class="no">末</span><h2>代表公司涨跌 / 估值全景</h2><span class="en">Quotes & Valuation</span></div>
+    <div class="lead">涨红跌绿（A 股习惯）。<b>表①</b>列有代码公司 2025 营收同比增速（行情接口未连接，以年报经营快照替代当日涨跌）；<b>表②</b>列未上市/海外头部估值·融资·财报对照。</div>
+
+    <div class="chart">
+      <div class="grp-title"><span class="sw" style="background:var(--navy);"></span>表① 有代码公司 · 2025 营收同比增速（年报快照，替代当日涨跌）</div>
+      <div class="row"><span class="name">源杰科技(688498)</span><div class="track"><div class="bar pos" style="width:49.5%;"></div></div><span class="val pos">+138.5%</span></div>
+      <div class="row"><span class="name">光库科技(300620)</span><div class="track"><div class="bar pos" style="width:17.0%;"></div></div><span class="val pos">+47.6%</span></div>
+      <div class="row"><span class="name">福晶科技(002222)</span><div class="track"><div class="bar pos" style="width:11.5%;"></div></div><span class="val pos">+32.2%</span></div>
+      <div class="row"><span class="name">腾景科技(688195)</span><div class="track"><div class="bar pos" style="width:11.3%;"></div></div><span class="val pos">+31.5%</span></div>
+      <div class="row"><span class="name">国盾量子(688027)</span><div class="track"><div class="bar pos" style="width:8.0%;"></div></div><span class="val pos">+22.5%</span></div>
+      <div class="legend">
+        <span class="li"><span class="sq" style="background:var(--red);"></span>营收同比增长（红=增）</span>
+        <span class="li" style="color:#9aa6b2;">条形宽度按营收增速等比（满刻度参考 +140%）。注：非当日股价涨跌，行情接口未连接。</span>
+      </div>
+      <p class="note">📌 <b>说明：</b>本报告生成时腾讯自选股 / NeoData 行情接口未连接，末章"涨跌全景"改用 <b>2025 年报经营快照</b>（营收同比增速条形图 + 数据表）替代当日涨跌，已透明标注。连上连接器后可一键刷新为当日涨跌幅。上游器件厂高增长主要由 <b>AI 算力光互联</b>驱动，光子量子计算仅占其营收极小部分（间接受益）。</p>
+    </div>
+
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>公司</th><th>代码</th><th>环节/路线</th><th>2025 营收</th><th>同比</th><th>归母净利</th><th>毛利率</th><th>业务实质</th><th>真伪</th></tr></thead>
+      <tbody>
+        <tr><td>源杰科技</td><td>688498</td><td>激光器光源（硅光 CW）</td><td>6.01 亿</td><td class="up">+138.5%</td><td>1.91 亿</td><td>58.1%</td><td>数据中心 CW 激光器，光子量子光源同源</td><td><span class="badge t">间接受益·非核心</span></td></tr>
+        <tr><td>光库科技</td><td>300620</td><td>薄膜铌酸锂调制器</td><td>14.74 亿</td><td class="up">+47.6%</td><td>1.77 亿</td><td>34.7%</td><td>TFLN 是光子量子核心材料平台</td><td><span class="badge t">间接受益·非核心</span></td></tr>
+        <tr><td>福晶科技</td><td>002222</td><td>非线性光学晶体</td><td>11.58 亿</td><td class="up">+32.2%</td><td>2.79 亿</td><td>51.2%</td><td>SPDC 源材料，晶体毛利 74%</td><td><span class="badge t">间接受益·非核心</span></td></tr>
+        <tr><td>腾景科技</td><td>688195</td><td>精密光学元组件</td><td>5.86 亿</td><td class="up">+31.5%</td><td>0.71 亿</td><td>37.2%</td><td>光通信精密光学，量子相关极小</td><td><span class="badge f">概念邻近</span></td></tr>
+        <tr><td>国盾量子</td><td>688027</td><td>SNSPD 探测器+系统</td><td>3.10 亿</td><td class="up">+22.5%</td><td>0.05 亿</td><td>51.4%</td><td>四通道 SNSPD 量产（上游核心器件真业务）；计算路由=超导</td><td><span class="badge t">上游器件真受益</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="two-table-note">📌 表② 针对未上市 / 海外非独立上市公司（无单日涨跌），列估值·融资·最新进展对照——这些才是产业链真正的话语权持有者（核心玩家集中于此）。</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>公司</th><th>上市状态</th><th>路线/环节</th><th>最新估值 / 融资 / 财务</th><th>关键信号</th></tr></thead>
+      <tbody>
+        <tr><td>PsiQuantum</td><td>未上市（海外）</td><td>硅光·容错整机</td><td>2025.9 完成 10 亿美元 E 轮，估值 ~70 亿美元；英伟达/贝莱德领投</td><td>GlobalFoundries 代工，2027–29 utility-scale 目标</td></tr>
+        <tr><td>Xanadu</td><td>已上市（NASDAQ/TSX，2026.3）</td><td>压缩光·Borealis</td><td>2025.11 签 36 亿美元 SPAC；PennyLane 开发者生态</td><td>DARPA QBI Stage B；2029 容错目标</td></tr>
+        <tr><td>图灵量子 TuringQ</td><td>未上市（IPO 辅导）</td><td>薄膜铌酸锂·整机+芯片</td><td>8 轮融资 >10 亿元；光子芯片中试线 2025.6 量产</td><td>2025 订单破亿；QAgent 混合平台发布</td></tr>
+        <tr><td>玻色量子 QBoson</td><td>未上市（IPO 备案）</td><td>相干伊辛机·专用</td><td>2024–2025 多轮数亿融资（A++ 由华德科创等领投）</td><td>深圳专用量子计算制造基地</td></tr>
+        <tr><td>ORCA / Quandela / QuiX</td><td>未上市（海外）</td><td>量子存储 / 量子点源 / SiN 处理器</td><td>QuiX 2025.7 获 1500 万欧元 A 轮；Quandela MerLin 服务 1200+ 研究者</td><td>上游源/处理器卡位</td></tr>
+      </tbody>
+    </table></div>
+    <div class="src">财务/融资数据来自公司公告、IR 与公开研报/权威媒体（经 Web 检索交叉验证）；市场规模引自第三方公开测算（GMI / IIM，口径分歧已标注）。"真伪"为基于公开业务的客观梳理，会随产业进展变化。</div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <p><b>数据来源与方法：</b>本报告行情与市值数据因接口未连接，末章采用 2025 年报经营快照（营收同比增速）替代当日涨跌；财务/融资/技术信息来自公司公告、IR 与公开研报/权威媒体（经 Web 检索交叉验证）。市场规模数据引自第三方公开测算（Global Market Insights、IIM 等，口径分歧已标注）。</p>
+      <p><b>口径说明：</b>涨红跌绿为 A 股习惯；"真/伪受益""确定性""价值流转/利润池/产业权力/机会雷达/健康度/需求真实性/催化剂/投资启示"为基于公开业务与数据的客观梳理与行业估算，非评级、非精确并表财务数据。代表公司严格按"真实产业参与者"遴选，A 股概念映射方单独标注为间接受益、不进入核心链条。</p>
+      <div class="disclaimer">
+        ⚠️ <b>免责声明：</b>本页面仅为产业链结构与公开数据的客观整理，<b>不构成任何投资建议、要约或承诺</b>。催化剂/投资启示章节为基于公开信息的投资视角提示，非买卖建议，措辞"可关注/宜观望/待催化"。技术商业化存在高度不确定性，标注的"真/伪受益"会随产业进展变化。投资有风险，决策需谨慎，请以交易所及公司官方披露信息为准，并咨询持牌专业人士。
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var map = {};
+  links.forEach(function(a){ var id=a.getAttribute('href').slice(1); var s=document.getElementById(id); if(s) map[id]=a; });
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          links.forEach(function(l){l.classList.remove('active');});
+          var a = map[e.target.id]; if(a) a.classList.add('active');
+        }
+      });
+    }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+    Object.keys(map).forEach(function(id){ var el=document.getElementById(id); if(el) obs.observe(el); });
+  }
+})();
+</script>
+</body>
+</html>
