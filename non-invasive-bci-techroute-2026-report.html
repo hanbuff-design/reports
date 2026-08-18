@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>非侵入式脑机接口（技术路线）· 技术全景分析</title>
+<style>
+:root{
+  --navy-900:#142b47; --navy-800:#1d3a5e; --navy-700:#2b5488; --navy-600:#3f7bb0; --navy-500:#5a9bd6;
+  --gold:#bd9a55; --gold-soft:#f7f1e3; --accent2:#d9b877; --slate:#9fb3cd;
+  --surface:#f4f6f8; --surface-2:#eaf1f8; --card:#ffffff;
+  --border:#e5e9ef; --border-soft:#e5e9ef;
+  --text:#19222e; --text-2:#3a4754; --text-3:#69737f;
+  --red:#d6463b; --red-soft:#fbedec; --amber:#bd9a55; --amber-soft:#f7f1e3; --green:#1e9d6a; --green-soft:#e8f5ef;
+  --radius:12px; --radius-s:8px;
+  --font-serif:"Source Han Serif SC","Noto Serif SC","Songti SC","SimSun",serif;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;padding-left:252px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;color:var(--text);background:var(--surface);line-height:1.7;-webkit-font-smoothing:antialiased;font-size:15px;}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px;}
+@media(max-width:980px){body{padding-left:0;}.sidebar{position:sticky;top:0;width:100%;height:auto;flex-direction:row;overflow-x:auto;}.side-brand{border-bottom:none;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap;}.toc{display:flex;padding:10px;flex-wrap:nowrap;}.toc a{border-left:none;white-space:nowrap;}}
+.sidebar{position:fixed;top:0;left:0;width:252px;height:100vh;background:linear-gradient(180deg,#142b47 0%,#1d3a5e 55%,#244d7c 100%);color:#fff;display:flex;flex-direction:column;z-index:60;box-shadow:2px 0 18px rgba(20,43,71,.25);}
+.side-brand{padding:24px 22px 18px;border-bottom:1px solid rgba(255,255,255,.10);}
+.side-brand .sb-t{font-size:12px;color:var(--slate);letter-spacing:1.5px;font-weight:600;}
+.side-brand .sb-n{font-size:17px;font-weight:800;margin-top:6px;line-height:1.3;font-family:var(--font-serif);}
+.side-brand .sb-v{display:inline-block;margin-top:12px;font-size:11px;color:#142b47;background:var(--accent2);padding:3px 10px;border-radius:11px;font-weight:700;letter-spacing:.5px;}
+.toc{padding:14px 12px 30px;overflow-y:auto;flex:1 1 auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.28) transparent;}
+.toc::-webkit-scrollbar{width:6px;height:6px;}
+.toc::-webkit-scrollbar-track{background:transparent;}
+.toc::-webkit-scrollbar-thumb{background:rgba(255,255,255,.28);border-radius:3px;}
+.toc a{display:flex;align-items:center;gap:11px;color:#a9c0db;font-size:13px;padding:10px 12px;border-radius:9px;transition:.18s;margin:2px 0;border-left:3px solid transparent;text-decoration:none;}
+.toc a:hover{background:rgba(255,255,255,.08);color:#fff;}
+.toc a.active{background:rgba(255,255,255,.14);color:#fff;border-left-color:var(--accent2);}
+.toc .num{font-size:11px;font-weight:700;color:#7e9bbf;width:22px;flex:0 0 auto;text-align:center;}
+.toc a.active .num{color:var(--accent2);}
+.toc .part{margin:14px 0 4px;font-size:11px;font-weight:700;color:var(--accent2);letter-spacing:.05em;padding-left:12px;}
+main{flex:1;min-width:0;padding:30px 0 80px;}
+section{padding:40px 0 12px;scroll-margin-top:10px;}
+section h2{margin:0 0 18px;font-size:22px;font-weight:750;color:var(--navy-800);font-family:var(--font-serif);letter-spacing:.3px;display:flex;align-items:center;gap:12px;}
+section h2 .n{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--navy-800),var(--navy-700));width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:9px;flex:0 0 auto;box-shadow:0 2px 6px rgba(29,58,94,.25);font-variant-numeric:tabular-nums;}
+section h3{margin:22px 0 10px;font-size:16px;color:var(--navy-800);border-left:3px solid var(--gold);padding-left:9px;}
+section p{margin:9px 0;color:var(--text);}
+.lead{color:var(--text-2);font-size:15px;margin-top:4px;}
+.hero{background:linear-gradient(135deg,#142b47 0%,#1d3a5e 55%,#2b5488 100%);color:#fff;padding:48px 0 42px;position:relative;}
+.hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--accent2),transparent);}
+.hero > *{max-width:1120px;margin-left:auto;margin-right:auto;padding:0 22px;}
+.hero .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--accent2);border:1px solid rgba(217,184,119,.45);padding:4px 12px;border-radius:20px;margin-bottom:14px;}
+.hero h1{margin:0 0 10px;font-size:34px;font-weight:800;letter-spacing:.5px;font-family:var(--font-serif);}
+.hero p.sub{margin:0;color:#c5d4e6;font-size:15px;max-width:820px;line-height:1.7;}
+.hero .meta{margin-top:18px;display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--slate);}
+.hero .meta .author{display:block;width:100%;white-space:nowrap;}
+.hero .meta b{color:#fff;font-weight:600;}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0;}
+@media(max-width:680px){.kpis{grid-template-columns:1fr;}}
+.kpi{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:14px 16px;}
+.kpi .v{font-size:24px;font-weight:700;color:var(--navy-800);font-variant-numeric:tabular-nums;}
+.kpi .v.g{color:var(--gold);}
+.kpi .l{font-size:12.5px;color:var(--text-2);margin-top:3px;}
+.kpi .s{font-size:11px;color:var(--text-3);margin-top:4px;}
+.grid{display:grid;gap:16px;}
+.grid.c2{grid-template-columns:repeat(2,1fr);} .grid.c3{grid-template-columns:repeat(3,1fr);}
+@media(max-width:680px){.grid.c2,.grid.c3{grid-template-columns:1fr;}}
+.card{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:16px 18px;}
+.card h4{margin:0 0 8px;font-size:15px;color:var(--navy-800);}
+.thesis-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:16px 0;}
+@media(max-width:680px){.thesis-grid{grid-template-columns:1fr;}}
+.tq{border-radius:var(--radius-s);padding:14px 16px;border:1px solid var(--border-soft);}
+.tq h4{margin:0 0 6px;font-size:14px;}
+.tq.success{background:var(--green-soft);border-color:#bfe0cf;} .tq.success h4{color:var(--green);}
+.tq.warn{background:var(--amber-soft);border-color:#ecd6ad;} .tq.warn h4{color:var(--amber);}
+.tq.danger{background:var(--red-soft);border-color:#f0c4bf;} .tq.danger h4{color:var(--red);}
+.tq.info{background:var(--surface-2);border-color:var(--border);} .tq.info h4{color:var(--navy-700);}
+.thesis-concl{background:var(--navy-900);color:#fff;border-radius:var(--radius-s);padding:18px 22px;margin:18px 0;}
+.thesis-concl .tag{display:inline-block;background:var(--gold);color:var(--navy-900);font-weight:700;font-size:12px;padding:3px 10px;border-radius:20px;margin-bottom:8px;}
+.thesis-concl p{color:#e7eefb;margin:6px 0;}
+.signals{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0;}
+.sig{background:var(--gold-soft);border:1px solid #e8cf9a;border-radius:20px;padding:7px 14px;font-size:13px;color:var(--navy-900);}
+.sig b{color:var(--red);}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;}
+th,td{border:1px solid var(--border-soft);padding:8px 11px;text-align:left;vertical-align:top;}
+th{background:var(--surface-2);color:var(--navy-800);font-weight:600;}
+tr:nth-child(even) td{background:#fafcff;}
+.hl{background:var(--gold-soft)!important;font-weight:600;}
+.sizing td:first-child{font-weight:600;color:var(--navy-800);}
+.scorecard .stars{color:var(--gold);letter-spacing:2px;font-size:13px;}
+.scorecard .row{display:flex;flex-wrap:wrap;gap:6px 18px;padding:7px 0;border-bottom:1px dashed var(--border-soft);}
+.scorecard .row:last-child{border-bottom:none;}
+.val td:first-child{font-weight:600;}
+.persp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:14px 0;}
+@media(max-width:680px){.persp-grid{grid-template-columns:1fr;}}
+.persp{border-left:3px solid var(--navy-600);background:var(--surface);border-radius:0 var(--radius-s) var(--radius-s) 0;padding:12px 16px;}
+.persp .who{font-weight:700;color:var(--navy-800);font-size:14px;}
+.persp .pos{font-size:12px;color:var(--text-3);margin-bottom:5px;}
+.rt{margin:12px 0;border-radius:var(--radius-s);overflow:hidden;border:1px solid var(--border-soft);}
+.rt-title{padding:8px 14px;color:#fff;font-weight:600;font-size:13.5px;}
+.rt-title.t1{background:var(--red);} .rt-title.t2{background:var(--amber);} .rt-title.t3{background:var(--navy-600);}
+.rt ul{margin:0;padding:10px 14px 10px 32px;background:var(--surface);}
+.rt li{margin:5px 0;font-size:13.5px;}
+.routes td:first-child{font-weight:600;color:var(--navy-800);}
+.routes .best{background:var(--gold-soft);font-weight:600;}
+.stack{margin:14px 0;}
+.layer{border:1px solid var(--border-soft);border-radius:var(--radius-s);margin-bottom:10px;overflow:hidden;}
+.layer .lh{background:var(--surface-2);padding:8px 14px;font-weight:600;color:var(--navy-800);display:flex;justify-content:space-between;}
+.layer .lh .ltier{font-size:11px;background:var(--navy-700);color:#fff;border-radius:5px;padding:1px 8px;}
+.layer .lb{padding:12px 14px;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12.5px;color:var(--navy-700);}
+.depnote{background:var(--gold-soft);border:1px solid #e8cf9a;border-radius:var(--radius-s);padding:12px 16px;font-size:13.5px;color:var(--navy-900);margin:10px 0;}
+.dcard{border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:16px 18px;margin:12px 0;background:var(--surface);}
+.dcard .dh{font-size:16px;font-weight:700;color:var(--navy-800);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.scorepill{background:var(--navy-900);color:var(--gold);font-weight:700;font-size:13px;border-radius:20px;padding:3px 12px;font-variant-numeric:tabular-nums;}
+.dcard .db{margin-top:10px;font-size:13.5px;}
+.dcard .db b{color:var(--navy-800);}
+.dgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 22px;margin-top:10px;}
+@media(max-width:680px){.dgrid{grid-template-columns:1fr;}}
+.ditem{font-size:13px;padding:5px 0;border-bottom:1px dashed var(--border-soft);}
+.vlist{margin:12px 0;border:1px solid var(--border-soft);border-radius:var(--radius-s);overflow:hidden;}
+.vrow{display:flex;gap:12px;padding:11px 16px;border-bottom:1px dashed var(--border-soft);font-size:13.5px;}
+.vrow:last-child{border-bottom:none;}
+.vrow .vq{flex:0 0 26px;height:26px;border-radius:50%;background:var(--navy-700);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+.indgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0;}
+@media(max-width:680px){.indgrid{grid-template-columns:1fr;}}
+.ind{border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:12px 14px;background:var(--surface);}
+.ind .it{font-weight:700;color:var(--navy-800);font-size:13.5px;}
+.ind .id{font-size:12.5px;color:var(--text-2);margin-top:4px;}
+.chart{margin:16px 0;background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:16px;}
+.chart svg{width:100%;height:auto;display:block;}
+.scurve{margin:16px 0;}
+.callout{border-left:4px solid var(--gold);background:var(--gold-soft);padding:12px 16px;border-radius:0 var(--radius-s) var(--radius-s) 0;font-size:13.5px;color:var(--navy-900);margin:12px 0;}
+.callout.r{border-left-color:var(--red);background:var(--red-soft);color:var(--navy-900);}
+.verdict{background:var(--navy-900);color:#fff;border-radius:var(--radius-s);padding:16px 20px;margin:16px 0;}
+.verdict .vt{display:inline-block;background:var(--gold);color:var(--navy-900);font-weight:700;font-size:12px;padding:3px 10px;border-radius:20px;margin-bottom:7px;}
+.footer{text-align:center;color:var(--text-3);font-size:12px;padding:20px;}
+span.src{display:inline;font-size:10px;padding:1px 5px;border-radius:4px;font-weight:600;vertical-align:baseline;margin-left:2px;letter-spacing:.3px;white-space:nowrap;}
+.src-org{background:#e7eefc;color:#1d5189;border:1px solid #c5d8f5;}
+.src-co{background:#e8f6ee;color:#1f8a5b;border:1px solid #bfe6cf;}
+.src-ac{background:#f3e9fb;color:#7b3fb0;border:1px solid #dcc4ef;}
+.src-md{background:#fbf0dc;color:#9a6a16;border:1px solid #ecd6ad;}
+.src-in{background:#eaf0fb;color:#2b4a8f;border:1px solid #c2d2f0;}
+.src-mo{background:#fdeede;color:#b5730f;border:1px solid #f0d3a8;}
+.src-na{background:#eef0f2;color:#5b6776;border:1px solid #d4d9df;}
+div.src{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 18px;}
+div.src .s{font-size:12.5px;background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:4px 13px;color:var(--navy-700);}
+.part-divider{text-align:center;font-weight:700;color:var(--navy-700);letter-spacing:.1em;margin:30px 0 18px;font-size:14px;padding:10px;background:var(--surface-2);border-radius:var(--radius-s);}
+.no-print{display:none;}
+@media print{
+  body{background:#fff;padding-left:0;}
+  .sidebar{display:none;}
+  section{break-inside:avoid;box-shadow:none;border:none;}
+  .hero{background:#1d3a5e!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+.timeline{position:relative;margin:14px 0;padding-left:22px;}
+.timeline:before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:3px;background:linear-gradient(#1d3a5e,#bd9a55);}
+.tl-row{position:relative;padding:0 0 16px 16px;}
+.tl-dot{position:absolute;left:-22px;top:4px;width:13px;height:13px;border-radius:50%;background:var(--gold);border:3px solid #fff;box-shadow:0 0 0 2px var(--navy-700);}
+.tl-yr{font-weight:800;color:var(--navy-900);font-size:.98rem;}
+.tl-tag{display:inline-block;font-size:.7rem;padding:1px 8px;border-radius:10px;background:var(--surface-2);color:var(--navy-700);margin-left:8px;vertical-align:middle;font-weight:600;}
+.tl-body{color:var(--text-2);font-size:.88rem;margin-top:4px;line-height:1.55;}
+.card,.kpi,.dcard,.tq,.persp,.layer,.ind{box-shadow:0 1px 3px rgba(20,43,71,.06),0 1px 2px rgba(20,43,71,.04);}
+</style>
+</head>
+<body>
+<div id="gate" class="gate">
+  <div class="gate-box">
+    <div class="gate-title">🔒 内容已加密</div>
+    <div class="gate-sub">请输入访问密码</div>
+    <input id="gate-pwd" type="password" class="gate-input" placeholder="访问密码" autocomplete="off" />
+    <button id="gate-btn" class="gate-btn">解锁</button>
+    <div id="gate-err" class="gate-err"></div>
+  </div>
+</div>
+<style>
+.gate{position:fixed;inset:0;z-index:2147483647;background:linear-gradient(135deg,#0f1420,#1a2236);display:flex;align-items:center;justify-content:center;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif}
+.gate-box{background:#fff;border-radius:16px;padding:36px 40px;width:320px;max-width:86vw;box-shadow:0 20px 60px rgba(0,0,0,.45);text-align:center}
+.gate-title{font-size:20px;font-weight:700;color:#111827;margin-bottom:6px}
+.gate-sub{font-size:13px;color:#6b7280;margin-bottom:20px}
+.gate-input{width:100%;box-sizing:border-box;padding:12px 14px;font-size:15px;border:1px solid #d1d5db;border-radius:10px;outline:none;margin-bottom:14px}
+.gate-input:focus{border-color:#2563eb}
+.gate-btn{width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.gate-btn:hover{background:#1d4ed8}
+.gate-err{color:#dc2626;font-size:13px;margin-top:12px;min-height:18px}
+</style>
+<script>
+(function(){
+  var PWD="hanbuff";
+  function unlock(){ var g=document.getElementById("gate"); if(g&&g.parentNode){ g.parentNode.removeChild(g); } }
+  function check(){ var v=document.getElementById("gate-pwd").value; var err=document.getElementById("gate-err"); if(v===PWD){ unlock(); } else { err.textContent="密码错误，请重试"; } }
+  window.addEventListener("load",function(){ var btn=document.getElementById("gate-btn"); var inp=document.getElementById("gate-pwd"); if(btn) btn.addEventListener("click",check); if(inp){ inp.addEventListener("keydown",function(e){ if(e.key==="Enter") check(); }); inp.focus(); } });
+})();
+</script>
+
+<!--
+  tech-report-html 合并模板（浅色版 · 13 章）
+  ── 用途 ──
+  生成任意"技术全景"报告时，复制本文件，替换下列占位符并填写 13 章内容即可，CSS/JS 无需改动。
+  ── 占位符 ──
+    【主题】        → 技术名称，如 "脑机接口" / "材料 AI4S"
+    【一句话概括】  → hero 副标题，定义该技术是什么（见上方 <p class="sub">）
+    【生成日期】    → 如 2026-08
+  ── 13 章框架（Part I 全景 / Part II 穿透）──
+    01 战略结论与投资研判   02 市场概览与测算           03 关键玩家与格局
+    04 技术源流与关键科学家 05 技术爆发的窗口与触发条件 06 技术栈与路线对比（含 TRL，附量化对标框架）
+    07 应用场景             08 多方行业观点
+    09 技术树全貌           10 关键技术"投资密度"分析   11 生命周期/风险与颠覆（S 曲线 + 三色风险 + 反方论据）
+    12 未来展望与演进时间线（SVG 时间线） 13 研究方法论（来源标注 + 免责）
+  ── 说明 ──
+  本文件各章正文为「脑机接口」写法示范（含 TRL 表、量化对标、演进时间线等模块完整示例），
+  生成时按【主题】实际内容替换即可。柱状图 data=[...] 与 S 曲线 routes=[...] 在脚本区替换为你的数据。
+  作者署名 作者 · HanBuff 已固定，勿删。
+-->
+
+<aside class="sidebar">
+  <div class="side-brand">
+    <div class="sb-t">技术全景分析 · TECH PANORAMA</div>
+    <div class="sb-n">非侵入式脑机接口·技术路线</div>
+    <div class="sb-v">2026 · 合并综合版</div>
+  </div>
+  <nav class="toc">
+    <div class="part">Part I · 技术全景</div>
+    <a href="#ch01"><span class="num">01</span>战略结论与投资研判</a>
+    <a href="#ch02"><span class="num">02</span>市场概览与测算</a>
+    <a href="#ch03"><span class="num">03</span>关键玩家与格局</a>
+    <a href="#ch04"><span class="num">04</span>技术源流与关键科学家</a>
+    <a href="#ch05"><span class="num">05</span>技术爆发的窗口与触发条件</a>
+    <a href="#ch06"><span class="num">06</span>技术栈与路线对比（含 TRL）</a>
+    <a href="#ch07"><span class="num">07</span>应用场景</a>
+    <a href="#ch08"><span class="num">08</span>多方行业观点</a>
+    <div class="part">Part II · 投资视角穿透</div>
+    <a href="#ch09"><span class="num">09</span>技术树全貌</a>
+    <a href="#ch10"><span class="num">10</span>关键技术投资密度</a>
+    <a href="#ch11"><span class="num">11</span>生命周期、风险与颠覆</a>
+    <a href="#ch12"><span class="num">12</span>未来展望与演进时间线</a>
+    <a href="#ch13"><span class="num">13</span>研究方法论</a>
+  </nav>
+</aside>
+<header class="hero">
+  <div class="tag">非侵入式 BCI · 技术路线</div>
+  <h1>非侵入式脑机接口（技术路线）· 技术全景分析</h1>
+  <p class="sub">非侵入式脑机接口（EEG / fNIRS / MEG / 混合模态）以头皮或体外传感读取脑活动，无需开颅手术。本报告聚焦不同信号范式与硬件路线（湿电极 → 干电极 → fNIRS → 混合 → 无线便携）的横向对比，研判在颅骨约 10,000× 信号衰减的物理约束下，2024 年以来高密度 EEG、OPM-MEG 与 AI 解码所推动的"工程化向商业化"拐点与路线卡位窗口。</p>
+  <div class="meta"><span class="author">作者 · <b>HanBuff</b></span><span> ｜ 生成日期 2026-08 ｜ 单文件 HTML · 可打印 · 数据来源标注【机构/公司/学术/建模】</span></div>
+</header>
+<div class="wrap">
+  <main>
+
+    <!-- 01 战略结论 -->
+    <section id="ch01">
+      <h2><span class="n">01</span>战略结论与投资研判</h2>
+      <div class="kpis">
+        <div class="kpi"><div class="v g">81.86%</div><div class="l">非侵入式占全球 BCI 市场（2025）</div><div class="s">营收基本盘 · 无手术风险</div></div>
+        <div class="kpi"><div class="v">256 ch</div><div class="l">高密度 EEG 通道（商用级）</div><div class="s">信噪比与空间覆盖上修</div></div>
+        <div class="kpi"><div class="v">551.4</div><div class="l">SSVEP 在线 ITR 纪录（bit/min，清华）</div><div class="s">诱发范式性能天花板被抬升</div></div>
+        <div class="kpi"><div class="v">≈10,000×</div><div class="l">颅骨对皮层电位的衰减系数</div><div class="s">非侵入式物理天花板</div></div>
+      </div>
+
+      <div class="thesis-concl">
+        <span class="tag">核心研判</span>
+        <p>非侵入式 BCI 已从"实验室原型"跨入"可穿戴量产"，但性能天花板由<b>颅骨物理极限（信号衰减约 10,000×）</b>锁定：它能可靠读"状态"（注意力、意图分类、ERP），却读不了"想法"。投资确定性不在"读心"叙事，而在<b>硬件路线（电极/前端/光机）</b>与<b>范式选择（SSVEP / fNIRS / 混合 / OPM-MEG）</b>的工程化兑现——即"把已有范式做到更稳、更便宜、更便携"。</p>
+      </div>
+
+      <h3>SWOT 四维研判</h3>
+      <div class="thesis-grid">
+        <div class="tq success"><h4>优势 S</h4><p>无手术风险、可重复佩戴；EEG 消费/康复基数大；SSVEP 与混合范式 ITR 已达实用区间（60–120 bit/min）；OPM-MEG 室温免液氦，开启无创毫米级高分辨<span class="src src-ac">学术</span>。</p></div>
+        <div class="tq warn"><h4>劣势 W</h4><p>颅骨衰减 10,000× 致空间分辨率仅 cm 级；干电极高阻抗、运动伪影显著；fNIRS 时间分辨率秒级；跨被试/跨日个体差异大，长期稳定性弱<span class="src src-ac">学术</span>。</p></div>
+        <div class="tq info"><h4>机会 O</h4><p>2025-03 国家医保局为非侵入式适配赋码（966 元/次）；2025-07 工信部等七部门《实施意见》设 2027/2030 目标；政策+资本共振<span class="src src-org">机构</span>。</p></div>
+        <div class="tq danger"><h4>威胁 T</h4><p>"读心"叙事易被物理极限证伪；苹果/Meta 以生态位而非硬件切入，可能边缘化纯头戴创业公司；神经数据隐私立法趋严<span class="src src-md">建模</span>。</p></div>
+      </div>
+
+      <h3>关键信号（触发加仓 / 减仓）</h3>
+      <div class="signals">
+        <span class="sig">加仓信号：<b>干/半干电极规模化降本且信噪比逼近湿电极</b></span>
+        <span class="sig">加仓信号：<b>OPM-MEG 装机突破</b>（昆迈医疗 2025.5 第 7 台）</span>
+        <span class="sig">加仓信号：<b>医保/商保覆盖非侵入康复</b>（适配费赋码落地）</span>
+        <span class="sig">减仓信号：<b>消费端"读心"被证伪、退货率高</b></span>
+        <span class="sig">减仓信号：<b>干电极信噪比长期无突破、准备时间未降</b></span>
+      </div>
+
+      <div class="callout r">反转触发器（什么会推翻"性能天花板低"判断）：① 出现穿颅式传感物理突破（受 10,000× 约束，5 年内概率 &lt;5%）<span class="src src-ac">学术</span>；② 混合模态 ITR 稳定 &gt;100 bit/min 且整机 BOM &lt;¥2,000；③ 医保/商保规模化覆盖非侵入神经康复。三者任一兑现，本报告"硬件路线&gt;解码叙事"的判断需上修。</div>
+
+      <h3>DD 清单入口（详见 13 章）</h3>
+      <div class="vlist">
+        <div class="vrow"><span class="vq">1</span><div><b>范式路线</b>：EEG vs fNIRS vs MEG/OPM-MEG vs 混合？性能/成本/场景如何取舍？</div></div>
+        <div class="vrow"><span class="vq">2</span><div><b>电极硬件</b>：湿/干/半干？阻抗、准备时间、运动鲁棒性的实测数据？</div></div>
+        <div class="vrow"><span class="vq">3</span><div><b>解码壁垒</b>：算法开源可跟进，还是独占长期神经数据飞轮？</div></div>
+        <div class="vrow"><span class="vq">4</span><div><b>商业化</b>：医疗注册证路径 / 消费渠道 / 单台 BOM 与毛利？</div></div>
+        <div class="vrow"><span class="vq">5</span><div><b>政策节奏</b>：医保赋码、适配费、地方补贴的落地与放量节奏？</div></div>
+      </div>
+    </section>
+
+    <!-- 02 市场 -->
+    <section id="ch02">
+      <h2><span class="n">02</span>市场概览与测算</h2>
+      <p>非侵入式是 BCI 市场的绝对营收基本盘。2025 年非侵入式占全球 BCI 市场 <b>81.86%</b><span class="src src-md">建模</span>，但市场口径差异极大：宽口径把"神经反馈/可穿戴健康"全计入，窄口径只算"神经解码专用设备"。本报告按<b>非侵入式专用设备 + 可穿戴神经健康</b>测算，多口径交叉验证。</p>
+      <div class="chart">
+        <svg id="barchart" viewBox="0 0 640 300"></svg>
+      </div>
+      <div class="callout">非侵入式 BCI 市场 2025 约 <b>$1.72B</b>，pmarketresearch 预测 2032 年达 $4.1B（CAGR 13.22%）<span class="src src-org">机构</span>；更宽口径（含消费神经健康）IIM 给出 2025 $1.42B→2032 $6.87B（CAGR 37.1%）<span class="src src-org">机构</span>。中国 2024 年 BCI 市场约 ¥32 亿（赛迪），2028 年预计 ¥61 亿<span class="src src-org">机构</span>。</div>
+
+      <h3>区域与产品结构（非侵入视角）</h3>
+      <table class="routes">
+        <tr><th>维度</th><th>当前结构</th><th>趋势</th><th>来源</th></tr>
+        <tr><td>按范式</td><td>EEG 主导（消费+科研）；fNIRS 增于卒中康复；MEG/OPM-MEG 在科研/临床成像</td><td>混合模态（EEG-fNIRS）增速最快</td><td class="best">学术/机构</td></tr>
+        <tr><td>按应用</td><td>医疗/康复（卒中、新生儿）+ 消费（专注/睡眠/游戏）</td><td>消费端放量快、医疗端更稳</td><td>Grand View</td></tr>
+        <tr><td>区域</td><td>美国 + 中国占企业 80%+；全球 &gt;800 家</td><td>亚太 CAGR 最快</td><td>前瞻/机构</td></tr>
+      </table>
+
+      <h3>多情景规模测算（两种独立口径交叉验证）</h3>
+      <table class="sizing">
+        <tr><th>口径</th><th>关键假设</th><th>2025 估算</th><th>2032 估算</th></tr>
+        <tr><td>窄口径（专用设备）</td><td>pmarketresearch CAGR 13.22% 外推</td><td>$1.72B</td><td class="best">$4.1B</td></tr>
+        <tr><td>宽口径（含神经健康）</td><td>IIM CAGR 37.1% 外推</td><td>$1.42B</td><td class="best">$6.87B</td></tr>
+        <tr><td>基准区间（交叉）</td><td>两口径交集</td><td class="best">$1.4–1.7B</td><td class="best">$4–7B</td></tr>
+        <tr><td>下行情景</td><td>"读心"证伪 + 消费退货 + 报销滞后</td><td>$1.3B</td><td>$3B</td></tr>
+      </table>
+      <div class="callout">投资含义：非侵入式由<b>消费级（低客单、大基数）</b>撑量，投资弹性在<b>医疗康复（高客单、高壁垒、可报销）</b>与<b>硬件路线（电极/前端/光机）</b>。宽口径 CAGR 更高反映消费健康扩容，但需警惕"神经健康"与"BCI 解码"的概念混淆。</div>
+    </section>
+
+    <!-- 03 玩家 -->
+    <section id="ch03">
+      <h2><span class="n">03</span>关键玩家与格局</h2>
+      <p>非侵入式格局按<b>信号范式</b>分四大阵营：EEG（消费/科研主力）、fNIRS（康复成像）、MEG/OPM-MEG（高分辨科研/临床）、混合模态（EEG-fNIRS）。中国公司在消费与混合路线先放量，欧美在 OPM-MEG 与高端科研前端领跑。</p>
+      <div class="grid c2">
+        <div class="card"><h4>EEG 阵营（消费/科研/康复）</h4><p><b>强脑科技 BrainCo</b>（中国，估值约 $5B，2025 完成约 ¥20 亿融资、拟港股 IPO）<span class="src src-co">公司</span>；<b>Emotiv</b>、<b>Neurable</b>、<b>Muse</b>、<b>OpenBCI</b>（科研开源前端）；国内柔灵科技、脑陆科技、爱朋医疗等。</p></div>
+        <div class="card"><h4>fNIRS 阵营（康复/成像）</h4><p><b>慧创医疗</b>（中国，近红外脑功能成像）；<b>Kernel</b>（Flow2 TD-fNIRS 可穿戴，约 $99,200）<span class="src src-co">公司</span>；<b>Artinis</b>、<b>NIRx</b>（科研级 TD-fNIRS 设备）。</p></div>
+        <div class="card"><h4>MEG / OPM-MEG 阵营</h4><p><b>FieldLine</b>（HEDscan，144 传感器/288 通道，室温免液氦）<span class="src src-md">建模</span>；<b>Cerca</b>（64 传感器 OPM，成本约为 SQUID 的 50%）<span class="src src-ac">学术</span>；中国 <b>昆迈医疗</b>（OPM-MEG，2025.5 第 7 台装机）<span class="src src-co">公司</span>。</p></div>
+        <div class="card"><h4>混合模态 / 解码阵营</h4><p><b>柔灵科技</b>、<b>臻泰智能</b>、<b>中科搏锐</b>（EEG-fNIRS 混合与卒中康复）；清华 <b>高小榕团队</b>（SSVEP 混合编码，256 通道在线 551.42 bit/min 纪录）<span class="src src-ac">学术</span>；<b>Meta</b>（Brain2Qwerty，MEG 词准 61–78%）<span class="src src-ac">学术</span>。</p></div>
+      </div>
+
+      <h3>竞争评分卡（按范式分阵营：技术 / 商业 / 资本 三维）</h3>
+      <div class="scorecard">
+        <div class="row"><span style="min-width:140px;font-weight:600;">强脑科技</span><span class="stars">技术 ★★☆☆☆</span><span class="stars">商业 ★★★★★</span><span class="stars">资本 ★★★★☆</span><span class="hl">EEG 消费放量（中国领跑）</span></div>
+        <div class="row"><span style="min-width:140px;font-weight:600;">Kernel</span><span class="stars">技术 ★★★★☆</span><span class="stars">商业 ★★☆☆☆</span><span class="stars">资本 ★★★☆☆</span><span>TD-fNIRS 高端硬件</span></div>
+        <div class="row"><span style="min-width:140px;font-weight:600;">FieldLine/Cerca</span><span class="stars">技术 ★★★★★</span><span class="stars">商业 ★★★☆☆</span><span class="stars">资本 ★★★☆☆</span><span class="hl">OPM-MEG 室温颠覆 SQUID</span></div>
+        <div class="row"><span style="min-width:140px;font-weight:600;">昆迈医疗</span><span class="stars">技术 ★★★★☆</span><span class="stars">商业 ★★★☆☆</span><span class="stars">资本 ★★★☆☆</span><span>国产 OPM-MEG 装机领先</span></div>
+        <div class="row"><span style="min-width:140px;font-weight:600;">柔灵/臻泰（中）</span><span class="stars">技术 ★★★☆☆</span><span class="stars">商业 ★★★☆☆</span><span class="stars">资本 ★★★☆☆</span><span>混合模态+康复场景</span></div>
+        <div class="row"><span style="min-width:140px;font-weight:600;">清华 SSVEP 团队</span><span class="stars">技术 ★★★★★</span><span class="stars">商业 ★★☆☆☆</span><span class="stars">资本 ★★☆☆☆</span><span>诱发范式性能标杆</span></div>
+      </div>
+      <div class="callout">资本水位：非侵入式单笔融资体量小于侵入式，但基数更大——强脑科技 2025 约 ¥20 亿轮（全球非侵入最大）<span class="src src-co">公司</span>；OPM-MEG 仍处科研采购与早期商业化（FieldLine/Cerca/昆迈），硬件壁垒高但放量慢；消费端靠渠道与品牌，硬件端靠电极/光机自研。</div>
+    </section>
+
+    <!-- 04 谱系 -->
+    <section id="ch04">
+      <h2><span class="n">04</span>技术源流与关键科学家</h2>
+      <p>非侵入式 BCI 是"神经科学 × 电子 × 光学 × AI 解码"的交叉产物；硬科技投资本质是投人，范式与硬件的源流直接决定路线卡位。</p>
+      <h3>学术源流（各范式发明史）</h3>
+      <div class="grid c3">
+        <div class="card"><h4>EEG 与术语奠基</h4><p>Hans Berger 于 <b>1924 年</b>首次记录人脑 EEG；Jacques Vidal <b>1973 年</b>提出"Brain-Computer Interface"术语，奠定非侵入范式框架<span class="src src-ac">学术</span>。</p></div>
+        <div class="card"><h4>诱发范式</h4><p>P300（Sutton 1965 事件相关电位）；SSVEP 稳态视觉诱发电位（Vidal 1973 路线延伸）；运动想象 MI（Pfurtscheller 1990s）；清华高小榕团队将 SSVEP 推向混合频率-相位-空间编码实用化<span class="src src-ac">学术</span>。</p></div>
+        <div class="card"><h4>fNIRS 与 MEG</h4><p>fNIRS 源自 Jöbsis <b>1977 年</b>近红外组织血氧观测；MEG 由 Cohen <b>1968 年</b>用 SQUID 实现，长期受液氦束缚；OPM-MEG 由 Kominis 2003 提出、Boto 2017 完成首例成人头盔<span class="src src-ac">学术</span>。</p></div>
+      </div>
+
+      <h3>电极硬件源流（湿→干→半干）</h3>
+      <table class="routes">
+        <tr><th>路线</th><th>发明/里程碑</th><th>关键人物 / 团队</th><th>状态</th></tr>
+        <tr><td>湿电极（金标准）</td><td>导电膏/凝胶，阻抗 5–10 kΩ</td><td>EEG 临床标准（数十年沉淀）</td><td class="best">成熟 TRL 9</td></tr>
+        <tr><td>干电极</td><td>1990s 兴起，免导电膏但高阻抗</td><td>Geva 等；多家消费头带采用</td><td>商用 TRL 7–8</td></tr>
+        <tr><td>半干电极</td><td>水/海绵缓释，折中准备时间</td><td>科研与军工先行</td><td>TRL 6–7</td></tr>
+        <tr><td>OPM-MEG</td><td>光泵浦原子磁力计，室温免液氦</td><td>Kominis/Boto；昆迈/FieldLine/Cerca</td><td class="best">TRL 6–7</td></tr>
+      </table>
+      <div class="depnote">投资含义：EEG 范式与湿电极属"科学公域"，难构成独占壁垒；真正的壁垒转移到<b>干/半干电极工艺、TD-fNIRS 光机、OPM-MEG 传感器与解码数据飞轮</b>。清华 SSVEP、昆迈 OPM-MEG 等团队的谱系纯度，直接决定国内路线执行的下行风险。</div>
+    </section>
+
+    <!-- 05 窗口 -->
+    <section id="ch05">
+      <h2><span class="n">05</span>技术爆发的窗口与触发条件</h2>
+      <p>非侵入式并非新事物，但<b>2024 以来的拐点</b>来自硬件（高密度/干电极/OPM-MEG）与 AI 解码的叠加：从"能戴"走向"戴得稳、读得准、买得起"。</p>
+      <h3>拐点事件（时间锚）</h3>
+      <div class="timeline">
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2024 <span class="tl-tag">拐点 1</span></div><div class="tl-body">清华高小榕团队以混合频率-相位-空间编码、256 通道 EEG 实现在线 SSVEP <b>551.42 bit/min</b> 纪录，把诱发范式性能天花板显著抬升<span class="src src-ac">学术</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2025.03 <span class="tl-tag">拐点 2 · 政策</span></div><div class="tl-body">国家医保局为非侵入式脑机接口适配赋码，单次适配费 <b>966 元</b>，打通支付侧确定性<span class="src src-org">机构</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2025.05 <span class="tl-tag">拐点 3 · 硬件</span></div><div class="tl-body">昆迈医疗 OPM-MEG 完成第 7 台装机，国产室温免液氦磁脑成像从科研走向临床<span class="src src-co">公司</span>；Meta Brain2Qwerty v2 以 MEG 实现词准 61–78%<span class="src src-ac">学术</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2025.07 <span class="tl-tag">拐点 4 · 国策</span></div><div class="tl-body">工信部等七部门出台《实施意见》，设 2027/2030 非侵入式 BCI 产业化目标，政策+资本共振<span class="src src-org">机构</span>。</div></div>
+      </div>
+
+      <h3>五大触发条件</h3>
+      <div class="grid c2">
+        <div class="card"><h4>① 干/半干电极成熟</h4><p>把 10–30 分钟湿电极准备时间压到"即戴即用"，同时把高阻抗与运动伪影降到可用区间，是把科研设备变消费/医疗产品的前提<span class="src src-ac">学术</span>。</p></div>
+        <div class="card"><h4>② 高密度 + TD-fNIRS</h4><p>256 通道高密度 EEG 提升空间覆盖；时间域 fNIRS（TD-fNIRS）改善深度分辨，二者支撑混合模态性能跃升<span class="src src-ac">学术</span>。</p></div>
+        <div class="card"><h4>③ AI 实时解码</h4><p>EEGNet-8.2、Transformer、STA-Net（时空对齐混合网络）从噪声中提取意图并抗漂移；2025 顶刊 BCI 论文基本 AI 化<span class="src src-ac">学术</span>。</p></div>
+        <div class="card"><h4>④ OPM-MEG 室温化</h4><p>光泵浦原子磁力计免去液氦与磁屏蔽室，使毫米级+毫秒级无创成像可部署于普通房间，打开高分辨新路线<span class="src src-ac">学术</span>。</p></div>
+        <div class="card"><h4>⑤ 政策 + 支付</h4><p>医保赋码（966 元/次）、七部门《实施意见》、地方专项基金，为非侵入康复提供报销与采购确定性<span class="src src-org">机构</span>。</p></div>
+        <div class="card"><h4>⑥ 生态补完</h4><p>苹果/神经接口 HID、可穿戴平台成为"非植入入口"，降低终端适配成本、加速可用性<span class="src src-co">公司</span>。</p></div>
+      </div>
+      <div class="callout">窗口判断：2024–2026 是"<b>硬件成熟 → 商业化验证</b>"窗口；真正规模化（注册证/报销/集采）预计 2026–2030 陆续兑现。早于此是纯原型，晚于此是红海。</div>
+    </section>
+
+    <!-- 06 技术栈 -->
+    <section id="ch06">
+      <h2><span class="n">06</span>技术栈与路线对比（含 TRL）</h2>
+      <p>非侵入式按<b>信号载体</b>分四大路线，本质是在"<b>空间/时间分辨率 ↔ 便携性/成本</b>"之间取舍。物理定律（颅骨 10,000× 衰减）决定了 EEG 存在不可逾越的天花板，fNIRS/MEG 各有互补约束。</p>
+
+      <h3>路线对比矩阵（原理 / 性能 / 风险 / 代表玩家）</h3>
+      <table class="routes">
+        <tr><th>路线</th><th>信号源</th><th>空间分辨率</th><th>时间分辨率</th><th>成熟度 TRL</th><th>代表玩家</th></tr>
+        <tr><td class="best">EEG</td><td>头皮电位</td><td>cm 级</td><td class="best">ms 级</td><td class="best">8–9</td><td>强脑/Emotiv/OpenBCI</td></tr>
+        <tr><td>fNIRS</td><td>血氧（HbO/HbR）</td><td>1–3 cm</td><td>秒级</td><td>7–8</td><td>慧创/Kernel/Artinis</td></tr>
+        <tr><td>MEG/OPM-MEG</td><td>神经磁场</td><td class="best">mm 级</td><td class="best">ms 级</td><td>6–7</td><td>FieldLine/Cerca/昆迈</td></tr>
+        <tr><td class="best">混合（EEG-fNIRS）</td><td>电+血氧融合</td><td>cm 级+代谢</td><td>ms+秒</td><td>5–6</td><td>柔灵/臻泰/中科搏锐</td></tr>
+      </table>
+
+      <h3>量化对标框架（效果 × 关键参数）</h3>
+      <table class="routes">
+        <tr><th>指标</th><th>EEG</th><th>fNIRS</th><th>MEG/OPM-MEG</th><th>物理约束</th></tr>
+        <tr><td>空间分辨率</td><td>cm（约 10 万神经元叠加）</td><td>1–3 cm</td><td class="best">mm</td><td>颅骨衰减 / 磁场非局域</td></tr>
+        <tr><td>ITR 信息传输率</td><td class="best">SSVEP 60–120 bit/min；P300 20–40；MI 15–30</td><td>5–15 bit/min</td><td>潜在高（需解码）</td><td>受限于 SNR</td></tr>
+        <tr><td>SNR 信噪比</td><td>5–15 dB</td><td>低（慢漂移）</td><td class="best">高（免衰减）</td><td>EEG 受颅骨 10,000×</td></tr>
+        <tr><td>单台成本</td><td class="best">百–千元（消费）</td><td>千–万元</td><td>十万–百万元</td><td>光机/磁屏蔽</td></tr>
+        <tr><td>便携性</td><td class="best">可穿戴</td><td>可穿戴（TD 较重）</td><td>OPM 可房间级免液氦</td><td>SQUID 需屏蔽室</td></tr>
+      </table>
+      <div class="callout">关键辨析：<b>EEG 的"cm 级 + 10,000× 衰减"是物理天花板</b>，机器学习补不了信息缺失——头带能测"状态"读不了"想法"<span class="src src-ac">学术</span>。fNIRS 补代谢维度但时间分辨率秒级；OPM-MEG 高分辨却贵且需专业部署；<b>混合模态用多源互补换取更高 ITR/鲁棒性</b>，是工程化最优解方向。</div>
+
+      <h3>TRL 就绪度锚定</h3>
+      <table class="routes">
+        <tr><th>路线</th><th>TRL</th><th>已落地场景</th><th>仍停留在</th></tr>
+        <tr><td>EEG 消费/科研</td><td class="best">8–9</td><td>专注/睡眠/神反馈、科研前端</td><td>—</td></tr>
+        <tr><td>fNIRS 康复成像</td><td>7–8</td><td>卒中康复评估、新生儿</td><td>大规模消费</td></tr>
+        <tr><td>OPM-MEG</td><td>6–7</td><td>科研/临床成像（昆迈第 7 台）</td><td>普及与降本</td></tr>
+        <tr><td>混合模态</td><td>5–6</td><td>卒中康复、疲劳监测示范</td><td>产品注册与放量</td></tr>
+      </table>
+      <div class="callout">TRL 跨度即投资结论：<b>EEG 已成熟可投消费，fNIRS 处康复放量，OPM-MEG 与混合模态卡在 5–7（科研→产品跃迁期）</b>。价值与风险交汇点恰在此处——"硬件确定性上修、商业确定性仍低"错配的技术根源（见 01 章）。</div>
+    </section>
+
+    <!-- 07 应用 -->
+    <section id="ch07">
+      <h2><span class="n">07</span>应用场景</h2>
+      <p>非侵入式场景呈现"医疗康复确定性高、消费想象大但验证弱、高分辨成像远"的结构，且<b>路线与场景强绑定</b>。</p>
+      <div class="grid c2">
+        <div class="card"><h4>EEG · 消费健康</h4><p>专注力监测、睡眠仪、冥想/游戏头带；大基数、低客单、易放量，但"读心"易证伪<span class="src src-org">机构</span>。</p></div>
+        <div class="card"><h4>EEG · 康复与辅助</h4><p>卒中运动想象康复、拼写/控制（SSVEP/P300）、为瘫痪者提供非植入替代通道；强脑/柔灵等已落地<span class="src src-co">公司</span>。</p></div>
+        <div class="card"><h4>fNIRS · 卒中与新生儿</h4><p>脑功能成像评估、新生儿脑氧监测、认知负荷；慧创/Kernel 在康复与科研端<span class="src src-co">公司</span>。</p></div>
+        <div class="card"><h4>MEG/OPM-MEG · 高分辨成像</h4><p>癫痫灶定位、认知神经科学、脑肿瘤术前；免液氦后向普通诊室渗透（昆迈/FieldLine/Cerca）<span class="src src-ac">学术</span>。</p></div>
+        <div class="card"><h4>混合模态 · 高鲁棒交互</h4><p>EEG-fNIRS 融合提升疲劳/驾驶监测、脑控准确率；STA-Net 等时空对齐网络支撑<span class="src src-ac">学术</span>。</p></div>
+        <div class="card"><h4>军工 / 工业</h4><p>无人装备意念操控、疲劳预警；采购周期长、透明度低<span class="src src-org">机构</span>。</p></div>
+      </div>
+      <div class="callout">投资排序（见 12 章）：<b>近中期确定性最高</b>的是 EEG/fNIRS 医疗康复（可报销、已临床）+ OPM-MEG 科研临床成像；消费级需警惕"读心叙事"证伪；混合模态作性能升级期权。</div>
+    </section>
+
+    <!-- 08 观点 -->
+    <section id="ch08">
+      <h2><span class="n">08</span>多方行业观点</h2>
+      <div class="persp-grid">
+        <div class="persp"><div class="who">硬件创业方（强脑/昆迈/Kernel）</div><div class="pos">立场：工程化兑现</div><p>强调"已能量产"——消费头带百万级出货、OPM-MEG 装机、TD-fNIRS 可穿戴；认为瓶颈在渠道与成本而非原理<span class="src src-co">公司</span>。</p></div>
+        <div class="persp"><div class="who">临床 / 康复医生</div><div class="pos">立场：审慎有效</div><p>认可 EEG/fNIRS 在卒中康复与评估的价值，但强调<b>长期稳定性与跨被试泛化</b>需更久数据；优先可报销刚需<span class="src src-ac">学术</span>。</p></div>
+        <div class="persp"><div class="who">学术解码派</div><div class="pos">立场：性能存疑</div><p>质疑干电极 SNR 与颅骨衰减天花板；认为"通道/算力增长"不等于可用性增长，混合模态与 OPM-MEG 才是突破方向<span class="src src-ac">学术</span>。</p></div>
+        <div class="persp"><div class="who">监管机构（医保局/NMPA）</div><div class="pos">立场：风险加权</div><p>以适配赋码（966 元/次）与《实施意见》给予确定性，但对"神经数据隐私"设红线；商业化需注册+报销双门槛<span class="src src-org">机构</span>。</p></div>
+        <div class="persp"><div class="who">生态位（苹果/Meta）</div><div class="pos">立场：生态切入</div><p>不赌硬件，以 HID 标准/大模型成为"非植入入口"；Meta Brain2Qwerty 证明 MEG 解码潜力<span class="src src-co">公司</span>。</p></div>
+        <div class="persp"><div class="who">中国政策层</div><div class="pos">立场：国家战略</div><p>七部门《实施意见》设 2027/2030 目标，以医保赋码、专项基金推动产业化跃迁<span class="src src-org">机构</span>。</p></div>
+      </div>
+      <div class="callout">共识：非侵入式在康复/健康/成像上价值确凿，硬件拐点已至。<b>最大分歧</b>在于"干电极 SNR 能否逼近湿电极"与"商业化时点"——这正是风险章（11）需正面回答的。</div>
+    </section>
+
+    <!-- 09 技术树 -->
+    <section id="ch09">
+      <h2><span class="n">09</span>技术树全貌（系统 → 原子级）</h2>
+      <p>非侵入式 BCI 自顶向下：系统 → 子系统 → 核心模块 → Tier3 底层。最短板在"<b>电极-头皮界面</b>"与"<b>光机/磁传感器</b>"。</p>
+      <div class="stack">
+        <div class="layer"><div class="lh">系统层 · 非侵入 BCI 整机 <span class="ltier">Tier 0</span></div><div class="lb">采集→解码→反馈闭环；消费头戴 / 医疗康复 / 科研成像三类整机。</div></div>
+        <div class="layer"><div class="lh">子系统层 <span class="ltier">Tier 1</span></div><div class="lb">① 信号采集（电极/光机/磁传感器）② 神经解码算法 ③ 刺激/反馈 ④ 供能与通信 ⑤ 封装</div></div>
+        <div class="layer"><div class="lh">核心模块层 <span class="ltier">Tier 2</span></div><div class="lb">干/半干电极、低噪声前端 ASIC、TD-fNIRS 光机、OPM 传感器、在线学习解码器。</div></div>
+        <div class="layer"><div class="lh">Tier3 底层节点（投资密度锁定对象） <span class="ltier">Tier 3</span></div><div class="lb">
+          <div class="chips">
+            <span class="chip">干/半干电极工艺</span>
+            <span class="chip">低噪声前端 ASIC</span>
+            <span class="chip">TD-fNIRS 光机</span>
+            <span class="chip">OPM 原子磁力计</span>
+            <span class="chip">在线学习实时解码</span>
+          </div>
+        </div></div>
+      </div>
+      <h3>Tier3 节点表（自研/外购 · 成熟度 · BOM 占比）</h3>
+      <table class="routes">
+        <tr><th>Tier3 节点</th><th>自研/外购</th><th>成熟度</th><th>BOM 成本占比（估）</th><th>最短板？</th></tr>
+        <tr><td>干/半干电极</td><td>多为自研（卡工艺）</td><td>7–8</td><td>中</td><td class="best">是（阻抗/运动鲁棒）</td></tr>
+        <tr><td>低噪声前端 ASIC</td><td>外购为主，少数自研</td><td>7–8</td><td>高</td><td>否（成熟）</td></tr>
+        <tr><td>TD-fNIRS 光机</td><td>自研（卡光路/探测器）</td><td>6–7</td><td>高</td><td class="best">是（成本/重量）</td></tr>
+        <tr><td>OPM 磁力计</td><td>自研（卡原子气室）</td><td>6–7</td><td class="best">极高</td><td class="best">是（成本/量产）</td></tr>
+        <tr><td>在线解码算法</td><td>自研 + AI</td><td>6–8</td><td>低（软件）</td><td>否（迭代快）</td></tr>
+      </table>
+      <div class="depnote">层级依赖链：电极/光机/磁传感器 → 决定信号质量 → 决定解码上限 → 决定可用性。任一 Tier3 短板都会让整机"能戴但读不准"。投资应重点审视<b>电极工艺、TD-fNIRS 光机、OPM 传感器</b>三项自研深度（硬件壁垒），解码算法更看数据飞轮。</div>
+    </section>
+
+    <!-- 10 投资密度 -->
+    <section id="ch10">
+      <h2><span class="n">10</span>关键技术"投资密度"分析</h2>
+      <p>锁定前 3 个 Tier3 节点，逐个给：技术本质（第一性原理）→ 壁垒判定 → 代际与路线图 → 成本下降路径。</p>
+
+      <div class="dcard">
+        <div class="dh">① 干 / 半干电极工艺 <span class="scorepill">壁垒 8/10</span></div>
+        <div class="db"><b>本质：</b>用微针/海绵/导电聚合物替代导电膏，把准备时间从 10–30 分钟压到即戴即用，同时压低高阻抗与运动伪影。<b>壁垒：</b>know-how 型——针阵列加工、皮肤接触一致性、抗运动干扰构成工艺护城河。<b>代际：</b>湿电极（金标准）→ 干电极（1990s）→ 半干（水海绵）→ 主动干电极（含前端）。<b>成本路径：</b>微针/注塑规模化后单电极成本有望数年降 1–2 个数量级<span class="src src-ac">学术</span><span class="src src-co">公司</span>。</div>
+      </div>
+
+      <div class="dcard">
+        <div class="dh">② TD-fNIRS 光机 / OPM 磁力计 <span class="scorepill">壁垒 9/10</span></div>
+        <div class="db"><b>本质：</b>TD-fNIRS 用超短脉冲+时间相关单光子计数提升深度分辨；OPM 用光泵浦原子气室在室温测皮特斯拉级磁场、免液氦。<b>壁垒：</b>know-how 型——光路/探测器/原子气室工艺门槛极高，供应商少（昆迈/FieldLine/Cerca 各持专利）。<b>代际：</b>连续波 fNIRS → TD-fNIRS；SQUID（液氦）→ OPM-MEG（室温）。<b>成本路径：</b>随量产与国产化摊薄，但良率爬坡期成本高<span class="src src-co">公司</span><span class="src src-md">建模</span>。</div>
+      </div>
+
+      <div class="dcard">
+        <div class="dh">③ 在线学习实时解码 <span class="scorepill">壁垒 6/10</span></div>
+        <div class="db"><b>本质：</b>EEGNet-8.2/Transformer/STA-Net 将神经时空模式映射为意图，并自适应跨日漂移。<b>壁垒：</b>know-what 偏多——算法可快速跟进，真正壁垒在<b>独占长期神经数据飞轮</b>（谁有最多被试×最久时长，解码越准）。<b>代际：</b>CCA/TRCA → 深度学习 → 大模型赋能。<b>成本路径：</b>边际成本近零，受算力与标注约束<span class="src src-ac">学术</span>。</div>
+      </div>
+      <div class="callout">投资密度结论：<b>电极工艺（8/10）与光机/磁传感器（9/10）是"重资产、高壁垒、慢变量"</b>，值得下注硬科技壁垒；解码算法（6/10）是"轻资产、快迭代、数据驱动"，更看数据飞轮。</div>
+    </section>
+
+    <!-- 11 生命周期/风险 -->
+    <section id="ch11">
+      <h2><span class="n">11</span>生命周期、风险与颠覆</h2>
+      <div class="scurve">
+        <svg id="scurve" viewBox="0 0 640 360"></svg>
+      </div>
+      <div class="callout">S 曲线说明：湿电极 EEG（高成熟度、低性能天花板）已商业化；干/半干电极处快速爬升；fNIRS 稳步渗透；混合模态（EEG-fNIRS）性能潜力高、处早期爬升；OPM-MEG/无线便携是高潜力早前期。坐标轴：横=技术成熟度，纵=性能/渗透潜力。</div>
+
+      <h3>阿喀琉斯之踵（单点否决项）</h3>
+      <div class="rt">
+        <div class="rt-title t1">产品技术（红）</div>
+        <ul>
+          <li><b>颅骨物理天花板</b>：EEG 受 10,000× 衰减约束，空间分辨率仅 cm 级，深层与"想法级"解码不可及<span class="src src-ac">学术</span>。</li>
+          <li><b>干电极 SNR 与运动伪影</b>：高阻抗致信噪比低（5–15 dB），运动/出汗显著劣化，长期稳定性弱。</li>
+          <li><b>fNIRS 慢漂移</b>：时间分辨率秒级、易受生理噪声（心跳/呼吸）干扰，限制实时交互。</li>
+        </ul>
+      </div>
+      <div class="rt">
+        <div class="rt-title t2">竞争（黄）</div>
+        <ul>
+          <li><b>大厂生态边缘化</b>：苹果/Meta 以 HID 标准+大模型切入，纯头戴硬件公司可能被"管道化"。</li>
+          <li><b>路线替代</b>：若 OPM-MEG 降本，或混合模态性能逼近，将抢走单一范式人群。</li>
+        </ul>
+      </div>
+      <div class="rt">
+        <div class="rt-title t3">行业监管（蓝）</div>
+        <ul>
+          <li><b>"神经数据/精神隐私"立法</b>：各国对神经数据所有权、consent 趋严，抬高合规成本。</li>
+          <li><b>报销路径滞后</b>：即便有适配赋码，若无商保/集采覆盖，放量受限。</li>
+        </ul>
+      </div>
+
+      <h3>挑战与风险（三色分层，含反方论据）</h3>
+      <div class="rt">
+        <div class="rt-title t1">反方 / 唱空论据（硬数据支撑）</div>
+        <ul>
+          <li><b>"分辨率再高也救不了颅骨衰减"</b>：学术派指出 EEG 通道/算力"摩尔式增长"不等于可用性增长，cm 级空间分辨率是信息论天花板，机器学习补不了缺失信息<span class="src src-ac">学术</span>。</li>
+          <li><b>市场天花板被高估</b>：若消费端"读心"被物理极限证伪，且医疗康复人群有限，宽口径 TAM 叙事存在注水；非侵入式难切入高价值重症替代<span class="src src-ac">学术</span>。</li>
+          <li><b>硬件放量黑天鹅</b>：干电极 SNR 长期无突破、TD-fNIRS/OPM 降本不及预期，则高壁垒硬件成"重资产陷阱"，下行风险未被定价<span class="src src-md">建模</span>。</li>
+        </ul>
+      </div>
+
+      <h3>技术颠覆假想场景</h3>
+      <div class="callout r">① 若<b>穿颅式无创传感取得物理突破</b>（如新型穿透电磁传感），将重创 EEG 天花板叙事——但受 10,000× 约束，5 年内概率 &lt;5%<span class="src src-ac">学术</span>。② 若<b>OPM-MEG 成本骤降</b>至消费级，高分辨无创路线重估 EEG/fNIRS 估值，5 年概率 10–20%<span class="src src-md">建模</span>。③ 若<b>大厂以生态标准通吃终端</b>，纯头戴硬件公司沦为供应链，概率 20–30%<span class="src src-md">建模</span>。</div>
+    </section>
+
+    <!-- 12 展望 -->
+    <section id="ch12">
+      <h2><span class="n">12</span>未来展望与演进时间线</h2>
+      <h3>演进时间线（2025–2035）</h3>
+      <div class="timeline">
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2025–2027 <span class="tl-tag">验证期 Validation</span></div><div class="tl-body">医保赋码（966 元/次）+ 七部门《实施意见》落地；昆迈 OPM-MEG 装机扩至两位数；强脑科技推进港股 IPO；干/半干电极消费头带降本放量<span class="src src-org">机构</span><span class="src src-co">公司</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2028–2032 <span class="tl-tag">兑现期 Scale-up</span></div><div class="tl-body">首批非侵入康复产品注册证+报销/集采落地；混合模态（EEG-fNIRS）ITR 稳定爬升、卒中康复规模化；TD-fNIRS/OPM-MEG 成本下探至科研普及<span class="src src-org">机构</span><span class="src src-md">建模</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2033–2035+ <span class="tl-tag">主流化 Mainstream</span></div><div class="tl-body">非侵入式成为神经康复/健康标准配置；OPM-MEG 进普通诊室；混合模态成为高性能交互主流；市场达 $4–7B 区间（宽口径更高）<span class="src src-org">机构</span>。</div></div>
+      </div>
+
+      <h3>适配市场与场景优先级</h3>
+      <table class="routes">
+        <tr><th>赛道</th><th>单笔价值</th><th>验证周期</th><th>数据可得性</th><th>适配时点</th><th>代表玩家</th></tr>
+        <tr><td class="best">EEG/fNIRS 医疗康复</td><td class="best">中–高</td><td>短（已临床）</td><td>高</td><td>近中期</td><td>强脑/慧创/柔灵</td></tr>
+        <tr><td class="best">OPM-MEG 成像</td><td>高</td><td>中</td><td>中</td><td>中期</td><td>昆迈/FieldLine/Cerca</td></tr>
+        <tr><td>混合模态交互</td><td>中</td><td>中</td><td>中</td><td>中期</td><td>柔灵/臻泰/中科搏锐</td></tr>
+        <tr><td>消费（专注/睡眠/游戏）</td><td>低</td><td>短</td><td>高</td><td>已放量</td><td>强脑/Emotiv/Muse</td></tr>
+        <tr><td>TD-fNIRS 高端硬件</td><td>中–高</td><td>中–长</td><td>低</td><td>中–长</td><td>Kernel/Artinis</td></tr>
+      </table>
+      <div class="callout">投资结论：优先布局"验证周期短 × 单笔价值高 × 数据可得性高"的近中期医疗康复赛道（EEG/fNIRS）；OPM-MEG 与 TD-fNIRS 作高壁垒硬件期权；消费级作流量补充但需警惕"读心"证伪。</div>
+    </section>
+
+    <!-- 13 方法论 -->
+    <section id="ch13">
+      <h2><span class="n">13</span>研究方法论</h2>
+      <p>数据来源与口径说明（多源交叉 / 假设透明）：</p>
+      <div class="src">
+        <span class="s">机构：pmarketresearch / IIM / Grand View / 赛迪顾问 / 前瞻产业研究院 / 工信部《实施意见》/ 国家医保局赋码文件</span>
+        <span class="s">公司：强脑科技 / 昆迈医疗 / Kernel / FieldLine / Cerca / Emotiv / 慧创医疗 / Meta 官网与融资公告</span>
+        <span class="s">学术：Berger/Vidal/Sutton 范式文献 / 清华高小榕 SSVEP（551.42 bit/min）/ Boto OPM-MEG / Brain2Qwerty / STA-Net 综述</span>
+        <span class="s">建模：非侵入占比 81.86%、市场外延 TAM、成本下降曲线、颠覆概率等基于公开趋势的合理推算（量级锚，非事实）</span>
+      </div>
+      <div class="callout">免责声明：本报告部分预测为合理建模，不构成投资建议；玩家/技术归类与星级基于公开披露与论文，属定性研判，非完整清单；市场规模为多种口径交叉验证，非单点预测；颅骨 10,000× 衰减等物理约束引自学术文献。非侵入式均指头皮/体外传感，不含植入式。</div>
+    </section>
+
+    <div class="footer">作者 · HanBuff ｜ 单文件 HTML 报告 ｜ 数据来源标注【机构/公司/学术/建模】</div>
+  </main>
+</div>
+
+<script>
+// ---- scroll-spy (scroll-listener, robust to last/short sections) ----
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var sections = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); }).filter(Boolean);
+  var map = {};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+  function setActive(id){
+    links.forEach(function(l){ l.classList.remove('active'); });
+    if(map[id]) map[id].classList.add('active');
+  }
+  function onScroll(){
+    if(!sections.length) return;
+    var line = window.innerHeight * 0.28;          // activation line at 28% of viewport
+    var current = sections[0].id;
+    for(var i=0;i<sections.length;i++){
+      if(sections[i].getBoundingClientRect().top <= line) current = sections[i].id; else break;
+    }
+    // precise bottom-of-page fallback: last section can't reach the line (no content below),
+    // so activate it only when truly within 4px of absolute bottom (avoids over-firing on near-bottom sections)
+    if(Math.abs((window.innerHeight + window.scrollY) - document.documentElement.scrollHeight) < 4){
+      current = sections[sections.length-1].id;
+    }
+    setActive(current);
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  onScroll();
+})();
+
+// ---- 柱状图（全球脑机接口市场规模，Grand View / Precedence / 赛迪 综合） ----
+(function(){
+  var data = [
+    {label:'2025', v:1.72, h:true},
+    {label:'2027', v:2.20, h:false},
+    {label:'2029', v:2.83, h:false},
+    {label:'2031', v:3.63, h:false},
+    {label:'2032', v:4.10, h:false}
+  ];
+  var svg = document.getElementById('barchart'); if(!svg) return;
+  var W=640,H=300,padL=46,padB=36,padT=18,padR=14;
+  var maxV = Math.max.apply(null, data.map(function(d){return d.v;}))*1.15;
+  var bw = (W-padL-padR)/data.length*0.56, gap=(W-padL-padR)/data.length;
+  var ns='http://www.w3.org/2000/svg';
+  function y(v){ return H-padB - (v/maxV)*(H-padB-padT); }
+  for(var i=0;i<=4;i++){ var gv=maxV*i/4; var gy=y(gv);
+    var ln=document.createElementNS(ns,'line'); ln.setAttribute('x1',padL);ln.setAttribute('x2',W-padR);ln.setAttribute('y1',gy);ln.setAttribute('y2',gy);
+    ln.setAttribute('stroke','#e5e9ef');ln.setAttribute('stroke-width','1');svg.appendChild(ln);
+    var tx=document.createElementNS(ns,'text');tx.setAttribute('x',padL-8);tx.setAttribute('y',gy+4);tx.setAttribute('text-anchor','end');tx.setAttribute('font-size','11');tx.setAttribute('fill','#69737f');tx.textContent='$'+Math.round(gv);svg.appendChild(tx);
+  }
+  data.forEach(function(d,i){
+    var x=padL+gap*i+(gap-bw)/2, yh=y(d.v), bh=H-padB-yh;
+    var r=document.createElementNS(ns,'rect'); r.setAttribute('x',x);r.setAttribute('y',yh);r.setAttribute('width',bw);r.setAttribute('height',bh);r.setAttribute('rx','4');
+    r.setAttribute('fill', d.h?'#bd9a55':'#1d3a5e'); svg.appendChild(r);
+    var vt=document.createElementNS(ns,'text');vt.setAttribute('x',x+bw/2);vt.setAttribute('y',yh-6);vt.setAttribute('text-anchor','middle');vt.setAttribute('font-size','12');vt.setAttribute('font-weight','600');vt.setAttribute('fill', d.h?'#8a6418':'#142b47');vt.textContent='$'+d.v+'B';svg.appendChild(vt);
+    var xt=document.createElementNS(ns,'text');xt.setAttribute('x',x+bw/2);xt.setAttribute('y',H-padB+18);xt.setAttribute('text-anchor','middle');xt.setAttribute('font-size','11.5');xt.setAttribute('fill','#3a4754');xt.textContent=d.label;svg.appendChild(xt);
+  });
+  var cap=document.createElementNS(ns,'text');cap.setAttribute('x',W/2);cap.setAttribute('y',H-4);cap.setAttribute('text-anchor','middle');cap.setAttribute('font-size','11');cap.setAttribute('fill','#69737f');cap.textContent='非侵入式脑机接口市场规模（USD Billion，pmarketresearch CAGR 13.22%）';svg.appendChild(cap);
+})();
+
+// ---- S 曲线（技术生命周期） ----
+(function(){
+  var routes = [
+    {name:'湿电极 EEG（金标准）', x:0.82, y:0.34, risk:'低', c:'#1e9d6a'},
+    {name:'干/半干电极', x:0.63, y:0.46, risk:'低', c:'#2b5488'},
+    {name:'fNIRS 近红外', x:0.56, y:0.60, risk:'低', c:'#1e9d6a'},
+    {name:'OPM-MEG 室温免液氦', x:0.34, y:0.66, risk:'中', c:'#bd9a55'},
+    {name:'混合模态 EEG-fNIRS', x:0.50, y:0.80, risk:'中', c:'#bd9a55'},
+    {name:'无线便携高密度', x:0.68, y:0.52, risk:'低', c:'#2b5488'}
+  ];
+  var svg=document.getElementById('scurve'); if(!svg) return;
+  var W=640,H=360,padL=48,padB=42,padT=20,padR=20;
+  var ns='http://www.w3.org/2000/svg';
+  function X(v){return padL+v*(W-padL-padR);} function Y(v){return H-padB-v*(H-padB-padT);}
+  var ax=document.createElementNS(ns,'line');ax.setAttribute('x1',padL);ax.setAttribute('x2',W-padR);ax.setAttribute('y1',H-padB);ax.setAttribute('y2',H-padB);ax.setAttribute('stroke','#69737f');ax.setAttribute('stroke-width','1');svg.appendChild(ax);
+  var ay=document.createElementNS(ns,'line');ay.setAttribute('x1',padL);ay.setAttribute('x2',padL);ay.setAttribute('y1',padT);ay.setAttribute('y2',H-padB);ay.setAttribute('stroke','#69737f');ay.setAttribute('stroke-width','1');svg.appendChild(ay);
+  var xl=document.createElementNS(ns,'text');xl.setAttribute('x',W/2);xl.setAttribute('y',H-10);xl.setAttribute('text-anchor','middle');xl.setAttribute('font-size','12');xl.setAttribute('fill','#3a4754');xl.textContent='技术成熟度 →';svg.appendChild(xl);
+  var yl=document.createElementNS(ns,'text');yl.setAttribute('x',14);yl.setAttribute('y',H/2);yl.setAttribute('text-anchor','middle');yl.setAttribute('font-size','12');yl.setAttribute('fill','#3a4754');yl.setAttribute('transform','rotate(-90 14 '+(H/2)+')');yl.textContent='性能 / 渗透 →';svg.appendChild(yl);
+  var x0=X(0),x1=X(1),y0=Y(0),y1=Y(1),ym=Y(0.5);
+  var p=document.createElementNS(ns,'path');
+  p.setAttribute('d','M'+x0+' '+y0+' C '+X(0.15)+' '+y0+' '+X(0.35)+' '+ym+' '+X(0.5)+' '+ym+' S '+X(0.85)+' '+y1+' '+x1+' '+y1);
+  p.setAttribute('fill','none');p.setAttribute('stroke','#1d3a5e');p.setAttribute('stroke-width','2.5');p.setAttribute('stroke-dasharray','7 5');svg.appendChild(p);
+  routes.forEach(function(r){
+    var cx=X(r.x),cy=Y(r.y);
+    var c=document.createElementNS(ns,'circle');c.setAttribute('cx',cx);c.setAttribute('cy',cy);c.setAttribute('r','7');c.setAttribute('fill',r.c);c.setAttribute('stroke','#fff');c.setAttribute('stroke-width','2');svg.appendChild(c);
+    var t=document.createElementNS(ns,'text');t.setAttribute('x',cx+11);t.setAttribute('y',cy+4);t.setAttribute('font-size','12');t.setAttribute('font-weight','600');t.setAttribute('fill','#19222e');t.textContent=r.name+'（过时风险'+r.risk+'）';svg.appendChild(t);
+  });
+})();
+</script>
+</body>
+</html>

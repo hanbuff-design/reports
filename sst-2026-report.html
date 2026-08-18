@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>固态变压器（SST）· 技术全景分析</title>
+<style>
+:root{
+  --navy-900:#142b47; --navy-800:#1d3a5e; --navy-700:#2b5488; --navy-600:#3f7bb0; --navy-500:#5a9bd6;
+  --gold:#bd9a55; --gold-soft:#f7f1e3; --accent2:#d9b877; --slate:#9fb3cd;
+  --surface:#f4f6f8; --surface-2:#eaf1f8; --card:#ffffff;
+  --border:#e5e9ef; --border-soft:#e5e9ef;
+  --text:#19222e; --text-2:#3a4754; --text-3:#69737f;
+  --red:#d6463b; --red-soft:#fbedec; --amber:#bd9a55; --amber-soft:#f7f1e3; --green:#1e9d6a; --green-soft:#e8f5ef;
+  --radius:12px; --radius-s:8px;
+  --font-serif:"Source Han Serif SC","Noto Serif SC","Songti SC","SimSun",serif;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;padding-left:252px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;color:var(--text);background:var(--surface);line-height:1.7;-webkit-font-smoothing:antialiased;font-size:15px;}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px;}
+@media(max-width:980px){body{padding-left:0;}.sidebar{position:sticky;top:0;width:100%;height:auto;flex-direction:row;overflow-x:auto;}.side-brand{border-bottom:none;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap;}.toc{display:flex;padding:10px;flex-wrap:nowrap;}.toc a{border-left:none;white-space:nowrap;}}
+.sidebar{position:fixed;top:0;left:0;width:252px;height:100vh;background:linear-gradient(180deg,#142b47 0%,#1d3a5e 55%,#244d7c 100%);color:#fff;display:flex;flex-direction:column;z-index:60;box-shadow:2px 0 18px rgba(20,43,71,.25);}
+.side-brand{padding:24px 22px 18px;border-bottom:1px solid rgba(255,255,255,.10);}
+.side-brand .sb-t{font-size:12px;color:var(--slate);letter-spacing:1.5px;font-weight:600;}
+.side-brand .sb-n{font-size:17px;font-weight:800;margin-top:6px;line-height:1.3;font-family:var(--font-serif);}
+.side-brand .sb-v{display:inline-block;margin-top:12px;font-size:11px;color:#142b47;background:var(--accent2);padding:3px 10px;border-radius:11px;font-weight:700;letter-spacing:.5px;}
+.toc{padding:14px 12px 30px;overflow-y:auto;flex:1 1 auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.28) transparent;}
+.toc::-webkit-scrollbar{width:6px;height:6px;}
+.toc::-webkit-scrollbar-track{background:transparent;}
+.toc::-webkit-scrollbar-thumb{background:rgba(255,255,255,.28);border-radius:3px;}
+.toc a{display:flex;align-items:center;gap:11px;color:#a9c0db;font-size:13px;padding:10px 12px;border-radius:9px;transition:.18s;margin:2px 0;border-left:3px solid transparent;text-decoration:none;}
+.toc a:hover{background:rgba(255,255,255,.08);color:#fff;}
+.toc a.active{background:rgba(255,255,255,.14);color:#fff;border-left-color:var(--accent2);}
+.toc .num{font-size:11px;font-weight:700;color:#7e9bbf;width:22px;flex:0 0 auto;text-align:center;}
+.toc a.active .num{color:var(--accent2);}
+.toc .part{margin:14px 0 4px;font-size:11px;font-weight:700;color:var(--accent2);letter-spacing:.05em;padding-left:12px;}
+main{flex:1;min-width:0;padding:30px 0 80px;}
+section{padding:40px 0 12px;scroll-margin-top:10px;}
+section h2{margin:0 0 18px;font-size:22px;font-weight:750;color:var(--navy-800);font-family:var(--font-serif);letter-spacing:.3px;display:flex;align-items:center;gap:12px;}
+section h2 .n{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--navy-800),var(--navy-700));width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:9px;flex:0 0 auto;box-shadow:0 2px 6px rgba(29,58,94,.25);font-variant-numeric:tabular-nums;}
+section h3{margin:22px 0 10px;font-size:16px;color:var(--navy-800);border-left:3px solid var(--gold);padding-left:9px;}
+section p{margin:9px 0;color:var(--text);}
+.lead{color:var(--text-2);font-size:15px;margin-top:4px;}
+.hero{background:linear-gradient(135deg,#142b47 0%,#1d3a5e 55%,#2b5488 100%);color:#fff;padding:48px 0 42px;position:relative;}
+.hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--accent2),transparent);}
+.hero > *{max-width:1120px;margin-left:auto;margin-right:auto;padding:0 22px;}
+.hero .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--accent2);border:1px solid rgba(217,184,119,.45);padding:4px 12px;border-radius:20px;margin-bottom:14px;}
+.hero h1{margin:0 0 10px;font-size:34px;font-weight:800;letter-spacing:.5px;font-family:var(--font-serif);}
+.hero p.sub{margin:0;color:#c5d4e6;font-size:15px;max-width:840px;line-height:1.7;}
+.hero .meta{margin-top:18px;display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--slate);}
+.hero .meta .author{display:block;width:100%;white-space:nowrap;}
+.hero .meta b{color:#fff;font-weight:600;}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0;}
+@media(max-width:680px){.kpis{grid-template-columns:1fr;}}
+.kpi{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:14px 16px;}
+.kpi .v{font-size:24px;font-weight:700;color:var(--navy-800);font-variant-numeric:tabular-nums;}
+.kpi .v.g{color:var(--gold);}
+.kpi .l{font-size:12.5px;color:var(--text-2);margin-top:3px;}
+.kpi .s{font-size:11px;color:var(--text-3);margin-top:4px;}
+.grid{display:grid;gap:16px;}
+.grid.c2{grid-template-columns:repeat(2,1fr);} .grid.c3{grid-template-columns:repeat(3,1fr);}
+@media(max-width:680px){.grid.c2,.grid.c3{grid-template-columns:1fr;}}
+.card{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:16px 18px;}
+.card h4{margin:0 0 8px;font-size:15px;color:var(--navy-800);}
+.thesis-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:16px 0;}
+@media(max-width:680px){.thesis-grid{grid-template-columns:1fr;}}
+.tq{border-radius:var(--radius-s);padding:14px 16px;border:1px solid var(--border-soft);}
+.tq h4{margin:0 0 6px;font-size:14px;}
+.tq.success{background:var(--green-soft);border-color:#bfe0cf;} .tq.success h4{color:var(--green);}
+.tq.warn{background:var(--amber-soft);border-color:#ecd6ad;} .tq.warn h4{color:var(--amber);}
+.tq.danger{background:var(--red-soft);border-color:#f0c4bf;} .tq.danger h4{color:var(--red);}
+.tq.info{background:var(--surface-2);border-color:var(--border);} .tq.info h4{color:var(--navy-700);}
+.thesis-concl{background:var(--navy-900);color:#fff;border-radius:var(--radius-s);padding:18px 22px;margin:18px 0;}
+.thesis-concl .tag{display:inline-block;background:var(--gold);color:var(--navy-900);font-weight:700;font-size:12px;padding:3px 10px;border-radius:20px;margin-bottom:8px;}
+.thesis-concl p{color:#e7eefb;margin:6px 0;}
+.signals{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0;}
+.sig{background:var(--gold-soft);border:1px solid #e8cf9a;border-radius:20px;padding:7px 14px;font-size:13px;color:var(--navy-900);}
+.sig b{color:var(--red);}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;}
+th,td{border:1px solid var(--border-soft);padding:8px 11px;text-align:left;vertical-align:top;}
+th{background:var(--surface-2);color:var(--navy-800);font-weight:600;}
+tr:nth-child(even) td{background:#fafcff;}
+.hl{background:var(--gold-soft)!important;font-weight:600;}
+.sizing td:first-child{font-weight:600;color:var(--navy-800);}
+.scorecard .stars{color:var(--gold);letter-spacing:2px;font-size:13px;}
+.scorecard .row{display:flex;flex-wrap:wrap;gap:6px 18px;padding:7px 0;border-bottom:1px dashed var(--border-soft);}
+.scorecard .row:last-child{border-bottom:none;}
+.val td:first-child{font-weight:600;}
+.persp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:14px 0;}
+@media(max-width:680px){.persp-grid{grid-template-columns:1fr;}}
+.persp{border-left:3px solid var(--navy-600);background:var(--surface);border-radius:0 var(--radius-s) var(--radius-s) 0;padding:12px 16px;}
+.persp .who{font-weight:700;color:var(--navy-800);font-size:14px;}
+.persp .pos{font-size:12px;color:var(--text-3);margin-bottom:5px;}
+.rt{margin:12px 0;border-radius:var(--radius-s);overflow:hidden;border:1px solid var(--border-soft);}
+.rt-title{padding:8px 14px;color:#fff;font-weight:600;font-size:13.5px;}
+.rt-title.t1{background:var(--red);} .rt-title.t2{background:var(--amber);} .rt-title.t3{background:var(--navy-600);}
+.rt ul{margin:0;padding:10px 14px 10px 32px;background:var(--surface);}
+.rt li{margin:5px 0;font-size:13.5px;}
+.routes td:first-child{font-weight:600;color:var(--navy-800);}
+.routes .best{background:var(--gold-soft);font-weight:600;}
+.stack{margin:14px 0;}
+.layer{border:1px solid var(--border-soft);border-radius:var(--radius-s);margin-bottom:10px;overflow:hidden;}
+.layer .lh{background:var(--surface-2);padding:8px 14px;font-weight:600;color:var(--navy-800);display:flex;justify-content:space-between;}
+.layer .lh .ltier{font-size:11px;background:var(--navy-700);color:#fff;border-radius:5px;padding:1px 8px;}
+.layer .lb{padding:12px 14px;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12.5px;color:var(--navy-700);}
+.depnote{background:var(--gold-soft);border:1px solid #e8cf9a;border-radius:var(--radius-s);padding:12px 16px;font-size:13.5px;color:var(--navy-900);margin:10px 0;}
+.dcard{border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:16px 18px;margin:12px 0;background:var(--surface);}
+.dcard .dh{font-size:16px;font-weight:700;color:var(--navy-800);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.scorepill{background:var(--navy-900);color:var(--gold);font-weight:700;font-size:13px;border-radius:20px;padding:3px 12px;font-variant-numeric:tabular-nums;}
+.dcard .db{margin-top:10px;font-size:13.5px;}
+.dcard .db b{color:var(--navy-800);}
+.dgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 22px;margin-top:10px;}
+@media(max-width:680px){.dgrid{grid-template-columns:1fr;}}
+.ditem{font-size:13px;padding:5px 0;border-bottom:1px dashed var(--border-soft);}
+.vlist{margin:12px 0;border:1px solid var(--border-soft);border-radius:var(--radius-s);overflow:hidden;}
+.vrow{display:flex;gap:12px;padding:11px 16px;border-bottom:1px dashed var(--border-soft);font-size:13.5px;}
+.vrow:last-child{border-bottom:none;}
+.vrow .vq{flex:0 0 26px;height:26px;border-radius:50%;background:var(--navy-700);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+.indgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0;}
+@media(max-width:680px){.indgrid{grid-template-columns:1fr;}}
+.ind{border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:12px 14px;background:var(--surface);}
+.ind .it{font-weight:700;color:var(--navy-800);font-size:13.5px;}
+.ind .id{font-size:12.5px;color:var(--text-2);margin-top:4px;}
+.chart{margin:16px 0;background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:16px;}
+.chart svg{width:100%;height:auto;display:block;}
+.scurve{margin:16px 0;}
+.callout{border-left:4px solid var(--gold);background:var(--gold-soft);padding:12px 16px;border-radius:0 var(--radius-s) var(--radius-s) 0;font-size:13.5px;color:var(--navy-900);margin:12px 0;}
+.callout.r{border-left-color:var(--red);background:var(--red-soft);color:var(--navy-900);}
+.verdict{background:var(--navy-900);color:#fff;border-radius:var(--radius-s);padding:16px 20px;margin:16px 0;}
+.verdict .vt{display:inline-block;background:var(--gold);color:var(--navy-900);font-weight:700;font-size:12px;padding:3px 10px;border-radius:20px;margin-bottom:7px;}
+.footer{text-align:center;color:var(--text-3);font-size:12px;padding:20px;}
+span.src{display:inline;font-size:10px;padding:1px 5px;border-radius:4px;font-weight:600;vertical-align:baseline;margin-left:2px;letter-spacing:.3px;white-space:nowrap;}
+.src-org{background:#e7eefc;color:#1d5189;border:1px solid #c5d8f5;}
+.src-co{background:#e8f6ee;color:#1f8a5b;border:1px solid #bfe6cf;}
+.src-ac{background:#f3e9fb;color:#7b3fb0;border:1px solid #dcc4ef;}
+.src-md{background:#fbf0dc;color:#9a6a16;border:1px solid #ecd6ad;}
+div.src{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 18px;}
+div.src .s{font-size:12.5px;background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:4px 13px;color:var(--navy-700);}
+.part-divider{text-align:center;font-weight:700;color:var(--navy-700);letter-spacing:.1em;margin:30px 0 18px;font-size:14px;padding:10px;background:var(--surface-2);border-radius:var(--radius-s);}
+.no-print{display:none;}
+@media print{
+  body{background:#fff;padding-left:0;}
+  .sidebar{display:none;}
+  section{break-inside:avoid;box-shadow:none;border:none;}
+  .hero{background:#1d3a5e!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+.timeline{position:relative;margin:14px 0;padding-left:22px;}
+.timeline:before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:3px;background:linear-gradient(#1d3a5e,#bd9a55);}
+.tl-row{position:relative;padding:0 0 16px 16px;}
+.tl-dot{position:absolute;left:-22px;top:4px;width:13px;height:13px;border-radius:50%;background:var(--gold);border:3px solid #fff;box-shadow:0 0 0 2px var(--navy-700);}
+.tl-yr{font-weight:800;color:var(--navy-900);font-size:.98rem;}
+.tl-tag{display:inline-block;font-size:.7rem;padding:1px 8px;border-radius:10px;background:var(--surface-2);color:var(--navy-700);margin-left:8px;vertical-align:middle;font-weight:600;}
+.tl-body{color:var(--text-2);font-size:.88rem;margin-top:4px;line-height:1.55;}
+.card,.kpi,.dcard,.tq,.persp,.layer,.ind{box-shadow:0 1px 3px rgba(20,43,71,.06),0 1px 2px rgba(20,43,71,.04);}
+</style>
+</head>
+<body>
+<div id="gate" class="gate">
+  <div class="gate-box">
+    <div class="gate-title">🔒 内容已加密</div>
+    <div class="gate-sub">请输入访问密码</div>
+    <input id="gate-pwd" type="password" class="gate-input" placeholder="访问密码" autocomplete="off" />
+    <button id="gate-btn" class="gate-btn">解锁</button>
+    <div id="gate-err" class="gate-err"></div>
+  </div>
+</div>
+<style>
+.gate{position:fixed;inset:0;z-index:2147483647;background:linear-gradient(135deg,#0f1420,#1a2236);display:flex;align-items:center;justify-content:center;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif}
+.gate-box{background:#fff;border-radius:16px;padding:36px 40px;width:320px;max-width:86vw;box-shadow:0 20px 60px rgba(0,0,0,.45);text-align:center}
+.gate-title{font-size:20px;font-weight:700;color:#111827;margin-bottom:6px}
+.gate-sub{font-size:13px;color:#6b7280;margin-bottom:20px}
+.gate-input{width:100%;box-sizing:border-box;padding:12px 14px;font-size:15px;border:1px solid #d1d5db;border-radius:10px;outline:none;margin-bottom:14px}
+.gate-input:focus{border-color:#2563eb}
+.gate-btn{width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.gate-btn:hover{background:#1d4ed8}
+.gate-err{color:#dc2626;font-size:13px;margin-top:12px;min-height:18px}
+</style>
+<script>
+(function(){
+  var PWD="2026";
+  function unlock(){ var g=document.getElementById("gate"); if(g&&g.parentNode){ g.parentNode.removeChild(g); } }
+  function check(){ var v=document.getElementById("gate-pwd").value; var err=document.getElementById("gate-err"); if(v===PWD){ unlock(); } else { err.textContent="密码错误，请重试"; } }
+  window.addEventListener("load",function(){ var btn=document.getElementById("gate-btn"); var inp=document.getElementById("gate-pwd"); if(btn) btn.addEventListener("click",check); if(inp){ inp.addEventListener("keydown",function(e){ if(e.key==="Enter") check(); }); inp.focus(); } });
+})();
+</script>
+
+
+<aside class="sidebar">
+  <div class="side-brand">
+    <div class="sb-t">技术全景分析 · TECH PANORAMA</div>
+    <div class="sb-n">固态变压器 SST</div>
+    <div class="sb-v">2026 · 合并综合版</div>
+  </div>
+  <nav class="toc">
+    <div class="part">Part I · 技术全景</div>
+    <a href="#ch01"><span class="num">01</span>战略结论与投资研判</a>
+    <a href="#ch02"><span class="num">02</span>市场概览与测算</a>
+    <a href="#ch03"><span class="num">03</span>关键玩家与格局</a>
+    <a href="#ch04"><span class="num">04</span>技术源流与关键科学家</a>
+    <a href="#ch05"><span class="num">05</span>技术爆发的窗口与触发条件</a>
+    <a href="#ch06"><span class="num">06</span>技术栈与路线对比（含 TRL）</a>
+    <a href="#ch07"><span class="num">07</span>应用场景</a>
+    <a href="#ch08"><span class="num">08</span>多方行业观点</a>
+    <div class="part">Part II · 投资视角穿透</div>
+    <a href="#ch09"><span class="num">09</span>技术树全貌</a>
+    <a href="#ch10"><span class="num">10</span>关键技术投资密度</a>
+    <a href="#ch11"><span class="num">11</span>生命周期、风险与颠覆</a>
+    <a href="#ch12"><span class="num">12</span>未来展望与演进时间线</a>
+    <a href="#ch13"><span class="num">13</span>研究方法论</a>
+  </nav>
+</aside>
+<header class="hero">
+  <div class="tag">AI for Science · 技术全景</div>
+  <h1>固态变压器（SST）· 技术全景分析</h1>
+  <p class="sub">固态变压器（Solid-State Transformer，SST），又称电力电子变压器（PET），是用"功率半导体变换 + 高频隔离变压器"替代传统"铁芯 + 电磁感应"的新型电能变换装备，功率密度可达传统方案的 5–10 倍、全链路效率达 98.5%、并原生支持双向潮流与直流接口。本报告先厘清 SST 的物理本质（为何高频化、三级拓扑、为何非 SiC 不可），再聚焦 2024–2026 年 AI 数据中心 800V DC 供电架构革命与政策/标准拐点所引发的"从技术验证向规模化商用跃迁"窗口，研判"技术确定性快速上修"与"商业确定性仍受成本/可靠性约束"的错配与机会窗口。</p>
+  <div class="meta"><span class="author">作者 · <b>HanBuff</b></span><span> ｜ 生成日期 2026-08 ｜ 单文件 HTML · 可打印 · 数据来源标注【机构/公司/学术/建模】</span></div>
+</header>
+<div class="wrap">
+  <main>
+
+    <!-- 01 战略结论 -->
+    <section id="ch01">
+      <h2><span class="n">01</span>战略结论与投资研判</h2>
+      <div class="kpis">
+        <div class="kpi"><div class="v g">拐点已至</div><div class="l">2025.10 NVIDIA 800VDC 白皮书将 SST 定为 DC 供电"终极目标"</div><div class="s">技术确定性快速上修</div></div>
+        <div class="kpi"><div class="v">6.98%↔37%</div><div class="l">全球 SST 市场 CAGR：保守电网口径 vs 乐观 AIDC 口径</div><div class="s">市场口径割裂 5 倍</div></div>
+        <div class="kpi"><div class="v">≈2–4×</div><div class="l">SST 单位成本 vs 传统工频变压器（核心约束）</div><div class="s">SiC 占 BOM 30–50%</div></div>
+      </div>
+
+      <div class="thesis-concl">
+        <span class="tag">核心研判</span>
+        <p>SST 正从"电网侧示范验证"跨入"AI 数据中心驱动"的商业化拐点：技术路线已收敛（CHB+DAB+SiC）、首个实际负载部署落地（台达于秦淮/美团数据中心 2025 末）、政策与标准进入催化期。但<b>商业确定性仍低</b>——单位成本 2–4 倍于传统变压器、电力电子在数据中心故障率最高、IEEE 标准迟至 2027，构成"技术热、商业冷"的错配。结论：<b>2026–2028 是布局窗口，但须以"成本降至 2 倍内 + 可用性验证"为加仓闸门</b>。</p>
+      </div>
+
+      <h3>SWOT 四维研判</h3>
+      <div class="thesis-grid">
+        <div class="tq success"><h4>优势 S</h4><p>功率密度 5–10×、效率 98.5%、体积 &lt;1/5、原生双向/直流接口/毫秒级调控；AI 数据中心单机柜 100kW→1MW 使其从"可选项"变"刚需"<span class="src src-co">公司</span><span class="src src-ac">学术</span>。</p></div>
+        <div class="tq warn"><h4>劣势 W</h4><p>单位成本 2–4× 传统；SiC 等宽禁带器件占 BOM 30–50%，10kV 级 SiC MOSFET 交期 52–68 周（2026 初）；长期介电可靠性与动态稳定性工程验证不足<span class="src src-org">机构</span>。</p></div>
+        <div class="tq info"><h4>机会 O</h4><p>NVIDIA 800VDC 白皮书、OCP LVDC V1.0、工信部等 8 部门"节能装备推广目录"（2026.3 列入大容量 SST）、IEEE P1709 标准（预期 2027）四重催化<span class="src src-org">机构</span><span class="src src-co">公司</span>。</p></div>
+        <div class="tq danger"><h4>威胁 T</h4><p>OCP 明确 SST 为"有效但非强制"的过渡方案，MV/LV 变压器 + AC/DC 转换器可替代；SiC 进口依赖（中国）；若 AIDC 建设放缓，乐观 TAM 将塌缩<span class="src src-md">建模</span><span class="src src-co">公司</span>。</p></div>
+      </div>
+
+      <h3>关键信号（触发加仓 / 减仓）</h3>
+      <div class="signals">
+        <span class="sig">加仓：<b>国产 8 寸 SiC 衬底量产 + SST 成本降至传统 2 倍内</b></span>
+        <span class="sig">加仓：<b>NVIDIA 首批 800V SST 订单流向 / 华为 SST 供应商名单</b></span>
+        <span class="sig">加仓：<b>IEEE P1709 标准发布（2027）带动电网侧批量采购</b></span>
+        <span class="sig">减仓：<b>出现 SST 现场严重故障或可用性未达 99.9%</b></span>
+        <span class="sig">减仓：<b>AIDC 建设放缓或 800VDC 架构被替代</b></span>
+      </div>
+
+      <div class="callout r">反转触发器（什么会推翻"商业确定性低"判断）：① 系统成本降至传统 2 倍内且年省电费覆盖溢价（TCO 打平）；② 电网侧批量采购订单（&gt;¥10 亿级）落地；③ 单柜 MW 级 SST 实际运行可用性达 99.9%+ 并持续数年。三者任一兑现，本报告的"错配"判断即需上修。</div>
+
+      <h3>DD 清单入口（详见 13 章）</h3>
+      <div class="vlist">
+        <div class="vrow"><span class="vq">1</span><div><b>技术路线</b>：CHB/DAB 拓扑取舍？单级 vs 两级？SiC 主流 vs Enphase GaN 分布式？各自 TRL 与失效条件？</div></div>
+        <div class="vrow"><span class="vq">2</span><div><b>成本与供应链</b>：10kV SiC 交期/国产替代进度？BOM 结构（器件 30–50% / 磁件 15–20%）？成本下降曲线？</div></div>
+        <div class="vrow"><span class="vq">3</span><div><b>护城河</b>：高频磁件局放隔离 know-how、串联 SiC 驱动、还是电网客户资质与认证？</div></div>
+        <div class="vrow"><span class="vq">4</span><div><b>可靠性</b>：实际运行可用性数据？故障隔离时间（微秒级）？长期介电寿命？</div></div>
+      </div>
+    </section>
+
+    <!-- 02 市场 -->
+    <section id="ch02">
+      <h2><span class="n">02</span>市场概览与测算</h2>
+      <p>SST 市场口径差异极大：<b>狭义 SAM</b> = SST 整机商品化市场（电网/牵引/新能源/充电），机构值约数亿美元；<b>广义 TAM</b> 叠加 AI 数据中心 800V DC 供电架构替代，乐观口径达数十亿美元。两口径差约 5 倍，源于是否计入数据中心供电替代。本报告严格区分并交叉验证。</p>
+      <div class="chart">
+        <svg id="barchart" viewBox="0 0 640 300"></svg>
+      </div>
+      <div class="callout">全球 SST 整机（狭义 SAM）2024 约 <b>$1.73 亿</b>，KingsResearch 预测 2032 年 $4.95 亿（CAGR 14.3%）<span class="src src-org">机构</span>；但叠加 AI 数据中心 800VDC 供电替代，QYResearch/GIR 给出 2032 年 <b>$19.6 亿 / ¥194 亿</b>（CAGR 36–37%）的乐观口径<span class="src src-org">机构</span>。上图取乐观口径（投资相关 TAM）展示跃迁斜率，狭义 SAM 见下表。</div>
+
+      <h3>区域与产品结构</h3>
+      <table class="routes">
+        <tr><th>维度</th><th>结构</th><th>趋势</th><th>来源</th></tr>
+        <tr><td>按应用</td><td>电网配电 33.2%（2024）｜ 牵引/新能源/EV 充电增长快</td><td>AIDC 供电成新增极</td><td class="best">KingsResearch</td></tr>
+        <tr><td>按电压</td><td>中压（1–35kV）占 47.3%（2024）</td><td>中压为主战场</td><td>KingsResearch</td></tr>
+        <tr><td>区域</td><td>北美 30%（2024）｜ 亚太 CAGR 17.2% 最快</td><td>中国受 AIDC + 东数西算驱动</td><td>KingsResearch</td></tr>
+        <tr><td>数据中心细分</td><td>2025 $2.5–3.55 亿 → 2032 $6.85–7.04 亿</td><td>CAGR 15.5–31.2%</td><td>pmarketresearch / M&amp;M</td></tr>
+      </table>
+
+      <h3>多情景规模测算（两种独立方法交叉验证）</h3>
+      <table class="sizing">
+        <tr><th>方法</th><th>关键假设</th><th>2028 估算</th><th>2032 估算</th></tr>
+        <tr><td>机构外推法（保守 SAM）</td><td>KingsResearch CAGR 14.3% 外推整机市场</td><td>$3.2 亿</td><td class="best">$4.95 亿</td></tr>
+        <tr><td>机构外推法（乐观 TAM）</td><td>QYResearch CAGR 37% 外推（含 AIDC 替代）</td><td>$8.5 亿</td><td class="best">$19.6 亿</td></tr>
+        <tr><td>客户价位倒推法（AIDC）</td><td>2030 全球新增 AIDC 100GW × SST 渗透 20% × ¥2.5–5/W</td><td>—</td><td>$70–140 亿（¥500–1000 亿）</td></tr>
+        <tr><td>基准区间（交叉）</td><td>两法交集</td><td class="best">$3–9 亿</td><td class="best">$5–20 亿</td></tr>
+        <tr><td>下行情景</td><td>AIDC 放缓 + SiC 交期恶化 + P1709 延迟</td><td>$2.5 亿</td><td>$2.5 亿</td></tr>
+      </table>
+      <div class="callout">投资含义：当前营收由<b>电网/牵引示范（低增速、强资质）</b>撑量，但投资弹性在<b>AI 数据中心 800VDC（高增速、弱资质、强半导体绑定）</b>。若仅看 TAM 总量易高估，应拆"商品化 SAM"与"供电架构替代 TAM"分而治之，并以 SiC 降本与 800V 订单为验证锚。</div>
+    </section>
+
+    <!-- 03 玩家 -->
+    <section id="ch03">
+      <h2><span class="n">03</span>关键玩家与格局</h2>
+      <p>格局呈"海外巨头占先发、中国三类玩家争夺产业化、美国初创靠半导体差异化"的三层结构。按路线分：</p>
+      <div class="grid c2">
+        <div class="card"><h4>海外电力电子巨头（电网/牵引）</h4><p><b>ABB、Siemens、GE/Vernova、Hitachi Energy、Schneider、Eaton、Mitsubishi、Toshiba、Danfoss</b> 均有 SST 研究计划，但<b>数据中心的商品化 SST 产品尚未发布</b>，多处于 NVIDIA Omniverse DSX 合作储备阶段<span class="src src-co">公司</span>。</p></div>
+        <div class="card"><h4>海外 AIDC-SST 新锐（已落地/将落地）</h4><p><b>台达 Delta</b>（2025 末 SST 在秦淮/美团数据中心上线，1MW/柜、SiC、240/400/800V，NVIDIA GTC 2026 同展 800VDC 机架）<span class="src src-co">公司</span>；<b>Enphase</b>（IQ SST，GaN 分布式 342×4kW=1.25MW 柜，98.5%/99.999%，2026 末演示、2028 量产）；<b>DG Matrix</b>（Power Router，98%，替代 10–20 设备）、<b>Amperesand</b>（种子 $12.45M，2/4/6MW，22kV）、<b>SolarEdge+Infineon</b>（2–5MW，&gt;99%）。</p></div>
+        <div class="card"><h4>中国传统电力设备商</h4><p><b>中国西电</b>（10kV/2.42MVA/800V 交付贵安"东数西算"，97.5%；2025.10 发布 4MW 光伏直挂）<span class="src src-co">公司</span>；<b>四方股份</b>（数智 SST1.0，MV→800V，已量产，苏州产能 &gt;200 台/年，2025H1 SST 相关订单 &gt;¥30 亿，2.4MW 单机 ¥960–1200 万）<span class="src src-co">公司</span>；<b>国电南瑞/中电普瑞</b>（瑞系列 4 线，2026.6）、<b>特变电工</b>（2017 首套 10kV/1MW）、<b>许继电气</b>。</p></div>
+        <div class="card"><h4>中国 AI 电源 / 光储充玩家</h4><p><b>金盘科技</b>（元神 ONE 2.4MW，98%，省 60% 占地，供货亚马逊/微软北美）<span class="src src-co">公司</span>；<b>阳光电源、科华数据、远景科技</b>（2.5MW，98.5%，省铜 80%）、<b>弦能科技/奇点能源</b>（轩辕，密度 3.75×、成本低 15%、98.5%）、<b>科士达、麦格米特</b>；上游 <b>京泉华</b>（供 Eaton 高频磁件，毛利率 50%）、<b>斯达半导、时代电气、基本半导体</b>（BMF SiC）。</p></div>
+      </div>
+
+      <h3>竞争评分卡（技术 / 产品量产 / 商业客户 / 资本供应链 四维）</h3>
+      <div class="scorecard">
+        <div class="row"><span style="min-width:140px;font-weight:600;">台达 Delta</span><span class="stars">技术 ★★★★☆</span><span class="stars">量产 ★★★★★</span><span class="stars">商业 ★★★★★</span><span class="stars">资本 ★★★★☆</span><span class="hl">高亮标的（全球首个 AIDC 量产落地）</span></div>
+        <div class="row"><span style="min-width:140px;font-weight:600;">四方股份（中）</span><span class="stars">技术 ★★★★☆</span><span class="stars">量产 ★★★★☆</span><span class="stars">商业 ★★★★☆</span><span class="stars">资本 ★★★☆☆</span><span>订单 &gt;¥30 亿 / 产能 &gt;200 台</span></div>
+        <div class="row"><span style="min-width:140px;font-weight:600;">中国西电（中）</span><span class="stars">技术 ★★★★☆</span><span class="stars">量产 ★★★☆☆</span><span class="stars">商业 ★★★★☆</span><span class="stars">资本 ★★★☆☆</span><span>东数西算挂网运行</span></div>
+        <div class="row"><span style="min-width:140px;font-weight:600;">Enphase</span><span class="stars">技术 ★★★★★</span><span class="stars">量产 ★★☆☆☆</span><span class="stars">商业 ★★★☆☆</span><span class="stars">资本 ★★★★★</span><span>GaN 分布式差异化</span></div>
+        <div class="row"><span style="min-width:140px;font-weight:600;">金盘科技（中）</span><span class="stars">技术 ★★★★☆</span><span class="stars">量产 ★★★☆☆</span><span class="stars">商业 ★★★★☆</span><span class="stars">资本 ★★★★☆</span><span>北美云厂订单</span></div>
+        <div class="row"><span style="min-width:140px;font-weight:600;">Eaton</span><span class="stars">技术 ★★★☆☆</span><span class="stars">量产 ★★★☆☆</span><span class="stars">商业 ★★★★★</span><span class="stars">资本 ★★★★★</span><span>收购 Resilient 补 SST</span></div>
+      </div>
+      <div class="callout">资本水位：三家 SST 新锐（DG Matrix / Amperesand / Heron）合计融资 <b>$2.8 亿</b><span class="src src-co">公司</span>；四方 2025H1 SST 相关订单 &gt;¥30 亿<span class="src src-co">公司</span>；伊顿 2025Q2 称 SST 为"未来高功率 AI 数据中心关键构件"<span class="src src-co">公司</span>。中国 2025 年 SST 玩家超 31 家，尚未形成绝对领先者。</div>
+    </section>
+
+    <!-- 04 谱系 -->
+    <section id="ch04">
+      <h2><span class="n">04</span>技术源流与关键科学家</h2>
+      <p>SST 是"电力电子 × 高频磁件 × 宽禁带半导体 × 电网控制"的交叉产物，学术根系由美国 FREEDM 中心奠基；硬科技投资本质是投人，谱系直接决定路线选择与工程化下限。</p>
+      <h3>学术源流</h3>
+      <div class="grid c3">
+        <div class="card"><h4>概念与奠基</h4><p><b>Alex Huang（黄勤）</b>2007 年向 NSF 提出"能源互联网（Energy Internet）"概念并以 SST 为核心实现；同年创立 <b>FREEDM 中心</b>（NSF Gen-III ERC，2008），以 SST 为架构锚点<span class="src src-ac">学术</span>。</p></div>
+        <div class="card"><h4>拓扑与器件根系</h4><p>CHB/DAB 拓扑、软开关（ZVS/ZCS）研究自 1990s–2000s 积累；宽禁带 SiC/GaN 器件使高频化工程可行，是 SST 从论文走向产品的物理前提<span class="src src-ac">学术</span>。</p></div>
+        <div class="card"><h4>工程化与标准</h4><p>铁路牵引 SST 已在欧洲/东亚商用；IEEE P1709（MV SST 测试标准）2027 预期发布将定义功率循环/湿度/EMC 规范，是采购级里程碑<span class="src src-org">机构</span><span class="src src-md">建模</span>。</p></div>
+      </div>
+
+      <h3>关键公司与科学家谱系</h3>
+      <table class="routes">
+        <tr><th>机构/公司</th><th>技术主张</th><th>关键科学家 / 谱系</th><th>路线</th><th>护城河性质</th></tr>
+        <tr><td>FREEDM / NCSU</td><td>以 SST 为能源互联网架构锚点</td><td>Alex Huang（创立者，现 UT Austin）；Subhashish Bhattacharya（Y10 SST 核心，7.2kVAC/400VDC 紧凑三相 SST）</td><td class="best">学术源头</td><td>人才与专利母体</td></tr>
+        <tr><td>DG Matrix / Amperesand / Heron</td><td>Power Router / 模块化 SST</td><td>均为 FREEDM 谱系博士校友创业</td><td>AIDC SST</td><td class="best">功率半导体 + 控制 know-how</td></tr>
+        <tr><td>台达 Delta</td><td>模块化 SST 柜，SiC，多电压 DC 输出</td><td>自有电力电子工程体系（NVIDIA 合作）</td><td class="best">AIDC 量产</td><td>制造规模 + 客户</td></tr>
+        <tr><td>中国西电 / 西安电力电子</td><td>10kV/2.4MVA、4MW 光伏直挂</td><td>2017 起 SST 布局，特高压绝缘经验</td><td>电网/新能源</td><td>电网资质 + 绝缘</td></tr>
+        <tr><td>四方股份</td><td>数智 SST1.0，MV→800V</td><td>全链路（硬件+配电+集成）</td><td>AIDC/电网</td><td>系统集成 + 工程</td></tr>
+        <tr><td>Enphase</td><td>IQ SST，GaN BDS 分布式 342 模块</td><td>9 代微逆技术 + 90M 现场数据</td><td class="best">GaN 分布式</td><td>半导体 + 软件定义</td></tr>
+      </table>
+      <div class="depnote">投资含义：FREEDM 17 年培养了整代 SST 人才，正流向 DG Matrix/Amperesand/Heron 等初创——<b>美国路线偏"功率半导体 + 初创"，中国路线偏"电网设备商 + 工程化"</b>。谱系越清晰、与 FREEDM/头部功率半导体绑定越深的团队，工程化下行风险越低；关键人风险：深度绑定单一科学家的公司需注意"人走技失"敞口。</div>
+    </section>
+
+    <!-- 05 窗口 -->
+    <section id="ch05">
+      <h2><span class="n">05</span>技术爆发的窗口与触发条件</h2>
+      <p>SST 并非 2025 年才出现（铁路牵引已商用），但<b>商业化拐点集中在 2025–2026</b>：此前停留在电网示范与论文，此后被 AI 数据中心 800VDC 革命点燃、并被政策/标准催化。</p>
+      <h3>拐点事件（时间锚）</h3>
+      <div class="timeline">
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2025.10 <span class="tl-tag">拐点 1</span></div><div class="tl-body">NVIDIA 于 OCP Global Summit 发布 800VDC 架构白皮书，将 SST 明确为下一代 AI 基础设施供电的"终极目标"，行业首次大规模聚焦<span class="src src-co">公司</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2025 末 <span class="tl-tag">拐点 2 · 首个负载部署</span></div><div class="tl-body">台达 SST 在秦淮/美团数据中心上线运行，1MW/柜、占地 1㎡、省 50% 空间——首批真实营收服务的 AIDC SST 部署<span class="src src-co">公司</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2026.03 <span class="tl-tag">拐点 3 · 政策</span></div><div class="tl-body">工信部等 8 部门《节能装备高质量发展实施方案》将大容量 SST 列入推广目录，下游采购获政策依据、补贴可期<span class="src src-org">机构</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2026 <span class="tl-tag">拐点 4 · 规模化</span></div><div class="tl-body">Enphase IQ SST 发布（GaN 分布式）；中国西电 4MW 光伏直挂；四方数智 SST1.0 量产；伊顿 Q2 称 SST 为 AI DC 关键构件。同年传统变压器交期仍长达 3 年，加速替代叙事<span class="src src-co">公司</span>。</div></div>
+      </div>
+
+      <h3>五大触发条件</h3>
+      <div class="grid c2">
+        <div class="card"><h4>① AI 数据中心 800VDC 革命</h4><p>单机柜 100kW→1MW，传统"中压柜→工频变→低压柜→UPS→PDU"多级链路效率仅 92–94%；SST 直转 800V 达 98.5%，1% 提升在 100MW DC 上每年省电费数百至数千万元<span class="src src-co">公司</span>。</p></div>
+        <div class="card"><h4>② 宽禁带器件成熟</h4><p>SiC 1200/1700/10kV MOSFET 使高频化可行；2025 国产 10kV SiC 价格同比 -42%，预计 2027 再降 50%，是成本下探的物理前提<span class="src src-co">公司</span>。</p></div>
+        <div class="card"><h4>③ 标准与政策</h4><p>OCP LVDC V1.0 定义 SST；IEEE P1709（MV SST 测试）预期 2027 发布，将成采购级规范；工信部推广目录提供政策依据<span class="src src-org">机构</span>。</p></div>
+        <div class="card"><h4>④ 传统变压器瓶颈</h4><p>传统变压器交期长达 3 年、铜/硅钢涨价，迫使运营商寻求更快部署的半导体方案，客观上为 SST 创造窗口<span class="src src-org">机构</span>。</p></div>
+        <div class="card"><h4>⑤ 资本 + 客户共振</h4><p>NVIDIA Omniverse DSX 将头部供方纳入；伊顿/台达/四方订单与试点密集；三家初创合计融资 $2.8 亿，资本已形成一致预期<span class="src src-co">公司</span>。</p></div>
+        <div class="card"><h4>⑥ 工程验证积累</h4><p>铁路牵引 SST 已在欧洲/东亚商用（多 MW 级），为电网侧 SST 的可靠性与绝缘设计背书，缩短信任建立周期<span class="src src-ac">学术</span>。</p></div>
+      </div>
+      <div class="callout">窗口判断：2025–2028 是"<b>验证 → 规模化</b>"窗口；AIDC 侧 2026–2028 率先放量，电网侧批量须待 2027 P1709 后。早于此是纯概念，晚至此（标准+成本到位后）进入红海整合。</div>
+    </section>
+
+    <!-- 06 技术栈 -->
+    <section id="ch06">
+      <h2><span class="n">06</span>技术栈与路线对比（含 TRL）</h2>
+      <p>SST 已收敛到<b>三级架构</b>：① 中压 AC-DC 整流（CHB 级联 H 桥）② 隔离 DC-DC（DAB 双有源桥，谐振 CLLC/SRC 变体）③ 低压逆变换（DC 或 AC）。本质是在"<b>电压/功率等级 ↔ 控制复杂度 ↔ 效率</b>"之间权衡。</p>
+
+      <h3>路线对比矩阵（拓扑 / 性能 / 风险 / 代表玩家）</h3>
+      <table class="routes">
+        <tr><th>拓扑路线</th><th>电压/功率范围</th><th>峰值效率</th><th>控制复杂度</th><th>成熟度 TRL</th><th>代表场景/玩家</th></tr>
+        <tr><td>级联 H 桥 CHB</td><td>2.3–13.8kV ｜ 100kVA–5MVA</td><td>97.5–98.5%</td><td class="best">中（需单元均压）</td><td>6–7</td><td>MV 配电/铁路牵引</td></tr>
+        <tr><td>模块化多电平 MMC</td><td>10–66kV ｜ 1–50MVA</td><td class="best">98–99%</td><td>高（百级子模块）</td><td>6–7</td><td>HVDC/海上风电</td></tr>
+        <tr><td class="best">双有源桥 DAB（隔离核心）</td><td>400V–3.3kV DC ｜ 10–500kW</td><td>97–98%</td><td>低–中（移相调制）</td><td class="best">7–8</td><td>数据中心 UPS/EV 充电</td></tr>
+        <tr><td>SiC vs GaN 器件</td><td>1200/1700/10kV（SiC）；Enphase 用 GaN BDS</td><td>—</td><td>—</td><td>6–7</td><td>Wolfspeed/Infineon vs Enphase</td></tr>
+      </table>
+
+      <h3>量化对标框架（效果 × 关键参数）</h3>
+      <table class="routes">
+        <tr><th>指标</th><th>传统工频变压器 LFT</th><th>CHB+DAB（SiC）</th><th>Enphase GaN 分布式</th><th>物理约束</th></tr>
+        <tr><td>功率密度</td><td class="best">1×（基线）</td><td>5–10×</td><td>更高</td><td>频率↑体积↓（kHz vs 50Hz）</td></tr>
+        <tr><td>全链路效率</td><td>92–94%（多级）</td><td class="best">98.5%</td><td class="best">98.5%</td><td>单级/两级直转</td></tr>
+        <tr><td>体积占地</td><td>1×</td><td>&lt;1/5</td><td>更小</td><td>磁件高频化</td></tr>
+        <tr><td>双向 / DC 接口</td><td>否</td><td class="best">是</td><td class="best">是</td><td>电力电子本质</td></tr>
+        <tr><td>单位成本</td><td class="best">≈¥1/W</td><td>≈¥4/W</td><td>≈¥4/W</td><td>SiC 占 BOM 30–50%</td></tr>
+        <tr><td>故障隔离</td><td>机械（慢）</td><td class="best">微秒级</td><td>微秒级 + 冗余</td><td>半导体开关</td></tr>
+      </table>
+      <div class="callout">关键辨析：<b>效率与功率密度的跃升以"成本为代价"</b>——SiC/GaN 占 BOM 30–50%、高频磁件占 15–20%，系统约 ¥4/W vs 传统 ¥1/W。投资上，"技术好不好"已无悬念，真正的命题是"<b>成本何时降到 2 倍内使 TCO 打平</b>"（见 10–11 章）。</div>
+
+      <h3>TRL 就绪度锚定（投资承重墙）</h3>
+      <table class="routes">
+        <tr><th>路线/场景</th><th>TRL</th><th>已落地</th><th>仍停留在</th></tr>
+        <tr><td>铁路牵引 SST</td><td class="best">8–9</td><td>欧洲/东亚多 MW 级商用</td><td>—</td></tr>
+        <tr><td>数据中心 SST（MV→800VDC）</td><td>6–7</td><td>台达秦淮/西电贵安等少数现场</td><td class="best">大规模可靠性验证</td></tr>
+        <tr><td>电网配电 SST</td><td>5–6</td><td>示范工程</td><td>标准 + 批量采购</td></tr>
+        <tr><td>能源路由器（SST+SSCB）</td><td>4–5</td><td>FREEDM 20kW 原型（故障隔离 &lt;500µs）</td><td>13.8kV/2MVA 绝缘配合</td></tr>
+      </table>
+      <div class="callout">TRL 跨度本身就是投资结论：<b>牵引已成熟可投存量替换；数据中心卡 6–7（示范→注册/量产的关键跃迁期）；电网侧 5–6</b>。价值与风险的交汇点恰在此处——"技术确定性上修、商业确定性仍低"错配的技术根源（见 01 章）。</div>
+    </section>
+
+    <!-- 07 应用 -->
+    <section id="ch07">
+      <h2><span class="n">07</span>应用场景</h2>
+      <p>SST 价值呈现"AI 数据中心确定性最高、电网/新能源稳健、船舶航空远期"的梯度结构。</p>
+      <div class="grid c2">
+        <div class="card"><h4>AI 数据中心（800VDC）</h4><p>单机柜 100kW→1MW，SST 直转 800V 省去多级变换、省 50% 占地；台达/西电/四方/金盘均已推出方案，是 2026–2028 放量主线<span class="src src-co">公司</span>。</p></div>
+        <div class="card"><h4>EV 超级快充（XFC）</h4><p>MW 级充电桩需双向、可控、快速响应；ORNL 已验证 13.2kV/1MVA SST 直连电网输出 750V DC<span class="src src-ac">学术</span>。</p></div>
+        <div class="card"><h4>新能源并网 / 光伏直挂</h4><p>光伏/储能本质直流源，SST 减少"低压变流+工频升压"链路冗余；中国西电 4MW 光伏直挂已发布<span class="src src-co">公司</span>。</p></div>
+        <div class="card"><h4>铁路牵引</h4><p>多 MW 级 SST 已在欧洲/东亚商用，替代工频变 + 有源滤波；成熟度最高、最稳健<span class="src src-ac">学术</span>。</p></div>
+        <div class="card"><h4>微电网 / 能源路由器</h4><p>SST 作为智能节点连接 PV/储能/EV 并提供无功支撑；FREEDM 20kW 原型验证故障隔离 &lt;500µs，仍处早期<span class="src src-ac">学术</span>。</p></div>
+        <div class="card"><h4>船舶 / 航空（多电）</h4><p>"More Electric"趋势下对高功率密度供电需求上升，但认证周期长、透明度低，属远期期权<span class="src src-md">建模</span>。</p></div>
+      </div>
+      <div class="callout">投资排序（见 12 章场景优先级）：<b>近中期确定性最高</b>的是 AI 数据中心与 EV 超充（高价值、强刚需、已示范）；电网/新能源稳健但受标准与资质约束；船舶航空想象大但远。</div>
+    </section>
+
+    <!-- 08 观点 -->
+    <section id="ch08">
+      <h2><span class="n">08</span>多方行业观点</h2>
+      <div class="persp-grid">
+        <div class="persp"><div class="who">创业方（台达 / 四方 / Enphase）</div><div class="pos">立场：激进推进</div><p>强调"已经能用"——台达已实际负载运行、四方已量产、Enphase 演示在即；认为瓶颈在量产与成本，而非技术本身<span class="src src-co">公司</span>。</p></div>
+        <div class="persp"><div class="who">电网客户 / 传统设备商</div><div class="pos">立场：审慎试点</div><p>认可长期价值，但强调需通过示范与资质认证、等 IEEE P1709 标准；先用示范工程控制风险，不盲目铺量<span class="src src-co">公司</span>。</p></div>
+        <div class="persp"><div class="who">半导体层（Wolfspeed / Infineon）</div><div class="pos">立场：看好 SiC 驱动</div><p>Infineon 预估 SST 2030 将替代部分 $150 亿传统变压器市场、达 $10 亿规模；SiC 降本曲线是 SST 放量的核心杠杆<span class="src src-co">公司</span>。</p></div>
+        <div class="persp"><div class="who">学术 / 现实主义（MGRID）</div><div class="pos">立场：泼冷水</div><p>警示：全球"营收服务的商业级 SST"仍是个位数，多数 announcement 是"已发布/已融资"而非"已运营"，应区分营销与可验证部署<span class="src src-ac">学术</span>。</p></div>
+        <div class="persp"><div class="who">标准机构（IEEE P1709）</div><div class="pos">立场：先标准后放量</div><p>需定义功率循环、湿度耐受、EMC 规范，2027 发布后方可形成采购级规格，加速首批批量订单<span class="src src-org">机构</span>。</p></div>
+        <div class="persp"><div class="who">数据中心基础设施商（Vertiv）</div><div class="pos">立场：等标准追上</div><p>Vertiv 工程总监 Heiberg 称需证明可靠性/效率/功率密度，"标准落后行业速度，令人担忧"；DC 无 UPS 维护旁路，需 block 级冗余<span class="src src-co">公司</span>。</p></div>
+      </div>
+      <div class="callout">共识：AI 数据中心驱动确凿，技术路线已收敛。<b>最大分歧</b>在于"可靠性与成本能否在 2028 前跨过经济拐点"——这正是风险章（11）需正面回答的（论据正文见 11 章）。</div>
+    </section>
+
+    <!-- 09 技术树 -->
+    <section id="ch09">
+      <h2><span class="n">09</span>技术树全貌（系统 → 原子级）</h2>
+      <p>SST 系统自顶向下可拆为：系统 → 子系统 → 核心模块 → Tier3 底层。最短板在"<b>高频磁件局放隔离</b>"与"<b>串联 SiC 驱动/均压</b>"。</p>
+      <div class="stack">
+        <div class="layer"><div class="lh">系统层 · SST 整机 <span class="ltier">Tier 0</span></div><div class="lb">中压交流 → 高频隔离 → 低压直流/交流闭环；电网型 / AIDC 型 / 牵引型三类整机。</div></div>
+        <div class="layer"><div class="lh">子系统层 <span class="ltier">Tier 1</span></div><div class="lb">① 中压整流（CHB）② 隔离 DC-DC（DAB）③ 低压逆变换 ④ 控制保护 ⑤ 散热与结构</div></div>
+        <div class="layer"><div class="lh">核心模块层 <span class="ltier">Tier 2</span></div><div class="lb">SiC/GaN 功率模块、高频变压器、驱动与门极、实时控制板、液冷系统、故障保护。</div></div>
+        <div class="layer"><div class="lh">Tier3 底层节点（投资密度锁定对象） <span class="ltier">Tier 3</span></div><div class="lb">
+          <div class="chips">
+            <span class="chip">10kV 级 SiC MOSFET 模块（串联均压）</span>
+            <span class="chip">高频变压器 / 磁件（纳米晶 + 局放隔离）</span>
+            <span class="chip">实时控制与微秒级故障保护</span>
+            <span class="chip">高密度液冷热管理</span>
+          </div>
+        </div></div>
+      </div>
+      <h3>Tier3 节点表（自研/外购 · 成熟度 · BOM 占比）</h3>
+      <table class="routes">
+        <tr><th>Tier3 节点</th><th>自研/外购</th><th>成熟度</th><th>BOM 占比（估）</th><th>最短板？</th></tr>
+        <tr><td>10kV SiC MOSFET 模块</td><td>多外购（Wolfspeed/Infineon）；国产爬坡中</td><td>6–7</td><td class="best">30–50%</td><td class="best">是（交期 52–68 周）</td></tr>
+        <tr><td>高频变压器/磁件</td><td>部分自研（京泉华为 Eaton 供）</td><td>6–7</td><td>15–20%</td><td class="best">是（局放隔离）</td></tr>
+        <tr><td>实时控制保护</td><td>自研 + FPGA/MCU</td><td>6–8</td><td>10–15%</td><td>否（迭代快）</td></tr>
+        <tr><td>液冷热管理</td><td>部分外购</td><td>6–7</td><td>10–15%</td><td>高功率密度瓶颈</td></tr>
+      </table>
+      <div class="depnote">层级依赖链：SiC 模块 → 决定开关频率与效率 → 决定磁件体积 → 决定整机功率密度；磁件局放隔离 → 决定高压侧寿命。任一 Tier3 短板都会让整机"能用但不久/不可靠"。投资应重点审视 SiC 模块供应与高频磁件两项自研深度。</div>
+    </section>
+
+    <!-- 10 投资密度 -->
+    <section id="ch10">
+      <h2><span class="n">10</span>关键技术"投资密度"分析</h2>
+      <p>锁定前 3 个 Tier3 节点，逐个给：技术本质（第一性原理）→ 壁垒判定 → 代际与路线图 → 成本下降路径。</p>
+
+      <div class="dcard">
+        <div class="dh">① 10kV 级 SiC MOSFET 模块（串联均压） <span class="scorepill">壁垒 9/10</span></div>
+        <div class="db"><b>本质：</b>用宽禁带 SiC 承受中压并实现高频开关，串联多个模块分担 10/13.8/35kV。第一性原理约束：单体耐压有限（主流 1200–3300V，少数 6500V/10kV），须串联且解决均压/驱动/封装。<b>壁垒：</b>know-how 型——串联均压算法、门极驱动、高温封装构成硬护城河；且供应链高度集中（Wolfspeed/Infineon），2026 初 10kV 级交期 52–68 周。<b>代际：</b>6500V→10kV→15kV；DOE 2026 路线图预测 15kV SiC &lt;$1500/模块（2028）→ 1MVA SST 的 BOM 降 35%。<b>成本路径：</b>6 寸→8 寸衬底（单片产出 +80%）、国产良率爬坡、放量摊薄；2025 国产 10kV SiC 价格同比 -42%，2027 预期再 -50%<span class="src src-co">公司</span><span class="src src-ac">学术</span>。</div>
+      </div>
+
+      <div class="dcard">
+        <div class="dh">② 高频变压器 / 磁件（纳米晶 + 局放隔离） <span class="scorepill">壁垒 8/10</span></div>
+        <div class="db"><b>本质：</b>在 kHz–MHz 高频下实现电气隔离与电压匹配，体积与频率成反比。第一性原理约束：频率↑开关损耗↑，须在损耗与体积间 trade-off；纳米晶/非晶磁芯是关键。<b>壁垒：</b>know-how 型——大容量、高功率密度与低损耗的平衡，以及<b>局放（partial discharge）隔离</b>是工程难点（Enphase 用 342 模块分压到每模块 ~300V 以规避局放）。<b>代际：</b>铁氧体→纳米晶/非晶；工作频率 20kHz→100kHz+。<b>成本路径：</b>纳米晶产能在亚洲扩张，单位成本自 2024 起年降约 20%；京泉华供 Eaton 毛利率达 50%，2026 SST 收入有望破亿<span class="src src-co">公司</span>。</div>
+      </div>
+
+      <div class="dcard">
+        <div class="dh">③ 实时控制与微秒级故障保护 <span class="scorepill">壁垒 7/10</span></div>
+        <div class="db"><b>本质：</b>实时 PWM 控制 + 故障瞬时闭锁 + 双向功率流管理，保障电网扰动下稳定。第一性原理约束：多级级联系统需模块级功率平衡与分布式保护。<b>壁垒：</b>know-what 偏多——算法可跟进，真正壁垒在<b>软硬件协同工程经验</b>与长期现场数据；南瑞继保将特高压直流保护体系移植即为例。<b>代际：</b>集中式→去中心化控制（ORNL 13.2kV/1MVA 已验证）。<b>成本路径：</b>边际成本近零，受算力与验证周期约束<span class="src src-co">公司</span><span class="src src-md">建模</span>。</div>
+      </div>
+      <div class="callout">投资密度结论：<b>SiC 模块（9/10）与高频磁件（8/10）是"重资产、高壁垒、慢变量"</b>，值得下注硬科技壁垒；控制保护（7/10）是"轻资产、快迭代、经验驱动"，更看工程积累与现场数据飞轮。</div>
+    </section>
+
+    <!-- 11 生命周期/风险 -->
+    <section id="ch11">
+      <h2><span class="n">11</span>生命周期、风险与颠覆</h2>
+      <div class="scurve">
+        <svg id="scurve" viewBox="0 0 640 360"></svg>
+      </div>
+      <div class="callout">S 曲线说明：传统工频变压器（高成熟度、可靠性高但功能单一）居右；sidecar 机架（480VAC→800VDC）为过渡中成熟度；SST（数据中心 MV→800VDC）处快速爬升期、过时风险"中"（受成本/可靠性质疑）；全 DC 配电（SST+SSCB 能源路由器）仍在早期。坐标轴：横=技术成熟度，纵=性能/渗透潜力。</div>
+
+      <h3>阿喀琉斯之踵（单点否决项）</h3>
+      <div class="rt">
+        <div class="rt-title t1">产品技术（红）</div>
+        <ul>
+          <li><b>可靠性未验证</b>：电力电子是数据中心故障率最高的部件；DC 配电无 UPS 维护旁路，须 block 级冗余，99.9%（训练）/99.999%（推理）可用性目标在大规模未证明<span class="src src-co">公司</span><span class="src src-ac">学术</span>。</li>
+          <li><b>长期介电可靠性</b>：utility tenders 出现 65–110% 预算超支，长期绝缘寿命与动态稳定性工程验证不足<span class="src src-org">机构</span>。</li>
+          <li><b>局放失效</b>：高频变压器在 MV-LV 间的安全隔离是工程难点，局放渐进击穿可致失效。</li>
+        </ul>
+      </div>
+      <div class="rt">
+        <div class="rt-title t2">竞争（黄）</div>
+        <ul>
+          <li><b>替代架构</b>：OCP LVDC V1.0 明确 SST 为"有效但非强制"的过渡方案，MV/LV 变压器 + AC/DC 转换器可替代，若标准与成本先行将边缘化 SST。</li>
+          <li><b>器件国产化风险</b>：中国 SiC 仍进口依赖（Wolfspeed/Infineon），地缘扰动可能卡供应链。</li>
+        </ul>
+      </div>
+      <div class="rt">
+        <div class="rt-title t3">行业监管（蓝）</div>
+        <ul>
+          <li><b>标准滞后</b>：IEEE P1709 迟至 2027，Vertiv 称"标准落后行业速度"，采购缺乏规范。</li>
+          <li><b>AIDC 建设放缓</b>：乐观 TAM 几乎全由 AI 数据中心驱动，若算力投资退潮，市场叙事将塌缩。</li>
+        </ul>
+      </div>
+
+      <h3>挑战与风险（三色分层，含反方论据）</h3>
+      <div class="rt">
+        <div class="rt-title t1">反方 / 唱空论据（硬数据支撑）</div>
+        <ul>
+          <li><b>"已部署"被严重夸大</b>：MGRID 行业核查指出，全球"营收服务的商业级 SST"仍是个位数，绝大多数 announcement 是"已发布/已融资"而非"已运营"，应将营销语言对照可验证部署状态<span class="src src-ac">学术</span>。</li>
+          <li><b>成本结构性偏高</b>：单位成本 2–4× 传统，SiC 占 BOM 30–50%，10kV 级 SiC 交期 52–68 周（2026 初），短期难实质降本<span class="src src-org">机构</span>。</li>
+          <li><b>可靠性缺口</b>：99.9%/99.999% 可用性目标在大规模 AIDC 未证明；DC 无维护旁路策略，下行风险未被定价<span class="src src-co">公司</span><span class="src src-md">建模</span>。</li>
+        </ul>
+      </div>
+
+      <h3>技术颠覆假想场景</h3>
+      <div class="callout r">① 若<b>传统"MV/LV 变压器 + AC/DC"成本下降且标准先行</b>，SST 被边缘为小众高端方案，概率 20–30%<span class="src src-md">建模</span>。② 若<b>SiC 价格下降不及预期（交期恶化）</b>，经济性拐点推迟至 2030 后，概率 25%<span class="src src-md">建模</span>。③ 若<b>AIDC 800VDC 架构被更高电压或其他供电路线替代</b>，SST TAM 大幅收缩，概率 10–15%<span class="src src-md">建模</span>。</div>
+    </section>
+
+    <!-- 12 展望 -->
+    <section id="ch12">
+      <h2><span class="n">12</span>未来展望与演进时间线</h2>
+      <h3>演进时间线（2025–2035）</h3>
+      <div class="timeline">
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2025–2027 <span class="tl-tag">验证期 Validation</span></div><div class="tl-body">NVIDIA 白皮书、台达上线、工信部推广目录、西电 4MW、四方量产；IEEE P1709 起草；AIDC 侧首批示范运行<span class="src src-co">公司</span><span class="src src-org">机构</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2028–2032 <span class="tl-tag">兑现期 Scale-up</span></div><div class="tl-body">DOE 路线图 15kV SiC &lt;$1500/模块（2028）→ SST 成本降至传统 2 倍内、TCO 打平；Enphase 量产（2028）；P1709 标准后电网侧批量采购启动；SiC BOM 降 35%<span class="src src-ac">学术</span><span class="src src-md">建模</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2033–2035+ <span class="tl-tag">主流化 Mainstream</span></div><div class="tl-body">商品化 SST 成配电标准配置；Infineon 预测 2030 达 $10 亿（占 $150 亿传统变压器市场部分）；全 DC 配电（SST+SSCB 能源路由器）从原型走向工程<span class="src src-co">公司</span>。</div></div>
+      </div>
+
+      <h3>适配市场与场景优先级</h3>
+      <table class="routes">
+        <tr><th>赛道</th><th>单笔价值</th><th>验证周期</th><th>数据可得性</th><th>适配时点</th><th>代表玩家</th></tr>
+        <tr><td class="best">AI 数据中心（800VDC）</td><td class="best">高</td><td>短（已示范）</td><td>高</td><td>近中期</td><td>台达/四方/西电/金盘/Enphase</td></tr>
+        <tr><td class="best">EV 超充（XFC）</td><td>高</td><td>短–中</td><td>高</td><td>近中期</td><td>ORNL 验证 / 充电运营商</td></tr>
+        <tr><td>新能源并网/光伏直挂</td><td>中–高</td><td>中</td><td>中</td><td>中期</td><td>中国西电/阳光/远景</td></tr>
+        <tr><td>电网配电</td><td>中</td><td>长（待标准）</td><td>中</td><td>中–长</td><td>ABB/西门子/国南瑞</td></tr>
+        <tr><td>微电网/能源路由器</td><td>中</td><td>长</td><td>低</td><td>长</td><td>FREEDM 谱系</td></tr>
+        <tr><td>船舶/航空多电</td><td>极高</td><td>长</td><td>低</td><td>远期</td><td>整机厂</td></tr>
+      </table>
+      <div class="callout">投资结论：优先布局"验证周期短 × 单笔价值高 × 数据可得性高"的近中期赛道（AI 数据中心、EV 超充）；电网配电作稳健补充但须等 P1709；船舶航空想象大但技术更远，适合作为能力期权。加仓闸门 = 成本降至 2 倍内 + 可用性验证。</div>
+    </section>
+
+    <!-- 13 方法论 -->
+    <section id="ch13">
+      <h2><span class="n">13</span>研究方法论</h2>
+      <p>数据来源与口径说明（双层口径 / 多源交叉 / 假设透明）：</p>
+      <div class="src">
+        <span class="s">机构：PMarketResearch / KingsResearch / QYResearch / GIR（Global Info Research） / 同花顺·招商证券 / 虎嗅 / MGRID Reality Check</span>
+        <span class="s">公司：DG Matrix / Enphase / Delta / 中国西电 / 四方股份 / 金盘科技 / 伊顿 / Vertiv / Power Electronics News / 雪球 / 虎嗅 公告与报道</span>
+        <span class="s">学术：NCSU FREEDM / NSF / OSTI（ORNL APEC 论文）/ IEEE Access SST 综述 / 高频磁件与 SiC 机理文献</span>
+        <span class="s">建模：AIDC 供电 TAM、成本下降曲线、颠覆概率、P1709 时间等基于公开趋势的合理推算（量级锚，非事实）</span>
+      </div>
+      <div class="callout">免责声明：本报告部分预测为合理建模，不构成投资建议；玩家/技术归类与星级基于公开披露与论文，属定性研判，非完整清单；市场规模区间为两种独立方法交叉验证得出，非单点预测；效率/功率密度等性能参数引自公司披露与学术文献，现场大批量长期可靠性数据仍稀缺。</div>
+    </section>
+
+    <div class="footer">作者 · HanBuff ｜ 单文件 HTML 报告 ｜ 数据来源标注【机构/公司/学术/建模】</div>
+  </main>
+</div>
+
+<script>
+// ---- scroll-spy (scroll-listener, robust to last/short sections) ----
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var sections = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); }).filter(Boolean);
+  var map = {};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+  function setActive(id){
+    links.forEach(function(l){ l.classList.remove('active'); });
+    if(map[id]) map[id].classList.add('active');
+  }
+  function onScroll(){
+    if(!sections.length) return;
+    var line = window.innerHeight * 0.28;
+    var current = sections[0].id;
+    for(var i=0;i<sections.length;i++){
+      if(sections[i].getBoundingClientRect().top <= line) current = sections[i].id; else break;
+    }
+    if(Math.abs((window.innerHeight + window.scrollY) - document.documentElement.scrollHeight) < 4){
+      current = sections[sections.length-1].id;
+    }
+    setActive(current);
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  onScroll();
+})();
+
+// ---- 柱状图（全球 SST 市场乐观 TAM，QYResearch / GIR） ----
+(function(){
+  var data = [
+    {label:'2025', v:1.02, h:false},
+    {label:'2028', v:1.40, h:false},
+    {label:'2030', v:1.60, h:false},
+    {label:'2032', v:1.96, h:true}
+  ];
+  var svg = document.getElementById('barchart'); if(!svg) return;
+  var W=640,H=300,padL=52,padB=36,padT=18,padR=14;
+  var maxV = Math.max.apply(null, data.map(function(d){return d.v;}))*1.15;
+  var bw = (W-padL-padR)/data.length*0.56, gap=(W-padL-padR)/data.length;
+  var ns='http://www.w3.org/2000/svg';
+  function y(v){ return H-padB - (v/maxV)*(H-padB-padT); }
+  for(var i=0;i<=4;i++){ var gv=maxV*i/4; var gy=y(gv);
+    var ln=document.createElementNS(ns,'line'); ln.setAttribute('x1',padL);ln.setAttribute('x2',W-padR);ln.setAttribute('y1',gy);ln.setAttribute('y2',gy);
+    ln.setAttribute('stroke','#e5e9ef');ln.setAttribute('stroke-width','1');svg.appendChild(ln);
+    var tx=document.createElementNS(ns,'text');tx.setAttribute('x',padL-8);tx.setAttribute('y',gy+4);tx.setAttribute('text-anchor','end');tx.setAttribute('font-size','11');tx.setAttribute('fill','#69737f');tx.textContent='$'+gv.toFixed(1)+'B';svg.appendChild(tx);
+  }
+  data.forEach(function(d,i){
+    var x=padL+gap*i+(gap-bw)/2, yh=y(d.v), bh=H-padB-yh;
+    var r=document.createElementNS(ns,'rect'); r.setAttribute('x',x);r.setAttribute('y',yh);r.setAttribute('width',bw);r.setAttribute('height',bh);r.setAttribute('rx','4');
+    r.setAttribute('fill', d.h?'#bd9a55':'#1d3a5e'); svg.appendChild(r);
+    var vt=document.createElementNS(ns,'text');vt.setAttribute('x',x+bw/2);vt.setAttribute('y',yh-6);vt.setAttribute('text-anchor','middle');vt.setAttribute('font-size','12');vt.setAttribute('font-weight','600');vt.setAttribute('fill', d.h?'#8a6418':'#142b47');vt.textContent='$'+d.v.toFixed(2)+'B';svg.appendChild(vt);
+    var xt=document.createElementNS(ns,'text');xt.setAttribute('x',x+bw/2);xt.setAttribute('y',H-padB+18);xt.setAttribute('text-anchor','middle');xt.setAttribute('font-size','11.5');xt.setAttribute('fill','#3a4754');xt.textContent=d.label;svg.appendChild(xt);
+  });
+  var cap=document.createElementNS(ns,'text');cap.setAttribute('x',W/2);cap.setAttribute('y',H-4);cap.setAttribute('text-anchor','middle');cap.setAttribute('font-size','11');cap.setAttribute('fill','#69737f');cap.textContent='全球 SST 市场（乐观 TAM，含 AIDC 供电替代，USD Billion，QYResearch / GIR）';svg.appendChild(cap);
+})();
+
+// ---- S 曲线（技术生命周期） ----
+(function(){
+  var routes = [
+    {name:'传统工频变压器 LFT', x:0.90, y:0.34, risk:'低', c:'#1e9d6a'},
+    {name:'Sidecar 机架（480→800VDC）', x:0.70, y:0.55, risk:'低', c:'#2b5488'},
+    {name:'SST（数据中心 MV→800VDC）', x:0.55, y:0.82, risk:'中', c:'#bd9a55'},
+    {name:'SST（电网配电/新能源）', x:0.45, y:0.66, risk:'中', c:'#bd9a55'},
+    {name:'全 DC 配电（SST+SSCB 能源路由器）', x:0.30, y:0.85, risk:'高', c:'#d6463b'}
+  ];
+  var svg=document.getElementById('scurve'); if(!svg) return;
+  var W=640,H=360,padL=48,padB=42,padT=20,padR=20;
+  var ns='http://www.w3.org/2000/svg';
+  function X(v){return padL+v*(W-padL-padR);} function Y(v){return H-padB-v*(H-padB-padT);}
+  var ax=document.createElementNS(ns,'line');ax.setAttribute('x1',padL);ax.setAttribute('x2',W-padR);ax.setAttribute('y1',H-padB);ax.setAttribute('y2',H-padB);ax.setAttribute('stroke','#69737f');ax.setAttribute('stroke-width','1');svg.appendChild(ax);
+  var ay=document.createElementNS(ns,'line');ay.setAttribute('x1',padL);ay.setAttribute('x2',padL);ay.setAttribute('y1',padT);ay.setAttribute('y2',H-padB);ay.setAttribute('stroke','#69737f');ay.setAttribute('stroke-width','1');svg.appendChild(ay);
+  var xl=document.createElementNS(ns,'text');xl.setAttribute('x',W/2);xl.setAttribute('y',H-10);xl.setAttribute('text-anchor','middle');xl.setAttribute('font-size','12');xl.setAttribute('fill','#3a4754');xl.textContent='技术成熟度 →';svg.appendChild(xl);
+  var yl=document.createElementNS(ns,'text');yl.setAttribute('x',14);yl.setAttribute('y',H/2);yl.setAttribute('text-anchor','middle');yl.setAttribute('font-size','12');yl.setAttribute('fill','#3a4754');yl.setAttribute('transform','rotate(-90 14 '+(H/2)+')');yl.textContent='性能 / 渗透 →';svg.appendChild(yl);
+  var x0=X(0),x1=X(1),y0=Y(0),y1=Y(1),ym=Y(0.5);
+  var p=document.createElementNS(ns,'path');
+  p.setAttribute('d','M'+x0+' '+y0+' C '+X(0.15)+' '+y0+' '+X(0.35)+' '+ym+' '+X(0.5)+' '+ym+' S '+X(0.85)+' '+y1+' '+x1+' '+y1);
+  p.setAttribute('fill','none');p.setAttribute('stroke','#1d3a5e');p.setAttribute('stroke-width','2.5');p.setAttribute('stroke-dasharray','7 5');svg.appendChild(p);
+  routes.forEach(function(r){
+    var cx=X(r.x),cy=Y(r.y);
+    var c=document.createElementNS(ns,'circle');c.setAttribute('cx',cx);c.setAttribute('cy',cy);c.setAttribute('r','7');c.setAttribute('fill',r.c);c.setAttribute('stroke','#fff');c.setAttribute('stroke-width','2');svg.appendChild(c);
+    var t=document.createElementNS(ns,'text');t.setAttribute('x',cx+11);t.setAttribute('y',cy+4);t.setAttribute('font-size','12');t.setAttribute('font-weight','600');t.setAttribute('fill','#19222e');t.textContent=r.name+'（过时风险'+r.risk+'）';svg.appendChild(t);
+  });
+})();
+</script>
+</body>
+</html>

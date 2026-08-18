@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>脑机接口（BCI）产业链分析</title>
+<style>
+  :root{
+    --navy:#1d3a5e; --navy2:#2b5488; --navy-soft:#eaf1f8;
+    --ink:#19222e; --muted:#69737f; --line:#e5e9ef;
+    --bg:#f4f6f8; --card:#ffffff;
+    --red:#d6463b; --red-soft:#fbedec;   /* 涨 = 红 */
+    --green:#1e9d6a; --green-soft:#e8f5ef; /* 跌 = 绿 */
+    --gold:#bd9a55; --gold-soft:#f7f1e3;
+    --chip:#edf0f5;
+    --slate:#9fb3cd; --accent2:#d9b877;
+    --font-serif:"Source Han Serif SC","Noto Serif SC","Songti SC","SimSun",serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;padding-left:252px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;color:var(--ink);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px;}
+  /* ===== LEFT SIDEBAR TOC ===== */
+  .sidebar{position:fixed;top:0;left:0;width:252px;height:100vh;background:linear-gradient(180deg,#142b47 0%,#1d3a5e 55%,#244d7c 100%);color:#fff;display:flex;flex-direction:column;z-index:60;box-shadow:2px 0 18px rgba(20,43,71,.25);}
+  .side-brand{padding:24px 22px 18px;border-bottom:1px solid rgba(255,255,255,.10);}
+  .side-brand .sb-t{font-size:12px;color:var(--slate);letter-spacing:1.5px;font-weight:600;}
+  .side-brand .sb-n{font-size:17px;font-weight:800;margin-top:6px;line-height:1.3;font-family:var(--font-serif);}
+  .side-brand .sb-v{display:inline-block;margin-top:12px;font-size:11px;color:#142b47;background:var(--accent2);padding:3px 10px;border-radius:11px;font-weight:700;letter-spacing:.5px;}
+  .toc{padding:14px 12px 30px;overflow-y:auto;flex:1 1 auto;}
+  .toc a{display:flex;align-items:center;gap:11px;color:#a9c0db;font-size:13px;padding:10px 12px;border-radius:9px;transition:.18s;margin:2px 0;border-left:3px solid transparent;}
+  .toc a .num{font-size:11px;font-weight:700;color:#7e9bbf;width:22px;flex:0 0 auto;text-align:center;}
+  .toc a:hover{background:rgba(255,255,255,.08);color:#fff;}
+  .toc a.active{background:rgba(255,255,255,.14);color:#fff;border-left-color:var(--accent2);}
+  .toc a.active .num{color:var(--accent2);}
+  .hero{background:linear-gradient(135deg,#142b47 0%,#1d3a5e 55%,#2b5488 100%);color:#fff;padding:48px 0 42px;position:relative;}
+  .hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--accent2),transparent);}
+  .hero .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--accent2);border:1px solid rgba(217,184,119,.45);padding:4px 12px;border-radius:20px;margin-bottom:14px;}
+  .hero h1{margin:0 0 10px;font-size:34px;font-weight:800;letter-spacing:.5px;font-family:var(--font-serif);}
+  .hero p.sub{margin:0;color:#c5d4e6;font-size:15px;max-width:820px;}
+  .hero .meta{margin-top:18px;display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--slate);}
+  .hero .meta b{color:#fff;font-weight:600;}
+  section{padding:36px 0 8px;}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;}
+  .sec-head .no{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--navy),var(--navy2));width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:9px;flex:0 0 auto;box-shadow:0 2px 6px rgba(29,58,94,.25);}
+  .sec-head h2{margin:0;font-size:22px;font-weight:750;font-family:var(--font-serif);letter-spacing:.3px;}
+  .sec-head .en{color:var(--muted);font-size:12.5px;font-weight:500;}
+  .sec-head.v3 .no{background:var(--gold);color:#3a2a06;box-shadow:none;}
+  .sec-head.v4 .no{background:var(--navy2);color:#fff;box-shadow:none;}
+  .sec-head.v6 .no{background:var(--red);color:#fff;box-shadow:none;}
+  .lead{color:#3a4754;font-size:14.5px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:10px;padding:16px 20px;}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
+  .kpi .h{font-size:13px;color:var(--muted);margin-bottom:6px;}
+  .kpi .v{font-size:16.5px;font-weight:750;color:var(--navy);}
+  .kpi .v small{font-size:12px;color:var(--muted);font-weight:500;}
+  .chain{display:flex;align-items:stretch;gap:0;margin-top:6px;flex-wrap:wrap;}
+  .tier{flex:1 1 0;min-width:230px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;position:relative;}
+  .tier .tname{font-weight:750;font-size:15px;color:var(--navy);display:flex;align-items:center;gap:8px;}
+  .tier .tname .dot{width:10px;height:10px;border-radius:50%;}
+  .tier .trole{font-size:12px;color:var(--muted);margin:4px 0 12px;}
+  .seg{margin-bottom:12px;}
+  .seg .lbl{font-size:12.5px;font-weight:600;color:#2c3a47;margin-bottom:6px;}
+  .pills{display:flex;flex-wrap:wrap;gap:6px;}
+  .pill{font-size:12px;background:var(--chip);color:#33414f;border:1px solid #d4e6de;padding:3px 9px;border-radius:14px;white-space:nowrap;}
+  .pill.real{background:var(--gold-soft);border-color:#e7d3a3;color:#8a6418;font-weight:600;}
+  .pill.aux{background:#eef0f2;color:#7a8694;}
+  .arrow{display:flex;align-items:center;justify-content:center;color:var(--navy);font-size:22px;font-weight:700;flex:0 0 34px;}
+  @media(max-width:860px){.arrow{transform:rotate(90deg);flex-basis:100%;height:30px;}}
+  .tier.up .dot{background:var(--navy);}
+  .tier.mid .dot{background:var(--gold);}
+  .tier.down .dot{background:#3f7bb0;}
+  .tier.aux .dot{background:#7a8694;}
+  .tiercards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px;}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;}
+  .tcard .th{font-size:16px;font-weight:750;color:var(--navy);border-bottom:2px solid var(--navy-soft);padding-bottom:10px;margin-bottom:12px;}
+  .tcard h4{font-size:13px;margin:14px 0 5px;color:#2c3a47;}
+  .tcard p{margin:0;font-size:13.5px;color:#3a4754;}
+  .cert{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:6px 10px;border-radius:8px;font-size:13px;font-weight:700;align-self:flex-start;}
+  .cert.high{background:var(--green-soft);color:var(--green);}
+  .cert.mid{background:var(--gold-soft);color:var(--gold);}
+  .cert.low{background:#eef0f2;color:#6b7785;}
+  .stars{letter-spacing:2px;color:var(--gold);font-size:14px;}
+  .realpill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:10px;}
+  .realpill.t{background:var(--gold-soft);color:#8a6418;}
+  .realpill.f{background:#eef0f2;color:#7a8694;}
+  .chart{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-top:6px;}
+  .chart .grp-title{font-size:13px;font-weight:700;color:var(--navy);margin:16px 0 8px;display:flex;align-items:center;gap:8px;}
+  .chart .grp-title:first-child{margin-top:2px;}
+  .chart .grp-title .sw{width:18px;height:4px;border-radius:2px;}
+  .row{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px;}
+  .row .name{width:118px;flex:0 0 auto;text-align:right;color:#33414f;}
+  .row .track{position:relative;flex:1 1 auto;height:18px;background:#eef3f1;}
+  .row .track::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:#cfd8e2;}
+  .row .bar{position:absolute;top:2px;height:14px;border-radius:3px;}
+  .row .bar.pos{right:50%;background:var(--red);}
+  .row .bar.neg{left:50%;background:var(--green);}
+  .row .val{width:72px;flex:0 0 auto;font-weight:700;font-variant-numeric:tabular-nums;}
+  .row .val.pos{color:var(--red);}
+  .row .val.neg{color:var(--green);}
+  .legend{display:flex;gap:18px;margin-top:14px;font-size:12.5px;color:var(--muted);align-items:center;flex-wrap:wrap;}
+  .legend .li{display:flex;align-items:center;gap:6px;}
+  .legend .sq{width:14px;height:14px;border-radius:3px;}
+  .tbl-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 8px;margin-top:16px;overflow-x:auto;}
+  table{border-collapse:collapse;width:100%;font-size:13px;min-width:620px;}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;}
+  th{background:linear-gradient(180deg,#eef3f9,#e3ecf6);color:#2b5488;font-weight:650;font-size:12.5px;}
+  td .up{color:var(--red);font-weight:700;}
+  td .down{color:var(--green);font-weight:700;}
+  .badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
+  .badge.t{background:var(--gold-soft);color:#8a6418;}
+  .badge.f{background:#eef0f2;color:#7a8694;}
+  .badge.s{background:var(--green-soft);color:var(--green);}
+  .note{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.6;}
+  .biz-sub{margin-top:18px;}
+  .biz-sub h3{font-size:15.5px;color:var(--navy);margin:18px 0 10px;border-left:4px solid var(--gold);padding-left:10px;}
+  .prod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:6px;}
+  .prod-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;}
+  .prod-card .pn{font-weight:700;font-size:14.5px;color:var(--navy);}
+  .prod-card .pm{font-size:12.5px;color:var(--muted);margin:4px 0 8px;}
+  .prod-card p{margin:0;font-size:13px;color:#3a4754;}
+  .rnd-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:6px;}
+  .rnd{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;}
+  .rnd .rn{font-weight:700;font-size:14px;color:var(--navy);}
+  .rnd p{margin:6px 0 0;font-size:13px;color:#3a4754;}
+  .valueflow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px;}
+  .vf{border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:var(--card);}
+  .vf .vt{font-size:12px;color:var(--muted);}
+  .vf .vv{font-size:14.5px;font-weight:750;color:var(--navy);margin-top:4px;}
+  .vf .vx{font-size:12px;color:#3a4754;margin-top:3px;}
+  .ppool{margin-top:14px;}
+  .pp-row{display:flex;align-items:center;gap:12px;margin:9px 0;}
+  .pp-row .ppn{width:160px;flex:0 0 auto;font-size:13px;color:#33414f;}
+  .pp-row .ppt{position:relative;flex:1 1 auto;height:22px;background:#eef3f1;border-radius:6px;overflow:hidden;}
+  .pp-row .ppb{position:absolute;top:0;left:0;bottom:0;background:linear-gradient(90deg,var(--navy),var(--navy2));border-radius:6px;}
+  .pp-row .ppv{width:54px;flex:0 0 auto;text-align:right;font-size:12.5px;font-weight:700;color:var(--navy);}
+  .migrate{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .migrate .mg{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;}
+  .migrate .mgh{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .migrate p{margin:0;font-size:12.5px;color:#3a4754;}
+  .sim{background:var(--gold-soft);border:1px solid #ecd9a8;border-radius:12px;padding:14px 16px;margin-top:12px;font-size:13.5px;color:#5a4413;}
+  .sim b{color:#7a5a12;}
+  .master-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px;}
+  .master-col{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--card);}
+  .master-col.m h4{margin:0 0 10px;color:var(--navy);font-size:15px;}
+  .master-col.b h4{margin:0 0 10px;color:var(--gold);font-size:15px;}
+  .master-col ul{margin:0;padding-left:18px;font-size:13.5px;color:#3a4754;}
+  .master-col li{margin:7px 0;}
+  .irr{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .irr .ix{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;border-top:3px solid var(--navy);}
+  .irr .ix.hi{border-top-color:var(--red);}
+  .irr .ix.mid{border-top-color:var(--gold);}
+  .irr .ix.lo{border-top-color:var(--green);}
+  .irr .ixt{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .irr p{margin:0;font-size:12.5px;color:#3a4754;}
+  .stress-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .stress{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--card);}
+  .stress.gap{border-left:4px solid var(--red);}
+  .stress.tech{border-left:4px solid var(--gold);}
+  .stress.policy{border-left:4px solid var(--navy2);}
+  .stress .st{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .stress p{margin:0;font-size:12.5px;color:#3a4754;}
+  /* demand v6 */
+  .demand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .demand-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;}
+  .dm-type{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .dm-type.pull{background:var(--red-soft);color:var(--red);}
+  .dm-type.push{background:var(--gold-soft);color:#8a6418;}
+  .demand-card h4{margin:0 0 8px;font-size:15px;color:var(--navy);}
+  .demand-card .dm-payer,.demand-card .dm-will,.demand-card .dm-proof{font-size:12.5px;color:#3a4754;margin:7px 0;}
+  .demand-card .dm-payer b,.demand-card .dm-will b,.demand-card .dm-proof b{color:#2c3a47;}
+  .pullverdict{background:var(--navy-soft);border:1px solid #cfe0f0;border-radius:12px;padding:14px 18px;margin-top:14px;font-size:14px;color:#1d3a5e;}
+  .pullverdict b{color:var(--navy);}
+  /* duel */
+  .duel{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:8px;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  .duel-col{padding:16px 18px;}
+  .duel-col:first-child{border-right:1px solid var(--line);}
+  .duel-col h4{margin:0 0 10px;font-size:14.5px;color:var(--navy);}
+  .duel-var{display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:1px dashed var(--line);}
+  .duel-var:last-child{border-bottom:none;}
+  .vs-yes{color:var(--green);font-weight:700;}
+  .vs-no{color:var(--red);font-weight:700;}
+  .smile{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;}
+  .smile .base{height:2px;background:var(--line);position:relative;margin:40px 0 30px;}
+  .smile .peak{position:absolute;transform:translateX(-50%);text-align:center;font-size:11.5px;color:var(--navy);}
+  .smile .peak .dot{width:12px;height:12px;border-radius:50%;background:var(--navy);margin:0 auto 4px;}
+  .smile .valley{position:absolute;transform:translateX(-50%);text-align:center;font-size:11.5px;color:var(--muted);}
+  .smile .valley .dot{width:10px;height:10px;border-radius:50%;background:#9aa6b2;margin:0 auto 4px;}
+  /* radar */
+  .radar{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .radar-col{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--card);}
+  .radar-col.sub{border-top:3px solid var(--red);}
+  .radar-col.gap{border-top:3px solid var(--gold);}
+  .radar-col.water{border-top:3px solid var(--navy2);}
+  .radar-col h4{margin:0 0 10px;font-size:14.5px;color:var(--navy);}
+  .radar-item{font-size:13px;color:#3a4754;margin:9px 0;padding-left:14px;position:relative;}
+  .radar-item::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--navy2);}
+  /* health */
+  .health{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:8px;}
+  .health-item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px;}
+  .health-item .hi-t{font-size:13px;font-weight:700;color:var(--navy);}
+  .health-item .hi-c{font-size:12.5px;color:#3a4754;margin-top:5px;}
+  .health-item .hi-w{font-size:12px;color:var(--muted);margin-top:5px;}
+  .health-item.warn{border-left:4px solid var(--red);}
+  .bullbear{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;}
+  .bb{border-radius:12px;padding:15px 17px;}
+  .bb.bull{background:var(--green-soft);border:1px solid #bfe6cf;}
+  .bb.bear{background:var(--red-soft);border:1px solid #f3c9c9;}
+  .bb h4{margin:0 0 8px;font-size:14px;}
+  .bb.bull h4{color:var(--green);}
+  .bb.bear h4{color:var(--red);}
+  .bb p{margin:0;font-size:13px;color:#3a4754;}
+  /* deal risk */
+  .dr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:8px;}
+  .dr-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;}
+  .dr-card .dr-type{font-size:12.5px;font-weight:700;color:var(--navy);}
+  .dr-sev{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:9px;margin:8px 0;}
+  .dr-sev.h{background:var(--red-soft);color:var(--red);}
+  .dr-sev.m{background:var(--gold-soft);color:#8a6418;}
+  .dr-sev.l{background:var(--green-soft);color:var(--green);}
+  .dr-card p{margin:0;font-size:12.5px;color:#3a4754;}
+  /* catalyst */
+  .cat-horizon{margin-top:14px;}
+  .cat-horizon .ch-t{font-size:14px;font-weight:750;color:var(--navy);margin:14px 0 8px;display:flex;align-items:center;gap:8px;}
+  .cat-horizon .ch-t .chip2{font-size:11px;background:var(--navy);color:#fff;padding:2px 9px;border-radius:10px;}
+  .cat-list{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 10px;}
+  .cat-row{display:flex;align-items:center;gap:12px;padding:10px 8px;border-bottom:1px solid var(--line);font-size:13px;}
+  .cat-row:last-child{border-bottom:none;}
+  .cat-row .ct{width:96px;flex:0 0 auto;font-weight:600;color:#33414f;}
+  .cat-row .ce{flex:1 1 auto;color:#3a4754;}
+  .cat-row .cd{width:120px;flex:0 0 auto;text-align:center;font-weight:700;font-size:12px;border-radius:8px;padding:3px 0;}
+  .cat-row .cd.up{background:var(--red-soft);color:var(--red);}
+  .cat-row .cd.down{background:var(--green-soft);color:var(--green);}
+  .cat-row .cd.both{background:var(--gold-soft);color:#8a6418;}
+  /* insight */
+  .asym-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .asym{border-radius:14px;padding:16px;color:#fff;}
+  .asym.up{background:linear-gradient(135deg,#1e9d6a,#157a48);}
+  .asym.safe{background:linear-gradient(135deg,#1d3a5e,#142b47);}
+  .asym.trap{background:linear-gradient(135deg,#a85d2c,#7d4220);}
+  .asym .at{font-size:14.5px;font-weight:800;margin-bottom:8px;}
+  .asym p{margin:0;font-size:12.5px;line-height:1.6;opacity:.95;}
+  .triage-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 10px;margin-top:14px;overflow-x:auto;}
+  .triage-wrap table{min-width:760px;}
+  .exit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px;}
+  .exit-col{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--card);}
+  .exit-col .ex-h{font-size:13px;font-weight:750;color:var(--navy);margin-bottom:8px;}
+  .exit-col p{margin:0;font-size:12.5px;color:#3a4754;}
+  .verdict{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:16px 20px;margin-top:6px;font-size:14px;color:#3a4754;}
+  .verdict b{color:var(--navy);}
+  .two-table-note{font-size:13px;color:var(--muted);margin:18px 0 4px;padding:10px 14px;background:var(--navy-soft);border-radius:10px;}
+  .src{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6;}
+  footer{margin-top:30px;background:#142b47;color:var(--slate);padding:28px 0;font-size:12.5px;}
+  footer .wrap p{margin:0 0 10px;line-height:1.7;}
+  footer b{color:#fff;}
+  .disclaimer{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:14px 16px;margin-top:6px;color:#cdddec;}
+  /* ===== polish: depth & motion ===== */
+  section{padding:38px 0 10px;}
+  .kpi,.tcard,.tier,.prod-card,.rnd,.vf,.master-col,.irr .ix,.stress,.demand-card,.health-item,.dr-card,.exit-col,.chart,.tbl-wrap,.lead,.verdict,.cat-list,.prod-grid,.rnd-cards,.valueflow,.migrate,.radar-col,.bullbear .bb{box-shadow:0 1px 3px rgba(20,43,71,.06),0 1px 2px rgba(20,43,71,.04);transition:box-shadow .2s,transform .2s;}
+  .kpi:hover,.tcard:hover,.tier:hover,.prod-card:hover,.rnd:hover,.vf:hover,.master-col:hover,.irr .ix:hover,.stress:hover,.demand-card:hover,.health-item:hover,.dr-card:hover,.exit-col:hover{box-shadow:0 6px 18px rgba(20,43,71,.12);transform:translateY(-2px);}
+  .tbl-wrap table tbody tr:hover{background:#f7f9fc;}
+  .sec-head h2{position:relative;}
+
+  @media print{
+    .sidebar{display:none;}
+    body{background:#fff;padding-left:0;}
+    .hero{background:#1d3a5e !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    section{page-break-inside:avoid;}
+  }
+  @media(max-width:980px){
+    body{padding-left:0;}
+    .sidebar{position:sticky;top:0;width:100%;height:auto;flex-direction:row;overflow-x:auto;}
+    .side-brand{border-bottom:none;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap;}
+    .toc{display:flex;padding:10px;flex-wrap:nowrap;}
+    .toc a{border-left:none;white-space:nowrap;}
+  }
+</style>
+</head>
+<body>
+<div id="gate" class="gate">
+  <div class="gate-box">
+    <div class="gate-title">🔒 内容已加密</div>
+    <div class="gate-sub">请输入访问密码</div>
+    <input id="gate-pwd" type="password" class="gate-input" placeholder="访问密码" autocomplete="off" />
+    <button id="gate-btn" class="gate-btn">解锁</button>
+    <div id="gate-err" class="gate-err"></div>
+  </div>
+</div>
+<style>
+.gate{position:fixed;inset:0;z-index:2147483647;background:linear-gradient(135deg,#0f1420,#1a2236);display:flex;align-items:center;justify-content:center;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif}
+.gate-box{background:#fff;border-radius:16px;padding:36px 40px;width:320px;max-width:86vw;box-shadow:0 20px 60px rgba(0,0,0,.45);text-align:center}
+.gate-title{font-size:20px;font-weight:700;color:#111827;margin-bottom:6px}
+.gate-sub{font-size:13px;color:#6b7280;margin-bottom:20px}
+.gate-input{width:100%;box-sizing:border-box;padding:12px 14px;font-size:15px;border:1px solid #d1d5db;border-radius:10px;outline:none;margin-bottom:14px}
+.gate-input:focus{border-color:#2563eb}
+.gate-btn{width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.gate-btn:hover{background:#1d4ed8}
+.gate-err{color:#dc2626;font-size:13px;margin-top:12px;min-height:18px}
+</style>
+<script>
+(function(){
+  var PWD="hanbuff";
+  function unlock(){ var g=document.getElementById("gate"); if(g&&g.parentNode){ g.parentNode.removeChild(g); } }
+  function check(){ var v=document.getElementById("gate-pwd").value; var err=document.getElementById("gate-err"); if(v===PWD){ unlock(); } else { err.textContent="密码错误，请重试"; } }
+  window.addEventListener("load",function(){ var btn=document.getElementById("gate-btn"); var inp=document.getElementById("gate-pwd"); if(btn) btn.addEventListener("click",check); if(inp){ inp.addEventListener("keydown",function(e){ if(e.key==="Enter") check(); }); inp.focus(); } });
+})();
+</script>
+
+
+<!-- LEFT SIDEBAR TOC -->
+<aside class="sidebar">
+  <div class="side-brand">
+    <div class="sb-t">INDUSTRY CHAIN</div>
+    <div class="sb-n">脑机接口（BCI）<br>产业链分析</div>
+    <div class="sb-v">全谱系</div>
+  </div>
+  <nav class="toc">
+    <a href="#def"><span class="num">01</span>定义与核心矛盾</a>
+    <a href="#panorama"><span class="num">02</span>全景双视图</a>
+    <a href="#layers"><span class="num">03</span>分层受益逻辑</a>
+    <a href="#biz"><span class="num">04</span>头部公司拆解</a>
+    <a href="#demand"><span class="num">05</span>需求真实性</a>
+    <a href="#power"><span class="num">06</span>权力·卡脖子</a>
+    <a href="#profit"><span class="num">07</span>价值·利润池</a>
+    <a href="#radar"><span class="num">08</span>机会雷达</a>
+    <a href="#real"><span class="num">09</span>真伪受益</a>
+    <a href="#health"><span class="num">10</span>健康度·风险</a>
+    <a href="#verdict"><span class="num">11</span>客观判断</a>
+    <a href="#catalyst"><span class="num">12</span>催化剂日历</a>
+    <a href="#insight"><span class="num">13</span>投资启示</a>
+    <a href="#chart"><span class="num">末</span>涨跌·估值全景</a>
+  </nav>
+</aside>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="wrap">
+      <span class="tag">全谱系产业链深度分析</span>
+      <h1>脑机接口（BCI）产业链分析</h1>
+      <p class="sub">覆盖侵入式 · 半侵入式（血管内/ECoG）· 非侵入式全技术谱系；从柔性电极、专用芯片到临床级系统、消费级硬件，拆解谁真正卡住环节、谁在叙事、钱往哪走。</p>
+      <div class="meta">
+        <span>作者：<b>HanBuff</b></span>
+        <span>数据日期：<b>2026-08-03</b> 收盘</span>
+        <span>分析框架：<b>14 块结构化拆解</b></span>
+        <span>覆盖：<b>全谱系 · 一二级市场</b></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- KEY TAKEAWAYS -->
+  <section id="kpi" style="padding-top:28px;">
+    <div class="kpis">
+      <div class="kpi"><div class="h">当前最受益环节</div><div class="v">上游核心器件 + 临床级系统<small>柔性电极/采集芯片卖水人确定性最高；临床进度决定中游估值</small></div></div>
+      <div class="kpi"><div class="h">利润池高地</div><div class="v">上游器件 + 数据/算法平台<small>柔性电极、低功耗高通道芯片毛利最高；进口替代+技术壁垒双护城河</small></div></div>
+      <div class="kpi"><div class="h">最大卡脖子</div><div class="v">电极生物相容 + 高通道芯片<small>长期在体材料、低功耗采集芯片、解码数据积累、三类证/脑数据隐私监管</small></div></div>
+    </div>
+  </section>
+
+  <!-- 01 定义 -->
+  <section id="def">
+    <div class="sec-head"><span class="no">01</span><h2>定义与核心投资矛盾</h2><span class="en">Definition & Core Tension</span></div>
+    <div class="lead">
+      <b>一句话定义：</b>脑机接口（Brain-Computer Interface, BCI）在人或动物大脑与外部设备之间建立直接信息通路，通过<b>采集 → 解码 → 效应器</b>的闭环，绕过外周神经与肌肉，实现"意念"对外部设备的控制或神经功能的修复/增强。完整 BCI 须同时具备采集器、解码器、效应器三者。
+    </div>
+    <div class="tiercards" style="margin-top:16px;">
+      <div class="tcard">
+        <div class="th">为何此刻必须看</div>
+        <h4>政策 + 临床双拐点</h4>
+        <p>2025-07 工信部等七部门《关于推动脑机接口产业创新发展的实施意见》定调"2027 关键技术突破、2030 综合实力世界前列"；2025-11"十五五"将 BCI 列为六大未来产业之一；2026 年写入政府工作报告。医保局设立"侵入式置入/取出费、非侵入式适配费"价格项目，临床支付路径破冰。</p>
+        <h4>临床里程碑密集</h4>
+        <p>国内首例侵入式 BCI 前瞻性临床试验（阶梯医疗，复旦华山）完成；"北脑一号"半侵入式完成多例植入；Synchron 血管内路线全球推进。技术从"实验室"跨入"临床"。</p>
+        <span class="cert high">★ 产业临界点</span>
+      </div>
+      <div class="tcard">
+        <div class="th">核心投资矛盾</div>
+        <h4>宏大叙事 vs 极早期兑现</h4>
+        <p>麦肯锡测算全球 BCI 医疗应用 2030 年 400 亿美元、2040 年 1450 亿美元；中国 2030 年有望破 100-150 亿元。但 A 股"概念股"多数营收占比极低——创新医疗子公司博灵脑机 2024-2026H1 累计营收仅约 35 万元、持续亏损；诚益通因 2025 巨亏被 *ST。</p>
+        <h4>真刚需 vs 伪叙事</h4>
+        <p>医疗康复（截瘫/卒中/渐冻）是硬刚需、支付路径渐清；消费级（睡眠/专注力/情绪）叙事强、变现弱。投资人最大的坑：把"概念贴牌"当"核心玩家"。</p>
+        <span class="cert mid">⚠ 估值透支风险</span>
+      </div>
+      <div class="tcard">
+        <div class="th">三条技术路线</div>
+        <h4>侵入式</h4>
+        <p>电极植入大脑皮层，信号质量最高、创伤最大。代表：Neuralink、脑虎科技、阶梯医疗、微灵医疗、博睿康。</p>
+        <h4>半侵入式</h4>
+        <p>血管内（Synchron Stentrode）或皮层表面 ECoG，免开颅、信号优于非侵入。代表：Synchron、北脑一号/芯智达。</p>
+        <h4>非侵入式</h4>
+        <p>头皮 EEG/近红外，无创安全、信号弱。代表：强脑科技 BrainCo、伟思/翔宇/诚益通（康复）、岩山科技（解码）。</p>
+        <span class="realpill t">路线无高下，场景分野</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 全景双视图 -->
+  <section id="panorama">
+    <div class="sec-head"><span class="no">02</span><h2>产业链全景：物料流 + 价值流双视图</h2><span class="en">Panorama Dual-View</span></div>
+    <div class="lead">产业链核心判断：<b>上游器件是卖水人高地，下游医疗是最大终端市场，中游系统集成是当前估值博弈主战场。</b></div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">① 物料流：上 → 中 → 下</h3>
+    <div class="chain">
+      <div class="tier up">
+        <div class="tname"><span class="dot"></span>上游 · 核心器件与材料</div>
+        <div class="trole">卡脖子的源头，毛利与壁垒最高</div>
+        <div class="seg"><div class="lbl">柔性电极 / 植入体</div><div class="pills"><span class="pill real">脑虎科技</span><span class="pill real">阶梯医疗</span><span class="pill real">博睿康</span><span class="pill real">微灵医疗</span></div></div>
+        <div class="seg"><div class="lbl">脑电采集芯片</div><div class="pills"><span class="pill real">中电云脑·脑语者</span><span class="pill real">汉威·能斯达</span><span class="pill aux">格芯/台积电(晶圆)</span></div></div>
+        <div class="seg"><div class="lbl">生物材料 / 算法</div><div class="pills"><span class="pill real">各厂商自研解码</span><span class="pill aux">冠昊生物(材料)</span></div></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="tier mid">
+        <div class="tname"><span class="dot"></span>中游 · 系统与集成</div>
+        <div class="trole">临床进度决定估值的核心战场</div>
+        <div class="seg"><div class="lbl">侵入式系统</div><div class="pills"><span class="pill real">Neuralink</span><span class="pill real">脑虎</span><span class="pill real">阶梯</span><span class="pill real">博睿康</span></div></div>
+        <div class="seg"><div class="lbl">半侵入式系统</div><div class="pills"><span class="pill real">Synchron</span><span class="pill real">芯智达·北脑</span></div></div>
+        <div class="seg"><div class="lbl">非侵入式系统/设备</div><div class="pills"><span class="pill real">强脑科技</span><span class="pill real">岩山科技</span><span class="pill real">伟思/翔宇</span></div></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="tier down">
+        <div class="tname"><span class="dot"></span>下游 · 应用终端</div>
+        <div class="trole">最大市场，但支付路径待成熟</div>
+        <div class="seg"><div class="lbl">医疗康复</div><div class="pills"><span class="pill real">三博脑科</span><span class="pill real">创新医疗(博灵)</span><span class="pill real">翔宇/伟思</span><span class="pill aux">医院/医保</span></div></div>
+        <div class="seg"><div class="lbl">消费健康</div><div class="pills"><span class="pill real">强脑·消费线</span><span class="pill aux">耳机/头环厂商</span></div></div>
+        <div class="seg"><div class="lbl">工业安全</div><div class="pills"><span class="pill aux">疲劳监测 B 端</span></div></div>
+      </div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">② 价值流：四段成本/毛利/集中度（行业估算口径）</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>段</th><th>技术/产品形态</th><th>代表企业（国内+海外）</th><th>终端成本占比</th><th>毛利率区间</th><th>CR3（估算）</th></tr></thead>
+      <tbody>
+        <tr><td>①上游器件</td><td>柔性电极、采集芯片、植入体材料</td><td>脑虎/阶梯/中电云脑；Neuralink/Blackrock</td><td>20-35%</td><td class="up">55%-75%</td><td>中（国产替代窗口）</td></tr>
+        <tr><td>②中游系统</td><td>植入体/采集系统/解码平台</td><td>脑虎/阶梯/博睿康/Synchron；Neuralink</td><td>35-50%</td><td>40%-65%</td><td>高（临床资源壁垒）</td></tr>
+        <tr><td>③下游应用</td><td>康复设备、消费头环、医疗方案</td><td>三博/翔宇/伟思/强脑；Blackrock 临床</td><td>15-30%</td><td class="up">50%-70%（品牌溢价）</td><td>低（分散）</td></tr>
+        <tr><td>④贯穿服务</td><td>解码算法云、临床注册、标准认证</td><td>岩山/各厂自研；CRO/注册咨询</td><td>5-10%</td><td>60%-80%（软件）</td><td>低</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- 03 分层受益 -->
+  <section id="layers">
+    <div class="sec-head"><span class="no">03</span><h2>上中下游分层与受益逻辑</h2><span class="en">Tier-by-Tier Benefit Logic</span></div>
+    <div class="tiercards">
+      <div class="tcard">
+        <div class="th">上游 · 核心器件</div>
+        <h4>玩家锚定</h4>
+        <p>柔性电极（脑虎、阶梯、博睿康、微灵自研）、脑电采集芯片（中电云脑"脑语者"系列、汉威科技子公司能斯达）、植入体材料。</p>
+        <h4>受益逻辑</h4>
+        <p>"卖水人"——无论哪家中游胜出，都需采购电极/芯片。确定性最高，但前提是技术真正突破（长期生物相容、高通道低功耗）。</p>
+        <h4>确定性 / 真伪初判</h4>
+        <p>确定性 ★★★★；当前多为自研自用+少量外供，独立第三方器件商尚少。</p>
+        <span class="cert high">卖水人·确定性高</span>
+      </div>
+      <div class="tcard">
+        <div class="th">中游 · 系统集成</div>
+        <h4>玩家锚定</h4>
+        <p>侵入式（Neuralink、脑虎、阶梯、博睿康、微灵）、半侵入式（Synchron、芯智达/北脑）、非侵入式（强脑科技、岩山科技）。</p>
+        <h4>受益逻辑</h4>
+        <p>估值博弈主战场。临床进度（FIM→多中心→注册→上市）直接决定估值跃迁。侵入式赔率高、周期长；非侵入式快但壁垒低。</p>
+        <h4>确定性 / 真伪初判</h4>
+        <p>确定性 ★★（依赖临床与监管）；真玩家集中在此，是产业话语权核心。</p>
+        <span class="cert mid">高赔率·长周期</span>
+      </div>
+      <div class="tcard">
+        <div class="th">下游 · 应用终端</div>
+        <h4>玩家锚定</h4>
+        <p>医疗康复（三博脑科、创新医疗/博灵、翔宇医疗、伟思医疗、诚益通）、消费健康（强脑消费线、头环/耳机厂）、工业安全（疲劳监测）。</p>
+        <h4>受益逻辑</h4>
+        <p>最大终端市场（医疗占中国下游 56%），但支付路径（医保/商保/自费）与注册证是瓶颈。康复设备已商业化，侵入式医疗待 2028 前后上市。</p>
+        <h4>确定性 / 真伪初判</h4>
+        <p>确定性 ★★★（康复明确，消费弱）；多数 A 股"概念"停在此段的边缘。</p>
+        <span class="cert low">市场大·支付待解</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 头部公司 -->
+  <section id="biz">
+    <div class="sec-head"><span class="no">04</span><h2>头部公司业务拆解与在研</h2><span class="en">Key Player Teardown</span></div>
+    <div class="lead">严格按"真实产业参与者"遴选，含<b>未上市 / 海外头部（一级覆盖）</b>。A 股"概念映射"方不进入核心拆解，仅在 Ch9 甄别。</div>
+
+    <div class="biz-sub">
+      <h3>① 侵入式：全球领跑者与国产梯队</h3>
+      <div class="prod-grid">
+        <div class="prod-card"><div class="pn">Neuralink（美国·未上市）</div><div class="pm">全植入无线 BCI "Link" · 估值约 90 亿美元（2025-06 E 轮 6.5 亿美元）</div><p>1024 通道柔性电极 N1；3 例受试者植入超 670 天、累计使用超 4900 小时；2024-01 首例。已推开源数据平台 datarepo，布局"Telepathy"语言合成。全球估值最高、临床最领先。</p></div>
+        <div class="prod-card"><div class="pn">脑虎科技（中国·未上市·A 轮数亿）</div><div class="pm">柔性电极侵入式 · 创始人陶虎</div><p>自研 256 通道柔性脑机接口；2025 年开展汉语语言解码临床试验并突破；高通量、低创伤、长期在体路线。国产侵入式第一梯队。</p></div>
+        <div class="prod-card"><div class="pn">阶梯医疗（中国·未上市·B 轮 3.5 亿）</div><div class="pm">国内植入式最大单笔融资（启明/奥博/礼来亚洲领投）</div><p>超柔性电极约为头发丝 1/100（Neuralink 1/5）；植入体直径 26mm、厚<6mm，全球最小。2026Q1 完成国内首例侵入式 FIM 临床，产品有望 2028 上市。</p></div>
+        <div class="prod-card"><div class="pn">博睿康（中国·未上市·C→D 轮）</div><div class="pm">微创植入 / 半侵入式 · 临床推进</div><p>微创植入脑机系统向医疗级与临床应用迈进，2024-11 完成 D 轮签约并全面展开临床试验。国产临床进度靠前。</p></div>
+      </div>
+
+      <h3>② 半侵入式：差异化路线</h3>
+      <div class="prod-grid">
+        <div class="prod-card"><div class="pn">Synchron（美国·未上市）</div><div class="pm">血管内 Stentrode · 免开颅</div><p>经颈静脉植入血管支架电极，规避开颅风险；与 NVIDIA 合作推进数据/AI。全球半侵入式标杆，融资破亿美元级。</p></div>
+        <div class="prod-card"><div class="pn">芯智达·"北脑一号/二号"（中国）</div><div class="pm">半侵入式 ECoG · 天坛医院牵头</div><p>"北脑一号"已完成多例人体植入（天坛医院），帮助瘫痪者恢复运动；"北脑二号"猴实验实现脑控机械臂。科研院所孵化，临床转化加速。</p></div>
+      </div>
+
+      <h3>③ 非侵入式：商业化最快</h3>
+      <div class="prod-grid">
+        <div class="prod-card"><div class="pn">强脑科技 BrainCo（中国·拟 IPO）</div><div class="pm">非侵入式独角兽 · 2026 年初 20 亿元融资（全球第二）</div><p>2025 年以超 13 亿美元估值完成 1 亿美元 IPO 前融资，目标港交所。消费+教育场景累计融资数亿美元；神经控制假肢、Focus 头环量产。稀缺的"技术+商业化"双能力。</p></div>
+        <div class="prod-card"><div class="pn">岩山科技·岩思类脑（中国·上市 002195）</div><div class="pm">非侵入式解码算法 · 脑电大模型</div><p>构建"声母/韵母-音节-单字-语句"四级解码架构，中文解码领先；推出脑控游戏交互、LumiSleep 睡眠仪。算法授权型。</p></div>
+        <div class="prod-card"><div class="pn">伟思 / 翔宇 / 诚益通（中国·上市）</div><div class="pm">非侵入式康复设备</div><p>伟思非侵入电极专利、Xlora-EEG 对标进口；翔宇 Sun Brain 康复系统进院；诚益通双轨但设备未拿证。康复场景已商业化。</p></div>
+      </div>
+
+      <h3>④ 出货量 · 单价 · 毛利（来源口径标注）</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>玩家</th><th>核心产品</th><th>出货/单价</th><th>毛利</th><th>来源口径</th></tr></thead>
+        <tbody>
+          <tr><td>强脑科技</td><td>Focus 头环 / 神经假肢</td><td>消费级千元级、假肢万元级（估算）</td><td>硬件+耗材中高</td><td>公司 IR / 公开报道估算</td></tr>
+          <tr><td>伟思医疗</td><td>非侵入康复设备</td><td>医疗器械，单价数万（估算）</td><td>医疗器械行业 50-65%</td><td>年报（2025 营收 7.4 亿）</td></tr>
+          <tr><td>Neuralink</td><td>Link 植入体</td><td>尚未规模商业化</td><td>—</td><td>公司披露（未盈利）</td></tr>
+          <tr><td>脑虎/阶梯</td><td>植入系统（在研）</td><td>未上市销售</td><td>—</td><td>临床阶段，无并表财务</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>⑤ 技术路线对比与在研布局</h3>
+      <div class="rnd-cards">
+        <div class="rnd"><div class="rn">电极：柔性化是主战场</div><p>Neuralink 1024 通道、阶梯超柔性（头发丝 1/100）、脑虎 256 通道柔性脑机。方向：更高通道、更软、更长在体寿命。无锡深脑医疗已自研 1024/4096 通道记录系统。</p></div>
+        <div class="rnd"><div class="rn">芯片：低功耗高通道采集</div><p>中电云脑"脑语者"C/D 系列为国内首款自主神经电生理采集计算芯片；汉威能斯达超柔性脑电传感器中标工信部专项。晶圆仍依赖格芯/台积电。</p></div>
+        <div class="rnd"><div class="rn">解码：大模型赋能语义级</div><p>Neuralink 探索语音合成；岩山四级中文解码；斯坦福"内心言语"解码准确率 74%（2025-08《Cell》）。从指令控制走向语义交互。</p></div>
+        <div class="rnd"><div class="rn">在研：从运动到语言/视觉</div><p>Synchron 扩展脑区覆盖；Science Corp PRIMA 视网膜植入获欧盟 CE（2026）；Neuralink 推"盲视"。下一个十年从运动功能延伸至语言、视觉、认知增强。</p></div>
+      </div>
+
+      <h3>⑥ 商业模式与 unit economics</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>玩家</th><th>商业模式</th><th>毛利特征</th><th>估值锚方法</th></tr></thead>
+        <tbody>
+          <tr><td>Neuralink / 脑虎 / 阶梯</td><td>设备+服务（远期按疗效/订阅）</td><td>设备高毛利+服务续费</td><td>看 pipeline / 临床里程碑，PS 不适用，按未盈利硬科技</td></tr>
+          <tr><td>强脑科技</td><td>硬件+耗材+订阅（消费+医疗）</td><td>硬件中高、耗材复购</td><td>PS（收入可见）+ 拟 IPO 前估值</td></tr>
+          <tr><td>岩山科技</td><td>算法授权 / 软件服务</td><td>软件毛利 70%+</td><td>PS（若收入起量）</td></tr>
+          <tr><td>汉威/中电云脑</td><td>传感器/芯片销售</td><td>器件毛利随量产提升</td><td>PE（看并表利润，当前偏主题）</td></tr>
+          <tr><td>翔宇/伟思/三博</td><td>设备销售 / 医疗服务</td><td>医疗毛利 50-65%</td><td>PE（康复设备成熟）</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">模式决定估值逻辑：硬科技未盈利看 pipeline 与里程碑；消费/软件看 PS；成熟医疗器械看 PE。当前 A 股多数"概念"用 PE 但主业并非 BCI，存在估值错配。</p>
+
+      <h3>⑦ 海外对标 / 失败案例（可迁移经验）</h3>
+      <div class="rnd-cards">
+        <div class="rnd"><div class="rn" style="color:var(--green);">成了：Neuralink（侵入式标杆）</div><p>赢在柔性电极+无线全植入+临床资源+资本。可迁移：临床进度是估值第一变量；开放数据生态（datarepo）建壁垒。</p></div>
+        <div class="rnd"><div class="rn" style="color:var(--green);">成了：Synchron（差异化半侵入）</div><p>避开开颅，用成熟血管介入术，监管与安全性更优。可迁移：不一定要正面刚 Neuralink，差异化路线也能占坑。</p></div>
+        <div class="rnd"><div class="rn" style="color:var(--red);">警示：消费级脑机熄火</div><p>Kernel（消费级脑机）、Openwater 等叙事未落地、烧钱退潮。可迁移：纯消费叙事若无硬刚需与复购，极易证伪——警惕 A 股"睡眠/专注力"贴牌。</p></div>
+        <div class="rnd"><div class="rn" style="color:var(--red);">警示：烧钱未盈利共性风险</div><p>全球 BCI 初创普遍长周期、高 burn。可迁移：评估单笔 deal 必须看 runway 与下一轮领投方（见 Ch10 deal 风险）。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 需求真实性 -->
+  <section id="demand">
+    <div class="sec-head v6"><span class="no">05</span><h2>需求真实性验证</h2><span class="en">Demand Authenticity</span></div>
+    <div class="lead">区分<b>真实付费拉动（pull）</b>与<b>政策/叙事推动（push）</b>。前者决定放量可信度，后者决定生死。</div>
+    <div class="demand-grid">
+      <div class="demand-card">
+        <span class="dm-type pull">PULL · 真刚需</span>
+        <h4>医疗康复 / 神经疾病</h4>
+        <div class="dm-payer"><b>付费方：</b>患者自费 + 医院采购 + 医保/商保探索</div>
+        <div class="dm-will"><b>付费意愿：</b>强——截瘫/卒中/渐冻症功能恢复诉求刚性，传统疗法效果有限</div>
+        <div class="dm-proof"><b>证据：</b>多中心临床入组（阶梯 FIM、北脑植入）、注册证发放（博灵 AM5 获证 2026-06）、医保价格项目设立</div>
+      </div>
+      <div class="demand-card">
+        <span class="dm-type push">PUSH · 叙事强</span>
+        <h4>消费健康（睡眠/专注力/情绪）</h4>
+        <div class="dm-payer"><b>付费方：</b>消费者自费</div>
+        <div class="dm-will"><b>付费意愿：</b>弱——尝鲜为主，复购与续费未验证，效果感知模糊</div>
+        <div class="dm-proof"><b>证据：</b>多为 PR 与众筹，缺大规模临床；A 股"睡眠仪/专注力"多属脑电图机降维</div>
+      </div>
+      <div class="demand-card">
+        <span class="dm-type push">PUSH · 政策驱动</span>
+        <h4>工业安全 / 疲劳监测</h4>
+        <div class="dm-payer"><b>付费方：</b>B 端企业采购</div>
+        <div class="dm-will"><b>付费意愿：</b>中——试点多、规模采购少，ROI 论证不足</div>
+        <div class="dm-proof"><b>证据：</b>少量示范项目，尚未形成标准采购；政策催化多于市场自发</div>
+      </div>
+    </div>
+    <div class="pullverdict">
+      <b>pull vs push 综合判断：约「6 分真、4 分叙事」。</b> 医疗康复是实打实的 pull（刚需+支付路径渐清+临床证据积累），构成产业基本盘；消费级与工业安全仍以 push 为主，叙事强于兑现。结论：<b>下游放量可信度「医疗 > 工业 > 消费」</b>，投资节奏应锚定临床与注册证节点，而非消费 PR。
+    </div>
+  </section>
+
+  <!-- 06 权力·卡脖子 -->
+  <section id="power">
+    <div class="sec-head v4"><span class="no">06</span><h2>产业权力结构与卡脖子清单</h2><span class="en">Power & Bottlenecks</span></div>
+    <div class="lead">链主 = 掌握<b>临床资源（医院/科研）</b>与<b>核心器件 IP（柔性电极/芯片）</b>的玩家。当前是"临床资源方 + 技术方"双核，海外 Neuralink 在专利与临床领先。</div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:20px 0 8px;">议价能力对决：上游器件商 vs 中游系统厂</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>议价维度</th><th>上游器件商（柔性电极 / 芯片）</th><th>中游系统集成厂</th></tr></thead>
+      <tbody>
+        <tr><td>行业集中度</td><td class="vs-yes">高（自研为主，第三方少）</td><td class="vs-no">低（多玩家临床）</td></tr>
+        <tr><td>供应商转换成本</td><td class="vs-yes">高（工艺绑定）</td><td class="vs-no">中（可自研电极）</td></tr>
+        <tr><td>信息对称性</td><td class="vs-no">低（工艺保密）</td><td class="vs-yes">高（临床主导）</td></tr>
+        <tr><td>备选方案</td><td class="vs-no">少（国产替代早期）</td><td class="vs-yes">有（自研电极反制）</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note"><b>结论：</b>上游短期议价强（技术壁垒），但中游龙头（脑虎/阶梯）自研电极削弱外采依赖，长期议价向"掌握临床+自研器件"的集成方倾斜。纯第三方器件商需靠标准化+成本取胜。</p>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">卡脖子 / 应力集中清单</h3>
+    <div class="stress-grid">
+      <div class="stress gap"><div class="st">① 柔性电极长期生物相容</div><p>断供/失效影响：高。植入后信号衰减、炎症反应是侵入式最大技术瓶颈；超软材料工艺被少数团队掌握。</p></div>
+      <div class="stress tech"><div class="st">② 低功耗高通道采集芯片</div><p>断供/失效影响：高。晶圆依赖格芯/台积电，金属线材依赖 TE Connectivity 等海外；国产"脑语者"刚起步。</p></div>
+      <div class="stress policy"><div class="st">③ 三类证 / 脑数据隐私监管</div><p>断供/失效影响：中高。审批节奏与神经数据治理直接决定商业化时点；政策突变可改写格局。</p></div>
+    </div>
+  </section>
+
+  <!-- 07 价值流转 -->
+  <section id="profit">
+    <div class="sec-head v4"><span class="no">07</span><h2>价值流转与利润池</h2><span class="en">Value Flow & Profit Pool</span></div>
+    <div class="lead">资金从患者/医保 → 医院 → 系统厂 → 器件厂流转；利润主要沉淀在<b>上游器件</b>与<b>下游品牌/数据平台</b>两端。</div>
+    <div class="valueflow">
+      <div class="vf"><div class="vt">资金流起点</div><div class="vv">患者/医保</div><div class="vx">医疗付费方</div></div>
+      <div class="vf"><div class="vt">成本分摊</div><div class="vv">医院 15-30%</div><div class="vx">渠道与服务</div></div>
+      <div class="vf"><div class="vt">利润留存</div><div class="vv">系统厂 40-65%</div><div class="vx">临床溢价</div></div>
+      <div class="vf"><div class="vt">净头寸高地</div><div class="vv">器件 55-75%</div><div class="vx">壁垒+替代</div></div>
+    </div>
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">利润池分布（深度示意·行业估算）</h3>
+    <div class="ppool">
+      <div class="pp-row"><div class="ppn">上游柔性电极/芯片</div><div class="ppt"><div class="ppb" style="width:88%;"></div></div><div class="ppv">高</div></div>
+      <div class="pp-row"><div class="ppn">中游系统集成</div><div class="ppt"><div class="ppb" style="width:64%;"></div></div><div class="ppv">中高</div></div>
+      <div class="pp-row"><div class="ppn">下游品牌应用</div><div class="ppt"><div class="ppb" style="width:80%;"></div></div><div class="ppv">高(分散)</div></div>
+      <div class="pp-row"><div class="ppn">贯穿算法/云</div><div class="ppt"><div class="ppb" style="width:72%;"></div></div><div class="ppv">高(软)</div></div>
+    </div>
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">利润迁移（过去 3 年 → 未来 5 年）</h3>
+    <div class="migrate">
+      <div class="mg"><div class="mgh">过去 3 年</div><p>利润集中在科研设备与早期康复器械；侵入式尚在临床，未形成规模利润。国产器件从 0 到 1。</p></div>
+      <div class="mg"><div class="mgh">当前</div><p>非侵入式康复设备已商业化贡献利润；上游器件随国产化提升毛利；中游靠融资支撑。</p></div>
+      <div class="mg"><div class="mgh">未来 5 年</div><p>向"临床级系统 + 数据平台"集中；若消费级放量，下游品牌溢价抬升；电极/芯片标准化后上游利润或被摊薄但量增。</p></div>
+    </div>
+    <div class="sim">
+      <b>颠覆情景：</b>若柔性电极标准化 + 解码算法开源（如 Neuralink datarepo 趋势），中游系统壁垒下降，<b>最终赢家可能是上游标准器件商 + 下游数据/云平台</b>，纯系统集成商利润被挤压。投资人应优先卡位"器件标准"或"数据资产"。
+    </div>
+  </section>
+
+  <!-- 08 机会雷达 -->
+  <section id="radar">
+    <div class="sec-head"><span class="no">08</span><h2>投资机会雷达</h2><span class="en">Opportunity Radar</span></div>
+    <div class="radar">
+      <div class="radar-col sub"><h4>① 国产替代（窗口已开）</h4>
+        <div class="radar-item">柔性电极/采集芯片国产化率仍低，中电云脑"脑语者"、汉威能斯达已突破，3 年差距有望拉平</div>
+        <div class="radar-item">晶圆/线材依赖海外，自主可控是政策必选项</div>
+        <div class="radar-item">高端电生理记录系统（深脑医疗 1024/4096 通道）国产替代</div>
+      </div>
+      <div class="radar-col gap"><h4>② 供需错配（涨价环节）</h4>
+        <div class="radar-item">高精度脑电采集硬件（电极/芯片）扩产周期 >18 个月、需求刚性（医疗+科研）</div>
+        <div class="radar-item">临床级植入体产能稀缺，合格供应商极少</div>
+        <div class="radar-item">三类证稀缺，持证产品享溢价</div>
+      </div>
+      <div class="radar-col water"><h4>③ 卖水人（确定性受益）</h4>
+        <div class="radar-item">上游电极材料/芯片——无论中游谁胜都要用</div>
+        <div class="radar-item">临床试验 CRO / 注册咨询——侵入式上市前必采购</div>
+        <div class="radar-item">神经数据标注/云平台——跨路线通用</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 真伪受益 -->
+  <section id="real">
+    <div class="sec-head"><span class="no">09</span><h2>真受益 vs 伪受益</h2><span class="en">Real vs Nominal</span></div>
+    <div class="lead">三步甄别：①看收入来源（有无真实订单/板块收入）②看链条位置（是否卡不可替代环节）③看估值与兑现（高 PE/深亏是否透支）。</div>
+    <div class="master-grid">
+      <div class="master-col m"><h4>✅ 真受益（核心玩家）</h4>
+        <ul>
+          <li><b>Neuralink / 脑虎 / 阶梯 / 博睿康 / 微灵</b>——侵入式真做核心环节</li>
+          <li><b>强脑科技</b>——非侵入式独角兽，产品量产+拟 IPO</li>
+          <li><b>创新医疗（博灵 68.36% 持股）</b>——AM5 获注册证（2026-06），真实业务</li>
+          <li><b>三博脑科</b>——神经专科+临床转化场景</li>
+          <li><b>翔宇 / 伟思</b>——非侵入康复设备有注册证、进院</li>
+          <li><b>汉威（能斯达）</b>——柔性传感器中标工信部专项，真有业务但营收极少</li>
+          <li><b>岩山科技</b>——非侵入解码算法真实布局</li>
+        </ul>
+      </div>
+      <div class="master-col b"><h4>⚠ 伪受益 / 概念贴牌</h4>
+        <ul>
+          <li><b>南京熊猫</b>——明确表态"暂无成熟脑机产品对外"</li>
+          <li><b>科大讯飞</b>——情绪识别/车载，间接受益·非核心</li>
+          <li><b>汤姆猫 / 佳禾智能</b>——消费耳机+脑电，概念贴牌</li>
+          <li><b>复旦复华</b>——"脑科学"模糊叙事，无明确产品</li>
+          <li><b>多家"脑电图机/睡眠仪"</b>——仅前端采集，未构成完整 BCI 闭环（学术定义降维）</li>
+        </ul>
+      </div>
+    </div>
+    <div class="verdict"><b>关键判断：</b>A 股"脑机接口"概念泛化严重，多数公司仅停留在"脑电采集"或"参股早期团队"。<b>真正以 BCI 为核心业务的上市公司仍稀缺</b>——创新医疗靠控股博灵、三博/翔宇/伟思靠医疗场景、汉威靠传感器，其余多为间接受益·非核心，不宜按"核心链条"给估值。</div>
+  </section>
+
+  <!-- 10 健康度·风险 -->
+  <section id="health">
+    <div class="sec-head v4"><span class="no">10</span><h2>产业健康度体检 + deal 级风险</h2><span class="en">Health Check & Deal Risk</span></div>
+    <h3 style="font-size:15px;color:var(--navy);margin:4px 0 8px;">5 个前瞻健康度指标</h3>
+    <div class="health">
+      <div class="health-item warn"><div class="hi-t">注册证发放节奏</div><div class="hi-c">当前：博灵 AM5 获证（2026-06），多数在研未拿证</div><div class="hi-w">预警线：连续 2 年无新增三类证 → 商业化存疑</div></div>
+      <div class="health-item"><div class="hi-t">临床试验入组</div><div class="hi-c">当前：阶梯 FIM 完成、北脑多例植入，入组加速</div><div class="hi-w">预警线：入组停滞/脱落率高 → 技术或安全预警</div></div>
+      <div class="health-item warn"><div class="hi-t">融资节奏 / runway</div><div class="hi-c">当前：强脑 20 亿、阶梯 3.5 亿等大额融资频现</div><div class="hi-w">预警线：18 个月无下一轮 → 烧钱断裂风险</div></div>
+      <div class="health-item"><div class="hi-t">研发费用率</div><div class="hi-c">当前：硬科技高投入常态（诚益通 2025 巨亏被 ST）</div><div class="hi-w">预警线：费用率畸高且收入为零 → 兑现遥远</div></div>
+      <div class="health-item warn"><div class="hi-t">医保/支付落地</div><div class="hi-c">当前：价格项目设立但支付细则未铺开</div><div class="hi-w">预警线：2 年内无支付路径 → 放量受限</div></div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">多空逻辑链</h3>
+    <div class="bullbear">
+      <div class="bb bull"><h4>看多 · 最坚实底座</h4><p>医疗刚需真实（截瘫/卒中/渐冻）、政策全力扶持（十五五未来产业+医保破冰）、临床里程碑密集、国产代差已缩至半年~一年。长期是"通用目的技术"，杠杆极高。</p></div>
+      <div class="bb bear"><h4>看空 · 最具杀伤力</h4><p>商业化极早期，A 股概念营收占比极低（博灵累计营收仅数十万元）；侵入式长期生物相容/信号衰减未解；消费级叙事易证伪；估值已透支（汉威 170 倍 PE vs 1.5 亿预期利润）。</p></div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">deal 级风险（下沉到标的）</h3>
+    <div class="dr-grid">
+      <div class="dr-card"><div class="dr-type">关键人风险</div><span class="dr-sev h">高</span><p>脑虎（陶虎）、阶梯（赵郑拓/李雪，中科院脑智卓越中心）等高度依赖核心科学家；出走/变动直接影响技术路线与临床。</p></div>
+      <div class="dr-card"><div class="dr-type">融资风险</div><span class="dr-sev h">高</span><p>普遍长周期高 burn；诚益通 2025 巨亏 8.79 亿被 *ST。须看 runway 与下一轮领投方（启明/奥博/礼来亚洲等）。</p></div>
+      <div class="dr-card"><div class="dr-type">技术风险</div><span class="dr-sev m">中</span><p>实验室成立 ≠ 量产/规模化。超柔性电极良率、长期在体稳定性、4096 通道系统工程化均待验证。</p></div>
+      <div class="dr-card"><div class="dr-type">监管风险</div><span class="dr-sev m">中</span><p>三类证审批节奏、脑数据隐私与伦理治理（神经数据或成独立法律概念）具不确定性，可改写商业化时点。</p></div>
+    </div>
+  </section>
+
+  <!-- 11 客观判断 -->
+  <section id="verdict">
+    <div class="sec-head"><span class="no">11</span><h2>客观判断</h2><span class="en">Objective Verdict</span></div>
+    <div class="verdict">
+      <b>① 产业定位：</b>"小体量、高杠杆"的通用目的技术，当前产值小但对医疗/康养/具身机器人有倍增撬动。<br>
+      <b>② 技术收敛：</b>三大路线底层架构基本确立，竞争转向电极材料、芯片、系统整合、数据算法、脑科学理解五维度。<br>
+      <b>③ 市场节奏：</b>非侵入式康复已商业化、放量最快；侵入式 2028 前后上市是关键兑现窗；消费级中长期弹性大但短期弱。<br>
+      <b>④ 中国位置：</b>已从追赶者变并跑者，代差缩至半年~一年，依托低成本研发+工程化+临床资源，有望局部反超。<br>
+      <b>⑤ 资本主线：</b>沿"医疗康复方案商 / 高精度采集硬件 / 消费融合探索"三线布局，一级热度高于二级兑现。<br>
+      <b>⑥ 最大风险：</b>叙事跑赢兑现——2025 炒作退潮后 2026 普遍回调 10%-37%，估值仍需基本面承接（中报为试金石）。
+    </div>
+  </section>
+
+  <!-- 12 催化剂 -->
+  <section id="catalyst">
+    <div class="sec-head v6"><span class="no">12</span><h2>催化剂与时序日历</h2><span class="en">Catalyst Calendar</span></div>
+    <div class="lead">投资人排节奏、定进入时点的依据。BCI 催化剂高度依赖<b>临床读出 + 注册证 + IPO/融资 + 政策</b>。</div>
+    <div class="cat-horizon">
+      <div class="ch-t"><span class="chip2">未来 6 个月</span> 2026 H2</div>
+      <div class="cat-list">
+        <div class="cat-row"><span class="ct">持续</span><span class="ce">博灵 AM5 上市后销售爬坡、强脑 IPO 申报推进</span><span class="cd up">利好·中游/下游</span></div>
+        <div class="cat-row"><span class="ct">2026Q3</span><span class="ce">汉威等中报披露，检验脑机概念对业绩实际贡献</span><span class="cd both">双向·验证</span></div>
+        <div class="cat-row"><span class="ct">2026H2</span><span class="ce">各地行动方案落地（北京/上海/四川 2025-2030 细则）、医保价格项目试点扩围</span><span class="cd up">利好·全链</span></div>
+      </div>
+      <div class="ch-t"><span class="chip2">未来 12 个月</span> 2027</div>
+      <div class="cat-list">
+        <div class="cat-row"><span class="ct">2027</span><span class="ce">上海目标 5 款以上侵入式/半侵入式产品完成临床试验；北京推动多场景落地</span><span class="cd up">利好·临床</span></div>
+        <div class="cat-row"><span class="ct">2027</span><span class="ce">阶梯医疗等产品上市前临床推进（目标 2028 上市）；更多二类/三类证发放</span><span class="cd up">利好·侵入式</span></div>
+        <div class="cat-row"><span class="ct">2027</span><span class="ce">Science Corp（PRIMA 获 CE）等海外合作或引入国内；外资催化</span><span class="cd both">双向</span></div>
+      </div>
+      <div class="ch-t"><span class="chip2">未来 24 个月</span> 2028</div>
+      <div class="cat-list">
+        <div class="cat-row"><span class="ct">2028</span><span class="ce">阶梯医疗侵入式产品有望上市，标志国产侵入式商业化 0→1</span><span class="cd up">利好·里程碑</span></div>
+        <div class="cat-row"><span class="ct">2028</span><span class="ce">北脑系列、博睿康等临床与上市节点；港交所/科创板上市窗口</span><span class="cd up">利好·退出</span></div>
+        <div class="cat-row"><span class="ct">持续</span><span class="ce">若消费级头戴产品稳定验证睡眠/情绪效果，或触发指数级放量（类似智能手表 2015 后）</span><span class="cd both">待验证</span></div>
+      </div>
+    </div>
+    <p class="note">当前链上可预期催化剂密集度<b>中等偏上</b>：临床与政策节点清晰，但消费级缺明确引爆点。排节奏建议——锚定"注册证 + IPO/融资 + 临床读出"三类事件。</p>
+  </section>
+
+  <!-- 13 投资启示 -->
+  <section id="insight">
+    <div class="sec-head v6"><span class="no">13</span><h2>投资启示与动作建议</h2><span class="en">Investment Implications</span></div>
+    <div class="lead">结论为客观梳理下的投资视角提示，非买卖建议，措辞"可关注/宜观望/待催化"。</div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:18px 0 8px;">① 非对称下注点</h3>
+    <div class="asym-grid">
+      <div class="asym up"><div class="at">↑ 高赔率：临床级系统</div><p>脑虎/阶梯/博睿康——侵入式 2028 上市窗口临近，临床进度每推进一步估值跃迁。小投入博大 upside，但周期长、关键人/技术风险高。</p></div>
+      <div class="asym safe"><div class="at">▣ 稳赚卖水人：上游器件</div><p>中电云脑/汉威（传感器）/深脑医疗（记录系统）——无论中游谁胜都要用。确定性最高，但需技术真突破+量产验证，警惕"概念供应商"。</p></div>
+      <div class="asym trap"><div class="at">⚠ 伪需求陷阱：消费贴牌</div><p>纯睡眠/专注力/情绪头环、A 股"脑电图机"降维叙事——刚需弱、复购未证。宜观望，等消费级出现智能手表级放量信号再定。</p></div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">② 可投标的 triage（项目池）</h3>
+    <div class="triage-wrap"><table>
+      <thead><tr><th>标的</th><th>路线</th><th>当前轮次/阶段</th><th>估值锚</th><th>开放融资</th><th>可接触性</th></tr></thead>
+      <tbody>
+        <tr><td>Neuralink</td><td>侵入式</td><td>E 轮后（90 亿美元）</td><td>未盈利硬科技</td><td>已不开放</td><td>难</td></tr>
+        <tr><td>强脑科技</td><td>非侵入式</td><td>IPO 前（拟港交所）</td><td>~13 亿美元</td><td>Pre-IPO</td><td>可关注打新</td></tr>
+        <tr><td>脑虎科技</td><td>侵入式</td><td>A 轮后（数亿）</td><td>pipeline</td><td>大概率开放</td><td>可接触</td></tr>
+        <tr><td>阶梯医疗</td><td>侵入式</td><td>B 轮（3.5 亿）</td><td>pipeline/里程碑</td><td>下一轮待启</td><td>可接触（头部）</td></tr>
+        <tr><td>博睿康</td><td>微创/半侵入</td><td>D 轮后</td><td>pipeline</td><td>视进展</td><td>可接触</td></tr>
+        <tr><td>智冉医疗</td><td>侵入式</td><td>A 轮（超 3 亿）</td><td>pipeline</td><td>早期</td><td>可接触</td></tr>
+        <tr><td>微灵医疗</td><td>侵入式</td><td>早期</td><td>pipeline</td><td>开放</td><td>可接触</td></tr>
+        <tr><td>岩山科技</td><td>非侵入式算法</td><td>已上市 002195</td><td>PS（若起量）</td><td>二级</td><td>直接</td></tr>
+        <tr><td>创新医疗/翔宇/伟思</td><td>医疗场景</td><td>已上市</td><td>PE</td><td>二级策略</td><td>直接</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">③ 退出路径映射</h3>
+    <div class="exit-grid">
+      <div class="exit-col"><div class="ex-h">港交所 18C</div><p>未盈利硬科技上市通道。强脑科技、脑虎等出海/美元架构候选。最贴合 BCI 长周期特征。</p></div>
+      <div class="exit-col"><div class="ex-h">科创板第五套</div><p>未盈利科创企业上市。境内架构的脑虎/阶梯/博睿康候选，需满足研发投入与市值标准。</p></div>
+      <div class="exit-col"><div class="ex-h">北交所</div><p>更早阶段、规模较小的器件/材料企业（如电极材料、专用芯片初创）培育通道。</p></div>
+      <div class="exit-col"><div class="ex-h">并购</div><p>上市公司参股/并购早期团队（创新医疗→博灵、翔宇/道氏→强脑）。产业方卡位式收购是重要退出。</p></div>
+    </div>
+  </section>
+
+  <!-- 末章 双表 -->
+  <section id="chart">
+    <div class="sec-head"><span class="no">末</span><h2>代表公司涨跌 / 估值全景</h2><span class="en">Quotes & Valuation</span></div>
+    <div class="lead">涨红跌绿（A 股习惯）。<b>表①</b>列有代码公司当日涨跌（2026-08-03 收盘）；<b>表②</b>列未上市/海外头部估值·融资·财报对照。</div>
+
+    <div class="chart">
+      <div class="grp-title"><span class="sw" style="background:var(--navy);"></span>表① 有代码公司 · 当日涨跌幅（2026-08-03 收盘，满刻度 ±16%）</div>
+      <div class="row"><span class="name">*ST益通(300430)</span><div class="track"><div class="bar pos" style="width:9.2%;"></div></div><span class="val pos">+2.93%</span></div>
+      <div class="row"><span class="name">汉威科技(300007)</span><div class="track"><div class="bar pos" style="width:6.4%;"></div></div><span class="val pos">+2.04%</span></div>
+      <div class="row"><span class="name">佳禾智能(300793)</span><div class="track"><div class="bar pos" style="width:6.0%;"></div></div><span class="val pos">+1.91%</span></div>
+      <div class="row"><span class="name">科大讯飞(002230)</span><div class="track"><div class="bar pos" style="width:4.3%;"></div></div><span class="val pos">+1.37%</span></div>
+      <div class="row"><span class="name">岩山科技(002195)</span><div class="track"><div class="bar pos" style="width:0.9%;"></div></div><span class="val pos">+0.29%</span></div>
+      <div class="row"><span class="name">伟思医疗(688580)</span><div class="track"><div class="bar neg" style="width:2.1%;"></div></div><span class="val neg">-0.66%</span></div>
+      <div class="row"><span class="name">倍益康(920199)</span><div class="track"><div class="bar neg" style="width:4.5%;"></div></div><span class="val neg">-1.44%</span></div>
+      <div class="row"><span class="name">三博脑科(301293)</span><div class="track"><div class="bar neg" style="width:4.2%;"></div></div><span class="val neg">-1.33%</span></div>
+      <div class="row"><span class="name">南京熊猫(600775)</span><div class="track"><div class="bar neg" style="width:2.9%;"></div></div><span class="val neg">-0.92%</span></div>
+      <div class="row"><span class="name">爱朋医疗(300753)</span><div class="track"><div class="bar neg" style="width:6.3%;"></div></div><span class="val neg">-2.00%</span></div>
+      <div class="row"><span class="name">创新医疗(002173)</span><div class="track"><div class="bar neg" style="width:7.5%;"></div></div><span class="val neg">-2.41%</span></div>
+      <div class="row"><span class="name">翔宇医疗(688626)</span><div class="track"><div class="bar neg" style="width:7.8%;"></div></div><span class="val neg">-2.50%</span></div>
+      <div class="legend">
+        <span class="li"><span class="sq" style="background:var(--red);"></span>上涨（红）</span>
+        <span class="li"><span class="sq" style="background:var(--green);"></span>下跌（绿）</span>
+        <span class="li" style="color:#9aa6b2;">纵轴等比于涨跌幅绝对值（满刻度 ±16%）；当日板块温和分化。</span>
+      </div>
+      <p class="note">📌 <b>年初至今（YTD）更说明问题：</b>板块指数 -13.3%；个股普遍回调——*ST益通 -76.3%（2025 巨亏被 ST）、汉威 -37.3%、佳禾 -31.2%、翔宇 -30.0%、倍益康 -23.1%、南京熊猫 -20.6%、爱朋 -18.9%、科大讯飞 -14.7%、创新医疗 -12.5%、三博 -10.9%、岩山 -3.8%、伟思 -1.1%。<b>2025 炒作退潮、2026 基本面承接期，估值向真实业务回归。</b></p>
+    </div>
+
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>公司</th><th>代码</th><th>环节/路线</th><th>收盘价</th><th>总市值</th><th>业务实质</th><th>真伪</th></tr></thead>
+      <tbody>
+        <tr><td>创新医疗</td><td>002173</td><td>侵入式(控股博灵)</td><td>19.07</td><td>84 亿</td><td>博灵 68.36% 持股，AM5 获注册证(2026-06)</td><td><span class="badge t">真受益</span></td></tr>
+        <tr><td>*ST益通</td><td>300430</td><td>双轨(未拿证)</td><td>4.57</td><td>12 亿</td><td>脑机列为板块但未拿证；2025 巨亏 8.79 亿被 ST</td><td><span class="badge f">真布局·高风险</span></td></tr>
+        <tr><td>三博脑科</td><td>301293</td><td>神经专科+临床</td><td>53.39</td><td>110 亿</td><td>与清华北脑合作，神经调控收入占比小</td><td><span class="badge t">真受益</span></td></tr>
+        <tr><td>翔宇医疗</td><td>688626</td><td>非侵入康复</td><td>41.73</td><td>67 亿</td><td>Sun Brain 系统进院，定增 13.66 亿研发</td><td><span class="badge t">真受益</span></td></tr>
+        <tr><td>伟思医疗</td><td>688580</td><td>非侵入康复</td><td>46.79</td><td>45 亿</td><td>非侵入电极专利，Xlora-EEG 对标进口</td><td><span class="badge t">真受益</span></td></tr>
+        <tr><td>汉威科技</td><td>300007</td><td>上游传感器</td><td>33.57</td><td>110 亿</td><td>能斯达柔性传感器中标工信部专项，营收极少</td><td><span class="badge s">间接受益·上游</span></td></tr>
+        <tr><td>爱朋医疗</td><td>300753</td><td>非侵入(ADHD/失眠)</td><td>22.50</td><td>28 亿</td><td>注册证数量多，主营仍注药泵/喷雾</td><td><span class="badge t">真布局</span></td></tr>
+        <tr><td>岩山科技</td><td>002195</td><td>非侵入解码算法</td><td>6.82</td><td>386 亿</td><td>岩思类脑四级中文解码，算法授权型</td><td><span class="badge t">真布局</span></td></tr>
+        <tr><td>科大讯飞</td><td>002230</td><td>情绪识别/车载</td><td>42.80</td><td>1028 亿</td><td>脑电情绪识别，技术邻近非核心</td><td><span class="badge f">间接受益·非核心</span></td></tr>
+        <tr><td>南京熊猫</td><td>600775</td><td>概念</td><td>9.69</td><td>89 亿</td><td>明确表态暂无成熟脑机产品</td><td><span class="badge f">概念贴牌</span></td></tr>
+        <tr><td>佳禾智能</td><td>300793</td><td>消费耳机+脑电</td><td>11.23</td><td>43 亿</td><td>消费级贴牌，非核心</td><td><span class="badge f">概念贴牌</span></td></tr>
+        <tr><td>倍益康</td><td>920199</td><td>植入式工程中心</td><td>26.61</td><td>18 亿</td><td>联合申报企业，早期</td><td><span class="badge s">真布局·早期</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="two-table-note">📌 表② 针对未上市 / 海外非独立上市公司（无单日涨跌），列估值·融资·最新财务对照——这些才是产业链真正的话语权持有者（核心玩家集中于此）。</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>公司</th><th>上市状态</th><th>路线/环节</th><th>最新估值 / 融资 / 财务</th><th>关键信号</th></tr></thead>
+      <tbody>
+        <tr><td>Neuralink</td><td>未上市（美国）</td><td>侵入式</td><td>E 轮 6.5 亿美元（2025-06），投前估值约 90 亿美元</td><td>3 例植入超 670 天，开源 datarepo</td></tr>
+        <tr><td>Synchron</td><td>未上市（美国）</td><td>半侵入式(血管内)</td><td>融资破亿美元级，与 NVIDIA 合作</td><td>Stentrode 免开颅，全球标杆</td></tr>
+        <tr><td>强脑科技 BrainCo</td><td>拟 IPO（港交所）</td><td>非侵入式</td><td>2026 初 20 亿元融资（全球第二）；~13 亿美元估值</td><td>独角兽，产品量产，IDG/华登/蓝思参投</td></tr>
+        <tr><td>脑虎科技</td><td>未上市（中国）</td><td>侵入式</td><td>A 轮数亿元</td><td>256 通道柔性脑机，汉语语言解码突破</td></tr>
+        <tr><td>阶梯医疗</td><td>未上市（中国）</td><td>侵入式</td><td>B 轮 3.5 亿元（国内植入式最大单笔）</td><td>超柔性电极全球最小，FIM 完成，2028 上市</td></tr>
+        <tr><td>博睿康</td><td>未上市（中国）</td><td>微创/半侵入</td><td>C→D 轮</td><td>临床推进中，国产进度靠前</td></tr>
+        <tr><td>智冉医疗</td><td>未上市（中国）</td><td>侵入式</td><td>A 轮超 3 亿元（2025-08）</td><td>清华系孵化</td></tr>
+        <tr><td>微灵医疗</td><td>未上市（中国）</td><td>侵入式</td><td>早期融资</td><td>植入式新锐</td></tr>
+        <tr><td>芯智达·北脑</td><td>科研孵化（中国）</td><td>半侵入式 ECoG</td><td>非独立上市</td><td>北脑一号/二号，天坛医院多例植入</td></tr>
+        <tr><td>中电云脑·脑语者</td><td>中国电子旗下（非上市）</td><td>上游采集芯片</td><td>非独立上市</td><td>国内首款自主神经电生理采集计算芯片</td></tr>
+        <tr><td>Science Corp</td><td>未上市（美国）</td><td>侵入式(视网膜)</td><td>PRIMA 获欧盟 CE（2026）</td><td>首款获 CE 的 BCI 设备</td></tr>
+      </tbody>
+    </table></div>
+    <div class="src">行情来自公开行情接口（2026-08-03 收盘快照，含盘中 13:23 数据）；未上市/海外公司列估值或最新融资（Neuralink 90 亿美元、强脑 20 亿元/13 亿美元估值、阶梯 3.5 亿元 B 轮等，经公开报道与 Web 检索交叉验证）。"真伪"为基于公开业务的客观梳理，会随产业进展变化。</div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <p><b>数据来源与方法：</b>行情与市值数据来自公开行情接口（2026-08-03 收盘），财务/融资/技术信息来自公司公告、IR 与公开研报/权威媒体（经 Web 检索交叉验证）。市场规模数据引自麦肯锡、赛迪顾问、中国信通院、Precedence Research 等公开测算。</p>
+      <p><b>口径说明：</b>涨红跌绿为 A 股习惯；"真/伪受益""确定性""价值流转/利润池/产业权力/机会雷达/健康度/需求真实性/催化剂/投资启示"为基于公开业务与数据的客观梳理与行业估算，非评级、非精确并表财务数据。代表公司严格按"真实产业参与者"遴选，A 股概念映射方单独标注为间接受益、不进入核心链条。</p>
+      <div class="disclaimer">
+        ⚠️ <b>免责声明：</b>本页面仅为产业链结构与公开数据的客观整理，<b>不构成任何投资建议、要约或承诺</b>。第 12/13 章（催化剂/投资启示）为基于公开信息的投资视角提示，非买卖建议，措辞"可关注/宜观望/待催化"。技术商业化存在高度不确定性，标注的"真/伪受益"会随产业进展变化。投资有风险，决策需谨慎，请以交易所及公司官方披露信息为准，并咨询持牌专业人士。
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var map = {};
+  links.forEach(function(a){ var id=a.getAttribute('href').slice(1); var s=document.getElementById(id); if(s) map[id]=a; });
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          links.forEach(function(l){l.classList.remove('active');});
+          var a = map[e.target.id]; if(a) a.classList.add('active');
+        }
+      });
+    }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+    Object.keys(map).forEach(function(id){ var el=document.getElementById(id); if(el) obs.observe(el); });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>光模块 · 技术全景分析</title>
+<style>
+:root{
+  --navy-900:#142b47; --navy-800:#1d3a5e; --navy-700:#2b5488; --navy-600:#3f7bb0; --navy-500:#5a9bd6;
+  --gold:#bd9a55; --gold-soft:#f7f1e3; --accent2:#d9b877; --slate:#9fb3cd;
+  --surface:#f4f6f8; --surface-2:#eaf1f8; --card:#ffffff;
+  --border:#e5e9ef; --border-soft:#e5e9ef;
+  --text:#19222e; --text-2:#3a4754; --text-3:#69737f;
+  --red:#d6463b; --red-soft:#fbedec; --amber:#bd9a55; --amber-soft:#f7f1e3; --green:#1e9d6a; --green-soft:#e8f5ef;
+  --radius:12px; --radius-s:8px;
+  --font-serif:"Source Han Serif SC","Noto Serif SC","Songti SC","SimSun",serif;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;padding-left:252px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;color:var(--text);background:var(--surface);line-height:1.7;-webkit-font-smoothing:antialiased;font-size:15px;}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px;}
+@media(max-width:980px){body{padding-left:0;}.sidebar{position:sticky;top:0;width:100%;height:auto;flex-direction:row;overflow-x:auto;}.side-brand{border-bottom:none;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap;}.toc{display:flex;padding:10px;flex-wrap:nowrap;}.toc a{border-left:none;white-space:nowrap;}}
+.sidebar{position:fixed;top:0;left:0;width:252px;height:100vh;background:linear-gradient(180deg,#142b47 0%,#1d3a5e 55%,#244d7c 100%);color:#fff;display:flex;flex-direction:column;z-index:60;box-shadow:2px 0 18px rgba(20,43,71,.25);}
+.side-brand{padding:24px 22px 18px;border-bottom:1px solid rgba(255,255,255,.10);}
+.side-brand .sb-t{font-size:12px;color:var(--slate);letter-spacing:1.5px;font-weight:600;}
+.side-brand .sb-n{font-size:17px;font-weight:800;margin-top:6px;line-height:1.3;font-family:var(--font-serif);}
+.side-brand .sb-v{display:inline-block;margin-top:12px;font-size:11px;color:#142b47;background:var(--accent2);padding:3px 10px;border-radius:11px;font-weight:700;letter-spacing:.5px;}
+.toc{padding:14px 12px 30px;overflow-y:auto;flex:1 1 auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.28) transparent;}
+.toc::-webkit-scrollbar{width:6px;height:6px;}
+.toc::-webkit-scrollbar-track{background:transparent;}
+.toc::-webkit-scrollbar-thumb{background:rgba(255,255,255,.28);border-radius:3px;}
+.toc a{display:flex;align-items:center;gap:11px;color:#a9c0db;font-size:13px;padding:10px 12px;border-radius:9px;transition:.18s;margin:2px 0;border-left:3px solid transparent;text-decoration:none;}
+.toc a:hover{background:rgba(255,255,255,.08);color:#fff;}
+.toc a.active{background:rgba(255,255,255,.14);color:#fff;border-left-color:var(--accent2);}
+.toc .num{font-size:11px;font-weight:700;color:#7e9bbf;width:22px;flex:0 0 auto;text-align:center;}
+.toc a.active .num{color:var(--accent2);}
+.toc .part{margin:14px 0 4px;font-size:11px;font-weight:700;color:var(--accent2);letter-spacing:.05em;padding-left:12px;}
+main{flex:1;min-width:0;padding:30px 0 80px;}
+section{padding:40px 0 12px;scroll-margin-top:10px;}
+section h2{margin:0 0 18px;font-size:22px;font-weight:750;color:var(--navy-800);font-family:var(--font-serif);letter-spacing:.3px;display:flex;align-items:center;gap:12px;}
+section h2 .n{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--navy-800),var(--navy-700));width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:9px;flex:0 0 auto;box-shadow:0 2px 6px rgba(29,58,94,.25);font-variant-numeric:tabular-nums;}
+section h3{margin:22px 0 10px;font-size:16px;color:var(--navy-800);border-left:3px solid var(--gold);padding-left:9px;}
+section p{margin:9px 0;color:var(--text);}
+.lead{color:var(--text-2);font-size:15px;margin-top:4px;}
+.hero{background:linear-gradient(135deg,#142b47 0%,#1d3a5e 55%,#2b5488 100%);color:#fff;padding:48px 0 42px;position:relative;}
+.hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--accent2),transparent);}
+.hero > *{max-width:1120px;margin-left:auto;margin-right:auto;padding:0 22px;}
+.hero .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--accent2);border:1px solid rgba(217,184,119,.45);padding:4px 12px;border-radius:20px;margin-bottom:14px;}
+.hero h1{margin:0 0 10px;font-size:34px;font-weight:800;letter-spacing:.5px;font-family:var(--font-serif);}
+.hero p.sub{margin:0;color:#c5d4e6;font-size:15px;max-width:820px;line-height:1.7;}
+.hero .meta{margin-top:18px;display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--slate);}
+.hero .meta .author{display:block;width:100%;white-space:nowrap;}
+.hero .meta b{color:#fff;font-weight:600;}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0;}
+@media(max-width:680px){.kpis{grid-template-columns:1fr;}}
+.kpi{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:14px 16px;}
+.kpi .v{font-size:24px;font-weight:700;color:var(--navy-800);font-variant-numeric:tabular-nums;}
+.kpi .v.g{color:var(--gold);}
+.kpi .l{font-size:12.5px;color:var(--text-2);margin-top:3px;}
+.kpi .s{font-size:11px;color:var(--text-3);margin-top:4px;}
+.grid{display:grid;gap:16px;}
+.grid.c2{grid-template-columns:repeat(2,1fr);} .grid.c3{grid-template-columns:repeat(3,1fr);}
+@media(max-width:680px){.grid.c2,.grid.c3{grid-template-columns:1fr;}}
+.card{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:16px 18px;}
+.card h4{margin:0 0 8px;font-size:15px;color:var(--navy-800);}
+.thesis-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:16px 0;}
+@media(max-width:680px){.thesis-grid{grid-template-columns:1fr;}}
+.tq{border-radius:var(--radius-s);padding:14px 16px;border:1px solid var(--border-soft);}
+.tq h4{margin:0 0 6px;font-size:14px;}
+.tq.success{background:var(--green-soft);border-color:#bfe0cf;} .tq.success h4{color:var(--green);}
+.tq.warn{background:var(--amber-soft);border-color:#ecd6ad;} .tq.warn h4{color:var(--amber);}
+.tq.danger{background:var(--red-soft);border-color:#f0c4bf;} .tq.danger h4{color:var(--red);}
+.tq.info{background:var(--surface-2);border-color:var(--border);} .tq.info h4{color:var(--navy-700);}
+.thesis-concl{background:var(--navy-900);color:#fff;border-radius:var(--radius-s);padding:18px 22px;margin:18px 0;}
+.thesis-concl .tag{display:inline-block;background:var(--gold);color:var(--navy-900);font-weight:700;font-size:12px;padding:3px 10px;border-radius:20px;margin-bottom:8px;}
+.thesis-concl p{color:#e7eefb;margin:6px 0;}
+.signals{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0;}
+.sig{background:var(--gold-soft);border:1px solid #e8cf9a;border-radius:20px;padding:7px 14px;font-size:13px;color:var(--navy-900);}
+.sig b{color:var(--red);}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;}
+th,td{border:1px solid var(--border-soft);padding:8px 11px;text-align:left;vertical-align:top;}
+th{background:var(--surface-2);color:var(--navy-800);font-weight:600;}
+tr:nth-child(even) td{background:#fafcff;}
+.hl{background:var(--gold-soft)!important;font-weight:600;}
+.sizing td:first-child{font-weight:600;color:var(--navy-800);}
+.scorecard .stars{color:var(--gold);letter-spacing:2px;font-size:13px;}
+.scorecard .row{display:flex;flex-wrap:wrap;gap:6px 18px;padding:7px 0;border-bottom:1px dashed var(--border-soft);}
+.scorecard .row:last-child{border-bottom:none;}
+.val td:first-child{font-weight:600;}
+.persp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:14px 0;}
+@media(max-width:680px){.persp-grid{grid-template-columns:1fr;}}
+.persp{border-left:3px solid var(--navy-600);background:var(--surface);border-radius:0 var(--radius-s) var(--radius-s) 0;padding:12px 16px;}
+.persp .who{font-weight:700;color:var(--navy-800);font-size:14px;}
+.persp .pos{font-size:12px;color:var(--text-3);margin-bottom:5px;}
+.rt{margin:12px 0;border-radius:var(--radius-s);overflow:hidden;border:1px solid var(--border-soft);}
+.rt-title{padding:8px 14px;color:#fff;font-weight:600;font-size:13.5px;}
+.rt-title.t1{background:var(--red);} .rt-title.t2{background:var(--amber);} .rt-title.t3{background:var(--navy-600);}
+.rt ul{margin:0;padding:10px 14px 10px 32px;background:var(--surface);}
+.rt li{margin:5px 0;font-size:13.5px;}
+.routes td:first-child{font-weight:600;color:var(--navy-800);}
+.routes .best{background:var(--gold-soft);font-weight:600;}
+.stack{margin:14px 0;}
+.layer{border:1px solid var(--border-soft);border-radius:var(--radius-s);margin-bottom:10px;overflow:hidden;}
+.layer .lh{background:var(--surface-2);padding:8px 14px;font-weight:600;color:var(--navy-800);display:flex;justify-content:space-between;}
+.layer .lh .ltier{font-size:11px;background:var(--navy-700);color:#fff;border-radius:5px;padding:1px 8px;}
+.layer .lb{padding:12px 14px;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12.5px;color:var(--navy-700);}
+.depnote{background:var(--gold-soft);border:1px solid #e8cf9a;border-radius:var(--radius-s);padding:12px 16px;font-size:13.5px;color:var(--navy-900);margin:10px 0;}
+.dcard{border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:16px 18px;margin:12px 0;background:var(--surface);}
+.dcard .dh{font-size:16px;font-weight:700;color:var(--navy-800);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.scorepill{background:var(--navy-900);color:var(--gold);font-weight:700;font-size:13px;border-radius:20px;padding:3px 12px;font-variant-numeric:tabular-nums;}
+.dcard .db{margin-top:10px;font-size:13.5px;}
+.dcard .db b{color:var(--navy-800);}
+.dgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 22px;margin-top:10px;}
+@media(max-width:680px){.dgrid{grid-template-columns:1fr;}}
+.ditem{font-size:13px;padding:5px 0;border-bottom:1px dashed var(--border-soft);}
+.vlist{margin:12px 0;border:1px solid var(--border-soft);border-radius:var(--radius-s);overflow:hidden;}
+.vrow{display:flex;gap:12px;padding:11px 16px;border-bottom:1px dashed var(--border-soft);font-size:13.5px;}
+.vrow:last-child{border-bottom:none;}
+.vrow .vq{flex:0 0 26px;height:26px;border-radius:50%;background:var(--navy-700);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+.indgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0;}
+@media(max-width:680px){.indgrid{grid-template-columns:1fr;}}
+.ind{border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:12px 14px;background:var(--surface);}
+.ind .it{font-weight:700;color:var(--navy-800);font-size:13.5px;}
+.ind .id{font-size:12.5px;color:var(--text-2);margin-top:4px;}
+.chart{margin:16px 0;background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:16px;}
+.chart svg{width:100%;height:auto;display:block;}
+.scurve{margin:16px 0;}
+.callout{border-left:4px solid var(--gold);background:var(--gold-soft);padding:12px 16px;border-radius:0 var(--radius-s) var(--radius-s) 0;font-size:13.5px;color:var(--navy-900);margin:12px 0;}
+.callout.r{border-left-color:var(--red);background:var(--red-soft);color:var(--navy-900);}
+.verdict{background:var(--navy-900);color:#fff;border-radius:var(--radius-s);padding:16px 20px;margin:16px 0;}
+.verdict .vt{display:inline-block;background:var(--gold);color:var(--navy-900);font-weight:700;font-size:12px;padding:3px 10px;border-radius:20px;margin-bottom:7px;}
+.footer{text-align:center;color:var(--text-3);font-size:12px;padding:20px;}
+span.src{display:inline;font-size:10px;padding:1px 5px;border-radius:4px;font-weight:600;vertical-align:baseline;margin-left:2px;letter-spacing:.3px;white-space:nowrap;}
+.src-org{background:#e7eefc;color:#1d5189;border:1px solid #c5d8f5;}
+.src-co{background:#e8f6ee;color:#1f8a5b;border:1px solid #bfe6cf;}
+.src-ac{background:#f3e9fb;color:#7b3fb0;border:1px solid #dcc4ef;}
+.src-md{background:#fbf0dc;color:#9a6a16;border:1px solid #ecd6ad;}
+div.src{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 18px;}
+div.src .s{font-size:12.5px;background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:4px 13px;color:var(--navy-700);}
+.part-divider{text-align:center;font-weight:700;color:var(--navy-700);letter-spacing:.1em;margin:30px 0 18px;font-size:14px;padding:10px;background:var(--surface-2);border-radius:var(--radius-s);}
+.no-print{display:none;}
+@media print{
+  body{background:#fff;padding-left:0;}
+  .sidebar{display:none;}
+  section{break-inside:avoid;box-shadow:none;border:none;}
+  .hero{background:#1d3a5e!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+.timeline{position:relative;margin:14px 0;padding-left:22px;}
+.timeline:before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:3px;background:linear-gradient(#1d3a5e,#bd9a55);}
+.tl-row{position:relative;padding:0 0 16px 16px;}
+.tl-dot{position:absolute;left:-22px;top:4px;width:13px;height:13px;border-radius:50%;background:var(--gold);border:3px solid #fff;box-shadow:0 0 0 2px var(--navy-700);}
+.tl-yr{font-weight:800;color:var(--navy-900);font-size:.98rem;}
+.tl-tag{display:inline-block;font-size:.7rem;padding:1px 8px;border-radius:10px;background:var(--surface-2);color:var(--navy-700);margin-left:8px;vertical-align:middle;font-weight:600;}
+.tl-body{color:var(--text-2);font-size:.88rem;margin-top:4px;line-height:1.55;}
+.card,.kpi,.dcard,.tq,.persp,.layer,.ind{box-shadow:0 1px 3px rgba(20,43,71,.06),0 1px 2px rgba(20,43,71,.04);}
+</style>
+</head>
+<body>
+<div id="gate" class="gate">
+  <div class="gate-box">
+    <div class="gate-title">🔒 内容已加密</div>
+    <div class="gate-sub">请输入访问密码</div>
+    <input id="gate-pwd" type="password" class="gate-input" placeholder="访问密码" autocomplete="off" />
+    <button id="gate-btn" class="gate-btn">解锁</button>
+    <div id="gate-err" class="gate-err"></div>
+  </div>
+</div>
+<style>
+.gate{position:fixed;inset:0;z-index:2147483647;background:linear-gradient(135deg,#0f1420,#1a2236);display:flex;align-items:center;justify-content:center;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif}
+.gate-box{background:#fff;border-radius:16px;padding:36px 40px;width:320px;max-width:86vw;box-shadow:0 20px 60px rgba(0,0,0,.45);text-align:center}
+.gate-title{font-size:20px;font-weight:700;color:#111827;margin-bottom:6px}
+.gate-sub{font-size:13px;color:#6b7280;margin-bottom:20px}
+.gate-input{width:100%;box-sizing:border-box;padding:12px 14px;font-size:15px;border:1px solid #d1d5db;border-radius:10px;outline:none;margin-bottom:14px}
+.gate-input:focus{border-color:#2563eb}
+.gate-btn{width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.gate-btn:hover{background:#1d4ed8}
+.gate-err{color:#dc2626;font-size:13px;margin-top:12px;min-height:18px}
+</style>
+<script>
+(function(){
+  var PWD="hanbuff";
+  function unlock(){ var g=document.getElementById("gate"); if(g&&g.parentNode){ g.parentNode.removeChild(g); } }
+  function check(){ var v=document.getElementById("gate-pwd").value; var err=document.getElementById("gate-err"); if(v===PWD){ unlock(); } else { err.textContent="密码错误，请重试"; } }
+  window.addEventListener("load",function(){ var btn=document.getElementById("gate-btn"); var inp=document.getElementById("gate-pwd"); if(btn) btn.addEventListener("click",check); if(inp){ inp.addEventListener("keydown",function(e){ if(e.key==="Enter") check(); }); inp.focus(); } });
+})();
+</script>
+
+
+<aside class="sidebar">
+  <div class="side-brand">
+    <div class="sb-t">技术全景分析 · TECH PANORAMA</div>
+    <div class="sb-n">光模块 Optical Module</div>
+    <div class="sb-v">2026 · 合并综合版</div>
+  </div>
+  <nav class="toc">
+    <div class="part">Part I · 技术全景</div>
+    <a href="#ch01"><span class="num">01</span>战略结论与投资研判</a>
+    <a href="#ch02"><span class="num">02</span>市场概览与测算</a>
+    <a href="#ch03"><span class="num">03</span>关键玩家与格局</a>
+    <a href="#ch04"><span class="num">04</span>技术源流与关键科学家</a>
+    <a href="#ch05"><span class="num">05</span>技术爆发的窗口与触发条件</a>
+    <a href="#ch06"><span class="num">06</span>技术栈与路线对比（含 TRL）</a>
+    <a href="#ch07"><span class="num">07</span>应用场景</a>
+    <a href="#ch08"><span class="num">08</span>多方行业观点</a>
+    <div class="part">Part II · 投资视角穿透</div>
+    <a href="#ch09"><span class="num">09</span>技术树全貌</a>
+    <a href="#ch10"><span class="num">10</span>关键技术投资密度</a>
+    <a href="#ch11"><span class="num">11</span>生命周期、风险与颠覆</a>
+    <a href="#ch12"><span class="num">12</span>未来展望与演进时间线</a>
+    <a href="#ch13"><span class="num">13</span>研究方法论</a>
+  </nav>
+</aside>
+<header class="hero">
+  <div class="tag">AI 光互连 · 技术全景</div>
+  <h1>光模块 · 技术全景分析</h1>
+  <p class="sub">光模块（Optical Transceiver）是插在交换机与服务器网卡面板上的电—光双向转换器件：发射端用激光器把电比特调制成光脉冲送入光纤，接收端用光探测器把光还原成电信号，让数据以光速跑完从数十米机架间到上百公里城域的距离。它决定了一张网络的带宽上限、时延下限与每比特功耗基线——在 AI 集群里，它是继 GPU、HBM 之后被抢的第三样东西。</p>
+  <div class="meta"><span class="author">作者 · <b>HanBuff</b></span><span> ｜ 生成日期 2026-08 ｜ 单文件 HTML · 可打印 · 数据来源标注【机构/公司/学术/建模】</span></div>
+</header>
+<div class="wrap">
+  <main>
+
+    <!-- 01 战略结论 -->
+    <section id="ch01">
+      <h2><span class="n">01</span>战略结论与投资研判</h2>
+      <div class="kpis">
+        <div class="kpi"><div class="v g">$190亿→$470亿</div><div class="l">全球数通光模块市场 2025→2028（LightCounting）</div><div class="s">三年 CAGR 约 35%</div></div>
+        <div class="kpi"><div class="v">21.2%</div><div class="l">中际旭创 2025 全球光模块市占率（连续 5 年第一）</div><div class="s">800G 份额超 40%</div></div>
+        <div class="kpi"><div class="v">&gt;50%</div><div class="l">2026 硅光方案模块销售额占比首次过半</div><div class="s">2018 年仅约 10%、2024 年 33%</div></div>
+      </div>
+
+      <div class="thesis-concl">
+        <span class="tag">核心研判</span>
+        <p>光模块是 AI 基建里<b>最早、最真实兑现现金流</b>的环节：2025 年以太网光模块市场同比约 +82%，头部厂商净利润翻倍，毛利率冲到 40–54% 的历史极值<span class="src src-org">机构</span><span class="src src-co">公司</span>。但 2026 下半年起，行业正从"技术确定性高 + 盈利确定性高"的双击，切换到"<b>技术确定性仍高、盈利确定性开始分化</b>"。真正的技术分水岭不是速率翻倍（800G→1.6T→3.2T 是已公布的路线图，没有悬念），而是两个架构问题：<b>DSP 去还是留</b>（FRO / LRO / LPO），以及<b>光引擎放在哪里</b>（面板可插拔 / NPO 板载 / CPO 同封装）。谁在这两条轴上押错，产能就是废铁。</p>
+      </div>
+
+      <h3>SWOT 四维研判</h3>
+      <div class="thesis-grid">
+        <div class="tq success"><h4>优势 S</h4><p>中国厂商已实质主导全球制造：LightCounting 2025 年 Top10 中中国占 7 席，中际旭创第一（收入 53.33 亿美元，+61%）、新易盛反超 Coherent 升至第二（35 亿美元，+189%）<span class="src src-org">机构</span>。1.6T 与硅光两条主线同时领先，旭创自研硅光良率已超 95%<span class="src src-co">公司</span>。</p></div>
+        <div class="tq warn"><h4>劣势 W</h4><p>敞口极度集中：新易盛境外收入占 96.16%、前五客户占 72.34%<span class="src src-co">公司</span>。上游 InP 衬底与 PAM4 DSP 双双受制于人（DSP 为博通 + Marvell 双寡头，800G DSP 单价 180–220 美元、毛利率 &gt;60%）<span class="src src-org">机构</span>。本轮高毛利本质是紧缺溢价，而非不可复制的工艺壁垒。</p></div>
+        <div class="tq info"><h4>机会 O</h4><p>1.6T 从 2025 年约 250 万只跃升至 2026 年千万只量级；硅光渗透率破 50%；若 Scale-up（超节点内互连）从铜切到光，光互连需求量级可放大 5–10 倍<span class="src src-org">机构</span>。OCS、800G ZR/ZR+、CPO 外置光源打开第二增长曲线（Coherent 判断 CPO 未来数年带来 &gt;20 亿美元增量市场）<span class="src src-co">公司</span>。</p></div>
+        <div class="tq danger"><h4>威胁 T</h4><p>CPO/NPO 的架构级替代；2027 年 1.6T 有效供给或达 6000–6500 万只，而高盛需求预测仅约 4600 万只，供需从短缺翻转为过剩<span class="src src-org">机构</span>；800G 单价已从上市时 &gt;1000 美元跌至 350–400 美元区间；叠加高端光模块出口管制与关税风险<span class="src src-md">建模</span>。</p></div>
+      </div>
+
+      <h3>关键信号（触发加仓 / 减仓）</h3>
+      <div class="signals">
+        <span class="sig">加仓信号：<b>1.6T 季度出货连续超预期且单价降幅收窄</b>（量价齐稳＝定价权仍在）</span>
+        <span class="sig">加仓信号：<b>Scale-up 网络确认大规模用光</b>（需求量级上修 5–10 倍）</span>
+        <span class="sig">加仓信号：<b>头部模块厂拿到 CPO 光引擎 / 外置光源份额</b>（把颠覆变成订单）</span>
+        <span class="sig">减仓信号：<b>800G 单价季度环比跌幅 &gt;10% 或龙头综合毛利率跌破 38%</b></span>
+        <span class="sig">减仓信号：<b>北美 CSP 下修 2027 capex 指引，或 GPU/XPU 交付节奏放缓</b></span>
+      </div>
+
+      <div class="callout r">反转触发器（什么会推翻当前判断）：① 若 SemiAnalysis 的 CPO 系统良率质疑被证实（单光引擎贴装良率 95%、整机 32 颗 → 19%），Scale-up CPO 推迟至 2029，则可插拔模块生命周期至少延长 3 年，本报告的"架构威胁"需下调<span class="src src-org">机构</span>；② 若 800G 价格战早于预期在 2026Q4 打响，行业估值体系将从"AI 成长股"整体切换为"周期成长股"，PE 中枢由 50 倍以上回落至 20–30 倍<span class="src src-md">建模</span>；③ 若 InP 衬底国产 6 英寸线在 2027 前跑通，产业链利润将从上游光芯片向模块厂回流。</div>
+
+      <h3>DD 清单入口（详见 13 章）</h3>
+      <div class="vlist">
+        <div class="vrow"><span class="vq">1</span><div><b>产品与客户结构</b>：800G / 1.6T 各占多少收入？前五大客户集中度？是绑定英伟达体系还是 CSP 自研 ASIC 体系？</div></div>
+        <div class="vrow"><span class="vq">2</span><div><b>上游锁定</b>：EML / CW 光源 / DSP 是否有长协或自研？InP 外延与衬底的备货月数？</div></div>
+        <div class="vrow"><span class="vq">3</span><div><b>路线对冲</b>：是否同时具备 FRO / LRO / LPO / NPO / CPO 光引擎五条能力？只押单一路线的公司下行风险不对称。</div></div>
+        <div class="vrow"><span class="vq">4</span><div><b>价与量拆解</b>：营收增长中"量增"与"价升"各贡献多少？把紧缺溢价剔除后的稳态毛利率是多少（历史锚：22% 以前约 20–25%）？</div></div>
+        <div class="vrow"><span class="vq">5</span><div><b>产能与地缘</b>：泰国 / 越南 / 美国属地化产能占比？关税与出口管制敞口？存货占净资产比重与减值风险？</div></div>
+      </div>
+    </section>
+
+    <!-- 02 市场 -->
+    <section id="ch02">
+      <h2><span class="n">02</span>市场概览与测算</h2>
+      <p>光模块市场规模的口径分歧极大，直接引用会差出一倍以上。LightCounting 至少并行三套口径：① <b>以太网光模块</b>（Ethernet transceivers，只看增速）；② <b>数通光模块</b>（Datacom，含 AOC，本报告主口径）；③ <b>AI 集群用以太网光模块（100G 起）+ CPO</b>。另有中金采用的 <b>400G+ 高速模块</b>口径。本报告以数通口径做 SAM，其余标注来源。</p>
+      <div class="chart">
+        <svg id="barchart" viewBox="0 0 640 300"></svg>
+      </div>
+      <div class="callout">主口径锚点：全球数通光模块 <b>2025 年约 190 亿美元 → 2028 年约 470 亿美元，三年 CAGR 约 35%</b>；其中 800G 从 2024 年 40 亿美元跃升至 2025 年 130 亿美元，是当年增长主引擎；800G + 1.6T 在 2026 年合计约 225 亿美元、占总市场 87%，2027 年进一步升至约 320 亿美元<span class="src src-org">机构</span>。另一口径下，"AI 集群以太网光模块 + CPO"2025 年 165 亿美元、2026 年 260 亿美元，连续两年同比 +60%<span class="src src-org">机构</span>。</div>
+
+      <h3>增速与结构（多口径并列）</h3>
+      <table class="routes">
+        <tr><th>口径</th><th>2024</th><th>2025</th><th>2026(F)</th><th>来源</th></tr>
+        <tr><td>以太网光模块增速</td><td>+93%</td><td class="best">+82%（估）</td><td>+65%（预测）</td><td class="best">LightCounting 2026.04</td></tr>
+        <tr><td>AI 集群模块 + CPO</td><td>—</td><td>$165 亿</td><td>$260 亿（+60%）</td><td>LightCounting 2026.02</td></tr>
+        <tr><td>400G+ 高速模块</td><td>—</td><td>—</td><td>$256.1 亿（2023–26 CAGR 104%）</td><td>中金 + LightCounting</td></tr>
+        <tr><td>DWDM 相干模块</td><td>下滑</td><td>+12%（止跌）</td><td>2026–31 CAGR 13%</td><td>LightCounting</td></tr>
+        <tr><td>AOC 有源光缆</td><td>+25%</td><td>+45%</td><td>继续增长</td><td>LightCounting</td></tr>
+      </table>
+
+      <h3>多情景规模测算（两种独立方法交叉验证）</h3>
+      <table class="sizing">
+        <tr><th>方法</th><th>关键假设</th><th>2026 估算</th><th>2028 估算</th></tr>
+        <tr><td>方法 A · 机构外推</td><td>数通口径 2025 = $190 亿，按 35% CAGR 外推</td><td>$260 亿</td><td class="best">$470 亿（LightCounting 直接给出）</td></tr>
+        <tr><td>方法 B · 出货量 × ASP 倒推</td><td>800G 3700–4000 万只 × ASP $250–300；1.6T 1500–2000 万只 × ASP $600–750</td><td>$182–270 亿（中枢 $225 亿）</td><td>$400–500 亿</td></tr>
+        <tr><td>基准区间（交叉）</td><td>两法交集，且与 LightCounting"800G+1.6T 占 87%"自洽</td><td class="best">$255–265 亿</td><td class="best">$450–470 亿</td></tr>
+        <tr><td>下行情景</td><td>2027 起 1.6T 供给 6000–6500 万只 &gt; 需求 4600 万只，单价跌 40–60%，量增价降</td><td>$240 亿</td><td>$340 亿</td></tr>
+      </table>
+      <div class="callout">两法在 2026 年高度收敛（$225 亿 vs $260 亿，差异来自是否计入 400G 及以下与 AOC），说明主口径可信。<b>关键在于第二法暴露了脆弱性：市场金额 = 出货量 × 单价，而单价是唯一会自己往下走的变量。</b>800G 上市时 &gt;1000 美元、2026 年 350–400 美元；1.6T 当前成交价 1000–1300 美元，若按同一轨迹，2027 年进入千万只级出货后将跌至 400–650 美元<span class="src src-md">建模</span>。此外供给端目前仍紧：当前需求超供给约 30%，瓶颈是 InP EML 与激光芯片产能，LightCounting 判断短缺应在 2026 年底前消退——<b>短缺消退之日，即价格战开始之时</b>。</div>
+    </section>
+
+    <!-- 03 玩家 -->
+    <section id="ch03">
+      <h2><span class="n">03</span>关键玩家与格局</h2>
+      <p>格局特征：<b>中国厂商主导模块制造、美日厂商主导上游光芯片、美系芯片厂主导 DSP 与 CPO 架构定义权</b>。LightCounting 2025 年光模块销售额 Top10 中，中国企业占 7 席（该榜单仅统计光模块销售额，不含其他产品，这解释了 Coherent / Lumentum 排名相对靠后）<span class="src src-org">机构</span>。</p>
+      <table class="routes">
+        <tr><th>排名</th><th>厂商</th><th>2025 光模块收入 / 关键位置</th><th>护城河性质</th></tr>
+        <tr><td class="best">1</td><td class="best">中际旭创（中）</td><td class="best">$53.33 亿（+61%），整体市占 21.2%，800G 份额 &gt;40%，1.6T 率先放量</td><td>规模 + 客户绑定 + 硅光自研</td></tr>
+        <tr><td>2</td><td>新易盛（中）</td><td>$35 亿（+189%），亚马逊 400G/800G 关键供应商，已过英伟达认证</td><td>成本 + 泰国产能 + LPO 卡位</td></tr>
+        <tr><td>3</td><td>Coherent（美）</td><td>FY26Q2 数据中心与通信收入 $12.08 亿（同比 +34%），订单出货比 &gt;4 倍</td><td>垂直整合（全球首条 6 英寸 InP 线）</td></tr>
+        <tr><td>4</td><td>光迅科技（中）</td><td>2025 营收 119.29 亿元（+44.2%），国内唯一"芯片—器件—模块—系统"全链</td><td>电信 + 数通双栖 + 自研硅光</td></tr>
+        <tr><td>5–10</td><td>Cisco Acacia、纳真科技（原海信宽带）、华工正源、索尔思光电、Lumentum、剑桥科技</td><td>相干 / 短距 / EML 光芯片 / 硅光各据一环</td><td>细分卡位</td></tr>
+      </table>
+
+      <h3>竞争评分卡（技术广度 / 全球份额 / 盈利质量 / 供应链自主 四维）</h3>
+      <div class="scorecard">
+        <div class="row"><span style="min-width:150px;font-weight:600;">中际旭创</span><span class="stars">技术 ★★★★★</span><span class="stars">份额 ★★★★★</span><span class="stars">盈利 ★★★★☆</span><span class="stars">供应链 ★★★★☆</span><span class="hl">高亮标的（全球龙头）</span></div>
+        <div class="row"><span style="min-width:150px;font-weight:600;">新易盛</span><span class="stars">技术 ★★★★☆</span><span class="stars">份额 ★★★★☆</span><span class="stars">盈利 ★★★★★</span><span class="stars">供应链 ★★★☆☆</span><span class="hl">盈利质量最优</span></div>
+        <div class="row"><span style="min-width:150px;font-weight:600;">Coherent（美）</span><span class="stars">技术 ★★★★★</span><span class="stars">份额 ★★★★☆</span><span class="stars">盈利 ★★★☆☆</span><span class="stars">供应链 ★★★★★</span><span>垂直整合最深</span></div>
+        <div class="row"><span style="min-width:150px;font-weight:600;">光迅科技</span><span class="stars">技术 ★★★★☆</span><span class="stars">份额 ★★★☆☆</span><span class="stars">盈利 ★★★☆☆</span><span class="stars">供应链 ★★★★★</span><span>国内唯一全产业链</span></div>
+        <div class="row"><span style="min-width:150px;font-weight:600;">天孚通信（器件）</span><span class="stars">技术 ★★★★☆</span><span class="stars">份额 ★★★☆☆</span><span class="stars">盈利 ★★★★★</span><span class="stars">供应链 ★★★★☆</span><span>光器件 &gt;45% 成本占比</span></div>
+        <div class="row"><span style="min-width:150px;font-weight:600;">Lumentum（美）</span><span class="stars">技术 ★★★★★</span><span class="stars">份额 ★★☆☆☆</span><span class="stars">盈利 ★★★☆☆</span><span class="stars">供应链 ★★★★☆</span><span>EML/CW 寡头 + OCS</span></div>
+        <div class="row"><span style="min-width:150px;font-weight:600;">索尔思（东山精密）</span><span class="stars">技术 ★★★★☆</span><span class="stars">份额 ★★★☆☆</span><span class="stars">盈利 ★★★☆☆</span><span class="stars">供应链 ★★★★☆</span><span>光芯片—模块—PCB 协同</span></div>
+      </div>
+
+      <h3>财务对照（2025 年报 / 最新季报）</h3>
+      <table class="routes">
+        <tr><th>公司</th><th>2025 营收</th><th>2025 归母净利</th><th>毛利率</th><th>最新季度</th></tr>
+        <tr><td>中际旭创</td><td>382.40 亿元（+60.25%）</td><td>107.97 亿元（+108.78%）</td><td>42.04%（光模块业务 34.65%→42.61%）</td><td class="best">2026Q1 营收 194.96 亿（+192%），归母 57.35 亿（+262%），毛利率 46.06%</td></tr>
+        <tr><td>新易盛</td><td>248.42 亿元（+187.29%）</td><td>95.32 亿元（+235.89%）</td><td>47.81%</td><td>2026Q1 营收 83.38 亿（+105.76%），归母 27.80 亿（+76.80%）</td></tr>
+        <tr><td>天孚通信</td><td>51.63 亿元（+58.79%）</td><td class="best">20.17 亿元（+50.15%）</td><td class="best">53.96%（行业最高）</td><td>2026H1 预告净利增速仅 25–45%，三年半最低</td></tr>
+        <tr><td>光迅科技</td><td>119.29 亿元（+44.20%）</td><td>9.46 亿元（+43.10%）</td><td>—</td><td>经营现金流 +353.99% 至 16.28 亿元</td></tr>
+        <tr><td>Coherent（FY26Q2）</td><td>季度 $16.86 亿（+22%）</td><td>—</td><td>Non-GAAP 约 38–40%</td><td>数据中心相关同比 +36%，2026 订单基本排满</td></tr>
+        <tr><td>Lumentum（FY26Q1）</td><td>季度 $5.34 亿（+58.4%）</td><td>—</td><td>Non-GAAP 39.4%</td><td>OCS 目标 2026 年底达 $1 亿收入</td></tr>
+      </table>
+      <div class="callout">格局含义：<b>模块环节已是中国主场，但利润率的可持续性取决于上游</b>。天孚 53.96% 的毛利率（光器件）高于旭创 42.04%（整机），Coherent 靠 6 英寸 InP 线锁住 EML 供给——微笑曲线的左端正在把利润抽走。同时头部厂商正把制造网络推向属地化：旭创泰国工厂 2025 年海外营收占比 90.58%，天孚跑通"苏州+新加坡"双总部与"江西+泰国"双基地，新易盛泰国二期 2025 年初投产<span class="src src-co">公司</span>。产能出海已从"降本"变成"合规必答题"。</div>
+    </section>
+
+    <!-- 04 谱系 -->
+    <section id="ch04">
+      <h2><span class="n">04</span>技术源流与关键科学家</h2>
+      <p>光模块不是一个"被发明"的产品，而是三条独立技术河流的汇合：<b>低损耗光纤（材料）× 半导体激光器（器件）× 可插拔标准化（工程共识）</b>。理解这三条河，才能判断今天 CPO 之争的本质——那是第三条河（标准化与解耦）第一次被前两条河反过来冲垮。</p>
+      <h3>学术源流：三个奠基时刻</h3>
+      <div class="grid c3">
+        <div class="card"><h4>1966 · 高锟与光纤理论</h4><p>高锟（Charles K. Kao）在英国标准电信研究所指出，光纤高损耗源于材料杂质而非本征，预言可降至 20 dB/km；2009 年获诺贝尔物理学奖。1970 年康宁玻璃制成 20 dB/km 石英光纤，同年贝尔实验室、NEC 与苏联先后实现室温连续工作的双异质结半导体激光器——<b>1970 年被称为光通信元年</b><span class="src src-ac">学术</span>。</p></div>
+        <div class="card"><h4>1990s · MSA 与可插拔革命</h4><p>1990 年代中期 GBIC（Gigabit Interface Converter）确立首个重要多源协议（MSA），首次让运营商可以从 A 厂买交换机、从 B 厂买光模块。这一"解耦"决定了此后 30 年的产业结构：模块成为一个独立、可竞争、可降价的商品品类。此后 SFP→XFP→QSFP+→QSFP-DD/OSFP 一路小型化<span class="src src-ac">学术</span>。</p></div>
+        <div class="card"><h4>1988–2016 · 硅光 40 年</h4><p>Richard Soref 推导硅的载流子色散效应（理论）；Graham Reed（萨里大学）验证 SOI 高折射率对比波导，使光子器件从毫米级"维度塌缩"到亚微米级；其学生 Andrew Rickman 1988 年创立全球首家硅光公司 Bookham，推出 ASOC 平台，第一次用 CMOS 产线批量造光子元件。1990 多孔硅室温发光、1992 SOI 低损耗波导是关键材料节点<span class="src src-ac">学术</span>。</p></div>
+      </div>
+
+      <h3>标准与产业化里程碑</h3>
+      <table class="routes">
+        <tr><th>时间</th><th>事件</th><th>推动者</th><th>对产业结构的影响</th></tr>
+        <tr><td>1979</td><td>中国第一根 4 dB/km 实用化光纤拉制成功</td><td>赵梓森（武汉邮科院）</td><td>中国光通信产业起点，今日"光谷"根系</td></tr>
+        <tr><td>2002 / 2010</td><td>IEEE 802.3ae（10GbE）、802.3ba（40/100GbE）</td><td>IEEE 802.3 工作组</td><td class="best">标准先行→数据中心"光进铜退"</td></tr>
+        <tr><td>2000s</td><td>850nm VCSEL + 多模光纤成为短距主力</td><td>Finisar / Avago 等</td><td>把单模成本结构改写为"低成本并行光学"</td></tr>
+        <tr><td>2013 / 2016</td><td>Intel 40G QSFP+ 硅光混合集成（功耗 −30%）→ 100G 硅光量产</td><td>Intel</td><td class="best">硅光从论文进入货架</td></tr>
+        <tr><td>2010s</td><td>相干 DSP（DP-QPSK / 16-QAM）用于 DCI 与 ZR</td><td>Acacia / Ciena / Inphi</td><td>DSP 成为模块中价值最高的电芯片</td></tr>
+        <tr><td>2022</td><td>LPO（线性驱动可插拔）方案提出</td><td class="best">Macom 联合 NVIDIA</td><td>第一次公开质疑"DSP 是否必需"</td></tr>
+        <tr><td>2024–2026</td><td>CPO 交换机商用：NVIDIA Quantum-X（台积电 COUPE）、Broadcom Tomahawk 6 Davisson（102.4T）</td><td class="best">NVIDIA / 台积电 / 博通</td><td class="best">解耦被逆转：光引擎回到交换芯片封装内</td></tr>
+      </table>
+      <div class="depnote">投资含义：光模块产业过去 30 年的超额利润来自 <b>MSA 解耦所创造的"独立可竞争品类"</b>。CPO 的本质不是"更快"，而是<b>把这个品类重新收回到交换机厂商（NVIDIA / 博通）的封装里</b>——那是对产业结构而非对性能的攻击。因此判断标的时，"技术能否做出来"是次要问题，"在新架构下你还是不是一个独立可卖的东西"才是主要问题。这也解释了为什么旭创、天孚、光迅都在抢 CPO 光引擎、外置光源（ELS）、FAU 这些"CPO 里仍然可以卖的零件"。</div>
+    </section>
+
+    <!-- 05 窗口 -->
+    <section id="ch05">
+      <h2><span class="n">05</span>技术爆发的窗口与触发条件</h2>
+      <p>光模块行业存在了 30 年，真正的非线性拐点只发生过两次：2008–2013 年云计算带来的 10G/40G 替代，和 <b>2023 年以来 AI 集群带来的 800G/1.6T 超级周期</b>。LightCounting 的措辞是："全球光器件市场已从电信周期转向 AI 算力驱动的超级周期"<span class="src src-org">机构</span>。</p>
+      <h3>拐点事件（时间锚）</h3>
+      <div class="timeline">
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2023 <span class="tl-tag">拐点 1 · 800G 起量</span></div><div class="tl-body">800G 光模块率先在海外数据中心上量。数通模块传统 3–4 年一代的迭代周期，被压缩至 1.5–2 年<span class="src src-org">机构</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2024 <span class="tl-tag">拐点 2 · 规模放量</span></div><div class="tl-body">800G 进入大规模放量；以太网光模块市场同比 +93%；800G 市场规模约 40 亿美元。中际旭创当年收入 33.12 亿美元（+114%）<span class="src src-org">机构</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2025 <span class="tl-tag">拐点 3 · 红利兑现年</span></div><div class="tl-body">800G 市场规模跃升至 130 亿美元，贡献当年主要增长；1.6T 首批出货（约 250 万只）；A 股龙头业绩全面爆发（旭创归母 +108.78%、新易盛 +235.89%）；800G PAM4 芯片组出货接近三倍<span class="src src-org">机构</span><span class="src src-co">公司</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2026 <span class="tl-tag">拐点 4 · 结构切换年</span></div><div class="tl-body">1.6T 从小基数升至千万只量级、芯片组销售额超 20 亿美元；硅光模块销售额首次超过总市场 50%；CPO 商用元年但全年渗透率不足 1%（约 2.3 万台量级）；LPO 出货预计 300–400 万只<span class="src src-org">机构</span>。</div></div>
+      </div>
+
+      <h3>五大触发条件</h3>
+      <div class="grid c2">
+        <div class="card"><h4>① 拓扑放大单机用量</h4><p>AI 集群里每块 GPU 大致需要配 6 个光模块。百万卡集群仅可插拔模块功耗就约 180 MW（按每模块 ~30W 估算），相当于一座中型城市用电——用量放大与功耗墙同时出现，是一切架构变革的原动力<span class="src src-md">建模</span>。</p></div>
+        <div class="card"><h4>② 迭代周期压缩</h4><p>数通模块从 3–4 年一代压到 1.5–2 年一代（400G→800G→1.6T→3.2T）。每次速率翻倍不只是带宽翻倍：800G 一般用 4 条光通道，1.6T 需要 8 条，每条通道都要独立的 InP 器件——需求是超线性放大的<span class="src src-org">机构</span>。</p></div>
+        <div class="card"><h4>③ 硅光跨过成本 / 良率拐点</h4><p>硅光渗透率 2018 年约 10%、2024 年 33%、2026 年首破 50%。硅光把激光器阵列、调制器、探测器集成到单片，BOM 节省约 20–30%；旭创自研硅光良率 &gt;95%、新易盛 &gt;92%<span class="src src-org">机构</span><span class="src src-co">公司</span>。</p></div>
+        <div class="card"><h4>④ 上游稀缺形成定价权</h4><p>当前需求超供给约 30%，瓶颈在 InP EML 与激光芯片。英伟达 2026 年通过长协锁定源杰科技大量 CW 芯片产能——继抢 CoWoS、抢 HBM 之后开始抢光芯片，这是对瓶颈位置最诚实的指认<span class="src src-org">机构</span>。</p></div>
+        <div class="card"><h4>⑤ 云厂商 capex 共振</h4><p>谷歌将 2026 资本开支上调至 1950–2050 亿美元（同比翻倍）；北美四大云厂商 2026 合计 capex 指引约 7250 亿美元，同比 +50%–100%；谷歌、Meta 已提前上调 2027 预期<span class="src src-org">机构</span>。</p></div>
+        <div class="card"><h4>⑥ 政策与标准背书</h4><p>工信部 2026 年 6 月《高速光模块产业发展白皮书》首次把高速光模块定位为"AI 算力、6G 核心底层硬件"，要求新建万卡智算中心标配 800G/1.6T，并设定 2028 年高端 200G EML 光芯片自给率 45% 的硬指标<span class="src src-org">机构</span>。</p></div>
+      </div>
+      <div class="callout">窗口判断：<b>2024–2027 是"量价齐升"窗口，2027–2029 是"量增价降"窗口</b>。前者赚的是紧缺溢价，后者赚的是份额与成本。分界线由两件事决定：InP/EML 短缺何时消退（LightCounting 判断 2026 年底），以及 800G 产能过剩何时到来（机构测算 2026 年末国内 800G 产能或超 6000 万只，而全球全年需求 3600–4500 万只）。</div>
+    </section>
+
+    <!-- 06 技术栈 -->
+    <section id="ch06">
+      <h2><span class="n">06</span>技术栈与路线对比（含 TRL）</h2>
+      <p>光互连的路线之争，本质是一个坐标：<b>光电转换发生在离交换芯片多远的地方</b>。从面板（可插拔）→ 板载（NPO）→ 同封装（CPO）→ 芯片内（光 I/O），距离每缩短一个数量级，功耗和时延下降、可维护性与多供应商弹性同步恶化。与之正交的第二个坐标是 <b>DSP 的去留</b>（FRO 全 DSP / LRO 半重定时 / LPO 全线性）。硅光不是这两个坐标上的某一点，而是横跨全部方案的<b>平台型底层工艺</b>。</p>
+
+      <h3>路线对比矩阵（原理 / 特性 / 代表玩家）</h3>
+      <table class="routes">
+        <tr><th>路线</th><th>光电转换位置 / 原理</th><th>核心优势</th><th>核心代价</th><th>代表玩家</th></tr>
+        <tr><td>可插拔 FRO（全 DSP）</td><td>面板可插拔，内置 PAM4 DSP 做重定时与均衡</td><td class="best">完全商用、热插拔、多供应商、标准成熟</td><td>功耗与成本最高（1.6T 全 DSP 方案功耗预计 &gt;30W）</td><td>旭创 / 新易盛 / Coherent</td></tr>
+        <tr><td>LRO（半重定时）</td><td>仅发射端保留一颗 DSP 以满足 IEEE 802.3，接收端走模拟线性</td><td class="best">1.6T 功耗可压到 20W 以下 → 沿用风冷</td><td>仍需 DSP，成本降幅有限</td><td class="best">OFC 上几乎所有展 LPO 的厂商同步展 LRO</td></tr>
+        <tr><td>LPO（线性直驱）</td><td>彻底去 DSP，用高线性 Driver+TIA，均衡功能移到交换芯片 SerDes</td><td>功耗降 40–50%，时延亚纳秒，物料成本降 15–20%</td><td>抗噪弱、限 500m–2km 内、缺统一互通标准、依赖主机 SerDes</td><td>Macom+NVIDIA 首倡；谷歌 / Meta 主推；新易盛 / 旭创 / 索尔思量产</td></tr>
+        <tr><td>NPO（近封装）</td><td>光引擎贴在交换芯片旁 2–5cm 板载，光引擎可独立更换</td><td>缩短电链路且保留可维修性与多供应商弹性</td><td>集成度低于 CPO，仍需板级设计改造</td><td class="best">华为牵头 OPEN NPO MSA（20+ 企业）；阿里 / 腾讯 / Meta / 微软倾向</td></tr>
+        <tr><td class="best">CPO（共封装）</td><td class="best">光引擎与交换 ASIC 同基板毫米级集成，取消 DSP 重定时</td><td class="best">能效最优、带宽密度最高、时延最低</td><td>不可插拔、维修性差、系统良率难、光纤连接器标准未统一</td><td class="best">NVIDIA / 博通 / 台积电 COUPE / Marvell（收购 Celestial AI）</td></tr>
+        <tr><td>光 I/O（Scale-in）</td><td>光接口进入计算芯片封装内部</td><td>理论极限方案</td><td>玻璃基板等配套 2029–2030 才成熟</td><td>Intel（玻璃核心基板原型，OFC 2026）</td></tr>
+      </table>
+
+      <h3>量化对标框架（KPI 横向对比）</h3>
+      <table class="routes">
+        <tr><th>KPI</th><th>可插拔 FRO</th><th>LPO / LRO</th><th>NPO</th><th>CPO</th></tr>
+        <tr><td>速率支持</td><td>10G–1.6T 全系列</td><td>800G / 1.6T（3.2T 研发中）</td><td>1.6T / 3.2T（首款 3.2T NPO 已发布）</td><td class="best">800G 端口起，单机 115.2–409.6 Tb/s</td></tr>
+        <tr><td>单端口 / 单模块功耗</td><td>800G 约 16–18W；1.6T 全 DSP &gt;30W</td><td class="best">800G LPO 8–10W；1.6T LRO &lt;20W</td><td>介于 LPO 与 CPO 之间</td><td class="best">800G 端口约 9W</td></tr>
+        <tr><td>每比特能耗</td><td>约 15 pJ/bit（&gt;30 pJ 于旧方案）</td><td>约 8–10 pJ/bit</td><td>约 5–8 pJ/bit</td><td class="best">约 5 pJ/bit，下一代目标 2 pJ/bit</td></tr>
+        <tr><td>适用距离</td><td class="best">数十米–80km+（ZR/ZR+）</td><td>≤500m（LPO）/ ≤2km</td><td>机架内短距</td><td>超短距、机内 / 机柜级</td></tr>
+        <tr><td>成本 / BOM</td><td>基准；DSP 占 BOM 20–40%</td><td>降 8–20%（省 DSP）</td><td>中等</td><td>封装复杂、初期成本高，规模后 TCO 最低</td></tr>
+        <tr><td>良率 / 可维护性</td><td class="best">成熟量产、热插拔可单换</td><td>可插拔，良率与 FRO 接近</td><td>光引擎可独立更换</td><td class="best">系统良率是最大障碍（单引擎 95% × 32 = 19%）</td></tr>
+        <tr><td>2026 渗透率</td><td class="best">绝对主体</td><td>800G 中约 15–30%（预估）</td><td>试点转商用</td><td>&lt;1%（约 2.3 万台）</td></tr>
+      </table>
+      <div class="callout">关键辨析：<b>CPO 的优势是真的，但它攻击的是"功耗"这一项，而牺牲的是"可维护性 + 多供应商 + 标准弹性"三项。</b>在 AI 集群里，单机停机成本极高——这恰恰是"不可插拔"最难被接受的地方。NVIDIA 自己的说法是 CPO 带来 5 倍能效、5 倍持续运行时长、1.3 倍部署速度<span class="src src-co">公司</span>；SemiAnalysis 的反驳则是整机良率 19%<span class="src src-org">机构</span>。两者都可能对：CPO 在 Scale-up 与超大集群里是刚需，在 Scale-out 与存量改造里 LPO/NPO 更务实。</div>
+
+      <h3>TRL 就绪度锚定（投资承重墙）</h3>
+      <table class="routes">
+        <tr><th>路线 / 技术</th><th>TRL</th><th>已落地场景</th><th>仍停留在</th></tr>
+        <tr><td>可插拔 FRO（800G）</td><td class="best">9</td><td>全球 AI 数据中心主力，2025 年 130 亿美元</td><td>—（进入价格竞争期）</td></tr>
+        <tr><td>可插拔 FRO（1.6T）</td><td class="best">8–9</td><td>2025 首批出货，2026 千万只级</td><td>ASP 快速下行</td></tr>
+        <tr><td>硅光平台</td><td>8–9</td><td>2026 销售额占比首破 50%</td><td>3.2T 场景验证</td></tr>
+        <tr><td>LPO / LRO</td><td>7–8</td><td>谷歌 / Meta 2026 大规模部署 1.6T LPO</td><td>互通标准统一</td></tr>
+        <tr><td>NPO</td><td>6–7</td><td>OFC 2026 集中发布部署计划；3.2T NPO 模块已出</td><td>规模化交付</td></tr>
+        <tr><td>CPO（Scale-out）</td><td>6</td><td>Quantum-X 已商用出货；Spectrum-X Photonics 2026H2 量产爬坡</td><td class="best">系统良率与可维修性</td></tr>
+        <tr><td>CPO（Scale-up）</td><td>4–5</td><td>方案验证</td><td>SemiAnalysis 判断大规模导入 2029</td></tr>
+        <tr><td>光 I/O / 玻璃基板</td><td>3–4</td><td>Intel 原型</td><td>2029–2030 商品化</td></tr>
+      </table>
+      <div class="callout">TRL 结论：<b>钱在 TRL 8–9（800G/1.6T 可插拔 + 硅光），风险在 TRL 6–7（LPO/NPO 标准之争），期权在 TRL 4–6（CPO/光 I/O）。</b>值得注意的是 TRL 高不等于安全——800G 恰恰因为 TRL 9 而最先进入产能过剩与价格战（见 11 章）。硬科技投资在这里的反直觉之处是：<b>成熟度带来的是确定性，不是超额收益</b>。</div>
+    </section>
+
+    <!-- 07 应用 -->
+    <section id="ch07">
+      <h2><span class="n">07</span>应用场景</h2>
+      <p>光模块需求可按"离 GPU 的距离"排列：从封装内到跨大洲，五个圈层的驱动力、增速与技术要求完全不同。当前 90% 以上的增量来自最内两圈。</p>
+      <div class="grid c2">
+        <div class="card"><h4>① AI 数据中心 Scale-out（主战场）</h4><p>GPU 集群横向扩展网络，800G / 1.6T 可插拔为绝对主力。占据当前光模块市场增量的大头：800G 2025 年 130 亿美元、2026 年出货预计 3700 万只（+85%）；1.6T 2026 年进入千万只量级<span class="src src-org">机构</span>。这一圈也是 LPO 与 CPO 交战的主要战场。</p></div>
+        <div class="card"><h4>② AI Scale-up（最大期权）</h4><p>超节点内 GPU 纵向互连，目前主要用铜。黄仁勋 GTC 路线图：Vera Rubin Ultra（2027）提供铜缆或铜 + CPO 混合，Feynman（2028）可切换至 CPO<span class="src src-co">公司</span>。Coherent 认为 CPO 最大机遇正在 Scale-up，增量市场"高出几个数量级"；若这一圈切光，需求规模较传统网络放大 5–10 倍<span class="src src-co">公司</span><span class="src src-org">机构</span>。</p></div>
+        <div class="card"><h4>③ Scale-across / DCI（园区与跨楼互连）</h4><p>AI 训练跨多栋建筑、多站点分布带来的需求。将拉动 800G ZR/ZR+ 在 2026 年放量、1.6T ZR/ZR+ 在 2028–2029 年放量，支撑 DWDM 市场 2026–2031 年 13% CAGR（LightCounting 自评这一预测可能偏保守）<span class="src src-org">机构</span>。Coherent 电信业务 FY26Q2 同比 +44%，主要来自 DCI 的 ZR/ZR+<span class="src src-co">公司</span>。</p></div>
+        <div class="card"><h4>④ 电信承载网与城域网</h4><p>算力互联需求已传导到运营商侧，开启新一轮设备升级周期。光迅科技 2025 年营收 +44.2%，其 10G 至 800G 全系列产品线放量即为验证<span class="src src-co">公司</span>。特征是客单价低、周期长、格局稳定，但为国内厂商提供了不依赖北美 CSP 的第二腿。</p></div>
+        <div class="card"><h4>⑤ 接入网与无线前传</h4><p>AI 对这一圈无直接拉动，LightCounting 判断 FTTx 与无线前传将在 2028–2029 年恢复。50G PON 已在中国开始部署；首批 6G 网络最早 2028 年出现，前传网络需在 2030 年 6G 广泛部署前完成升级<span class="src src-org">机构</span>。</p></div>
+        <div class="card"><h4>⑥ 相邻品类：AOC / AEC / OCS</h4><p>AOC 2025 年 +45%（增速被英伟达从 AOC 转向可插拔模块所抑制，但其他客户仍在用）；OCS（光交换）成为新增量，Lumentum 目标 2026 年底实现 1 亿美元收入、已有 10+ 客户项目并从 Scale-out 延伸到 Scale-up<span class="src src-co">公司</span><span class="src src-org">机构</span>。</p></div>
+      </div>
+      <div class="callout">投资排序：<b>① Scale-out 是现金流（确定但即将进入价格竞争）；② Scale-up 是期权（不确定但量级最大，2027–2028 揭晓）；③ DCI/ZR+ 是稳定增量（13% CAGR、竞争格局更好、毛利更高）；④⑤ 电信与接入是防御性底仓。</b>需要提醒的一个反直觉点：从 800G 升级到 1.6T 后，同等算力所需的模块<b>数量</b>可能下降 30–40%——速率升级并不总是等比放大出货量，这是 2027 年出货量增速的一个隐性拖累<span class="src src-md">建模</span>。</div>
+    </section>
+
+    <!-- 08 观点 -->
+    <section id="ch08">
+      <h2><span class="n">08</span>多方行业观点</h2>
+      <div class="persp-grid">
+        <div class="persp"><div class="who">NVIDIA（架构定义方）</div><div class="pos">立场：CPO 按计划推进</div><p>网络业务高级副总裁 Gilad Shainer 明确否认延期：Spectrum-X 以太网 CPO 交换机 2026 下半年启动量产与客户爬坡；并指出市场混淆了"小规模商用验证"与"全网大规模替换"——2026H2 面向头部客户小批量导入，2027 稳步扩产，<b>CPO 与可插拔将长期共存</b><span class="src src-co">公司</span>。</p></div>
+        <div class="persp"><div class="who">华为（另一条产业路线）</div><div class="pos">立场：短期不走 CPO</div><p>2026 年 5 月明确短期不采用 CPO，主推 NPO，并联合百度、京东云、中国移动等 20 余家企业发起 OPEN NPO 项目，推出国内首个 NPO 光互连 MSA 多源协议，主导标准制定<span class="src src-co">公司</span>。这是一次典型的"用标准对抗封装集中化"的产业防御。</p></div>
+        <div class="persp"><div class="who">SemiAnalysis（第三方研究）</div><div class="pos">立场：CPO 预期过于激进</div><p>2026 年 6 月报告指出：单个光引擎贴装良率 95% 看似不错，但一台 Spectrum-X 交换机要装 32 个光引擎，整机良率掉到约 19%。据此把 Scale-up CPO 大规模导入推到 2029 年<span class="src src-org">机构</span>。这是目前对 CPO 时间表最有杀伤力的量化质疑。</p></div>
+        <div class="persp"><div class="who">上游供应商（Coherent / Lumentum）</div><div class="pos">立场：紧缺至少到 2027</div><p>Coherent 判断 InP 供需失衡至少持续整个 2026 与 2027 年；数据中心订单出货比 &gt;4 倍，2026 订单基本排满、2027 订单快速增加并签 LTA 长期供应协议；预计 CPO 未来数年带来 &gt;20 亿美元增量市场<span class="src src-co">公司</span>。</p></div>
+        <div class="persp"><div class="who">卖方多头（广发 / 中金 / 招商）</div><div class="pos">立场：高景气延续至 2028</div><p>核心物料扩产周期长、技术壁垒高，产能释放难以匹配算力爆发，供不应求格局至少延续至 2028；老产品降价幅度持续收窄、高端新品溢价，量价齐稳；光通信投入占全球算力资本开支不足 10%，长期提升空间大；龙头 2027 年动态 PE 仅约 10 倍<span class="src src-org">机构</span>。</p></div>
+        <div class="persp"><div class="who">卖方 / 产业空头视角</div><div class="pos">立场：2027 是周期切换年</div><p>7 家核心公司在建工程四年涨超 6 倍（5.56 亿 → 38.98 亿元），固定资产从 71 亿增至 197 亿；2026 年末国内 800G 产能或超 6000 万只 vs 全球需求 3600–4500 万只，过剩率 &gt;30%；预判 2027 行业毛利率再降 8–12 个百分点，PE 中枢从 50 倍以上回落至 20–30 倍<span class="src src-org">机构</span><span class="src src-md">建模</span>。</p></div>
+        <div class="persp"><div class="who">云厂商（经 TrendForce 转述）</div><div class="pos">立场：NPO 为近中期主轴</div><p>NPO 可缩短电传输距离、降低功耗，同时保留模组化、可维修性与多供应商竞争弹性。阿里、腾讯已视 NPO 为近中期主轴并通过 ODCC 推动开放标准；Meta 与微软亦倾向优先布局 NPO；亚马逊采多供应商策略、与意法半导体合作<span class="src src-org">机构</span>。</p></div>
+        <div class="persp"><div class="who">政策层（工信部）</div><div class="pos">立场：国家算力基础设施定位</div><p>2026 年 6 月《高速光模块产业发展白皮书》首次把高速光模块定位为"AI 算力、6G 核心底层硬件"，要求新建万卡智算中心标配 800G/1.6T、淘汰 400G 低速模块，设定 2028 年高端 200G EML 自给率 45% 硬指标，并对磷化铟产业设专项基金补贴扩产<span class="src src-org">机构</span>。</p></div>
+      </div>
+      <div class="callout">共识：AI 驱动的光互连需求长期成立，"光进铜退"方向无争议。<b>三大分歧</b>：① CPO 大规模导入是 2027 还是 2029（决定可插拔的剩余生命周期）；② 2027 年是"紧缺延续"还是"过剩反转"（决定盈利质量）；③ 云厂商到底选 NPO 还是 CPO（决定谁能保住多供应商议价空间）。三个问题的答案都将在 2027 年内揭晓——这也意味着 <b>2026 年下半年到 2027 年是本轮周期风险回报比最差、信息价值最高的一段</b>。</div>
+    </section>
+
+    <!-- 09 技术树 -->
+    <section id="ch09">
+      <h2><span class="n">09</span>技术树全貌（系统 → 原子级）</h2>
+      <p>一个 1.6T 光模块拆到底，是"<b>InP 外延片 + 硅光晶圆 + 一颗先进制程 DSP + 一堆微米级对准的光学件</b>"。真正的短板既不在模块组装，也不在算法，而在最上游两处：<b>InP 衬底供给</b>与 <b>PAM4 DSP 的双寡头</b>。</p>
+      <div class="stack">
+        <div class="layer"><div class="lh">系统层 · 光互连整机 <span class="ltier">Tier 0</span></div><div class="lb">可插拔光模块（QSFP-DD / OSFP）／AOC-AEC 有源线缆／板载光引擎（NPO）／CPO 交换机／OCS 光交换机。</div></div>
+        <div class="layer"><div class="lh">子系统层 <span class="ltier">Tier 1</span></div><div class="lb">① 光发射（激光器 + 调制器 + 驱动）② 光接收（探测器 + TIA）③ 电信号处理（DSP / Retimer / SerDes）④ 光学耦合与无源（透镜、隔离器、FAU、MPO 连接器）⑤ 封装、散热与测试。</div></div>
+        <div class="layer"><div class="lh">核心模块层 <span class="ltier">Tier 2</span></div><div class="lb">EML / DFB / CW 激光器、VCSEL、PIN / APD 探测器、硅光 PIC、PAM4 DSP、Driver + TIA 模拟前端、高速 PCB / 基板、光纤阵列单元（FAU）与外置光源（ELS）。</div></div>
+        <div class="layer"><div class="lh">Tier3 底层节点（投资密度锁定对象） <span class="ltier">Tier 3</span></div><div class="lb">
+          <div class="chips">
+            <span class="chip">InP 衬底与外延（高纯铟）</span>
+            <span class="chip">SOI 硅光衬底</span>
+            <span class="chip">CMOS 硅光 Foundry（台积电 COUPE / GF）</span>
+            <span class="chip">硅光 EDA / PDA 工具</span>
+            <span class="chip">薄膜铌酸锂 TFLN</span>
+            <span class="chip">高精度耦合封装设备（纳米级）</span>
+            <span class="chip">可拆卸光纤连接器标准</span>
+          </div>
+        </div></div>
+      </div>
+      <h3>Tier3 节点表（自研/外购 · 集中度 · 成本占比 · 是否卡脖子）</h3>
+      <table class="routes">
+        <tr><th>Tier3 / Tier2 节点</th><th>供给格局</th><th>成熟度</th><th>BOM 成本占比（800G 口径）</th><th>最短板？</th></tr>
+        <tr><td>InP 衬底与外延</td><td class="best">日美三家垄断 &gt;90%；国产 6 英寸国产化率 &lt;5%</td><td>7</td><td>间接（决定光芯片供给）</td><td class="best">是（缺口 &gt;70%；2026 需求 260–300 万片 vs 有效产能 75 万片）</td></tr>
+        <tr><td>EML 高速激光器</td><td>Lumentum / 三菱电机 / 住友电工合计 &gt;70%</td><td>8</td><td>光芯片合计 15–20%（硅光方案下升至 30–40%）</td><td class="best">是（供给缺口 20–30%，订单排至 2028）</td></tr>
+        <tr><td>CW 光源（硅光配套）</td><td>博通第一；源杰约 30% 全球第二、国内 &gt;60%</td><td>7–8</td><td>随硅光渗透上升</td><td>结构性紧缺（英伟达已长协锁产能）</td></tr>
+        <tr><td class="best">PAM4 DSP</td><td class="best">博通 + Marvell 双寡头（博通市占 &gt;80%）</td><td class="best">9</td><td class="best">25–35%（800G DSP 单价 $180–220，毛利率 &gt;60%）</td><td class="best">是（价值最大、议价权最强、且是 LPO 要革掉的对象）</td></tr>
+        <tr><td>硅光 PIC 与 Foundry</td><td>台积电 COUPE / GlobalFoundries / Intel</td><td>8</td><td>替代部分分立器件</td><td>否（产能可扩，但设计门槛高）</td></tr>
+        <tr><td>光学无源与耦合件</td><td>天孚等；光器件占模块总成本 &gt;45%（含有源）</td><td>8–9</td><td>约 20%（无源部分）</td><td>否（但 CPO/FAU 是新卡位）</td></tr>
+        <tr><td>模块封装测试与组装</td><td>竞争充分，中国主导</td><td class="best">9</td><td>约 15%</td><td>否（扩产周期仅 6–12 个月）</td></tr>
+        <tr><td>高精度硅光组装设备</td><td>极少数厂商（直线精度可达 5nm 级）</td><td>6–7</td><td>资本开支项</td><td>是（CPO 规模化的隐性瓶颈）</td></tr>
+      </table>
+      <div class="depnote">层级依赖链：<b>高纯铟 → InP 衬底 → 外延 → EML/CW 光芯片 → 光模块出货量上限</b>。这条链上任何一环断裂，下游扩多少产线都没用——这正是 2025–2026 年"手握大额订单却难以兑现季度利润"的物理原因。第二条链是 <b>DSP → 模块功耗 → 机柜散热能力 → 单机端口密度</b>，LPO/CPO 都是在攻击这条链。注意扩产周期的不对称性：模块产线 6–12 个月，光芯片 IDM 产线 18–24 个月，InP 衬底更长——<b>这个时间差既造就了本轮上游超额利润，也预示了下游先过剩</b>。</div>
+    </section>
+
+    <!-- 10 投资密度 -->
+    <section id="ch10">
+      <h2><span class="n">10</span>关键技术"投资密度"分析</h2>
+      <p>把价值链按"壁垒 × 价值占比"排序，光模块产业是一条标准的<b>微笑曲线</b>：两端（上游 IDM 光芯片 / DSP 电芯片，与硅光设计定义权）吃走利润，中间的模块封装"赚钱但不瓶颈"。</p>
+
+      <h3>价值分布与壁垒评分（800G/1.6T 口径）</h3>
+      <table class="routes">
+        <tr><th>环节</th><th>BOM / 价值占比</th><th>集中度</th><th>壁垒评分</th><th>说明</th></tr>
+        <tr><td class="best">PAM4 DSP 电芯片</td><td class="best">25–35%</td><td class="best">CR2 &gt; 95%</td><td class="best">9 / 10</td><td>先进制程 + IP 积累 + 客户认证；但正被 LPO/CPO 从架构上绕开</td></tr>
+        <tr><td>InP 衬底 / 高纯铟</td><td>金额小，但决定上限</td><td>CR3 &gt; 90%</td><td class="best">9 / 10</td><td>"瓶颈但市场规模小"，价值主要体现在议价而非营收</td></tr>
+        <tr><td>有源光芯片（EML / CW）</td><td>15–20%（硅光方案 30–40%）</td><td>EML CR3 &gt; 70%</td><td>8 / 10</td><td>IDM 强制模式：InP 外延与光栅刻蚀工艺高度耦合，Fabless 难做</td></tr>
+        <tr><td>硅光 PIC 设计 + Foundry</td><td>随渗透率上升</td><td>Foundry CR3 高</td><td>7 / 10</td><td>路线定义权所在；需专用 PDA 工具（光电协同设计）</td></tr>
+        <tr><td>高精度耦合 / 组装设备</td><td>资本开支项</td><td>极少数供应商</td><td>7 / 10</td><td>CPO 规模化的隐性闸门（纳米级直线精度）</td></tr>
+        <tr><td>光学无源器件 / FAU / ELS</td><td>约 20%</td><td>中等</td><td>6 / 10</td><td>CPO 时代仍可独立售卖的少数环节，天孚已卡位</td></tr>
+        <tr><td>模块封装与测试</td><td>约 15%</td><td>低（中国主导）</td><td class="best">4 / 10</td><td>扩产周期 6–12 个月，是最先过剩的环节</td></tr>
+      </table>
+
+      <div class="dcard">
+        <div class="dh">① PAM4 DSP 电芯片 <span class="scorepill">壁垒 9/10</span></div>
+        <div class="db"><b>本质：</b>在 SNR 受限的高速链路上做时钟恢复、色散补偿与均衡，是 400G 以上速率成立的前提。<b>壁垒：</b>know-how + 生态型——先进制程、模拟-数字混合设计、以及与每家交换芯片 SerDes 的互操作认证。<b>代际：</b>7nm 400G DSP（约 4W，占模块功耗 50%）→ 800G（单价 $180–220）→ 1.6T（预计 $400–600，功耗指数上升）。<b>关键矛盾：</b>DSP 越贵越耗电，就越激励 LPO/LRO/CPO 去掉它——这是产业里唯一一个"壁垒最高但被主动攻击"的环节。2027–2031 年 PAM4 芯片组销售增速将因线性方案放量而放缓<span class="src src-org">机构</span>。</div>
+      </div>
+
+      <div class="dcard">
+        <div class="dh">② 有源光芯片 IDM（EML / CW） <span class="scorepill">壁垒 8/10</span></div>
+        <div class="db"><b>本质：</b>在 InP 衬底上完成纳米级外延与光栅刻蚀，两道工序工艺耦合度极高且迭代周期短，设计—制造—封测必须同屋檐（IDM），否则良率爬不上来。<b>壁垒：</b>硬 know-how + 产能周期（IDM 产线 18–24 个月，且受 InP 衬底约束）。<b>代际：</b>100G EML 量产 → 200G EML 验证/量产 → 400G/lane。CW 侧：70mW 大批量 → 100mW 批量 → 200–300mW 送样。<b>成本路径：</b>硅光集成把 8 颗分立 EML 换成单片激光器阵列，材料与封装成本同时压缩（BOM 省 20–30%）。<b>国产窗口：</b>新路线切换期是追赶者的机会——传统 EML 市场三家外资 &gt;70%，但新兴 CW 市场源杰已做到全球第二<span class="src src-org">机构</span><span class="src src-co">公司</span>。</div>
+      </div>
+
+      <div class="dcard">
+        <div class="dh">③ 硅光平台（PIC 设计 + Foundry + PDA） <span class="scorepill">壁垒 7/10</span></div>
+        <div class="db"><b>本质：</b>用 CMOS 兼容工艺把波导、调制器、探测器集成到单片硅上，借台积电 / Intel / GF 成熟晶圆厂实现超大规模量产。<b>壁垒：</b>know-what 偏多但生态门槛高——需要光电协同设计（EPDA）工具链，且硅本身不发光，必须外接 CW 光源。<b>代际：</b>2018 年 10% → 2024 年 33% → <b>2026 年首破 50%</b>（销售额口径），并从 Scale-out 向 Scale-up、乃至封装内 Scale-in 延伸<span class="src src-org">机构</span>。<b>分歧：</b>乐观派认为 2028 年可达 80%，保守派担心 DSP 供应扰动与良率爬坡；折中判断是趋势成立、时点后移至 2029–2030<span class="src src-md">建模</span>。</div>
+      </div>
+
+      <div class="dcard">
+        <div class="dh">④ 模块封装与整机制造 <span class="scorepill">壁垒 4/10</span></div>
+        <div class="db"><b>本质：</b>把光芯片、DSP、光学件在微米级公差内对准、耦合、气密封装并完成全温测试。<b>壁垒：</b>规模 + 良率 + 客户认证周期，属于"制造能力型"而非"技术专利型"。<b>证据：</b>中际旭创 2025 年研发费用 16.15 亿元，仅占营收 4.2%；毛利率在 2022 年以前长期维持 20% 出头、净利率 10–12%，2025 年才升至 42%/30%——<b>本轮扩张主要由供需缺口而非壁垒抬升驱动</b><span class="src src-co">公司</span>。<b>推论：</b>供需再平衡后盈利水平大概率回归常态区间。</div>
+      </div>
+      <div class="callout">投资密度结论：<b>上游 IDM 光芯片与 DSP（8–9/10）是"慢变量、真壁垒"，模块封装（4/10）是"快变量、假壁垒"</b>。但两者的估值状态恰好相反——光芯片环节部分标的 PE 已超 140 倍（一年涨超 10 倍），而模块龙头对应 2027 年动态 PE 约 10–15 倍<span class="src src-org">机构</span>。真正值得下注的三种姿势：① 上游 IDM 但估值未透支的标的；② 有能力向上游一体化（自研硅光 / 参股光芯片）的模块厂；③ 在 CPO 架构下仍可独立售卖的零件（FAU、外置光源、耦合设备）。</div>
+    </section>
+
+    <!-- 11 生命周期/风险 -->
+    <section id="ch11">
+      <h2><span class="n">11</span>生命周期、风险与颠覆</h2>
+      <div class="scurve">
+        <svg id="scurve" viewBox="0 0 640 360"></svg>
+      </div>
+      <div class="callout">S 曲线说明：横=技术成熟度，纵=性能/渗透潜力。<b>100G/400G 可插拔已在曲线右端衰退区（过时风险高）；800G 处于成熟平台期但正逼近价格竞争；1.6T 在最陡的爬升段；LPO/LRO 与 NPO 是中段的务实分支；CPO 与光 I/O 位于左上（潜力最高、成熟度最低）。</b>投资含义：<b>钱在 800G/1.6T，风险敞口也在 800G/1.6T</b>——同一批产能既是当下的现金奶牛，也是 2027 年过剩的来源。</div>
+
+      <h3>阿喀琉斯之踵（单点否决项）</h3>
+      <div class="rt">
+        <div class="rt-title t1">产品技术（红）</div>
+        <ul>
+          <li><b>价格是唯一自己往下走的变量</b>：800G 从上市 &gt;$1000 跌至 2026 年 $350–400（跌幅 &gt;60%）；1.6T 当前 $1000–1300，2027 年千万只出货后预计跌至 $400–650（−40%～−60%）<span class="src src-md">建模</span><span class="src src-org">机构</span>。</li>
+          <li><b>速率升级反噬出货量</b>：800G→1.6T 后，同等算力所需模块数量可下降 30–40%，速率红利部分抵消数量红利<span class="src src-md">建模</span>。</li>
+          <li><b>代际断层</b>：2027 年恰好处在"1.6T 溢价消退、3.2T 尚未规模出货"的过渡窗口，行业增速可能从 60%+ 回落至 20–30%<span class="src src-md">建模</span>。</li>
+        </ul>
+      </div>
+      <div class="rt">
+        <div class="rt-title t2">竞争与供需（黄）</div>
+        <ul>
+          <li><b>产能过剩已在路上</b>：7 家核心公司在建工程四年涨超 6 倍（5.56 → 38.98 亿元），固定资产 71 → 197 亿元；机构测算 2026 年末国内 800G 产能或超 6000 万只 vs 全球需求 3600–4500 万只，过剩率 &gt;30%<span class="src src-org">机构</span>。</li>
+          <li><b>1.6T 明年就轮到</b>：2027 年 1.6T 有效供给 6000–6500 万只，高盛需求预测 4600 万只，即使大摩最乐观的 7900 万只也只是勉强覆盖<span class="src src-org">机构</span>。</li>
+          <li><b>跨界者涌入</b>：AI 红利吸引数十家跨界企业集中投产 800G/1.6T 产线，中低端产能过剩风险尤为突出。</li>
+        </ul>
+      </div>
+      <div class="rt">
+        <div class="rt-title t3">客户、地缘与财务（蓝）</div>
+        <ul>
+          <li><b>客户与区域集中度极端</b>：国内龙头 70–80% 营收来自北美客户；新易盛境外收入 96.16%、前五客户 72.34%<span class="src src-co">公司</span>。</li>
+          <li><b>贸易与出口管制</b>：高端光模块已进入科技管控重点视野，关税与管制升级将直接压缩利润；光迅在财报中明确提示关键零部件外部依赖与集中度风险<span class="src src-co">公司</span>。</li>
+          <li><b>存货与汇兑</b>：备货规模持续走高，若下游采购放缓将触发减值；天孚 2025 年毛利率、净利率已因汇兑损失与财务费用上升而下降<span class="src src-co">公司</span>。</li>
+        </ul>
+      </div>
+
+      <h3>反方 / 唱空论据（硬数据支撑）</h3>
+      <div class="rt">
+        <div class="rt-title t1">反方核查：为什么"这次不一样"可能是错的</div>
+        <ul>
+          <li><b>"高毛利来自壁垒"是误读。</b>中际旭创 2022 年以前毛利率 20% 出头、净利率 10–12%，2025 年跃升至 42%/30%；但研发费用仅占营收 4.2%。这说明本轮盈利跃升主要来自<b>需求暴涨 + 产能不足导致的紧缺溢价</b>，而非产品本身出现了不可复制的技术壁垒。供需再平衡后盈利中枢大概率回归<span class="src src-co">公司</span><span class="src src-md">建模</span>。</li>
+          <li><b>需求侧的现金流裂缝已经出现。</b>2026 年 7 月谷歌、特斯拉虽大幅上调全年 AI 资本开支指引，但二季度自由现金流转负——谷歌自 2004 年上市以来首次出现季度自由现金流亏损。支撑 AI 高估值的核心假设"科技巨头稳定现金流可无限覆盖算力投入"首次被财报数据打破<span class="src src-org">机构</span>。</li>
+          <li><b>下游变现速度不及预期。</b>若云厂商算力投入无法转化为营收，capex 减速是必然。此外开源模型（DeepSeek / GLM / Qwen）快速进步，正在把简单任务从高价闭源模型分流——Token 总量增长但高价 Token 收入占比可能下降，直接冲击上游基建的 ROI 叙事<span class="src src-na">未公开/专家</span>。</li>
+          <li><b>估值容错为零。</b>2026 年 7 月上旬中际旭创 A 股动态 PE 曾达 117 倍、PB 40 倍、PS 33 倍，三项均处历史极值；随后 A 股回撤约 30%，天孚自高点回撤超 40%。即使基本面强劲，只要单季交付不及预期，估值几乎没有缓冲<span class="src src-org">机构</span>。</li>
+          <li><b>"订单排到 2027"不等于收入锁定。</b>长协与锁单可以被压价、被减量、被延期。上游同时紧缺（EML/DSP）意味着<b>手握订单也难以兑现季度利润</b>——这正是 2026 上半年头部公司业绩与股价背离的原因<span class="src src-org">机构</span>。</li>
+        </ul>
+      </div>
+
+      <h3>技术颠覆假想场景（含概率判断）</h3>
+      <div class="callout r">① <b>CPO 成熟导致可插拔需求坍缩</b>：若 Spectrum-X Photonics 与 Tomahawk 6 Davisson 在 2027 年顺利放量、系统良率问题被工程解决，交换机侧可插拔端口将被结构性替代。但对冲证据同样有力：TrendForce 预估即便到 2030 年，可插拔市场仍保持近 260 亿美元，而 CPO/NPO 从 2025 年约 1 亿美元增至 2030 年 390 亿美元以上——是<b>共存而非归零</b>。<b>五年内可插拔市场绝对额下降的概率约 15–20%</b><span class="src src-org">机构</span><span class="src src-md">建模</span>。<br>② <b>NPO 成为事实标准，CPO 被架空</b>：华为 OPEN NPO MSA + 阿里/腾讯/Meta/微软的偏好若形成合力，NPO 保留可插拔式的多供应商弹性，模块厂反而受益。<b>概率 30–40%</b><span class="src src-md">建模</span>。<br>③ <b>Scale-up 全面切光</b>：若 Feynman（2028）后超节点内互连大规模用光，需求量级放大 5–10 倍，本报告所有市场测算需大幅上修。<b>概率 25–35%</b><span class="src src-md">建模</span>。<br>④ <b>TFLN 在 3.2T+ 赢家通吃</b>：薄膜铌酸锂电光系数远高于硅，2026 被视为产业化元年。若在 3.2T 以上完全替代硅光，押注硅光的产线面临贬值。<b>概率 &lt;15%（更可能互补而非替代）</b><span class="src src-md">建模</span>。</div>
+    </section>
+
+    <!-- 12 展望 -->
+    <section id="ch12">
+      <h2><span class="n">12</span>未来展望与演进时间线</h2>
+      <h3>演进时间线（2025–2035）</h3>
+      <div class="timeline">
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2025 <span class="tl-tag">800G 红利年</span></div><div class="tl-body">800G 市场 130 亿美元（2024 为 40 亿），成为绝对主力；1.6T 首批出货约 250 万只；硅光渗透率约 33%；LightCounting 估以太网光模块市场 +82%；中国厂商占 Top10 中 7 席<span class="src src-org">机构</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2026 <span class="tl-tag">结构切换年</span></div><div class="tl-body">1.6T 进入千万只量级、芯片组销售额 &gt;20 亿美元；<b>硅光销售额首破 50%</b>；800G 出货预计 3700 万只（+85%）；LPO 出货 300–400 万只；CPO 商用元年但渗透率 &lt;1%（约 2.3 万台）；NVIDIA Spectrum-X Photonics 下半年量产爬坡；InP 短缺预计年底缓解<span class="src src-org">机构</span><span class="src src-co">公司</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2027 <span class="tl-tag">供需反转 · 关键分水岭</span></div><div class="tl-body">800G/1.6T 产能集中释放，价格战风险最高的一年；2.4T 轻相干与 NPO 集中商业化；Vera Rubin Ultra 提供铜缆或铜 + CPO 混合方案；Marvell 第三代 6.4T CPO 光引擎预计进入量产周期；行业开始从"AI 成长股"向"周期成长股"重定价<span class="src src-org">机构</span><span class="src src-md">建模</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2028 <span class="tl-tag">3.2T 与自主化考核年</span></div><div class="tl-body">数通光模块市场约 470 亿美元（LightCounting）；3.2T 进入规模出货；Feynman 平台可切换至 CPO；1.6T ZR/ZR+ 用于 Scale-across；工信部 200G EML 自给率 45% 目标验收年；首批 6G 网络最早出现；FTTx 与无线前传市场恢复<span class="src src-org">机构</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2029–2030 <span class="tl-tag">CPO 规模导入</span></div><div class="tl-body">SemiAnalysis 判断 Scale-up CPO 大规模导入落在 2029；TrendForce 预估 CPO/NPO 市场从 2025 年约 1 亿美元跃升至 2030 年 390 亿美元以上，同期可插拔仍保持近 260 亿美元；Intel 玻璃基板终端产品预计 2029–2030 面世；6G 广泛部署驱动前传升级<span class="src src-org">机构</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2031–2035 <span class="tl-tag">光 I/O 与 Scale-in</span></div><div class="tl-body">硅光渗透路径从 Scale-out → Scale-up → 封装内 Scale-in；光接口进入计算芯片封装；6.4T/12.8T 形态（NPO/XPO）产品化；相干 DSP 出货量预计超 800 万只（2031）；模块作为"独立可插拔商品"的份额结构性下降，价值向光引擎、光源与连接器迁移<span class="src src-org">机构</span><span class="src src-md">建模</span>。</div></div>
+      </div>
+
+      <h3>适配市场与场景优先级</h3>
+      <table class="routes">
+        <tr><th>赛道</th><th>单笔价值</th><th>验证周期</th><th>需求确定性</th><th>适配时点</th><th>代表玩家</th></tr>
+        <tr><td class="best">AI Scale-out（800G/1.6T 可插拔）</td><td>高</td><td class="best">短（已量产）</td><td class="best">高（但价格下行）</td><td>已放量</td><td>中际旭创 / 新易盛 / Coherent</td></tr>
+        <tr><td class="best">上游光芯片（EML / CW / InP）</td><td class="best">极高（议价权）</td><td>中</td><td class="best">高（缺口至 2027–28）</td><td>近中期</td><td>Lumentum / 住友 / 源杰 / 光迅</td></tr>
+        <tr><td>DCI / ZR-ZR+ 相干</td><td>高</td><td>中</td><td>中高（CAGR 13%）</td><td>近中期</td><td>Coherent / Cisco Acacia / 光迅</td></tr>
+        <tr><td>CPO 配套（光引擎 / ELS / FAU / 设备）</td><td>中高</td><td>中–长</td><td>中（时点分歧大）</td><td>中期</td><td>天孚通信 / 长电科技 / 台积电</td></tr>
+        <tr><td>AI Scale-up 光互连</td><td class="best">极高（量级放大 5–10×）</td><td>长</td><td>低（2027–28 揭晓）</td><td>中–长期</td><td>NVIDIA / 博通 / Marvell</td></tr>
+        <tr><td>电信 / 接入 / 前传</td><td>低</td><td>长</td><td>中（2028–29 恢复）</td><td>长期底仓</td><td>光迅科技 / 华为 / 中兴</td></tr>
+      </table>
+      <div class="callout">投资结论：<b>近期配置向"上游议价权 + 龙头份额"倾斜，中期配置向"CPO 架构下仍可独立售卖的零件"倾斜，长期期权押 Scale-up 切光。</b>需要主动回避的是：只有中低端可插拔产能、无上游锁定、无路线对冲的二三线厂商——它们同时暴露在 2027 年价格战与架构迁移两个风险下，且不享有任何一个的上行。</div>
+    </section>
+
+    <!-- 13 方法论 -->
+    <section id="ch13">
+      <h2><span class="n">13</span>研究方法论</h2>
+      <p>数据来源与口径说明（多口径并列 / 双方法交叉 / 假设透明）：</p>
+      <div class="src">
+        <span class="s">机构：LightCounting（2026.02 / 2026.04 / 2026.05 报告）、TrendForce 集邦咨询、SemiAnalysis、Yole Group、中金公司、广发证券、招商证券、东吴证券、天风证券、浙商证券、申万宏源、高盛、摩根士丹利、工信部《高速光模块产业发展白皮书》</span>
+        <span class="s">公司：中际旭创 / 新易盛 / 天孚通信 / 光迅科技 / 东山精密 / 源杰科技 / 长光华芯 2025 年报与 2026Q1 季报；Coherent FY26Q1–Q2、Lumentum FY26Q1 财报与业绩说明会；NVIDIA 官网 Silicon Photonics 产品页与 GTC 路线图；华为 OPEN NPO 发布</span>
+        <span class="s">学术 / 标准：高锟 1966 低损耗光纤论文、IEEE 802.3ae/802.3ba、GBIC/SFP/QSFP-DD MSA、Richard Soref 硅载流子色散、Graham Reed SOI 波导、IEEE 电子封装协会 2026.03 技术报告、OFC 2025/2026 公开资料</span>
+        <span class="s">建模：ASP × 出货量倒推、CAGR 内插（2026–2027 数通口径）、下行情景（供需反转下的价格与净利率弹性）、颠覆场景概率——均为基于公开趋势的合理推算，属量级锚而非事实</span>
+      </div>
+      <h3>来源标签定义</h3>
+      <table class="routes">
+        <tr><th>标签</th><th>含义</th><th>可核验性</th></tr>
+        <tr><td><span class="src src-co">公司</span></td><td>上市公司财报、公告、官网、业绩说明会等一手披露</td><td class="best">最高（可回溯至原文）</td></tr>
+        <tr><td><span class="src src-org">机构</span></td><td>LightCounting / TrendForce / SemiAnalysis 等第三方研究机构与券商研报、政府白皮书</td><td>高（部分为付费订阅报告的公开摘要）</td></tr>
+        <tr><td><span class="src src-ac">学术</span></td><td>论文、IEEE 标准、MSA 协议、技术史实</td><td class="best">最高（物理与标准事实）</td></tr>
+        <tr><td><span class="src src-md">建模</span></td><td>本报告基于公开数据的推算、情景与概率判断</td><td>低（属研判，非事实）</td></tr>
+        <tr><td><span class="src src-na">未公开/专家</span></td><td>产业访谈、媒体转述的非署名产业信息</td><td>最低（仅作参考方向）</td></tr>
+      </table>
+      <h3>已知数据缺口与处理方式</h3>
+      <div class="vlist">
+        <div class="vrow"><span class="vq">1</span><div><b>市场规模口径不统一</b>：LightCounting 至少三套口径（以太网 / 数通 / AI 集群+CPO），另有中金 400G+ 口径。本报告以数通口径为主，其余并列标注，不做跨口径加总。</div></div>
+        <div class="vrow"><span class="vq">2</span><div><b>1.6T 2026 出货量分歧大</b>：不同来源给出 860 万只至 2000 万只区间。本报告在倒推法中采用 1500–2000 万只区间并给出敏感性，未取单点。</div></div>
+        <div class="vrow"><span class="vq">3</span><div><b>ASP 数据非公开</b>：光模块单价为客户谈判价，无权威披露。文中价格轨迹（800G $1000→$350–400、1.6T $1000–1300→$400–650）来自券商测算与媒体调研，标注为建模/机构，不应视为成交事实。</div></div>
+        <div class="vrow"><span class="vq">4</span><div><b>BOM 成本结构存在两套口径</b>：狭义"光芯片占 15–20%"与宽义"光芯片占 50–70%"的差异来自是否把光引擎、无源器件计入。本报告采用狭义口径并注明差异来源。</div></div>
+        <div class="vrow"><span class="vq">5</span><div><b>CPO 时间表无共识</b>：NVIDIA（2026H2 量产）与 SemiAnalysis（Scale-up 推至 2029）直接冲突。本报告并列呈现双方论据，不做单一结论，并在 11 章以概率形式表达。</div></div>
+      </div>
+      <div class="callout">免责声明：本报告为技术全景研判，不构成投资建议。所有市场规模区间由两种独立方法交叉验证得出，非单点预测；玩家评分卡星级基于公开披露的定性研判，非完整清单，亦非排名背书；涉及未来的时点、渗透率与概率均为建模值，实际结果可能显著偏离。文中提及的公司仅用于说明技术格局，不代表任何买卖意见。数据截至 2026 年 8 月初公开信息。</div>
+    </section>
+
+    <div class="footer">作者 · HanBuff ｜ 单文件 HTML 报告 ｜ 数据来源标注【机构/公司/学术/建模】</div>
+  </main>
+</div>
+
+<script>
+// ---- scroll-spy (scroll-listener, robust to last/short sections) ----
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var sections = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); }).filter(Boolean);
+  var map = {};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+  function setActive(id){
+    links.forEach(function(l){ l.classList.remove('active'); });
+    if(map[id]) map[id].classList.add('active');
+  }
+  function onScroll(){
+    if(!sections.length) return;
+    var line = window.innerHeight * 0.28;          // activation line at 28% of viewport
+    var current = sections[0].id;
+    for(var i=0;i<sections.length;i++){
+      if(sections[i].getBoundingClientRect().top <= line) current = sections[i].id; else break;
+    }
+    // precise bottom-of-page fallback: last section can't reach the line (no content below),
+    // so activate it only when truly within 4px of absolute bottom (avoids over-firing on near-bottom sections)
+    if(Math.abs((window.innerHeight + window.scrollY) - document.documentElement.scrollHeight) < 4){
+      current = sections[sections.length-1].id;
+    }
+    setActive(current);
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  onScroll();
+})();
+
+// ---- 柱状图（全球数通光模块市场规模，LightCounting 口径） ----
+(function(){
+  var data = [
+    {label:'2024', v:10.5, h:false},
+    {label:'2025', v:19.0, h:false},
+    {label:'2026', v:26.0, h:true},
+    {label:'2027', v:34.5, h:false},
+    {label:'2028', v:47.0, h:false}
+  ];
+  var svg = document.getElementById('barchart'); if(!svg) return;
+  var W=640,H=300,padL=46,padB=36,padT=18,padR=14;
+  var maxV = Math.max.apply(null, data.map(function(d){return d.v;}))*1.15;
+  var bw = (W-padL-padR)/data.length*0.56, gap=(W-padL-padR)/data.length;
+  var ns='http://www.w3.org/2000/svg';
+  function y(v){ return H-padB - (v/maxV)*(H-padB-padT); }
+  for(var i=0;i<=4;i++){ var gv=maxV*i/4; var gy=y(gv);
+    var ln=document.createElementNS(ns,'line'); ln.setAttribute('x1',padL);ln.setAttribute('x2',W-padR);ln.setAttribute('y1',gy);ln.setAttribute('y2',gy);
+    ln.setAttribute('stroke','#e5e9ef');ln.setAttribute('stroke-width','1');svg.appendChild(ln);
+    var tx=document.createElementNS(ns,'text');tx.setAttribute('x',padL-8);tx.setAttribute('y',gy+4);tx.setAttribute('text-anchor','end');tx.setAttribute('font-size','11');tx.setAttribute('fill','#69737f');tx.textContent='$'+Math.round(gv);svg.appendChild(tx);
+  }
+  data.forEach(function(d,i){
+    var x=padL+gap*i+(gap-bw)/2, yh=y(d.v), bh=H-padB-yh;
+    var r=document.createElementNS(ns,'rect'); r.setAttribute('x',x);r.setAttribute('y',yh);r.setAttribute('width',bw);r.setAttribute('height',bh);r.setAttribute('rx','4');
+    r.setAttribute('fill', d.h?'#bd9a55':'#1d3a5e'); svg.appendChild(r);
+    var vt=document.createElementNS(ns,'text');vt.setAttribute('x',x+bw/2);vt.setAttribute('y',yh-6);vt.setAttribute('text-anchor','middle');vt.setAttribute('font-size','12');vt.setAttribute('font-weight','600');vt.setAttribute('fill', d.h?'#8a6418':'#142b47');vt.textContent='$'+d.v+'B';svg.appendChild(vt);
+    var xt=document.createElementNS(ns,'text');xt.setAttribute('x',x+bw/2);xt.setAttribute('y',H-padB+18);xt.setAttribute('text-anchor','middle');xt.setAttribute('font-size','11.5');xt.setAttribute('fill','#3a4754');xt.textContent=d.label;svg.appendChild(xt);
+  });
+  var cap=document.createElementNS(ns,'text');cap.setAttribute('x',W/2);cap.setAttribute('y',H-4);cap.setAttribute('text-anchor','middle');cap.setAttribute('font-size','11');cap.setAttribute('fill','#69737f');cap.textContent='全球数通光模块市场规模（USD Billion，LightCounting 口径；2026–2027 按 35% CAGR 内插）';svg.appendChild(cap);
+})();
+
+// ---- S 曲线（技术生命周期） ----
+(function(){
+  var routes = [
+    {name:'100G/400G 可插拔', x:0.95, y:0.18, risk:'高', c:'#d6463b'},
+    {name:'800G 可插拔（全 DSP）', x:0.80, y:0.52, risk:'中', c:'#bd9a55'},
+    {name:'1.6T 可插拔（硅光/EML）', x:0.62, y:0.80, risk:'低', c:'#1e9d6a'},
+    {name:'LPO / LRO 线性直驱', x:0.46, y:0.46, risk:'中', c:'#bd9a55'},
+    {name:'NPO 近封装光学', x:0.33, y:0.66, risk:'低', c:'#2b5488'},
+    {name:'CPO 共封装光学', x:0.22, y:0.88, risk:'低', c:'#1e9d6a'},
+    {name:'3.2T+ / 光 I/O（Scale-in）', x:0.09, y:0.97, risk:'中', c:'#bd9a55'}
+  ];
+  var svg=document.getElementById('scurve'); if(!svg) return;
+  var W=640,H=360,padL=48,padB=42,padT=20,padR=20;
+  var ns='http://www.w3.org/2000/svg';
+  function X(v){return padL+v*(W-padL-padR);} function Y(v){return H-padB-v*(H-padB-padT);}
+  var ax=document.createElementNS(ns,'line');ax.setAttribute('x1',padL);ax.setAttribute('x2',W-padR);ax.setAttribute('y1',H-padB);ax.setAttribute('y2',H-padB);ax.setAttribute('stroke','#69737f');ax.setAttribute('stroke-width','1');svg.appendChild(ax);
+  var ay=document.createElementNS(ns,'line');ay.setAttribute('x1',padL);ay.setAttribute('x2',padL);ay.setAttribute('y1',padT);ay.setAttribute('y2',H-padB);ay.setAttribute('stroke','#69737f');ay.setAttribute('stroke-width','1');svg.appendChild(ay);
+  var xl=document.createElementNS(ns,'text');xl.setAttribute('x',W/2);xl.setAttribute('y',H-10);xl.setAttribute('text-anchor','middle');xl.setAttribute('font-size','12');xl.setAttribute('fill','#3a4754');xl.textContent='技术成熟度 →';svg.appendChild(xl);
+  var yl=document.createElementNS(ns,'text');yl.setAttribute('x',14);yl.setAttribute('y',H/2);yl.setAttribute('text-anchor','middle');yl.setAttribute('font-size','12');yl.setAttribute('fill','#3a4754');yl.setAttribute('transform','rotate(-90 14 '+(H/2)+')');yl.textContent='性能 / 渗透 →';svg.appendChild(yl);
+  var x0=X(0),x1=X(1),y0=Y(0),y1=Y(1),ym=Y(0.5);
+  var p=document.createElementNS(ns,'path');
+  p.setAttribute('d','M'+x0+' '+y0+' C '+X(0.15)+' '+y0+' '+X(0.35)+' '+ym+' '+X(0.5)+' '+ym+' S '+X(0.85)+' '+y1+' '+x1+' '+y1);
+  p.setAttribute('fill','none');p.setAttribute('stroke','#1d3a5e');p.setAttribute('stroke-width','2.5');p.setAttribute('stroke-dasharray','7 5');svg.appendChild(p);
+  routes.forEach(function(r){
+    var cx=X(r.x),cy=Y(r.y);
+    var c=document.createElementNS(ns,'circle');c.setAttribute('cx',cx);c.setAttribute('cy',cy);c.setAttribute('r','7');c.setAttribute('fill',r.c);c.setAttribute('stroke','#fff');c.setAttribute('stroke-width','2');svg.appendChild(c);
+    var t=document.createElementNS(ns,'text');t.setAttribute('x',cx+11);t.setAttribute('y',cy+4);t.setAttribute('font-size','12');t.setAttribute('font-weight','600');t.setAttribute('fill','#19222e');t.textContent=r.name+'（过时风险'+r.risk+'）';svg.appendChild(t);
+  });
+})();
+</script>
+</body>
+</html>
