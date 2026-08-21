@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>材料研发AI4S产业链分析 · v6 单页报告</title>
+<style>
+  :root{
+    --navy:#1d3a5e; --navy2:#2b5488; --navy-soft:#eaf1f8;
+    --ink:#19222e; --muted:#69737f; --line:#e5e9ef;
+    --bg:#f4f6f8; --card:#ffffff;
+    --red:#d6463b; --red-soft:#fbedec;   /* 涨 = 红 */
+    --green:#1e9d6a; --green-soft:#e8f5ef; /* 跌 = 绿 */
+    --gold:#bd9a55; --gold-soft:#f7f1e3;
+    --chip:#edf0f5;
+    --slate:#9fb3cd; --accent2:#d9b877;
+    --font-serif:"Source Han Serif SC","Noto Serif SC","Songti SC","SimSun",serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;padding-left:252px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;color:var(--ink);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px;}
+  /* ===== LEFT SIDEBAR TOC ===== */
+  .sidebar{position:fixed;top:0;left:0;width:252px;height:100vh;background:linear-gradient(180deg,#142b47 0%,#1d3a5e 55%,#244d7c 100%);color:#fff;display:flex;flex-direction:column;z-index:60;box-shadow:2px 0 18px rgba(20,43,71,.25);}
+  .side-brand{padding:24px 22px 18px;border-bottom:1px solid rgba(255,255,255,.10);}
+  .side-brand .sb-t{font-size:12px;color:var(--slate);letter-spacing:1.5px;font-weight:600;}
+  .side-brand .sb-n{font-size:18px;font-weight:800;margin-top:6px;line-height:1.3;font-family:var(--font-serif);}
+  .side-brand .sb-v{display:inline-block;margin-top:12px;font-size:11px;color:#142b47;background:var(--accent2);padding:3px 10px;border-radius:11px;font-weight:700;letter-spacing:.5px;}
+  .toc{padding:14px 12px 30px;overflow-y:auto;flex:1 1 auto;}
+  .toc a{display:flex;align-items:center;gap:11px;color:#b9cce0;font-size:13px;padding:10px 12px;border-radius:9px;transition:.15s;margin:2px 0;border-left:3px solid transparent;}
+  .toc a .num{font-size:11px;font-weight:700;color:#7fa3c4;width:22px;flex:0 0 auto;text-align:center;}
+  .toc a:hover{background:rgba(255,255,255,.10);color:#fff;}
+  .toc a.active{background:rgba(255,255,255,.14);color:#fff;border-left-color:var(--accent2);}
+  .toc a.active .num{color:var(--accent2);}
+  .hero{background:linear-gradient(135deg,#142b47 0%,#1d3a5e 55%,#2b5488 100%);color:#fff;padding:48px 0 42px;position:relative;}
+  .hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--accent2),transparent);}
+  .hero .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--accent2);border:1px solid rgba(217,184,119,.45);padding:4px 12px;border-radius:20px;margin-bottom:14px;}
+  .hero h1{margin:0 0 10px;font-size:34px;font-weight:800;letter-spacing:.5px;font-family:var(--font-serif);}
+  .hero p.sub{margin:0;color:#c5d4e6;font-size:15px;max-width:820px;}
+  .hero .meta{margin-top:18px;display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--slate);}
+  .hero .meta b{color:#fff;font-weight:600;}
+  section{padding:36px 0 8px;}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;}
+  .sec-head .no{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--navy),var(--navy2));width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:9px;flex:0 0 auto;box-shadow:0 2px 6px rgba(29,58,94,.25);}
+  .sec-head h2{margin:0;font-size:22px;font-weight:750;font-family:var(--font-serif);letter-spacing:.3px;}
+  .sec-head .en{color:var(--muted);font-size:12.5px;font-weight:500;}
+  .sec-head.v3 .no{background:var(--gold);color:#3a2a06;}
+  .sec-head.v4 .no{background:var(--navy2);color:#fff;}
+  .sec-head.v6 .no{background:var(--red);color:#fff;}
+  .lead{color:#3a4754;font-size:14.5px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:10px;padding:16px 20px;}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
+  .kpi .h{font-size:13px;color:var(--muted);margin-bottom:6px;}
+  .kpi .v{font-size:16.5px;font-weight:750;color:var(--navy);}
+  .kpi .v small{font-size:12px;color:var(--muted);font-weight:500;}
+  .chain{display:flex;align-items:stretch;gap:0;margin-top:6px;flex-wrap:wrap;}
+  .tier{flex:1 1 0;min-width:230px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;position:relative;}
+  .tier .tname{font-weight:750;font-size:15px;color:var(--navy);display:flex;align-items:center;gap:8px;}
+  .tier .tname .dot{width:10px;height:10px;border-radius:50%;}
+  .tier .trole{font-size:12px;color:var(--muted);margin:4px 0 12px;}
+  .seg{margin-bottom:12px;}
+  .seg .lbl{font-size:12.5px;font-weight:600;color:#2c3a47;margin-bottom:6px;}
+  .pills{display:flex;flex-wrap:wrap;gap:6px;}
+  .pill{font-size:12px;background:var(--chip);color:#33414f;border:1px solid #dde6f0;padding:3px 9px;border-radius:14px;white-space:nowrap;}
+  .pill.real{background:var(--gold-soft);border-color:#e7d3a3;color:#8a6418;font-weight:600;}
+  .pill.aux{background:#eef0f2;color:#7a8694;}
+  .arrow{display:flex;align-items:center;justify-content:center;color:var(--navy);font-size:22px;font-weight:700;flex:0 0 34px;}
+  @media(max-width:860px){.arrow{transform:rotate(90deg);flex-basis:100%;height:30px;}}
+  .tier.up .dot{background:var(--navy);}
+  .tier.mid .dot{background:var(--gold);}
+  .tier.down .dot{background:#3f7bb0;}
+  .tier.aux .dot{background:#7a8694;}
+  .tiercards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px;}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;}
+  .tcard .th{font-size:16px;font-weight:750;color:var(--navy);border-bottom:2px solid var(--navy-soft);padding-bottom:10px;margin-bottom:12px;}
+  .tcard h4{font-size:13px;margin:14px 0 5px;color:#2c3a47;}
+  .tcard p{margin:0;font-size:13.5px;color:#3a4754;}
+  .cert{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:6px 10px;border-radius:8px;font-size:13px;font-weight:700;align-self:flex-start;}
+  .cert.high{background:var(--green-soft);color:var(--green);}
+  .cert.mid{background:var(--gold-soft);color:var(--gold);}
+  .cert.low{background:#eef0f2;color:#7a8694;}
+  .stars{letter-spacing:2px;color:var(--gold);font-size:14px;}
+  .realpill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:10px;}
+  .realpill.t{background:var(--gold-soft);color:#8a6418;}
+  .realpill.f{background:#eef0f2;color:#7a8694;}
+  .chart{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-top:6px;}
+  .chart .grp-title{font-size:13px;font-weight:700;color:var(--navy);margin:16px 0 8px;display:flex;align-items:center;gap:8px;}
+  .chart .grp-title:first-child{margin-top:2px;}
+  .chart .grp-title .sw{width:18px;height:4px;border-radius:2px;}
+  .row{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px;}
+  .row .name{width:150px;flex:0 0 auto;text-align:right;color:#33414f;}
+  .row .track{position:relative;flex:1 1 auto;height:18px;background:#f0f3f7;}
+  .row .track::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:#cfd8e2;}
+  .row .bar{position:absolute;top:2px;height:14px;border-radius:3px;}
+  .row .bar.pos{right:50%;background:var(--red);}
+  .row .bar.neg{left:50%;background:var(--green);}
+  .row .val{width:80px;flex:0 0 auto;font-weight:700;font-variant-numeric:tabular-nums;}
+  .row .val.pos{color:var(--red);}
+  .row .val.neg{color:var(--green);}
+  .legend{display:flex;gap:18px;margin-top:14px;font-size:12.5px;color:var(--muted);align-items:center;flex-wrap:wrap;}
+  .legend .li{display:flex;align-items:center;gap:6px;}
+  .legend .sq{width:14px;height:14px;border-radius:3px;}
+  .tbl-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 8px;margin-top:16px;overflow-x:auto;}
+  table{border-collapse:collapse;width:100%;font-size:13px;min-width:620px;}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;}
+  th{background:#f7f9fc;color:#51606e;font-weight:650;font-size:12.5px;}
+  td .up{color:var(--red);font-weight:700;}
+  td .down{color:var(--green);font-weight:700;}
+  .badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
+  .badge.t{background:var(--gold-soft);color:#8a6418;}
+  .badge.p{background:#eef0f2;color:#7a8694;}
+  tr:hover td{background:#fafcfe;}
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px;}
+  .vscol{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;}
+  .vscol.real{border-top:4px solid var(--gold);}
+  .vscol.fake{border-top:4px solid #9aa6b2;}
+  .vscol h3{margin:0 0 4px;font-size:16px;}
+  .vscol.real h3{color:#8a6418;}
+  .vscol.fake h3{color:#5b6671;}
+  .vscol .desc{font-size:12.5px;color:var(--muted);margin:0 0 12px;}
+  .vscol ul{margin:0;padding-left:18px;}
+  .vscol li{font-size:13.5px;color:#3a4754;margin:7px 0;}
+  .vscol li b{color:var(--ink);}
+  .checklist{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin-top:16px;}
+  .checklist h4{margin:0 0 10px;font-size:15px;color:var(--navy);}
+  .checklist ol{margin:0;padding-left:20px;font-size:13.5px;color:#3a4754;}
+  .checklist ol li{margin:6px 0;}
+  .verdict{background:linear-gradient(135deg,#142b47,#1d3a5e);color:#eaf1f8;border-radius:14px;padding:24px 26px;}
+  .verdict h3{margin:0 0 12px;color:#fff;font-size:18px;}
+  .verdict p{margin:0 0 10px;font-size:14px;color:#d6e2ee;}
+  .verdict .points{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;margin-top:14px;}
+  .verdict .pt{font-size:13.5px;color:#e3edf6;display:flex;gap:8px;align-items:flex-start;}
+  .verdict .pt .n{background:var(--gold);color:#3a2a06;font-weight:800;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex:0 0 auto;margin-top:1px;}
+  footer{border-top:1px solid var(--line);margin-top:34px;padding:22px 0 40px;color:var(--muted);font-size:12.5px;}
+  footer .wrap p{margin:5px 0;}
+  .disclaimer{background:#fff8f0;border:1px solid #f3e3cb;color:#8a6418;border-radius:10px;padding:12px 16px;font-size:12.5px;margin-top:12px;}
+  .biz-sub{margin-top:24px;}
+  .biz-sub > h3{font-size:16px;color:var(--navy);margin:0 0 10px;display:flex;align-items:center;gap:9px;}
+  .biz-sub > h3 .k{background:var(--gold);color:#3a2a06;font-size:12px;font-weight:800;width:23px;height:23px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .biz-sub > h3 .note{font-size:12px;color:var(--muted);font-weight:500;}
+  .src{font-size:11.5px;color:var(--muted);margin-top:7px;line-height:1.5;}
+  .src b{color:#8a6418;font-weight:700;}
+  .prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:10px;}
+  .prod-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;}
+  .prod-card .ph{font-weight:700;color:var(--navy);font-size:14px;margin-bottom:6px;}
+  .prod-card .pd{font-size:12.5px;color:#3a4754;}
+  .prod-card .pm{font-size:12px;color:var(--gold);font-weight:700;margin-top:7px;}
+  .rnd-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:10px;}
+  .rnd{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;padding:14px 18px;}
+  .rnd .rh{font-weight:750;color:var(--navy);font-size:14.5px;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+  .rnd .rh .badge2{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:9px;background:var(--navy-soft);color:var(--navy);}
+  .rnd ul{margin:0;padding-left:18px;font-size:12.8px;color:#3a4754;}
+  .rnd li{margin:4px 0;}
+  .rnd .tag{display:inline-block;font-size:11px;background:var(--gold-soft);color:#8a6418;padding:2px 8px;border-radius:10px;margin-top:7px;font-weight:600;}
+  .valueflow{margin-top:6px;}
+  .vf-band{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin-bottom:6px;}
+  .vf-node{flex:1 1 0;min-width:180px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;}
+  .vf-node .vn-tier{font-size:11px;color:var(--muted);letter-spacing:.5px;}
+  .vf-node .vn-name{font-weight:750;color:var(--navy);font-size:14.5px;margin:2px 0 6px;}
+  .vf-node .vn-flow{font-size:12px;color:#3a4754;margin:2px 0;}
+  .vf-node .vn-flow b{color:var(--ink);}
+  .vf-arrow{display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:19px;font-weight:700;flex:0 0 28px;}
+  @media(max-width:860px){.vf-arrow{transform:rotate(90deg);flex-basis:100%;height:26px;}}
+  .vf-note{font-size:12px;color:#6b5240;background:var(--gold-soft);border:1px solid #ecd9b4;border-radius:8px;padding:9px 13px;margin:10px 0 2px;}
+  .vf-tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:12px;}
+  .vf-tier{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;}
+  .vf-tier .vt-name{font-weight:750;color:var(--navy);font-size:14.5px;}
+  .vf-tier .vt-role{font-size:11.5px;color:var(--muted);margin-bottom:10px;}
+  .vf-meter{margin:9px 0;}
+  .vf-meter .ml{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;}
+  .vf-meter .ml .ml-l{color:#51606e;}
+  .vf-meter .ml .ml-v{font-weight:700;font-variant-numeric:tabular-nums;}
+  .vf-meter .ml .ml-v.cost{color:#6b7785;}
+  .vf-meter .ml .ml-v.profit{color:var(--red);}
+  .vf-bar{height:9px;border-radius:5px;background:#eef2f6;overflow:hidden;}
+  .vf-bar .fill{height:100%;border-radius:5px;}
+  .vf-bar .fill.cost{background:#9aa6b2;}
+  .vf-bar .fill.profit{background:var(--red);}
+  .vf-pos{margin-top:10px;font-size:12px;font-weight:700;}
+  .vf-pos.absorb{color:var(--red);}
+  .vf-pos.out{color:#7a8694;}
+  .ppool{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin-top:6px;}
+  .pp-row{display:flex;align-items:center;gap:10px;margin:10px 0;font-size:13px;}
+  .pp-row .pp-name{width:190px;flex:0 0 auto;color:#33414f;font-weight:600;}
+  .pp-row .pp-track{flex:1 1 auto;height:24px;background:#f0f3f7;border-radius:6px;overflow:hidden;}
+  .pp-row .pp-bar{height:100%;border-radius:6px;background:linear-gradient(90deg,#bd9a55,#d6463b);display:flex;align-items:center;justify-content:flex-end;padding-right:9px;color:#fff;font-size:11.5px;font-weight:700;white-space:nowrap;}
+  .migrate{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px;}
+  .mig-col{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;}
+  .mig-col .mc-h{font-weight:750;color:var(--navy);font-size:14px;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+  .mig-col .mc-h .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);}
+  .mig-col ul{margin:0;padding-left:18px;font-size:12.8px;color:#3a4754;}
+  .mig-col li{margin:5px 0;}
+  .master-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px;}
+  .master-col{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;}
+  .master-col.m{border-top:4px solid var(--navy);}
+  .master-col.b{border-top:4px solid var(--red);}
+  .master-col h3{margin:0 0 4px;font-size:16px;}
+  .master-col.m h3{color:var(--navy);}
+  .master-col.b h3{color:var(--red);}
+  .master-col .desc{font-size:12.5px;color:var(--muted);margin:0 0 12px;}
+  .master-col ul{margin:0;padding-left:18px;}
+  .master-col li{font-size:13.5px;color:#3a4754;margin:8px 0;}
+  .master-col li b{color:var(--ink);}
+  .irr{font-size:11px;font-weight:700;padding:2px 8px;border-radius:9px;vertical-align:middle;}
+  .irr.hi{background:var(--red-soft);color:var(--red);}
+  .irr.mid{background:var(--gold-soft);color:#8a6418;}
+  .irr.lo{background:#eef0f2;color:#7a8694;}
+  .stress-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px;}
+  .stress{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;padding:14px 16px;}
+  .stress .st-type{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:9px;margin-bottom:8px;}
+  .stress .st-type.gap{background:var(--red-soft);color:var(--red);}
+  .stress .st-type.tech{background:var(--navy-soft);color:var(--navy);}
+  .stress .st-type.policy{background:var(--gold-soft);color:#8a6418;}
+  .stress .st-h{font-weight:700;color:var(--navy);font-size:14px;margin-bottom:6px;}
+  .stress .st-d{font-size:12.5px;color:#3a4754;}
+  .stress .st-sev{margin-top:8px;font-size:11.5px;font-weight:700;color:var(--muted);}
+  .panorama{margin-top:6px;}
+  .panorama .seg-tag{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:9px;margin:14px 0 6px;color:#fff;}
+  .panorama .seg-tag.up{background:var(--navy);}
+  .panorama .seg-tag.mid{background:var(--gold);color:#3a2a06;}
+  .panorama .seg-tag.down{background:#3f7bb0;}
+  .panorama .seg-tag.aux{background:#7a8694;}
+  /* (smile 曲线可视化已移除) */
+  .duel{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
+  .duel-verdict{margin-top:12px;background:var(--navy-soft);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--navy);}
+  .restruct-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:6px;}
+  .restruct{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:12px;padding:14px 16px;}
+  .restruct .rh{font-weight:750;color:var(--navy);font-size:14px;margin-bottom:8px;}
+  .restruct ul{margin:0;padding-left:18px;font-size:12.8px;color:#3a4754;}
+  .restruct li{margin:5px 0;}
+  .sim{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-top:14px;}
+  .sim .sh{font-weight:700;color:var(--red);font-size:14px;margin-bottom:6px;}
+  .sim .sd{font-size:13px;color:#3a4754;}
+  .radar{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:6px;}
+  .radar-col{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;}
+  .radar-col.sub{border-top:4px solid var(--red);}
+  .radar-col.gap{border-top:4px solid var(--gold);}
+  .radar-col.water{border-top:4px solid var(--navy);}
+  .radar-col h3{margin:0 0 4px;font-size:15px;}
+  .radar-col.sub h3{color:var(--red);}
+  .radar-col.gap h3{color:var(--gold);}
+  .radar-col.water h3{color:var(--navy);}
+  .radar-col .desc{font-size:12px;color:var(--muted);margin:0 0 10px;}
+  .radar-item{background:#f7f9fc;border-radius:9px;padding:9px 12px;margin:8px 0;font-size:12.8px;color:#3a4754;}
+  .radar-item b{color:var(--ink);}
+  .health{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px;}
+  .health-item{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:12px;padding:13px 16px;}
+  .health-item .hi-h{font-weight:700;color:var(--navy);font-size:14px;margin-bottom:6px;}
+  .health-item .hi-row{display:flex;justify-content:space-between;font-size:12.5px;margin:4px 0;}
+  .health-item .hi-row .v{font-weight:700;}
+  .health-item .hi-row .v.ok{color:var(--green);}
+  .health-item .hi-row .v.warn{color:var(--red);}
+  .health-item .hi-line{font-size:11.5px;color:var(--muted);margin-top:5px;border-top:1px dashed var(--line);padding-top:5px;}
+  .bullbear{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
+  .bb{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px;}
+  .bb.bull{border-top:4px solid var(--green);}
+  .bb.bear{border-top:4px solid var(--red);}
+  .bb h3{margin:0 0 8px;font-size:15px;}
+  .bb.bull h3{color:var(--green);}
+  .bb.bear h3{color:var(--red);}
+  .bb p{margin:0;font-size:13.5px;color:#3a4754;}
+  .two-table-note{font-size:12px;color:var(--muted);margin:10px 0 4px;}
+
+  /* ===== v6 NEW: 需求真实性（Ch5） ===== */
+  .demand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:6px;}
+  .demand-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;}
+  .demand-card .dm-h{font-weight:750;color:var(--navy);font-size:14.5px;margin-bottom:8px;}
+  .demand-card .dm-type{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:9px;margin-bottom:10px;}
+  .demand-card .dm-type.pull{background:var(--red-soft);color:var(--red);}
+  .demand-card .dm-type.push{background:var(--gold-soft);color:#8a6418;}
+  .demand-card .dm-row{font-size:12.8px;color:#3a4754;margin:6px 0;}
+  .demand-card .dm-row b{color:var(--ink);}
+  .dm-proof{font-size:11.5px;color:var(--muted);margin-top:8px;border-top:1px dashed var(--line);padding-top:6px;}
+
+  /* ===== v6 NEW: deal 级风险（Ch10 子项） ===== */
+  .dr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px;}
+  .dr-card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;padding:14px 16px;}
+  .dr-card .dr-type{font-weight:700;color:var(--navy);font-size:13.5px;margin-bottom:6px;}
+  .dr-card .dr-d{font-size:12.5px;color:#3a4754;}
+  .dr-card .dr-sev{margin-top:8px;font-size:11px;font-weight:700;}
+  .dr-sev.hi{color:var(--red);}
+  .dr-sev.mid{color:var(--gold);}
+  .dr-sev.lo{color:#7a8694;}
+
+  /* ===== v6 NEW: 催化剂日历（Ch12） ===== */
+  .cat-up{color:var(--red);font-weight:700;}
+  .cat-down{color:var(--green);font-weight:700;}
+  .cat-both{color:var(--gold);font-weight:700;}
+
+  /* ===== v6 NEW: 投资启示（Ch13） ===== */
+  .asym-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:6px;}
+  .asym{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;}
+  .asym.up{border-top:4px solid var(--red);}
+  .asym.safe{border-top:4px solid var(--navy);}
+  .asym.trap{border-top:4px solid #9aa6b2;}
+  .asym .ah{font-weight:750;color:var(--navy);font-size:14.5px;margin-bottom:8px;}
+  .asym p{font-size:12.8px;color:#3a4754;margin:0;}
+  .triage-wrap{margin-top:16px;}
+  .exit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px;}
+  .exit-col{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;}
+  .exit-col .eh{font-weight:750;font-size:13.5px;color:var(--navy);margin-bottom:8px;}
+  .exit-col ul{margin:0;padding-left:18px;font-size:12.5px;color:#3a4754;}
+  .exit-col li{margin:4px 0;}
+
+  .subhead{display:flex;align-items:center;gap:8px;margin:22px 0 10px;font-size:15px;font-weight:750;color:var(--navy);}
+  .subhead .bar{width:4px;height:18px;background:var(--gold);border-radius:2px;}
+
+  @media(max-width:820px){
+    .kpis,.tiercards,.vs,.verdict .points,.vf-tiers,.prod-grid,.rnd-cards,.migrate,.master-grid,.stress-grid,.restruct-grid,.radar,.health,.bullbear,.duel,.demand-grid,.dr-grid,.asym-grid,.exit-grid{grid-template-columns:1fr;}
+    .hero h1{font-size:26px;}
+  }
+  @media(max-width:980px){
+    body{padding-left:0;}
+    .sidebar{position:static;width:auto;height:auto;flex-direction:column;box-shadow:none;}
+    .toc{display:flex;flex-wrap:nowrap;overflow-x:auto;padding:10px 12px;}
+    .toc a{white-space:nowrap;margin:0 4px;flex:0 0 auto;}
+  }
+  /* ===== POLISH: 衬线标题 + 卡片阴影 + 悬停微动效 ===== */
+  h1,h2,h3,h4,.kpi .v,.tier .tname,.tcard .th,.prod-card .ph,.radar-col h3,.exit-col .eh,.demand-card .dm-h,.dr-card .dr-type,.asym .ah{font-family:var(--font-serif);}
+  .kpi,.tcard,.chart,.tbl-wrap,.prod-card,.rnd,.vf-tier,.ppool,.master-col,.stress,.panorama,.restruct,.sim,.radar-col,.health-item,.bb,.demand-card,.dr-card,.asym,.exit-col,.cert,.realpill{border:1px solid var(--line);box-shadow:0 1px 3px rgba(20,43,71,.06);transition:box-shadow .18s,transform .18s;}
+  .kpi:hover,.tcard:hover,.chart:hover,.tbl-wrap:hover,.prod-card:hover,.rnd:hover,.vf-tier:hover,.ppool:hover,.master-col:hover,.stress:hover,.panorama:hover,.restruct:hover,.sim:hover,.radar-col:hover,.health-item:hover,.bb:hover,.demand-card:hover,.dr-card:hover,.asym:hover,.exit-col:hover{box-shadow:0 4px 14px rgba(20,43,71,.12);transform:translateY(-2px);}
+  .tbl-wrap table tbody tr{transition:background .15s;}
+  .tbl-wrap table tbody tr:hover{background:var(--navy-soft);}
+  /* vs 强弱标识（议价对决/对比表通用） */
+  .vs-yes{color:var(--green);font-weight:700;}
+  .vs-no{color:var(--red);font-weight:700;}
+  @media print{
+    .sidebar{display:none;}
+    body{padding-left:0;background:#fff;}
+    .hero,.verdict{background:#142b47 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .tier,.tcard,.chart,.vscol,.kpi,.tbl-wrap,.prod-card,.rnd,.vf-tier,.ppool,.master-col,.stress,.panorama,.restruct,.sim,.radar-col,.health-item,.bb,.demand-card,.dr-card,.asym,.exit-col{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div id="gate" class="gate">
+  <div class="gate-box">
+    <div class="gate-title">🔒 内容已加密</div>
+    <div class="gate-sub">请输入访问密码</div>
+    <input id="gate-pwd" type="password" class="gate-input" placeholder="访问密码" autocomplete="off" />
+    <button id="gate-btn" class="gate-btn">解锁</button>
+    <div id="gate-err" class="gate-err"></div>
+  </div>
+</div>
+<style>
+.gate{position:fixed;inset:0;z-index:2147483647;background:linear-gradient(135deg,#0f1420,#1a2236);display:flex;align-items:center;justify-content:center;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif}
+.gate-box{background:#fff;border-radius:16px;padding:36px 40px;width:320px;max-width:86vw;box-shadow:0 20px 60px rgba(0,0,0,.45);text-align:center}
+.gate-title{font-size:20px;font-weight:700;color:#111827;margin-bottom:6px}
+.gate-sub{font-size:13px;color:#6b7280;margin-bottom:20px}
+.gate-input{width:100%;box-sizing:border-box;padding:12px 14px;font-size:15px;border:1px solid #d1d5db;border-radius:10px;outline:none;margin-bottom:14px}
+.gate-input:focus{border-color:#2563eb}
+.gate-btn{width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.gate-btn:hover{background:#1d4ed8}
+.gate-err{color:#dc2626;font-size:13px;margin-top:12px;min-height:18px}
+</style>
+<script>
+(function(){
+  var PWD="hanbuff";
+  function unlock(){ var g=document.getElementById("gate"); if(g&&g.parentNode){ g.parentNode.removeChild(g); } }
+  function check(){ var v=document.getElementById("gate-pwd").value; var err=document.getElementById("gate-err"); if(v===PWD){ unlock(); } else { err.textContent="密码错误，请重试"; } }
+  window.addEventListener("load",function(){ var btn=document.getElementById("gate-btn"); var inp=document.getElementById("gate-pwd"); if(btn) btn.addEventListener("click",check); if(inp){ inp.addEventListener("keydown",function(e){ if(e.key==="Enter") check(); }); inp.focus(); } });
+})();
+</script>
+
+
+<!-- LEFT SIDEBAR TOC -->
+<aside class="sidebar">
+  <div class="side-brand">
+    <div class="sb-t">产业链研究</div>
+    <div class="sb-n">材料研发 AI4S</div>
+    <span class="sb-v">AI for Science</span>
+  </div>
+  <nav class="toc">
+    <a href="#def"><span class="num">01</span>概念定义</a>
+    <a href="#panorama"><span class="num">02</span>全景双视图</a>
+    <a href="#layers"><span class="num">03</span>分层受益</a>
+    <a href="#biz"><span class="num">04</span>业务拆解</a>
+    <a href="#demand"><span class="num">05</span>需求真实性</a>
+    <a href="#power"><span class="num">06</span>权力·卡脖</a>
+    <a href="#profit"><span class="num">07</span>价值·利润</a>
+    <a href="#radar"><span class="num">08</span>机会雷达</a>
+    <a href="#real"><span class="num">09</span>真伪受益</a>
+    <a href="#health"><span class="num">10</span>健康度·风险</a>
+    <a href="#verdict"><span class="num">11</span>客观判断</a>
+    <a href="#catalyst"><span class="num">12</span>催化剂日历</a>
+    <a href="#insight"><span class="num">13</span>投资启示</a>
+    <a href="#chart"><span class="num">末</span>涨跌·估值</a>
+  </nav>
+</aside>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <span class="tag">材料研发 AI4S 产业链分析</span>
+    <h1>材料研发 AI4S（科学智能）产业链分析</h1>
+    <p class="sub">14 块结构化拆解：上游算力/科学引擎 → 中游 AI4S 平台·自动驾驶实验室 → 下游材料应用客户。聚焦晶泰、深势、开物纪、DeepMind/GNoME、Schrödinger、Recursion 等真实玩家，并甄别 A 股「概念映射」方的真伪受益；覆盖需求真实性验证、催化剂日历、投资启示（非对称下注/标的 triage/退出路径）。未上市/海外头部公司单列覆盖。</p>
+    <div class="meta">
+      <span>作者：<b>HanBuff</b></span>
+      <span>数据日期：<b>2026-07-30 收盘</b></span>
+      <span>数据来源：<b>腾讯自选股 / NeoData 金融搜索 / 公司公告·IR</b></span>
+      <span>涨跌口径：<b>涨红 · 跌绿（A 股习惯）</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- KEY TAKEAWAYS -->
+  <section style="padding-top:30px;">
+    <div class="kpis">
+      <div class="kpi"><div class="h">最受益环节</div><div class="v">上游·算力+科学引擎 <small>确定性最高（卖铲人）</small></div></div>
+      <div class="kpi"><div class="h">当前利润池</div><div class="v">算力芯片 + 科学软件 <small>毛利 60–85%</small></div></div>
+      <div class="kpi"><div class="h">关键卡脖子</div><div class="v">高端 AI 芯片 + 底层求解器 <small>外资主导·禁运风险</small></div></div>
+    </div>
+  </section>
+
+  <!-- 1. DEFINITION -->
+  <section id="def">
+    <div class="sec-head"><span class="no">1</span><h2>什么是材料研发 AI4S 产业链</h2><span class="en">What is AI for Science in Materials</span></div>
+    <div class="lead">
+      <b>AI4S（AI for Science，科学智能）</b>指用机器学习+物理引擎重构科研范式：把材料研发从「试错枚举」推进到「生成式设计 + 自动驾驶实验室闭环」。核心机制是「<b>预测—合成—表征—数据反哺</b>」的研发飞轮：AI 在化学/材料空间里大规模搜索候选结构，机器人湿实验验证，标准化数据再反哺模型。<br><br>
+      <b>投资视角核心矛盾：</b>①算法/模型能力已领先实验验证数年（DeepMind GNoME 预测 220 万晶体，至今仅少数被合成验证），「预测强、合成弱、数据荒」是主约束；②产业处于「第五范式」极早期，<b>A 股几乎没有纯正标的</b>——真正的玩家集中在港股（晶泰）、未上市（深势、开物纪）、海外（DeepMind/Schrödinger/Recursion），A 股相关公司多为「技术邻近的间接受益方」。
+    </div>
+  </section>
+
+  <!-- 2. 全景双视图（合 原2+3） -->
+  <section id="panorama">
+    <div class="sec-head v4"><span class="no">2</span><h2>产业链全景：物料流 + 价值流双视图</h2><span class="en">Material Flow × Value Flow</span></div>
+    <div class="panorama">
+      <div class="seg-tag up">视图 A · 物料流（谁在哪段、做什么）</div>
+      <div class="chain">
+        <div class="tier up">
+          <div class="tname"><span class="dot"></span>上游 · 算力与科学引擎</div>
+          <div class="trole">卖铲人，需求刚性，壁垒最高</div>
+          <div class="seg"><div class="lbl">AI 算力芯片</div><div class="pills"><span class="pill real">寒武纪</span><span class="pill real">海光信息</span><span class="pill real">华为昇腾</span><span class="pill">英伟达(禁运)</span></div></div>
+          <div class="seg"><div class="lbl">科学计算引擎(分子动力学/第一性原理/量子化学)</div><div class="pills"><span class="pill real">深势科技</span><span class="pill">Schrödinger</span><span class="pill">Materials Project</span></div></div>
+          <div class="seg"><div class="lbl">材料数据库</div><div class="pills"><span class="pill">Materials Project</span><span class="pill real">深势 Bohrium</span></div></div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="tier mid">
+          <div class="tname"><span class="dot"></span>中游 · AI4S 模型·平台·自动驾驶实验室</div>
+          <div class="trole">掌握研发飞轮，价值核心</div>
+          <div class="seg"><div class="lbl">AI4S 平台公司</div><div class="pills"><span class="pill real">晶泰科技(港股)</span><span class="pill real">深势科技</span><span class="pill real">开物纪</span><span class="pill">Schrödinger</span><span class="pill">Recursion</span></div></div>
+          <div class="seg"><div class="lbl">材料生成/性质预测模型</div><div class="pills"><span class="pill real">深势 DPA-2/Uni-Mol</span><span class="pill real">晶泰 XFEP</span><span class="pill real">开物纪 Prophet+Creator</span><span class="pill">DeepMind GNoME/AlphaFold3</span></div></div>
+          <div class="seg"><div class="lbl">自动驾驶实验室(机器人湿实验)</div><div class="pills"><span class="pill real">晶泰机器人调度</span><span class="pill real">深势赛博实验室</span><span class="pill">Berkeley A-Lab</span></div></div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="tier down">
+          <div class="tname"><span class="dot"></span>下游 · 材料应用客户</div>
+          <div class="trole">付费方/采用方，最易蹭概念</div>
+          <div class="seg"><div class="lbl">制药 / 新材料 / 化工 / 半导体</div><div class="pills"><span class="pill">万华化学</span><span class="pill">宁德时代</span><span class="pill">比亚迪</span><span class="pill">巴斯夫</span><span class="pill">晶科能源</span></div></div>
+          <div class="seg"><div class="lbl" style="color:#7a8694;">⚠ A股"概念映射"方(非核心)</div><div class="pills"><span class="pill aux">索辰(工业仿真)</span><span class="pill aux">中望(CAD)</span><span class="pill aux">华大九天(EDA)</span><span class="pill aux">埃斯顿/汇川(机器人)</span></div></div>
+        </div>
+      </div>
+
+      <div class="seg-tag mid">视图 B · 价值流（成本占比 / 毛利率 / 集中度 / 利润分布）</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>段</th><th>技术/产品形态</th><th>代表企业（国内 / 国外）</th><th>终端成本占比</th><th>毛利率区间</th><th>集中度 CR3</th></tr></thead>
+          <tbody>
+            <tr><td>上游</td><td>AI 算力芯片(GPU/AI 加速)</td><td>寒武纪·海光·华为 / 英伟达</td><td>~30%</td><td>55–65%</td><td>~85%</td></tr>
+            <tr><td>上游</td><td>科学计算引擎(分子动力学/第一性原理)</td><td>深势 / Schrödinger·Materials Project</td><td>~10%</td><td>74–85%</td><td>~70%</td></tr>
+            <tr><td>中游</td><td>AI4S 平台 + 自动驾驶实验室服务</td><td>晶泰·深势·开物纪 / Schrödinger·Recursion</td><td>~40%（含实验）</td><td>60–85%</td><td>~50%（早期）</td></tr>
+            <tr><td>下游</td><td>新材料/制药/化工/半导体材料</td><td>万华·宁德·比亚迪·巴斯夫·晶科</td><td>终端售价主体</td><td>20–55%</td><td>~35%（分散）</td></tr>
+            <tr><td>贯穿</td><td>工业仿真 CAE/CAD/EDA·通用机器人</td><td>索辰·中望·华大九天·埃斯顿·汇川</td><td>—</td><td>30–85%</td><td>技术邻近·间接受益</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="src">成本占比/毛利率/CR3 为按行业 BOM 拆解与龙头财报毛利的<b>估算/行业口径</b>，非精确并表财务数据。链主与代表公司均按「真实产业参与者」遴选，A 股"概念映射"方仅技术邻近，不进入核心链条位置。</div>
+    </div>
+  </section>
+
+  <!-- 3. 分层与受益逻辑（原5） -->
+  <section id="layers">
+    <div class="sec-head"><span class="no">3</span><h2>上中下游分层与受益逻辑</h2><span class="en">Benefit Logic & Certainty</span></div>
+    <div class="tiercards">
+      <div class="tcard"><div class="th">上游 · 算力 + 科学引擎</div>
+        <h4>代表公司</h4><p>寒武纪、海光信息（AI 芯片）；深势科技（分子动力学/第一性原理引擎）；Schrödinger、Materials Project（海外）。</p>
+        <h4>受益逻辑</h4><p>无论终局谁的材料模型胜出，算力与底层求解器都必被采购——典型"卖铲人"，需求刚性、壁垒最高。</p>
+        <h4>确定性</h4><p><span class="stars">★★★★★</span> 算力确定性最高；科学引擎★★★★（国产替代窗口）。</p>
+        <span class="realpill t">真受益 · 强</span><span class="cert high">确定性：高</span></div>
+      <div class="tcard"><div class="th">中游 · 模型/平台/自动驾驶实验室</div>
+        <h4>代表公司</h4><p>晶泰科技（港股 02228）、深势科技、开物纪；海外 Schrödinger（SDGR）、Recursion（RXRX）、DeepMind。</p>
+        <h4>受益逻辑</h4><p>掌握"预测—合成—数据反哺"研发飞轮，是 AI4S 价值核心；平台订阅+联合开发+里程碑分成为主。</p>
+        <h4>确定性</h4><p><span class="stars">★★★★</span> 中高，但技术路线分化、商业化仍早期。</p>
+        <span class="realpill t">真受益（核心层）</span><span class="cert mid">确定性：中高</span></div>
+      <div class="tcard"><div class="th">下游 · 材料应用客户</div>
+        <h4>代表公司</h4><p>万华化学、宁德时代、比亚迪、巴斯夫、晶科能源（付费方）；索辰/中望/华大九天/埃斯顿/汇川（A 股概念映射，技术邻近）。</p>
+        <h4>受益逻辑</h4><p>客户用 AI 提效（自身是买家）；A 股映射方只是卖工具/设备的间接受益，不掌握研发飞轮。</p>
+        <h4>确定性</h4><p><span class="stars">★★☆</span> 易蹭概念，真伪混杂。</p>
+        <span class="realpill f">真伪混杂 · 间接受益</span><span class="cert low">确定性：低~中</span></div>
+    </div>
+  </section>
+
+  <!-- 4. 头部公司业务拆解与在研（v6增强：商业模式/unit econ + 海外对标） -->
+  <section id="biz">
+    <div class="sec-head"><span class="no">4</span><h2>★ 头部公司业务拆解与在研布局</h2><span class="en">Business Breakdown & R&D · 含未上市/海外头部</span></div>
+    <div class="lead">投资视角核心增量章：谁真正有业务、产品怎么拆、量价利多少、技术路线怎么分、头部在研往哪走；并补充<b>商业模式/unit economics</b>与<b>海外对标/失败案例</b>。<b>参与者均取自真实产业链（含未上市/海外头部），而非 A 股概念映射。</b></div>
+
+    <div class="biz-sub"><h3><span class="k">1</span>谁真正有该项业务 <span class="note">已上市 + 未上市头部</span></h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>公司</th><th>上市状态</th><th>AI4S 材料相关业务</th><th>进展/收入</th><th>口径</th></tr></thead>
+        <tbody>
+          <tr><td>晶泰科技</td><td>港股 02228</td><td>AI4S 智慧解决方案（材料/配方/机器人实验室）</td><td>2025 该业务 2.65 亿元(+62.6%)；整体首盈利</td><td><span class="badge t">年报</span></td></tr>
+          <tr><td>深势科技</td><td>未上市</td><td>玻尔科研空间站 SaaS + Hermite/Piloteye + 赛博实验室</td><td>C 轮超 8 亿、估值 60 亿+；服务 150+ 研发企业</td><td><span class="badge t">融资/IR</span></td></tr>
+          <tr><td>开物纪</td><td>未上市</td><td>材料大模型(Prophet+Creator 双引擎) + 公斤级验证平台</td><td>2025 成立，天使+轮数亿、Monolith 领投</td><td><span class="badge t">融资/IR</span></td></tr>
+          <tr><td>Schrödinger</td><td>美股 SDGR</td><td>计算化学软件 + 自研药物/材料管线</td><td>2025 营收 2.56 亿美元(软件毛利 74%)</td><td><span class="badge t">年报</span></td></tr>
+          <tr><td>DeepMind</td><td>母公司 Alphabet（GOOGL）</td><td>GNoME(材料晶体) / AlphaFold3(生物)</td><td>GNoME 预测 220 万晶体；诺奖 2024</td><td><span class="badge p">公开研究</span></td></tr>
+          <tr><td>Recursion</td><td>美股 RXRX</td><td>AI 自动化湿实验 + 自研药物管线（材料衍生应用）</td><td>仍在战略投入期，未盈利</td><td><span class="badge p">年报</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="biz-sub"><h3><span class="k">2</span>产品种类拆分</h3>
+      <div class="prod-grid">
+        <div class="prod-card"><div class="ph">晶泰 · AI4S 解决方案</div><div class="pd">X-buddy AI 助手 / MolAgent 分子生成 / PatSight 专利 / Vast Agent 虚拟库 + 合成机器人调度；光伏钙钛矿、化工配方、消费健康分子</div><div class="pm">业务 2.65 亿(+62.6%)</div></div>
+        <div class="prod-card"><div class="ph">深势 · 玻尔科研空间站</div><div class="pd">Hermite(药物设计) / Piloteye(能源材料) / 玄铸平台 + 赛博实验室 Uni-Lab OS；覆盖生命/物质科学</div><div class="pm">SaaS 订阅 + 定制方案</div></div>
+        <div class="prod-card"><div class="ph">开物纪 · 材料大模型</div><div class="pd">Prophet 预测引擎(性质筛选) + Creator 生成引擎(逆向设计)；固态电解质等自研管线 + 公斤级验证</div><div class="pm">天使+轮数亿在跑</div></div>
+      </div>
+    </div>
+
+    <div class="biz-sub"><h3><span class="k">3</span>出货量 · 单价 · 毛利 <span class="note">须标注来源口径</span></h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>产品/细分</th><th>商业化规模</th><th>单价/客单价</th><th>毛利率</th><th>数据来源口径</th></tr></thead>
+        <tbody>
+          <tr><td>晶泰 AI4S 智慧解决方案</td><td>2025 收入 2.65 亿(+62.6%)</td><td>项目制/平台授权</td><td>整体毛利 69.7%(2025)</td><td><span class="badge t">年报</span></td></tr>
+          <tr><td>深势玻尔 SaaS 平台</td><td>服务 150+ 研发企业、70+ 生命科学管线</td><td>订阅/项目费</td><td>软件毛利 74–85%(行业参照)</td><td><span class="badge t">IR/行业</span></td></tr>
+          <tr><td>Schrödinger 软件</td><td>2025 软件收入 1.995 亿美元</td><td>ACV 约 390 万美元(>$1M 客户)</td><td>软件毛利 74%</td><td><span class="badge t">年报</span></td></tr>
+          <tr><td>开物纪自研材料管线</td><td>早期(固态电解质等)</td><td>未披露</td><td>未披露</td><td><span class="badge p">估算/早期</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="src">行业量价利来自行业研报；单品量价利来自公司公告/IR；未披露的一律标"估算/早期"。深势使客户湿实验需求与成本下降 76%、实验通量提升 3 倍（公司披露）。</div>
+    </div>
+
+    <div class="biz-sub"><h3><span class="k">4</span>技术路线对比</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>技术路线</th><th>原理</th><th>核心指标/优势</th><th>代表公司</th></tr></thead>
+        <tbody>
+          <tr><td>物理引擎 + ML 势函数</td><td>第一性原理(DFT)/分子动力学 + 神经网络势</td><td>精度近 DFT、速度提升数个数量级</td><td>深势(DeePMD/DPA-2)、Schrödinger(FEP+)</td></tr>
+          <tr><td>生成式材料模型(弱先验 Scaling)</td><td>大规模预训练学泛化表示，降低化学先验依赖</td><td>Scaling Law 有效(Nature 2025)</td><td>开物纪(Prophet+Creator)</td></tr>
+          <tr><td>图网络材料探索</td><td>GNN 预测晶体稳定性/性质</td><td>单次项目扩已知稳定晶体近 10 倍</td><td>DeepMind(GNoME)</td></tr>
+          <tr><td>自动驾驶实验室闭环</td><td>AI 设计 → 机械臂合成 → 表征 → 数据反哺</td><td>周级上万次实验、数据飞轮</td><td>晶泰、深势(赛博实验室)、A-Lab</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="biz-sub"><h3><span class="k">5</span>头部公司在研布局（R&D pipeline）</h3>
+      <div class="rnd-cards">
+        <div class="rnd"><div class="rh">晶泰科技 <span class="badge2">在研</span></div><ul><li>钙钛矿叠层电池（与晶科共研，目标三年量产）</li><li>巴斯夫配方稳定性智能工作站</li><li>消费健康分子（两款生发固发分子完成国际认证）</li></ul><span class="tag">跨场景飞轮外溢</span></div>
+        <div class="rnd"><div class="rh">深势科技 <span class="badge2">在研</span></div><ul><li>固态电池材料（宁德/比亚迪客户）</li><li>赛博实验室 Uni-Lab OS（开源实验 OS）</li><li>"中国版 AlphaFold 时刻"——某垂直领域突破</li></ul><span class="tag">微观达索战略</span></div>
+        <div class="rnd"><div class="rh">开物纪 <span class="badge2">在研</span></div><ul><li>固态电解质自研管线（模型辅助压缩周期）</li><li>百万级高并发数据基建 + 公斤级验证平台</li></ul><span class="tag">全栈材料基础设施</span></div>
+        <div class="rnd"><div class="rh">DeepMind / Schrödinger / Recursion <span class="badge2">前沿</span></div><ul><li>GNoME 持续扩展晶体库；AlphaFold3 生物</li><li>Schrödinger 拓展预测毒理 + 自研管线(SGR 系列)</li><li>Recursion 自动化湿实验平台扩规模</li></ul><span class="tag">海外标杆</span></div>
+      </div>
+    </div>
+
+    <div class="biz-sub"><h3><span class="k">6</span>商业模式与 unit economics <span class="note">v6 增强 · 决定估值逻辑</span></h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>代表玩家</th><th>商业模式</th><th>毛利区间</th><th>对应估值锚</th><th>备注</th></tr></thead>
+        <tbody>
+          <tr><td>晶泰科技(02228)</td><td>项目制服务 + 平台授权（向"订阅+里程碑"迁移）</td><td>69.7%(2025 整体)</td><td>PE/PS 混合</td><td>已盈利，最接近"平台化"路径</td></tr>
+          <tr><td>深势科技(未上市)</td><td>玻尔 SaaS 订阅 + 定制方案</td><td>软件 74–85%</td><td>PS（高倍数，看续约）</td><td>可复利，续约率=生命线</td></tr>
+          <tr><td>Schrödinger(SDGR)</td><td>软件订阅(74%毛利) + 自研管线里程碑</td><td>软件 74%</td><td>PS（软件）+ pipeline 折现</td><td>30 年长跑已盈利，范式标杆</td></tr>
+          <tr><td>Recursion(RXRX)</td><td>自动化湿实验 + 自研管线（重资产）</td><td>未盈利</td><td>看 pipeline 折现</td><td>烧钱扩张，估值透支争议</td></tr>
+          <tr><td>开物纪(未上市)</td><td>平台 + 自研材料管线（预期分成）</td><td>早期未披露</td><td>看技术卡位 + 管线期权</td><td>天使期，估值弹性最大</td></tr>
+        </tbody>
+      </table></div>
+      <div class="src">商业模式决定估值方法：订阅给 PS、服务给 PE、分成/管线看折现；毛利率差异直接拉开估值倍数。晶泰因"已盈利+高毛利"在 A/H 股中最具估值锚定力。</div>
+    </div>
+
+    <div class="biz-sub"><h3><span class="k">7</span>海外对标 / 失败案例 <span class="note">v6 增强 · 尽调透镜</span></h3>
+      <div class="rnd-cards">
+        <div class="rnd"><div class="rh">对标成功：Schrödinger / Recursion-Roche <span class="badge2">标杆</span></div><ul><li>Schrödinger：软件订阅长跑 30 年、2020 上市、2025 软件仍增 23%——证明"科学软件"可长坡厚雪。</li><li>Recursion：与 Roche 达成 5 亿美元首付款合作——验证"AI+自动化湿实验"模式被大药企买单。</li></ul><span class="tag">可迁移：订阅+闭环实验室</span></div>
+        <div class="rnd"><div class="rh">警示失败：AI 制药/材料早期退潮 <span class="badge2">风险</span></div><ul><li>多家 AI 制药公司（如 Exscientia 与 BMS 合作缩减、部分 biotech 烧光退市）证明"预测强、合成弱、数据荒"使商业化极难。</li><li>国内同类早期公司若仅靠融资、无真实合同/闭环实验室，估值易被空心化。</li></ul><span class="tag">尽调必看：真实合同+飞轮</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. 需求真实性验证（v6新增） -->
+  <section id="demand">
+    <div class="sec-head v6"><span class="no">5</span><h2>需求真实性验证</h2><span class="en">Demand Authenticity · Pull vs Push</span></div>
+    <div class="lead">区分<b>真实付费拉动（pull）</b>与<b>政策/叙事推动（push）</b>。AI4S 叙事极热，但只有真付费才能撑收入——这是判断"全链普涨"能否兑现的前提。</div>
+    <div class="demand-grid">
+      <div class="demand-card">
+        <div class="dm-h">场景A · 药企/材料厂买 AI4S 服务</div>
+        <span class="dm-type pull">PULL · 真刚需</span>
+        <div class="dm-row"><b>付费方：</b>药企、材料厂（晶泰 17/20 全球 Top20 药企客户）</div>
+        <div class="dm-row"><b>付费意愿：</b>年费订阅 / 项目制，续约率高</div>
+        <div class="dm-row"><b>持续性：</b>刚性、可预期（研发预算刚性）</div>
+        <div class="dm-proof">证据：晶泰 AI4S 收入 2.65 亿(+62.6%)；Schrödinger 软件 ACV~390 万美元、>$1M 客户复购。</div>
+      </div>
+      <div class="demand-card">
+        <div class="dm-h">场景B · 下游材料厂自研提效</div>
+        <span class="dm-type pull">PULL · 真实采纳</span>
+        <div class="dm-row"><b>付费方：</b>万华/宁德/巴斯夫等（自身是买家）</div>
+        <div class="dm-row"><b>付费意愿：</b>真实采纳提效，但属下游内部降本</div>
+        <div class="dm-row"><b>持续性：</b>中等，取决于 ROI 验证</div>
+        <div class="dm-proof">证据：晶泰-巴斯夫配方工作站、晶泰-晶科钙钛矿共研落地；但这是"客户侧 pull"，非 AI4S 公司直接收入全部。</div>
+      </div>
+      <div class="demand-card">
+        <div class="dm-h">场景C · 融资驱动的早期平台</div>
+        <span class="dm-type push">PUSH · 叙事/政策</span>
+        <div class="dm-row"><b>付费方：</b>一级市场投资人 / 政府科研经费</div>
+        <div class="dm-row"><b>付费意愿：</b>收入未规模验证，靠融资续命</div>
+        <div class="dm-row"><b>持续性：</b>依赖下一轮融资与里程碑</div>
+        <div class="dm-proof">证据：Recursion 仍深亏、开物纪天使期；MIT Tech Review(2025)指出"预测强合成弱"，尚无"奇迹材料"真正落地。</div>
+      </div>
+    </div>
+    <div class="verdict" style="margin-top:16px;">
+      <h3>pull vs push 综合判断</h3>
+      <p>该链需求约 <b>6 分真、4 分叙事</b>：上游卖铲（算力）与中游平台订阅是真实 pull（晶泰/深势/Schrödinger 均有可验证收入）；下游材料采纳真实但属间接受益；纯靠融资的未上市早期公司是 push，需以"商业化里程碑（合同/续约/闭环实验室进展）"为验证锚。结论：<b>下游放量可信度取决于闭环实验室能否兑现"预测→合成"</b>，当前不宜对"全链普涨"定价，应聚焦已证明收入的平台与卖铲人。</p>
+    </div>
+  </section>
+
+  <!-- 6. 产业权力结构与卡脖子清单（合 原7+11） -->
+  <section id="power">
+    <div class="sec-head"><span class="no">6</span><h2>产业权力结构与卡脖子清单</h2><span class="en">Chain Power & Bottlenecks</span></div>
+    <div class="master-grid">
+      <div class="master-col m"><h3>👑 链主 · 规则制定者</h3>
+        <p class="desc">谁定义标准 / 价格 / 接口 / 生态？</p>
+        <ul>
+          <li><b>算力层（英伟达/华为/寒武纪）</b>：定义 AI 训练规格与供应节奏，CUDA/昇腾生态构成极强切换成本。</li>
+          <li><b>平台层（晶泰/深势/DeepMind）</b>：掌握"预测—合成—数据"闭环，定义材料研发范式与数据接口，网络效应强。</li>
+          <li><b>科学引擎（Schrödinger/深势）</b>：底层求解器/势函数是不可替代的"原子级操作系统"。</li>
+        </ul></div>
+      <div class="master-col b"><h3>⛓ 卡脖子点 · 不可替代 + 供给刚性</h3>
+        <p class="desc">缺了整链卡死，国产替代难度高。</p>
+        <ul>
+          <li><b>高端 AI 算力芯片</b> <span class="irr hi">断供影响·高</span>：英伟达 H/A 系列禁运，国产算力性能代差明显。</li>
+          <li><b>底层求解器 / 分子动力学引擎</b> <span class="irr mid">断供影响·中高</span>：高端 CAE/量子化学长期由海外主导，深势系国产突破。</li>
+          <li><b>高质量实验数据</b> <span class="irr hi">断供影响·高</span>：合成验证数据稀缺，是 AI4S 最大瓶颈。</li>
+        </ul></div>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>议价维度</th><th>上游 · 算力/引擎</th><th>中游 · 平台/实验室</th></tr></thead>
+      <tbody>
+        <tr><td>行业集中度</td><td><span class="vs-yes">高（CR3 ~85%）</span></td><td>中（CR3 ~50%·早期）</td></tr>
+        <tr><td>供应商转换成本</td><td><span class="vs-yes">高（生态锁定）</span></td><td><span class="vs-yes">高（数据/模型迁移成本高）</span></td></tr>
+        <tr><td>信息对称性</td><td><span class="vs-yes">上游掌握定义权</span></td><td><span class="vs-yes">握研发闭环</span></td></tr>
+        <tr><td>备选方案</td><td><span class="vs-no">国产替代弱</span></td><td><span class="vs-yes">多平台可替换</span></td></tr>
+      </tbody>
+    </table></div>
+    <div class="duel-verdict">🥊 <b>议价对决结论：</b>上游算力/引擎议价权最强（高集中+生态锁定+定义权）；中游平台凭"研发闭环+数据飞轮"形成反制，但受上游算力供给刚性约束，双边嵌套。下游客户最分散、议价最弱。</div>
+
+    <div class="stress-grid" style="margin-top:18px;">
+      <div class="stress"><span class="st-type tech">技术断层</span><div class="st-h">预测强 vs 合成弱的鸿沟</div>
+        <div class="st-d">GNoME 预测 220 万晶体仅少数被合成验证；计算预测远快于实验验证，MIT Tech Review(2025)指出尚无"奇迹材料"真正落地。</div><div class="st-sev">释放方向：→ 掌握闭环实验室者价值释放</div></div>
+      <div class="stress"><span class="st-type gap">供需缺口</span><div class="st-h">高质量实验数据荒</div>
+        <div class="st-d">标准化湿实验数据极度稀缺，AI4S 最大瓶颈；自动化实验室(机器人+OS)产能有限。</div><div class="st-sev">释放方向：→ 数据工厂/自动驾驶实验室受益</div></div>
+      <div class="stress"><span class="st-type policy">政策突变</span><div class="st-h">算力禁运 + 资本偏好</div>
+        <div class="st-d">英伟达高端芯片禁运持续；国内资本缺乏"AlphaFold 式图腾"，估值承压，需政策/大单催化。</div><div class="st-sev">释放方向：→ 双向（利好国产替代，收紧则估值压制）</div></div>
+    </div>
+  </section>
+
+  <!-- 7. 价值流转与利润池（合 原4+8+9，含颠覆情景④） -->
+  <section id="profit">
+    <div class="sec-head v3"><span class="no">7</span><h2>价值流转与利润池：分布 · 迁移 · 颠覆情景</h2><span class="en">Value Flow · Profit Pool · Disruption</span></div>
+
+    <div class="sec-head" style="margin:4px 0 10px;"><span class="no" style="background:var(--gold);color:#3a2a06;font-size:12px;">①</span><h2 style="font-size:16px;">价值流转（资金流 / 利润留存 / 成本分摊）</h2></div>
+    <div class="valueflow">
+      <div class="vf-band">
+        <div class="vf-node"><div class="vn-tier">终端支付方(客户)</div><div class="vn-name">药企 / 材料厂 / 化工巨头</div><div class="vn-flow">💰 注入资金 <b>100%</b>（研发外包/平台订阅）</div></div>
+        <div class="vf-arrow">→</div>
+        <div class="vf-node"><div class="vn-tier">中游 · AI4S 平台/实验室</div><div class="vn-name">晶泰·深势·开物纪</div><div class="vn-flow">采购算力+实验设备，留平台/服务毛利</div></div>
+        <div class="vf-arrow">→</div>
+        <div class="vf-node"><div class="vn-tier">上游 · 算力 / 科学引擎</div><div class="vn-name">寒武纪·海光 / 深势引擎</div><div class="vn-flow">收取芯片价值 + 软件订阅</div></div>
+      </div>
+      <div class="vf-note">📌 资金从下游客户逐级回流至中游平台与上游算力/引擎；利润沉淀在「中游平台（研发飞轮）」与「上游核心算力/引擎」，成本主要压在「算力采购」与「高通量实验设备/机器人」。</div>
+      <div class="vf-tiers">
+        <div class="vf-tier"><div class="vt-name">上游 · 算力/引擎</div><div class="vt-role">成本分摊重、利润留存高</div>
+          <div class="vf-meter"><div class="ml"><span class="ml-l">成本分摊率</span><span class="ml-v cost">~38%</span></div><div class="vf-bar"><div class="fill cost" style="width:38%;"></div></div></div>
+          <div class="vf-meter"><div class="ml"><span class="ml-l">利润留存率</span><span class="ml-v profit">~55%</span></div><div class="vf-bar"><div class="fill profit" style="width:55%;"></div></div></div>
+          <div class="vf-pos absorb">资金净头寸：净吸金（卖铲子）</div></div>
+        <div class="vf-tier"><div class="vt-name">中游 · 平台/实验室</div><div class="vt-role">利润留存最高、成本分摊中</div>
+          <div class="vf-meter"><div class="ml"><span class="ml-l">成本分摊率</span><span class="ml-v cost">~30%</span></div><div class="vf-bar"><div class="fill cost" style="width:30%;"></div></div></div>
+          <div class="vf-meter"><div class="ml"><span class="ml-l">利润留存率</span><span class="ml-v profit">~72%</span></div><div class="vf-bar"><div class="fill profit" style="width:72%;"></div></div></div>
+          <div class="vf-pos absorb">资金净头寸：净吸金（吃利润最多）</div></div>
+        <div class="vf-tier"><div class="vt-name">下游 · 材料应用客户</div><div class="vt-role">资金结算节点、利润分散</div>
+          <div class="vf-meter"><div class="ml"><span class="ml-l">成本分摊率</span><span class="ml-v cost">~32%</span></div><div class="vf-bar"><div class="fill cost" style="width:32%;"></div></div></div>
+          <div class="vf-meter"><div class="ml"><span class="ml-l">利润留存率</span><span class="ml-v profit">~33%</span></div><div class="vf-bar"><div class="fill profit" style="width:33%;"></div></div></div>
+          <div class="vf-pos out">资金净头寸：净输出（买平台/设备）</div></div>
+      </div>
+      <div class="src">价值流转为分析框架；成本分摊率/利润留存率为按行业 BOM 拆解与龙头财报毛利的<b>估算/行业口径</b>，非精确财务并表数据。</div>
+    </div>
+
+    <div class="sec-head" style="margin:18px 0 10px;"><span class="no" style="background:var(--gold);color:#3a2a06;font-size:12px;">②</span><h2 style="font-size:16px;">利润池分布</h2></div>
+    <div class="ppool">
+      <div class="pp-row"><span class="pp-name">上游 · 算力芯片 + 科学软件</span><div class="pp-track"><div class="pp-bar" style="width:88%;">利润池最深 · 高毛利+高集中(70–85%)</div></div></div>
+      <div class="pp-row"><span class="pp-name">中游 · AI4S 平台/实验室</span><div class="pp-track"><div class="pp-bar" style="width:78%;">次深 · 研发飞轮+订阅(60–85%)</div></div></div>
+      <div class="pp-row"><span class="pp-name">下游 · 材料制造客户</span><div class="pp-track"><div class="pp-bar" style="width:34%;">分散 · 周期属性强(20–55%)</div></div></div>
+      <div class="src">利润池"深度"为该环节「市场规模 × 毛利率 × 集中度」的相对估算，非绝对金额；用于横向比较环节盈利厚度。</div>
+    </div>
+
+    <div class="sec-head" style="margin:18px 0 10px;"><span class="no" style="background:var(--gold);color:#3a2a06;font-size:12px;">③</span><h2 style="font-size:16px;">利润池迁移路径</h2></div>
+    <div class="migrate">
+      <div class="mig-col"><div class="mc-h"><span class="dot"></span>当前</div><ul><li>算力芯片 + 科学软件吃最多利润</li><li>中游平台高毛利但规模尚小</li></ul></div>
+      <div class="mig-col"><div class="mc-h"><span class="dot"></span>3 年</div><ul><li>利润向「数据/算法平台订阅」迁移</li><li>纯算力硬件溢价随国产替代回落</li></ul></div>
+      <div class="mig-col"><div class="mc-h"><span class="dot"></span>5 年</div><ul><li>「算力运营 + 自动驾驶实验室服务」成新利润池</li><li>平台走向"软件订阅+里程碑分成"双轮</li></ul></div>
+    </div>
+
+    <div class="sec-head" style="margin:18px 0 10px;"><span class="no" style="background:var(--red);color:#fff;font-size:12px;">④</span><h2 style="font-size:16px;">颠覆情景模拟（反共识洞察）</h2></div>
+    <div class="restruct-grid">
+      <div class="restruct"><div class="rh">假设 A · 通用材料大模型成熟</div><ul>
+        <li><b>前提：</b>弱先验 Scaling 路线突破，削弱专家经验+小模型路线。</li>
+        <li><b>最先被打掉：</b>依赖人工先验的传统计算服务。</li>
+        <li><b>凭空获值：</b>掌握大模型+闭环实验室的全栈平台（开物纪/深势/晶泰）。</li></ul></div>
+      <div class="restruct"><div class="rh">假设 B · 自动化合成成本降一个数量级</div><ul>
+        <li><b>前提：</b>高通量机器人合成+表征验证成本骤降。</li>
+        <li><b>被弱化环节：</b>纯软件预测（无闭环）公司。</li>
+        <li><b>凭空获益方：</b>拥有"预测+合成+数据"全栈飞轮的实验室型平台（晶泰/深势/开物纪）。</li></ul></div>
+    </div>
+    <div class="sim"><div class="sh">⚡ 冲击结论</div>
+      <div class="sd">无论哪种颠覆情景，<b>价值都向"拥有闭环实验室 + 自有数据飞轮"的全栈平台集中</b>，单纯卖工具/卖算力而无数据闭环的参与者最易被空心化。这也是未上市头部（深势、开物纪）估值的核心支撑逻辑。</div></div>
+  </section>
+
+  <!-- 8. 投资机会雷达（原10） -->
+  <section id="radar">
+    <div class="sec-head v4"><span class="no">8</span><h2>投资机会雷达：关键博弈点扫描</h2><span class="en">Opportunity Radar</span></div>
+    <div class="radar">
+      <div class="radar-col sub"><h3>① 国产替代紧迫且窗口已开</h3>
+        <p class="desc">国产化率低、3 年内差距有望拉平</p>
+        <div class="radar-item"><b>高端 AI 算力芯片</b><br>英伟达禁运，寒武纪/海光/昇腾加速替代，驱动=供应安全。</div>
+        <div class="radar-item"><b>科学计算引擎</b><br>Schrödinger/VASP 主导，深势 DeePMD/DPA-2 国产突破，驱动=自主可控。</div></div>
+      <div class="radar-col gap"><h3>② 供需错配的「瓶颈」环节</h3>
+        <p class="desc">数据荒 + 实验通量稀缺</p>
+        <div class="radar-item"><b>高质量实验数据 / 自动化实验室</b><br>合成验证产能瓶颈，"数据工厂"稀缺，受益=拥有闭环实验室的平台。</div></div>
+      <div class="radar-col water"><h3>③ 「卖水人」确定性受益</h3>
+        <p class="desc">无论终局谁胜都需使用</p>
+        <div class="radar-item"><b>算力 + 科学软件 + 实验设备</b><br>市场天花板=全行业研发投入，成长=产业扩容+模型迭代放量。</div></div>
+    </div>
+  </section>
+
+  <!-- 9. 真受益 vs 伪受益（原12） -->
+  <section id="real">
+    <div class="sec-head"><span class="no">9</span><h2>真受益 vs 伪受益</h2><span class="en">Genuine vs Hype</span></div>
+    <div class="vs">
+      <div class="vscol real"><h3>✅ 真受益（核心参与者）</h3><p class="desc">掌握 AI4S 研发飞轮，收入/订单可追踪。</p>
+        <ul>
+          <li><b>上游卖铲人</b>：寒武纪、海光信息（算力）；深势（科学引擎）。</li>
+          <li><b>中游核心平台</b>：晶泰科技(港股)、深势科技、开物纪、Schrödinger、Recursion；DeepMind（海外标杆，母公司 Alphabet）。</li>
+        </ul></div>
+      <div class="vscol fake"><h3>⚠️ 伪受益 / 间接受益（A股概念映射）</h3><p class="desc">技术邻近、不掌握材料研发飞轮、无实质该业务收入。</p>
+        <ul>
+          <li><b>工业软件/EDA</b>：索辰科技(CAE 仿真)、中望软件(CAD)、华大九天(EDA)——工程仿真工具，非材料 AI 核心。</li>
+          <li><b>工业机器人</b>：埃斯顿、汇川技术——通用机器人本体，非 AI4S 专用自动驾驶实验室。</li>
+          <li><b>材料制造商</b>：万华化学等——是 AI4S 的<b>客户/买家</b>，自身用 AI 提效，属间接受益。</li>
+        </ul></div>
+    </div>
+    <div class="checklist"><h4>🔍 三步甄别清单</h4>
+      <ol><li><b>看是否掌握飞轮：</b>有无"预测—合成—数据反哺"闭环？还是只卖通用工具？</li><li><b>看收入来源：</b>有无真实 AI4S 合同/平台收入（晶泰 2.65 亿、Schrödinger 2.56 亿美元）？</li><li><b>看链条位置：</b>是否卡住不可替代环节（算力/引擎/闭环实验室）？还是外围工具供应商？</li></ol></div>
+  </section>
+
+  <!-- 10. 健康度体检 + deal 级风险（原13 + v6增强） -->
+  <section id="health">
+    <div class="sec-head v4"><span class="no">10</span><h2>产业健康度体检与核心跟踪指标</h2><span class="en">Health Check & Leading Indicators</span></div>
+    <div class="health">
+      <div class="health-item"><div class="hi-h">① 头部融资/估值热度</div>
+        <div class="hi-row"><span>当前观测</span><span class="v ok">活跃（深势 C 轮 8 亿/开物纪天使+轮数亿）</span></div>
+        <div class="hi-line">预警线：一级市场融资连续 2 季度骤冷 = 资本退潮（看空早期标的）</div></div>
+      <div class="health-item"><div class="hi-h">② 商业化兑现</div>
+        <div class="hi-row"><span>当前观测</span><span class="v ok">晶泰 2025 首盈利、Schrödinger 软件增 23%</span></div>
+        <div class="hi-line">预警线：核心平台收入增速&lt;15% = 订阅转化不及预期</div></div>
+      <div class="health-item"><div class="hi-h">③ 技术突破信号</div>
+        <div class="hi-row"><span>当前观测</span><span class="v ok">戈登贝尔奖(深势)/Nature(开物纪)/诺奖(AlphaFold)</span></div>
+        <div class="hi-line">预警线：连续 2 年无标志性成果 = 技术停滞</div></div>
+      <div class="health-item"><div class="hi-h">④ 卡脖子风险</div>
+        <div class="hi-row"><span>当前观测</span><span class="v warn">高端算力禁运 + 底层引擎依赖</span></div>
+        <div class="hi-line">预警线：禁运扩大至更多品类 = 上游成本/供给冲击</div></div>
+      <div class="health-item" style="grid-column:1 / -1;"><div class="hi-h">⑤ 客户采纳广度</div>
+        <div class="hi-row"><span>当前观测</span><span class="v ok">晶泰覆盖 17/20 全球 Top20 药企；深势服务 150+ 企业</span></div>
+        <div class="hi-line">预警线：头部客户续约率&lt;90% = 平台价值证伪</div></div>
+    </div>
+    <div class="bullbear">
+      <div class="bb bear"><h3>🐻 看空最具杀伤力论据</h3>
+        <p>"预测—合成"鸿沟难破、高质量数据稀缺、估值透支（Recursion 仍深亏）、中国缺乏 AlphaFold 式图腾导致资本谨慎；任一条恶化即触发板块重估。</p></div>
+      <div class="bb bull"><h3>🐂 看多最坚实底座</h3>
+        <p>研发范式不可逆迁移（第五范式）+ 政策强力扶持（"人工智能+"）+ 国产替代刚需 + 平台数据复利，构成长坡厚雪；晶泰已证明盈利路径。</p></div>
+    </div>
+
+    <div class="subhead"><span class="bar"></span>deal 级风险（下沉到标的 · v6 增强）</div>
+    <div class="dr-grid">
+      <div class="dr-card"><div class="dr-type">① 关键人风险</div>
+        <div class="dr-d">深势(张林峰等)/开物纪创始人团队高度依赖；核心科学家出走或技术路线转向，对公司打击直接。</div><div class="dr-sev hi">严重度：高</div></div>
+      <div class="dr-card"><div class="dr-type">② 融资风险</div>
+        <div class="dr-d">未上市头部靠融资续命；若一级市场冷（预警：连续 2 季融资骤减），估值重挫。深势已 C 轮、开物纪天使+，下一轮领投方关键。</div><div class="dr-sev mid">严重度：中</div></div>
+      <div class="dr-card"><div class="dr-type">③ 技术风险</div>
+        <div class="dr-d">"预测-合成"鸿沟（GNoME 220 万仅少数验证）；实验室良率/通量能否规模化存疑。</div><div class="dr-sev mid">严重度：中高</div></div>
+      <div class="dr-card"><div class="dr-type">④ 监管/地缘风险</div>
+        <div class="dr-d">高端算力禁运扩大、AI 出口管制趋严，直接抬升上游成本、压制国产算力替代节奏。</div><div class="dr-sev lo">严重度：中</div></div>
+    </div>
+  </section>
+
+  <!-- 11. 客观判断（原14） -->
+  <section id="verdict">
+    <div class="sec-head"><span class="no">11</span><h2>客观判断</h2><span class="en">Objective View · 非投资建议</span></div>
+    <div class="verdict">
+      <h3>材料研发 AI4S：范式级机会，但 A 股纯正标的稀缺、需穿透真伪</h3>
+      <p>AI4S 是科研范式从"试错枚举"到"生成式设计+自动驾驶实验室"的根本性跃迁，材料研发是其最被看好的落地场景之一。但产业极早期，利润与定价权集中在"算力/引擎"与"平台+闭环实验室"，且真玩家多在港股/未上市/海外。</p>
+      <div class="points">
+        <div class="pt"><span class="n">1</span><span><b>最受益环节：</b>上游算力+科学引擎（卖铲人，确定性最高），其次是掌握研发飞轮的中游平台。</span></div>
+        <div class="pt"><span class="n">2</span><span><b>利润池迁移：</b>从算力硬件+软件向"数据/算法平台订阅 + 自动驾驶实验室服务"迁移。</span></div>
+        <div class="pt"><span class="n">3</span><span><b>链主与卡脖子：</b>链主=算力(英伟达/华为)+平台(晶泰/深势)；卡脖子=高端芯片禁运、底层求解器、实验数据荒。</span></div>
+        <div class="pt"><span class="n">4</span><span><b>需求真伪：</b>上游/中游订阅为真实 pull（6 分真 4 分叙事）；纯融资驱动早期公司为 push，需里程碑验证。</span></div>
+        <div class="pt"><span class="n">5</span><span><b>健康度与多空：</b>融资活跃、晶泰首盈利为多头底座；数据荒/估值透支/无 AlphaFold 图腾为空头隐患。</span></div>
+        <div class="pt"><span class="n">6</span><span><b>真伪关键：</b>当日涨跌≠确定性；A 股"索辰/中望/华大九天/埃斯顿/汇川/万华"均为技术邻近间接受益，非核心。</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. 催化剂与时序日历（v6新增） -->
+  <section id="catalyst">
+    <div class="sec-head v6"><span class="no">12</span><h2>催化剂与时序日历</h2><span class="en">Catalyst Calendar · 未来 6/12/24 月</span></div>
+    <div class="lead">投资人排节奏、定进入时点的依据。AI4S 当前处于"技术突破密集但商业化早期"阶段，催化剂多为里程碑/融资/上市事件，而非即期业绩。</div>
+    <div class="cat-horizon">
+      <div class="cat-h">📅 未来 6 个月（至 2027 H1）</div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>时间窗</th><th>催化剂事件</th><th>影响环节 / 标的</th><th>方向</th></tr></thead>
+        <tbody>
+          <tr><td>2026 H2</td><td>晶泰-晶科钙钛矿叠层电池共研"三年量产"节点推进</td><td>中游 / 晶泰·晶科</td><td class="cat-up">利好</td></tr>
+          <tr><td>2026 H2</td><td>深势赛博实验室 / 开物纪公斤级验证平台进展披露</td><td>中游 / 深势·开物纪</td><td class="cat-up">利好</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="cat-horizon">
+      <div class="cat-h">📅 未来 12 个月（至 2027 H2）</div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>时间窗</th><th>催化剂事件</th><th>影响环节 / 标的</th><th>方向</th></tr></thead>
+        <tbody>
+          <tr><td>2027 H1</td><td>深势/开物纪新一轮融资或申报（港交所 18C / 科创板第五套）</td><td>全链 / 一级市场标的</td><td class="cat-both">双向</td></tr>
+          <tr><td>2027 H1</td><td>Schrödinger 自研管线(SGR 系列)临床/数据读出</td><td>科学软件 / SDGR</td><td class="cat-up">利好</td></tr>
+          <tr><td>2027 H1</td><td>Recursion 大药企合作里程碑/分成确认</td><td>自动化湿实验 / RXRX</td><td class="cat-both">双向</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="cat-horizon">
+      <div class="cat-h">📅 未来 24 个月（至 2028）</div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>时间窗</th><th>催化剂事件</th><th>影响环节 / 标的</th><th>方向</th></tr></thead>
+        <tbody>
+          <tr><td>2027–2028</td><td>国内"AI4S 平台"港股/科创板上市潮（参照晶泰 18C）</td><td>一级→二级 / 未上市头部</td><td class="cat-up">利好（退出通道）</td></tr>
+          <tr><td>2027–2028</td><td>"中国版 AlphaFold 时刻"标志性成果 / 政策"人工智能+"细则落地</td><td>全链 / 估值锚</td><td class="cat-both">双向</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- 13. 投资启示与动作建议（v6新增） -->
+  <section id="insight">
+    <div class="sec-head v6"><span class="no">13</span><h2>投资启示与动作建议</h2><span class="en">Investment Implications · 非买卖建议</span></div>
+    <div class="lead">结论为客观梳理下的投资视角提示，非买卖建议，措辞"可关注/宜观望/待催化"。</div>
+
+    <div class="subhead"><span class="bar"></span>① 非对称下注点</div>
+    <div class="asym-grid">
+      <div class="asym up"><div class="ah">🎯 高赔率下注</div>
+        <p>未上市全栈平台（深势、开物纪）：掌握"模型+闭环实验室+数据飞轮"，技术卡位清晰。若商业化里程碑（合同/续约/量产验证）兑现，回报倍数高；但早期、依赖融资，需严控估值与领投方质量。</p></div>
+      <div class="asym safe"><div class="ah">🛡 卖水人稳赚</div>
+        <p>上游算力（寒武纪 688256 / 海光 688041，已上市）：无论终局谁的材料模型胜出都需算力，确定性最高。已上市可用二级策略直接配置，但需注意禁运与估值波动。</p></div>
+      <div class="asym trap"><div class="ah">⚠ 伪需求陷阱</div>
+        <p>纯靠融资、无规模收入的早期公司，以及 A 股概念映射方（索辰/中望/华大九天/埃斯顿/汇川/万华）：叙事热但非核心，估值易透支，宜观望待商业化验证。</p></div>
+    </div>
+
+    <div class="subhead"><span class="bar"></span>② 可投标的 triage（把公司清单变项目池）</div>
+    <div class="triage-wrap"><div class="tbl-wrap"><table>
+      <thead><tr><th>标的</th><th>状态</th><th>当前轮次 / 估值锚</th><th>是否开放融资</th><th>领投方</th><th>可接触性</th></tr></thead>
+      <tbody>
+        <tr><td>深势科技</td><td><span class="badge p">未上市</span></td><td>C 轮 · 估值 60 亿+</td><td>拟开下一轮 / 接近 close</td><td>红杉等一线机构</td><td>可接触（FA/产业方引荐）</td></tr>
+        <tr><td>开物纪</td><td><span class="badge p">未上市</span></td><td>天使+轮数亿</td><td>开放中</td><td>Monolith 领投</td><td>可接触（早期窗口）</td></tr>
+        <tr><td>晶泰科技</td><td><span class="badge t">已上市</span></td><td>港股 02228 · 市值约 ¥XXX 亿</td><td>二级策略</td><td>—</td><td>二级市场直接配</td></tr>
+        <tr><td>寒武纪 / 海光</td><td><span class="badge t">已上市</span></td><td>A 股 · 算力卖铲人</td><td>二级策略</td><td>—</td><td>二级市场直接配</td></tr>
+      </tbody>
+    </table></div></div>
+
+    <div class="subhead"><span class="bar"></span>③ 退出路径映射</div>
+    <div class="exit-grid">
+      <div class="exit-col"><div class="eh">🇭🇰 港交所 18C</div><ul><li>未盈利硬科技上市通道</li><li>已上市参照：晶泰(02228)</li><li>拟申报：深势 / 开物纪</li></ul></div>
+      <div class="exit-col"><div class="eh">⭐ 科创板第五套</div><ul><li>未盈利科技/医药</li><li>适用：未上市头部（需研发+市值门槛）</li><li>看研发投入与管线</li></ul></div>
+      <div class="exit-col"><div class="eh">🏛 北交所</div><ul><li>中小硬科技</li><li>适用：更早期材料 AI 标的</li><li>注意流动性折价</li></ul></div>
+      <div class="exit-col"><div class="eh">🤝 并购退出</div><ul><li>大药企/CRO/材料巨头收购</li><li>参照：Recursion–Roche 模式</li><li>看战略协同方</li></ul></div>
+    </div>
+  </section>
+
+  <!-- 末章 双表：① 有代码公司涨跌 ② 未上市/海外估值对照 -->
+  <section id="chart">
+    <div class="sec-head"><span class="no">末</span><h2>代表公司涨跌全景 · 双表</h2><span class="en">2026-07-30 收盘 · 涨红跌绿</span></div>
+
+    <div class="chart">
+      <div class="grp-title"><span class="sw" style="background:var(--navy);"></span>表① 有交易代码公司 · 当日涨跌（实时行情）</div>
+      <div class="row"><span class="name">晶泰控股(02228)</span><div class="track"><div class="bar neg" style="width:16.1%;"></div></div><span class="val neg">-5.16%</span></div>
+      <div class="row"><span class="name">寒武纪(688256)</span><div class="track"><div class="bar neg" style="width:28.5%;"></div></div><span class="val neg">-9.12%</span></div>
+      <div class="row"><span class="name">海光信息(688041)</span><div class="track"><div class="bar neg" style="width:11.7%;"></div></div><span class="val neg">-3.73%</span></div>
+      <div class="row"><span class="name">Schrödinger(SDGR)</span><div class="track"><div class="bar neg" style="width:2.9%;"></div></div><span class="val neg">-0.93%</span></div>
+      <div class="row"><span class="name">Recursion(RXRX)</span><div class="track"><div class="bar neg" style="width:0.6%;"></div></div><span class="val neg">-0.00%</span></div>
+      <div class="legend">
+        <span class="li"><span class="sq" style="background:var(--red);"></span>上涨（红）</span>
+        <span class="li"><span class="sq" style="background:var(--green);"></span>下跌（绿）</span>
+        <span class="li" style="color:#9aa6b2;">纵轴等比于涨跌幅绝对值（满刻度 ±16%）；当日全线下跌。</span>
+      </div>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>公司</th><th>代码</th><th>环节</th><th>收盘价</th><th>当日</th><th>真伪</th></tr></thead>
+      <tbody>
+        <tr><td>晶泰控股</td><td>港股 02228</td><td>中游平台</td><td>6.44 港元</td><td class="down">-5.16%</td><td><span class="badge t">真受益</span></td></tr>
+        <tr><td>寒武纪</td><td>688256</td><td>上游算力</td><td>1042.43</td><td class="down">-9.12%</td><td><span class="badge t">真受益</span></td></tr>
+        <tr><td>海光信息</td><td>688041</td><td>上游算力</td><td>273.42</td><td class="down">-3.73%</td><td><span class="badge t">真受益</span></td></tr>
+        <tr><td>Schrödinger</td><td>美股 SDGR</td><td>科学软件</td><td>14.98 美元</td><td class="down">-0.93%</td><td><span class="badge t">真受益</span></td></tr>
+        <tr><td>Recursion</td><td>美股 RXRX</td><td>自动化湿实验</td><td>2.97 美元</td><td class="down">-0.00%</td><td><span class="badge t">真受益</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="two-table-note">📌 表② 针对未上市 / 海外非独立上市公司（无单日涨跌），列估值·融资·最新财务对照——这些才是产业链真正的话语权持有者。</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>公司</th><th>上市状态</th><th>环节</th><th>最新估值 / 融资 / 财务</th><th>关键信号</th></tr></thead>
+      <tbody>
+        <tr><td>深势科技</td><td>未上市</td><td>科学引擎 + 平台</td><td>估值 60 亿+（C 轮超 8 亿）</td><td>服务 150+ 研发企业、戈登贝尔奖</td></tr>
+        <tr><td>开物纪</td><td>未上市</td><td>材料大模型</td><td>天使+轮数亿（Monolith 领投，2025 成立）</td><td>Prophet+Creator 双引擎、Nature 2025</td></tr>
+        <tr><td>DeepMind / AlphaFold</td><td>母公司 Alphabet（GOOGL）</td><td>基础研究 / 生成模型</td><td>非独立上市</td><td>GNoME 预测 220 万晶体、诺奖 2024</td></tr>
+        <tr><td>Schrödinger</td><td>美股 SDGR（见表①）</td><td>科学软件</td><td>2025 营收 2.56 亿美元（软件毛利 74%）</td><td>软件订阅增 23%</td></tr>
+        <tr><td>Recursion</td><td>美股 RXRX（见表①）</td><td>自动化湿实验</td><td>仍处战略投入期、未盈利</td><td>平台扩规模、估值透支争议</td></tr>
+      </tbody>
+    </table></div>
+    <div class="src">行情来自腾讯自选股接口（WeStock Data），2026-07-30 收盘；未上市/海外公司列估值或最新财报（深势 C 轮 8 亿/估值 60 亿+，开物纪天使+轮数亿，Schrödinger 2025 营收 $2.56 亿）。"<b>真伪</b>"为基于公开业务的客观梳理，会随产业进展变化。</div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <p><b>数据来源与方法：</b>行情与板块数据来自腾讯自选股接口（经 WeStock Data 查询），财务/融资/技术信息来自公司公告、IR 与公开研报/权威媒体（经 NeoData 金融搜索、Web 检索交叉验证）。数据截至 2026-07-30 收盘。</p>
+      <p><b>口径说明：</b>涨红跌绿为 A 股习惯；"真/伪受益""确定性""价值流转/利润池/产业权力/动态重构/机会雷达/健康度/需求真实性/催化剂/投资启示"为基于公开业务与数据的客观梳理与行业估算，非评级、非精确并表财务数据。代表公司严格按"真实产业参与者"遴选，A 股概念映射方单独标注为间接受益、不进入核心链条。</p>
+      <div class="disclaimer">
+        ⚠️ <b>免责声明：</b>本页面仅为产业链结构与公开数据的客观整理，<b>不构成任何投资建议、要约或承诺</b>。第 12/13 章（催化剂/投资启示）为基于公开信息的投资视角提示，非买卖建议，措辞"可关注/宜观望/待催化"。技术商业化存在高度不确定性，标注的"真/伪受益"会随产业进展变化。投资有风险，决策需谨慎，请以交易所及公司官方披露信息为准，并咨询持牌专业人士。
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var map = {};
+  links.forEach(function(a){ var id=a.getAttribute('href').slice(1); var s=document.getElementById(id); if(s) map[id]=a; });
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          links.forEach(function(l){l.classList.remove('active');});
+          var a = map[e.target.id]; if(a) a.classList.add('active');
+        }
+      });
+    }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+    Object.keys(map).forEach(function(id){ var el=document.getElementById(id); if(el) obs.observe(el); });
+  }
+})();
+</script>
+</body>
+</html>

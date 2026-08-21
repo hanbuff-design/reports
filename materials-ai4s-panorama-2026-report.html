@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>材料 AI4S · 技术全景分析</title>
+<style>
+:root{
+  --navy-900:#142b47; --navy-800:#1d3a5e; --navy-700:#2b5488; --navy-600:#3f7bb0; --navy-500:#5a9bd6;
+  --gold:#bd9a55; --gold-soft:#f7f1e3; --accent2:#d9b877; --slate:#9fb3cd;
+  --surface:#f4f6f8; --surface-2:#eaf1f8; --card:#ffffff;
+  --border:#e5e9ef; --border-soft:#e5e9ef;
+  --text:#19222e; --text-2:#3a4754; --text-3:#69737f;
+  --red:#d6463b; --red-soft:#fbedec; --amber:#bd9a55; --amber-soft:#f7f1e3; --green:#1e9d6a; --green-soft:#e8f5ef;
+  --radius:12px; --radius-s:8px;
+  --font-serif:"Source Han Serif SC","Noto Serif SC","Songti SC","SimSun",serif;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;padding-left:252px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;color:var(--text);background:var(--surface);line-height:1.7;-webkit-font-smoothing:antialiased;font-size:15px;}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px;}
+@media(max-width:980px){body{padding-left:0;}.sidebar{position:sticky;top:0;width:100%;height:auto;flex-direction:row;overflow-x:auto;}.side-brand{border-bottom:none;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap;}.toc{display:flex;padding:10px;flex-wrap:nowrap;}.toc a{border-left:none;white-space:nowrap;}}
+.sidebar{position:fixed;top:0;left:0;width:252px;height:100vh;background:linear-gradient(180deg,#142b47 0%,#1d3a5e 55%,#244d7c 100%);color:#fff;display:flex;flex-direction:column;z-index:60;box-shadow:2px 0 18px rgba(20,43,71,.25);}
+.side-brand{padding:24px 22px 18px;border-bottom:1px solid rgba(255,255,255,.10);}
+.side-brand .sb-t{font-size:12px;color:var(--slate);letter-spacing:1.5px;font-weight:600;}
+.side-brand .sb-n{font-size:17px;font-weight:800;margin-top:6px;line-height:1.3;font-family:var(--font-serif);}
+.side-brand .sb-v{display:inline-block;margin-top:12px;font-size:11px;color:#142b47;background:var(--accent2);padding:3px 10px;border-radius:11px;font-weight:700;letter-spacing:.5px;}
+.toc{padding:14px 12px 30px;overflow-y:auto;flex:1 1 auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.28) transparent;}
+.toc::-webkit-scrollbar{width:6px;height:6px;}
+.toc::-webkit-scrollbar-track{background:transparent;}
+.toc::-webkit-scrollbar-thumb{background:rgba(255,255,255,.28);border-radius:3px;}
+.toc a{display:flex;align-items:center;gap:11px;color:#a9c0db;font-size:13px;padding:10px 12px;border-radius:9px;transition:.18s;margin:2px 0;border-left:3px solid transparent;text-decoration:none;}
+.toc a:hover{background:rgba(255,255,255,.08);color:#fff;}
+.toc a.active{background:rgba(255,255,255,.14);color:#fff;border-left-color:var(--accent2);}
+.toc .num{font-size:11px;font-weight:700;color:#7e9bbf;width:22px;flex:0 0 auto;text-align:center;}
+.toc a.active .num{color:var(--accent2);}
+.toc .part{margin:14px 0 4px;font-size:11px;font-weight:700;color:var(--accent2);letter-spacing:.05em;padding-left:12px;}
+main{flex:1;min-width:0;padding:30px 0 80px;}
+section{padding:40px 0 12px;scroll-margin-top:10px;}
+section h2{margin:0 0 18px;font-size:22px;font-weight:750;color:var(--navy-800);font-family:var(--font-serif);letter-spacing:.3px;display:flex;align-items:center;gap:12px;}
+section h2 .n{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--navy-800),var(--navy-700));width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:9px;flex:0 0 auto;box-shadow:0 2px 6px rgba(29,58,94,.25);font-variant-numeric:tabular-nums;}
+section h3{margin:22px 0 10px;font-size:16px;color:var(--navy-800);border-left:3px solid var(--gold);padding-left:9px;}
+section p{margin:9px 0;color:var(--text);}
+.lead{color:var(--text-2);font-size:15px;margin-top:4px;}
+.hero{background:linear-gradient(135deg,#142b47 0%,#1d3a5e 55%,#2b5488 100%);color:#fff;padding:48px 0 42px;position:relative;}
+.hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--accent2),transparent);}
+.hero > *{max-width:1120px;margin-left:auto;margin-right:auto;padding:0 22px;}
+.hero .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--accent2);border:1px solid rgba(217,184,119,.45);padding:4px 12px;border-radius:20px;margin-bottom:14px;}
+.hero h1{margin:0 0 10px;font-size:34px;font-weight:800;letter-spacing:.5px;font-family:var(--font-serif);}
+.hero p.sub{margin:0;color:#c5d4e6;font-size:15px;max-width:820px;line-height:1.7;}
+.hero .meta{margin-top:18px;display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--slate);}
+.hero .meta .author{display:block;width:100%;white-space:nowrap;}
+.hero .meta b{color:#fff;font-weight:600;}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0;}
+@media(max-width:680px){.kpis{grid-template-columns:1fr;}}
+.kpi{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:14px 16px;}
+.kpi .v{font-size:24px;font-weight:700;color:var(--navy-800);font-variant-numeric:tabular-nums;}
+.kpi .v.g{color:var(--gold);}
+.kpi .l{font-size:12.5px;color:var(--text-2);margin-top:3px;}
+.kpi .s{font-size:11px;color:var(--text-3);margin-top:4px;}
+.grid{display:grid;gap:16px;}
+.grid.c2{grid-template-columns:repeat(2,1fr);} .grid.c3{grid-template-columns:repeat(3,1fr);}
+@media(max-width:680px){.grid.c2,.grid.c3{grid-template-columns:1fr;}}
+.card{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:16px 18px;}
+.card h4{margin:0 0 8px;font-size:15px;color:var(--navy-800);}
+.thesis-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:16px 0;}
+@media(max-width:680px){.thesis-grid{grid-template-columns:1fr;}}
+.tq{border-radius:var(--radius-s);padding:14px 16px;border:1px solid var(--border-soft);}
+.tq h4{margin:0 0 6px;font-size:14px;}
+.tq.success{background:var(--green-soft);border-color:#bfe0cf;} .tq.success h4{color:var(--green);}
+.tq.warn{background:var(--amber-soft);border-color:#ecd6ad;} .tq.warn h4{color:var(--amber);}
+.tq.danger{background:var(--red-soft);border-color:#f0c4bf;} .tq.danger h4{color:var(--red);}
+.tq.info{background:var(--surface-2);border-color:var(--border);} .tq.info h4{color:var(--navy-700);}
+.thesis-concl{background:var(--navy-900);color:#fff;border-radius:var(--radius-s);padding:18px 22px;margin:18px 0;}
+.thesis-concl .tag{display:inline-block;background:var(--gold);color:var(--navy-900);font-weight:700;font-size:12px;padding:3px 10px;border-radius:20px;margin-bottom:8px;}
+.thesis-concl p{color:#e7eefb;margin:6px 0;}
+.signals{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0;}
+.sig{background:var(--gold-soft);border:1px solid #e8cf9a;border-radius:20px;padding:7px 14px;font-size:13px;color:var(--navy-900);}
+.sig b{color:var(--red);}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;}
+th,td{border:1px solid var(--border-soft);padding:8px 11px;text-align:left;vertical-align:top;}
+th{background:var(--surface-2);color:var(--navy-800);font-weight:600;}
+tr:nth-child(even) td{background:#fafcff;}
+.hl{background:var(--gold-soft)!important;font-weight:600;}
+.sizing td:first-child{font-weight:600;color:var(--navy-800);}
+.scorecard .stars{color:var(--gold);letter-spacing:2px;font-size:13px;}
+.scorecard .row{display:flex;flex-wrap:wrap;gap:6px 18px;padding:7px 0;border-bottom:1px dashed var(--border-soft);}
+.scorecard .row:last-child{border-bottom:none;}
+.val td:first-child{font-weight:600;}
+.persp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:14px 0;}
+@media(max-width:680px){.persp-grid{grid-template-columns:1fr;}}
+.persp{border-left:3px solid var(--navy-600);background:var(--surface);border-radius:0 var(--radius-s) var(--radius-s) 0;padding:12px 16px;}
+.persp .who{font-weight:700;color:var(--navy-800);font-size:14px;}
+.persp .pos{font-size:12px;color:var(--text-3);margin-bottom:5px;}
+.rt{margin:12px 0;border-radius:var(--radius-s);overflow:hidden;border:1px solid var(--border-soft);}
+.rt-title{padding:8px 14px;color:#fff;font-weight:600;font-size:13.5px;}
+.rt-title.t1{background:var(--red);} .rt-title.t2{background:var(--amber);} .rt-title.t3{background:var(--navy-600);}
+.rt ul{margin:0;padding:10px 14px 10px 32px;background:var(--surface);}
+.rt li{margin:5px 0;font-size:13.5px;}
+.routes td:first-child{font-weight:600;color:var(--navy-800);}
+.routes .best{background:var(--gold-soft);font-weight:600;}
+.stack{margin:14px 0;}
+.layer{border:1px solid var(--border-soft);border-radius:var(--radius-s);margin-bottom:10px;overflow:hidden;}
+.layer .lh{background:var(--surface-2);padding:8px 14px;font-weight:600;color:var(--navy-800);display:flex;justify-content:space-between;}
+.layer .lh .ltier{font-size:11px;background:var(--navy-700);color:#fff;border-radius:5px;padding:1px 8px;}
+.layer .lb{padding:12px 14px;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12.5px;color:var(--navy-700);}
+.depnote{background:var(--gold-soft);border:1px solid #e8cf9a;border-radius:var(--radius-s);padding:12px 16px;font-size:13.5px;color:var(--navy-900);margin:10px 0;}
+.dcard{border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:16px 18px;margin:12px 0;background:var(--surface);}
+.dcard .dh{font-size:16px;font-weight:700;color:var(--navy-800);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.scorepill{background:var(--navy-900);color:var(--gold);font-weight:700;font-size:13px;border-radius:20px;padding:3px 12px;font-variant-numeric:tabular-nums;}
+.dcard .db{margin-top:10px;font-size:13.5px;}
+.dcard .db b{color:var(--navy-800);}
+.dgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 22px;margin-top:10px;}
+@media(max-width:680px){.dgrid{grid-template-columns:1fr;}}
+.ditem{font-size:13px;padding:5px 0;border-bottom:1px dashed var(--border-soft);}
+.vlist{margin:12px 0;border:1px solid var(--border-soft);border-radius:var(--radius-s);overflow:hidden;}
+.vrow{display:flex;gap:12px;padding:11px 16px;border-bottom:1px dashed var(--border-soft);font-size:13.5px;}
+.vrow:last-child{border-bottom:none;}
+.vrow .vq{flex:0 0 26px;height:26px;border-radius:50%;background:var(--navy-700);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+.indgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0;}
+@media(max-width:680px){.indgrid{grid-template-columns:1fr;}}
+.ind{border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:12px 14px;background:var(--surface);}
+.ind .it{font-weight:700;color:var(--navy-800);font-size:13.5px;}
+.ind .id{font-size:12.5px;color:var(--text-2);margin-top:4px;}
+.chart{margin:16px 0;background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-s);padding:16px;}
+.chart svg{width:100%;height:auto;display:block;}
+.scurve{margin:16px 0;}
+.callout{border-left:4px solid var(--gold);background:var(--gold-soft);padding:12px 16px;border-radius:0 var(--radius-s) var(--radius-s) 0;font-size:13.5px;color:var(--navy-900);margin:12px 0;}
+.callout.r{border-left-color:var(--red);background:var(--red-soft);color:var(--navy-900);}
+.verdict{background:var(--navy-900);color:#fff;border-radius:var(--radius-s);padding:16px 20px;margin:16px 0;}
+.verdict .vt{display:inline-block;background:var(--gold);color:var(--navy-900);font-weight:700;font-size:12px;padding:3px 10px;border-radius:20px;margin-bottom:7px;}
+.footer{text-align:center;color:var(--text-3);font-size:12px;padding:20px;}
+span.src{display:inline;font-size:10px;padding:1px 5px;border-radius:4px;font-weight:600;vertical-align:baseline;margin-left:2px;letter-spacing:.3px;white-space:nowrap;}
+.src-org{background:#e7eefc;color:#1d5189;border:1px solid #c5d8f5;}
+.src-co{background:#e8f6ee;color:#1f8a5b;border:1px solid #bfe6cf;}
+.src-ac{background:#f3e9fb;color:#7b3fb0;border:1px solid #dcc4ef;}
+.src-md{background:#fbf0dc;color:#9a6a16;border:1px solid #ecd6ad;}
+div.src{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 18px;}
+div.src .s{font-size:12.5px;background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:4px 13px;color:var(--navy-700);}
+.part-divider{text-align:center;font-weight:700;color:var(--navy-700);letter-spacing:.1em;margin:30px 0 18px;font-size:14px;padding:10px;background:var(--surface-2);border-radius:var(--radius-s);}
+.no-print{display:none;}
+@media print{
+  body{background:#fff;padding-left:0;}
+  .sidebar{display:none;}
+  section{break-inside:avoid;box-shadow:none;border:none;}
+  .hero{background:#1d3a5e!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+.timeline{position:relative;margin:14px 0;padding-left:22px;}
+.timeline:before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:3px;background:linear-gradient(#1d3a5e,#bd9a55);}
+.tl-row{position:relative;padding:0 0 16px 16px;}
+.tl-dot{position:absolute;left:-22px;top:4px;width:13px;height:13px;border-radius:50%;background:var(--gold);border:3px solid #fff;box-shadow:0 0 0 2px var(--navy-700);}
+.tl-yr{font-weight:800;color:var(--navy-900);font-size:.98rem;}
+.tl-tag{display:inline-block;font-size:.7rem;padding:1px 8px;border-radius:10px;background:var(--surface-2);color:var(--navy-700);margin-left:8px;vertical-align:middle;font-weight:600;}
+.tl-body{color:var(--text-2);font-size:.88rem;margin-top:4px;line-height:1.55;}
+.card,.kpi,.dcard,.tq,.persp,.layer,.ind{box-shadow:0 1px 3px rgba(20,43,71,.06),0 1px 2px rgba(20,43,71,.04);}
+</style>
+</head>
+<body>
+<div id="gate" class="gate">
+  <div class="gate-box">
+    <div class="gate-title">🔒 内容已加密</div>
+    <div class="gate-sub">请输入访问密码</div>
+    <input id="gate-pwd" type="password" class="gate-input" placeholder="访问密码" autocomplete="off" />
+    <button id="gate-btn" class="gate-btn">解锁</button>
+    <div id="gate-err" class="gate-err"></div>
+  </div>
+</div>
+<style>
+.gate{position:fixed;inset:0;z-index:2147483647;background:linear-gradient(135deg,#0f1420,#1a2236);display:flex;align-items:center;justify-content:center;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif}
+.gate-box{background:#fff;border-radius:16px;padding:36px 40px;width:320px;max-width:86vw;box-shadow:0 20px 60px rgba(0,0,0,.45);text-align:center}
+.gate-title{font-size:20px;font-weight:700;color:#111827;margin-bottom:6px}
+.gate-sub{font-size:13px;color:#6b7280;margin-bottom:20px}
+.gate-input{width:100%;box-sizing:border-box;padding:12px 14px;font-size:15px;border:1px solid #d1d5db;border-radius:10px;outline:none;margin-bottom:14px}
+.gate-input:focus{border-color:#2563eb}
+.gate-btn{width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.gate-btn:hover{background:#1d4ed8}
+.gate-err{color:#dc2626;font-size:13px;margin-top:12px;min-height:18px}
+</style>
+<script>
+(function(){
+  var PWD="hanbuff";
+  function unlock(){ var g=document.getElementById("gate"); if(g&&g.parentNode){ g.parentNode.removeChild(g); } }
+  function check(){ var v=document.getElementById("gate-pwd").value; var err=document.getElementById("gate-err"); if(v===PWD){ unlock(); } else { err.textContent="密码错误，请重试"; } }
+  window.addEventListener("load",function(){ var btn=document.getElementById("gate-btn"); var inp=document.getElementById("gate-pwd"); if(btn) btn.addEventListener("click",check); if(inp){ inp.addEventListener("keydown",function(e){ if(e.key==="Enter") check(); }); inp.focus(); } });
+})();
+</script>
+
+<aside class="sidebar">
+  <div class="side-brand">
+    <div class="sb-t">技术全景分析 · TECH PANORAMA</div>
+    <div class="sb-n">材料 AI4S</div>
+    <div class="sb-v">2026 · 合并综合版</div>
+  </div>
+  <nav class="toc">
+        <div class="part">Part I · 技术全景</div>
+    <a href="#ch01"><span class="num">01</span>战略结论与投资研判</a>
+    <a href="#ch02"><span class="num">02</span>市场概览与测算</a>
+    <a href="#ch03"><span class="num">03</span>关键玩家与格局</a>
+    <a href="#ch04"><span class="num">04</span>技术源流与关键科学家</a>
+    <a href="#ch05"><span class="num">05</span>技术爆发的窗口与触发条件</a>
+    <a href="#ch06"><span class="num">06</span>技术栈与路线对比（含 TRL）</a>
+    <a href="#ch07"><span class="num">07</span>应用场景</a>
+    <a href="#ch08"><span class="num">08</span>多方行业观点</a>
+    <div class="part">Part II · 投资视角穿透</div>
+    <a href="#ch09"><span class="num">09</span>技术树全貌</a>
+    <a href="#ch10"><span class="num">10</span>关键技术投资密度</a>
+    <a href="#ch11"><span class="num">11</span>生命周期、风险与颠覆</a>
+    <a href="#ch12"><span class="num">12</span>未来展望与演进时间线</a>
+    <a href="#ch13"><span class="num">13</span>研究方法论</a>
+  </nav>
+</aside>
+<header class="hero">
+  <div class="tag">AI for Science · 技术全景</div>
+  <h1>材料 AI4S · 技术全景分析</h1>
+  材料 AI4S 即 AI for Science 在材料发现领域的落地：用机器学习、生成式模型与机器人实验自动化"发现—设计—验证"全流程，替代传统"试错+高通量实验"范式。本报告聚焦 GNoME 220 万晶体、MatterGen 生成式扩散等底层突破，研判晶泰/深势/深度原理的平台化突围，判断"技术确定性"与"商业确定性"的错配与机会窗口。
+  <div class="meta"><span class="author">作者 · <b>HanBuff</b></span><span> ｜ 生成日期 2026-07 ｜ 单文件 HTML · 可打印 · 数据来源标注【机构/公司/学术/建模】</span></div>
+</header>
+<div class="wrap">
+  <main>
+<section id="ch01">
+      <h2><span class="n">01</span>战略结论与投资研判</h2>
+      <div class="kpis">
+        <div class="kpi"><div class="v g">$2.0B</div><div class="l">AI 材料发现市场（2025）</div><div class="s">Marketintelo<span class="src src-org">机构</span></div></div>
+        <div class="kpi"><div class="v">¥8.03亿</div><div class="l">晶泰科技营收（2025，+201.2%）</div><div class="s">晶泰年报<span class="src src-co">公司</span></div></div>
+        <div class="kpi"><div class="v">42%</div><div class="l">中国 AI4S 论文全球占比（2024）</div><div class="s">Stanford/学术<span class="src src-ac">学术</span></div></div>
+      </div>
+      <div class="thesis-grid">
+        <div class="tq success"><h4>优势 (Strengths)</h4><p>底层突破真实：GNoME 发现 220 万新晶体、38.1 万稳定<span class="src src-ac">学术</span>；中国论文占比 42% 居首<span class="src src-ac">学术</span>；鄂维南称"AI4S 是中国科技创新最好机会，没有之一"<span class="src src-ac">学术</span>。</p></div>
+        <div class="tq info"><h4>机会 (Opportunities)</h4><p>中美同将 AI4S 列国家战略：美国 Genesis 计划 5 年 $1.8B<span class="src src-org">机构</span>，中国"人工智能+"将 AI4S 作范式升级方向<span class="src src-md">政府</span>；新能源/半导体/碳捕获牵引刚需。</p></div>
+        <div class="tq warn"><h4>劣势 (Weaknesses)</h4><p>中国缺"AlphaFold 级"出圈项目，资本认可度弱于美国（深势孙伟杰自述"因为我们没有 AlphaFold"）<span class="src src-co">公司</span>；高质量实验数据荒，限制垂直模型研发<span class="src src-co">公司</span>。</p></div>
+        <div class="tq danger"><h4>威胁 (Threats)</h4><p>海外基础模型开源+算力碾压（Sandbox AQ 首轮即 $500M）<span class="src src-co">公司</span>；纯材料发现商业化早于盈利期，估值波动大。</p></div>
+      </div>
+      <div class="thesis-concl">
+        <span class="tag">投资结论</span>
+        <p><b>信号驱动 · 审慎布局。</b>材料 AI4S 处于"科研范式拐点"而非"商业兑现拐点"：平台型公司（晶泰/深势/深度原理）已在药物或材料端验证变现，但<b>纯材料发现</b>的规模化收入仍需 2–3 年数据飞轮跑通。核心判断建立在硬事实之上——晶泰 2025 首次盈利<span class="src src-co">公司</span>、深势 C 轮超 8 亿估值破 60 亿<span class="src src-co">公司</span>、GNoME/MatterGen 学术突破<span class="src src-ac">学术</span>——而非建模值。</p>
+      </div>
+      <h3>关键信号（触发加仓 / 降级的可观测开关）</h3>
+      <div class="signals">
+        <span class="sig">信号①：深势"超级实验室"/深度原理 AI Materials Factory 高通量验证数据飞轮跑通 → 上调评级</span>
+        <span class="sig">信号②：出现中国"AlphaFold 时刻"（如革命性固态电池材料实验室验证）→ 板块重估</span>
+        <span class="sig"><b>反转触发器：</b>若 3 年内无头部客户规模部署自动化实验闭环 → 下调评级</span>
+      </div>
+      <h3>技术尽调清单（DD Checklist 入口）</h3>
+      <div class="vlist">
+        <div class="vrow"><span class="vq">1</span><div>单位经济：单次实验成本下降曲线是否跑通？机器人实验室摊薄后单次合成成本 vs 传统湿实验。</div></div>
+        <div class="vrow"><span class="vq">2</span><div>数据飞轮真实性：自研实验室年产出标注数据量、回流模型后性能增益是否可量化。</div></div>
+        <div class="vrow"><span class="vq">3</span><div>模型泛化：域外推（out-of-distribution）验证——5+ 元系材料预测命中率是否崩塌。</div></div>
+        <div class="vrow"><span class="vq">4</span><div>定位纪律：平台（不碰管线）vs 自研管线，决定估值天花板与药企信任。</div></div>
+      </div>
+    </section>
+
+    <!-- 02 市场 -->
+    <section id="ch02">
+      <h2><span class="n">02</span>市场概览与测算</h2>
+      <p class="lead">双口径：狭义 <b>SAM</b> = AI 材料发现软件/服务（机构真实值）；广义 <b>TAM</b> = 含 AI 驱动新材料制造（智能材料/电池材料等，建模量级锚）。</p>
+      <div class="chart"><svg id="barchart" viewBox="0 0 640 300" role="img" aria-label="AI材料发现市场规模柱状图"></svg></div>
+      <h3>多情景规模测算（两种独立方法交叉验证）</h3>
+      <table class="sizing">
+        <tr><th>情景</th><th>方法一：机构外推</th><th>方法二：下游倒推</th><th>区间</th><th>关键假设</th></tr>
+        <tr><td>基准</td><td>AI 材料发现 2025 $2.0B→2034 $17.9B (CAGR 28%)<span class="src src-org">机构</span></td><td>AI 设计电池材料 2030 $8.4B<span class="src src-org">机构</span> + 智能材料制造 2025 $102B<span class="src src-org">机构</span></td><td class="hl">$15–20B @2030</td><td>渗透率 15–25%、平台订阅+项目制混合</td></tr>
+        <tr><td>下行</td><td>生成式 AI 材料科学 2025 $1.49B→2035 $12.9B (CAGR 24%)<span class="src src-org">机构</span></td><td>仅药物/化工主导场景渗透，材料端滞后</td><td>$8–12B @2030</td><td>实验室自动化渗透不及预期、数据荒延续</td></tr>
+      </table>
+      <div class="callout">口径说明：广义 TAM（含智能材料制造 $102B@2025<span class="src src-org">机构</span>）为<b>建模量级锚</b>，仅说明产业链外延；狭义 SAM 以 AI 材料发现 $2.0B@2025<span class="src src-org">机构</span> 为核心判断依据。BCG 预计 2035 量子 AI 材料模拟市场破 $26B<span class="src src-org">机构</span>，属远期外延情景。</div>
+    </section>
+
+    <!-- 03 玩家 -->
+    <section id="ch03">
+      <h2><span class="n">03</span>关键玩家与格局</h2>
+      <div class="grid c2">
+        <div class="card"><h4>平台型 / 中国标杆</h4><p><b>晶泰科技</b>（2228.HK）：2025 营收 ¥8.03 亿（+201.2%），首次全年盈利 ¥1.35 亿，现金 ¥70.7 亿，覆盖全球 Top20 药企 17 家，200+ 行业 AI 模型，扩展新材料/消费健康<span class="src src-co">公司</span>。<br><b>深势科技</b>：C 轮超 8 亿、估值破 60 亿，定位"微观达索"平台，玻尔·赛博实验室打通读算做闭环，赋能宁德/比亚迪等 150+ 企业<span class="src src-co">公司</span>。<br><b>深度原理</b>：MIT 团队，ReactiveAI/Agent Mira，2025 入选达沃斯技术先锋，A 轮超亿元（阿里基金+蚂蚁领投）<span class="src src-co">公司</span>。</p></div>
+        <div class="card"><h4>基础模型 / 海外巨头</h4><p><b>Google DeepMind</b> GNoME：220 万晶体、38.1 万稳定<span class="src src-ac">学术</span>。<br><b>Microsoft</b> MatterGen/MatterSim/Aurora：扩散生成+神经网络势，从 3200 万材料筛全固态电解质&lt;1 周（传统 20 年）<span class="src src-co">公司</span>。<br><b>Lila Sciences</b> $350M A 轮估值 $1.3B（2025）<span class="src src-co">公司</span>；<b>CuspAI</b> 获英伟达等 $100M 建材料"搜索引擎"<span class="src src-co">公司</span>；<b>Periodic Labs</b> a16z 领投 $300M<span class="src src-co">公司</span>。</p></div>
+      </div>
+      <h3>竞争评分卡（4 维星级）</h3>
+      <div class="scorecard">
+        <div class="row"><span style="min-width:150px;font-weight:600">晶泰科技</span><span class="stars">★★★★☆ 技术</span><span class="stars">★★★★★ 产品量产</span><span class="stars">★★★★★ 商业客户</span><span class="stars">★★★★★ 资本供应链</span></div>
+        <div class="row"><span style="min-width:150px;font-weight:600">深势科技</span><span class="stars">★★★★★ 技术</span><span class="stars">★★★☆☆ 产品量产</span><span class="stars">★★★★☆ 商业客户</span><span class="stars">★★★★☆ 资本供应链</span></div>
+        <div class="row"><span style="min-width:150px;font-weight:600">深度原理</span><span class="stars">★★★★☆ 技术</span><span class="stars">★★☆☆☆ 产品量产</span><span class="stars">★★★☆☆ 商业客户</span><span class="stars">★★★☆☆ 资本供应链</span></div>
+        <div class="row"><span style="min-width:150px;font-weight:600">Microsoft/DeepMind</span><span class="stars">★★★★★ 技术</span><span class="stars">★★☆☆☆ 产品量产</span><span class="stars">★★★★★ 商业客户</span><span class="stars">★★★★★ 资本供应链</span></div>
+      </div>
+      <div class="callout">高亮行（国内最可比平台）：晶泰已实现盈利兑现，深势卡位"平台+数据飞轮"，深度原理卡位"材料专用 Agent"。三者路径差异决定护城河性质不同（见 06/10 章）。</div>
+    </section>
+
+    <!-- 04 技术源流与关键科学家 -->
+    <section id="ch04">
+      <h2><span class="n">04</span>技术源流与关键科学家</h2>
+      <p class="lead">硬科技投资本质是"投人"。材料 AI4S 的几条主路线，背后是高度可溯源的学术谱系与创始团队技术基因。厘清"谁在做、师承何处、技术主张是什么"，才能判断各家护城河是数据、算法还是方法论，以及关键科学家流失或路线切换的风险敞口。</p>
+
+      <h3>学术源流：中国 AI4S 的"第一推动力"</h3>
+      <div class="grid c2">
+        <div class="card">
+          <h4>鄂维南（Weinan E）· 中国科学院院士</h4>
+          <p>北京大学数学科学学院教授，与汤超院士共同首次提出大力发展 AI for Science。其团队（张林峰等）凭"深度势能"分子模拟获 2020 年戈登·贝尔奖，入选"2020 中国十大科技进展"<span class="src src-ac">学术</span>。公开判断："AI4S 是中国科技创新历史上最好的机会，没有之一"<span class="src src-ac">学术</span>。现任深势科技首席科学顾问，是中国材料/科学 AI 路线的学术根系<span class="src src-co">公司</span>。</p>
+        </div>
+        <div class="card">
+          <h4>国际根系：DeepMind / Microsoft Research AI4Science</h4>
+          <p>GNoME（2023，Nature）由 Google DeepMind 发布，用图神经网络预测 220 万晶体、38.1 万稳定结构<span class="src src-ac">学术</span>；MatterGen（2025，Nature）由 Microsoft Research AI4Science 发布，扩散生成模型，从 3200 万材料筛全固态电解质 &lt;1 周<span class="src src-ac">学术</span>。两者均开放权重/数据，对创业公司既是"送弹药"、也是"降维碾压"<span class="src src-md">建模</span>。</p>
+        </div>
+      </div>
+
+      <h3>三家国内平台的技术谱系与关键科学家</h3>
+      <div class="grid c2">
+        <div class="card">
+          <h4>晶泰科技 XtalPi（2228.HK）· 物理学家三人组</h4>
+          <p><b>温书豪</b>（董事长）：中科院物理化学博士、MIT 博士后，主导累计超 6600 万美元融资及辉瑞等合作<span class="src src-co">公司</span>。<b>马健</b>（CEO）：浙大物理博士、MIT 博士后，2019 麻省理工科技评论"35 岁以下创新 35 人"<span class="src src-co">公司</span>。<b>赖力鹏</b>（首席创新官/AI 负责人）：北大物理数学双学位、芝大物理博士、MIT 博士后，曾任 Epic Systems<span class="src src-co">公司</span>。<br>技术主张：量子物理第一性原理 + AI + 机器人实验室（深圳/上海）。2016 年辉瑞晶体结构预测盲测 100% 准确切入，延伸至新材料/新能源<span class="src src-co">公司</span>。</p>
+        </div>
+        <div class="card">
+          <h4>深势科技 DP Technology · 鄂维南谱系</h4>
+          <p><b>张林峰</b>（首席科学家，1993 年生）：北大元培（物理/数学/CS）、普林斯顿博士，师从鄂维南与 Roberto Car；2020 戈登·贝尔奖（DeePMD 深度势能分子动力学）<span class="src src-ac">学术</span>。<b>孙伟杰</b>（CEO）：北大元培（政经哲）、前 VC<span class="src src-co">公司</span>。<b>鄂维南</b>：首席科学顾问。<br>技术主张："读·算·做·智"全链条科研基础设施，对标"微观达索"。DeePMD 势函数、Hermite（药物）、Piloteye（电池材料）、玻尔·跃迁实验室（机器人实验闭环）<span class="src src-co">公司</span>。</p>
+        </div>
+        <div class="card">
+          <h4>深度原理 Deep Principle · MIT 归国派</h4>
+          <p><b>贾皓钧</b>（创始人/CEO）：MIT 博士，曾任陶氏化学核心研发（新材料与催化剂）<span class="src src-co">公司</span>。<b>段辰儒</b>（联合创始人/CTO）：曾任 Azure Quantum 研究科学家，量子计算与分子生成模型<span class="src src-co">公司</span>。总部杭州，2024 年创立，2025 入选达沃斯技术先锋<span class="src src-co">公司</span>。<br>技术主张：生成式 AI + 第一性原理融合，ReactiveAI → Agent Mira（材料 AI Scientist）。SAGA（多目标生成）、OA-ReactDiff/React-OT（过渡态 0.4 秒）、MPA（物性预测约 40 任务 SOTA）、L4 高通量实验室 AI Materials Factory<span class="src src-co">公司</span>。</p>
+        </div>
+        <div class="card">
+          <h4>路线差异 → 护城河性质</h4>
+          <p>晶泰卡位"第一性原理计算 + 机器人量产"，护城河偏<b>工程化与交付</b>；深势卡位"算法原创 + 全栈平台 + 数据飞轮"，护城河偏<b>底层方法学与基础设施</b>；深度原理卡位"材料专用 Agent"，护城河偏<b>模型 SOTA 与任务编排</b>。三者基因决定其技术风险点与客户结构不同（详见 06/10 章）<span class="src src-md">建模</span>。</p>
+        </div>
+      </div>
+
+      <h3>谱系—路线—风险 一览</h3>
+      <table>
+        <thead><tr><th>主体</th><th>学术/产业根系</th><th>核心技术主张</th><th>护城河性质</th><th>关键人风险敞口</th></tr></thead>
+        <tbody>
+          <tr><td>晶泰科技</td><td>物理学家三人组（温/马/赖，MIT 博士后）</td><td>量子物理 + AI + 机器人实验室</td><td>工程化与量产交付</td><td>材料 AI 收入占比待验证；科学家分工较可替代</td></tr>
+          <tr><td>深势科技</td><td>鄂维南谱系（张林峰 Gordon Bell）</td><td>DeePMD 势函数 + 全栈科研基础设施</td><td>底层方法学 + 数据飞轮</td><td>高度绑定张林峰/鄂维南；飞轮闭环未完全验证</td></tr>
+          <tr><td>深度原理</td><td>MIT 归国（贾皓钧/段辰儒）</td><td>生成式 + 第一性原理，Agent Mira</td><td>模型 SOTA + 任务编排</td><td>最早期，量产/客户验证弱；团队年轻</td></tr>
+          <tr><td>Google/Microsoft</td><td>DeepMind / MSR AI4Science</td><td>GNoME / MatterGen 基础模型</td><td>基础模型 + 算力 + 开源</td><td>非商业导向，开源即行业公地</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">投资含义：技术谱系可直接映射到"可被并购/被挖角/被替代"的风险。深势的护城河与张林峰/鄂维南个人绑定最深，晶泰的物理学三人组分工更可替代，深度原理则押注团队年轻化带来的模型迭代速度。谱系判断应作为 DD 清单中"团队"维度的硬指标（见 13 章方法论）。</div>
+    </section>
+
+    <!-- 05 技术爆发的窗口与触发条件 -->
+    <section id="ch05">
+      <h2><span class="n">05</span>技术爆发的窗口与触发条件</h2>
+      <p class="lead">为什么是"现在"而不是十年前？材料 AI4S 的技术爆发并非单点突破，而是<b>数据基座、算力算法、生成范式、自主实验、资本政策</b>五股力量在同一窗口期共振的结果。</p>
+      <h3>爆发的窗口：2023–2025 拐点</h3>
+      <p>2018–2022 是"筛选辅助期"——ML 主要做 DFT 高通量计算的加速与替代；真正的拐点出现在 <b>2023 年 11 月</b>：Google DeepMind 发布 GNoME，一次性预测 <b>220 万种晶体、其中 38.1 万稳定</b>（相当于"近 800 年"的人类知识积累）<span class="src src-ac">学术</span>；同期 Berkeley 的 A-Lab 实现无人干预连续 17 天合成 41 种新化合物，打通"AI 设计→机器人合成→数据回流"闭环<span class="src src-ac">学术</span>。2023 年底 Microsoft 发布 MatterGen（扩散生成，Nature 2025 正式刊发），把"按属性直接生成新材料"从概念变为可复现范式<span class="src src-co">公司</span><span class="src src-ac">学术</span>。2025–2026 进入"闭环验证期"，实践已越过概念证明（POC）。</p>
+      <h3>五大触发条件</h3>
+      <table class="routes">
+        <tr><th>触发条件</th><th>标志事件 / 积累</th><th>当前状态</th></tr>
+        <tr><td>① 数据基座成熟</td><td>Materials Project（2011 启动，2025 年已超 15 万无机化合物计算性质）、OQMD、ICSD；Matbench / MatBench Discovery 将评估专业化<span class="src src-ac">学术</span></td><td class="best">就绪</td></tr>
+        <tr><td>② 算力与算法复利</td><td>GPU 算力 post-2020 Scaling；Transformer(2017)、扩散模型(2020) 成熟；AlphaFold(2021) 证明 ML 能攻克硬科学，打开范式想象</td><td class="best">就绪</td></tr>
+        <tr><td>③ 生成式范式确立</td><td>GNoME(2023) 从"发现"到"发明"；MatterGen(2023/2025) 按属性约束生成</td><td class="best">确立</td></tr>
+        <tr><td>④ 自主实验闭环打通</td><td>A-Lab(2023) 闭环合成；自驱动实验室从演示走向周级连续运行（Golab 2026.7 干湿闭环 5 天 135 任务）<span class="src src-co">公司</span></td><td>加速中</td></tr>
+        <tr><td>⑤ 资本与政策共振</td><td>2025–2026 VC 向自主实验投数亿美元；美国 DOE Genesis Mission（2026.3）部署超算+AI；中国专项基金五年 300 亿元支持 AI 材料<span class="src src-org">机构</span></td><td>上行</td></tr>
+      </table>
+      <div class="callout">窗口的本质：<b>当"模型能生成"+"实验能验证"+"数据能回流"三件事第一次同时成立，材料发现才从"十年磨一剑"的作坊，变成可规模化的工程。</b>这也是为何 2023 是分水岭——此前缺闭环，此后缺的是工程化与放大，而非科学原理。</div>
+    </section>
+
+    <!-- 06 技术栈与路线对比 -->
+    <section id="ch06">
+      <h2><span class="n">06</span>技术栈与路线对比（含 TRL）</h2>
+      <p class="lead">5 层垂直分层 + 路线对比矩阵（含横向对标）：材料 AI4S 本质是"生成/筛选模型 × 第一性原理引擎 × 自动化实验"的闭环竞争。</p>
+      <div class="stack">
+        <div class="layer"><div class="lh">应用层 <span class="ltier">Tier 1</span></div><div class="lb">电池/催化/半导体/医药/化工/化妆品/碳捕获等垂直场景<div class="chips"><span class="chip">新能源电池</span><span class="chip">催化剂</span><span class="chip">半导体材料</span><span class="chip">碳捕获吸附剂</span></div></div></div>
+        <div class="layer"><div class="lh">算法模型层 <span class="ltier">Tier 2</span></div><div class="lb">生成式（扩散 MatterGen/CDVAE、GNN GNoME）、主动学习、科学基础模型<div class="chips"><span class="chip">扩散生成</span><span class="chip">图神经网络</span><span class="chip">主动学习</span></div></div></div>
+        <div class="layer"><div class="lh">计算引擎层 <span class="ltier">Tier 2</span></div><div class="lb">第一性原理（DFT）加速、神经网络势（MatterSim 类）替代昂贵量子计算<div class="chips"><span class="chip">DFT</span><span class="chip">神经网络势</span></div></div></div>
+        <div class="layer"><div class="lh">数据 / 实验层 <span class="ltier">Tier 3</span></div><div class="lb">材料数据库（Materials Project 15 万+<span class="src src-ac">学术</span>）、高通量自动化实验（self-driving lab）<div class="chips"><span class="chip">Materials Project</span><span class="chip">机器人实验室</span><span class="chip">标注数据库</span></div></div></div>
+      </div>
+      <h3>技术路线对比矩阵（横向对标）</h3>
+      <table class="routes">
+        <tr><th>维度</th><th>筛选式（GNoME 式 DFT 高通量）</th><th>生成式（MatterGen 扩散 / GNN）</th><th>机器人闭环（晶泰/深势/深度原理）</th></tr>
+        <tr><td>原理</td><td>穷举已知空间 + DFT 验证</td><td class="best">按属性约束直接生成新结构</td><td>AI 设计→机器人合成→数据回流飞轮</td></tr>
+        <tr><td>成本</td><td>算力密集、单次贵</td><td class="best">生成边际成本极低</td><td>重资产（实验室），摊薄后低</td></tr>
+        <tr><td>性能上限</td><td>受限于已知材料空间</td><td class="best">可探索未知化学空间</td><td>受限于实验通量与合成可行性</td></tr>
+        <tr><td>成熟度</td><td class="best">已规模化（GNoME 220 万）</td><td>快速上升（Nature 2023/2025）</td><td>早期（验证阶段）</td></tr>
+        <tr><td>代表玩家</td><td>DeepMind / Microsoft</td><td>Microsoft / 深度原理</td><td>晶泰 / 深势 / 深度原理</td></tr>
+      </table>
+      <h3>技术就绪度（TRL）锚定</h3>
+      <table class="routes">
+        <tr><th>路线</th><th>代表技术</th><th>TRL</th><th>已落地场景</th><th>仍停留在</th></tr>
+        <tr><td>筛选式 DFT 高通量</td><td>GNoME / 高通量计算</td><td class="best">5–6</td><td>嵌入头部药企/材料研发流程做初筛</td><td>工业量产级新材料发现</td></tr>
+        <tr><td>生成式扩散 / GNN</td><td>MatterGen / CDVAE</td><td>4–5</td><td>Nature 级验证；固态电解质 32M 筛选闭环<span class="src src-ac">学术</span></td><td>规模化、多元素体系泛化</td></tr>
+        <tr><td>神经网络势（MLP）</td><td>DPA-4 / MACE / Orb</td><td class="best">6–7</td><td>深势/晶泰研发流程常规调用，提速约 5 个数量级<span class="src src-co">公司</span></td><td>极端条件/大体系精度</td></tr>
+        <tr><td>机器人闭环 / 自驱动实验室</td><td>A-Lab / Golab / 晶泰</td><td>4–5</td><td>无人连续运行（A-Lab 17 天 41 种；Golab 5 天 135 任务）<span class="src src-ac">学术</span></td><td>跨体系通用（有机/高分子难）、连续量产</td></tr>
+        <tr><td>科学基础模型</td><td>Materials FM</td><td>3–4</td><td>预训练基座开放试用</td><td>高精度专项任务替代</td></tr>
+      </table>
+
+      <h3>量化对标框架（效果与关键参数维度）</h3>
+      <p class="lead">上两表偏"成熟度"定性。本框架把五条路线拉到<strong>同一组可观测 KPI</strong>上做横向量化：单轮产出规模、可量化精度/成功率、通量、单位成本、TRL。硬科技尽调的关键，是让"技术好不好"从形容词变成可比对的数字。</p>
+      <table class="routes">
+        <tr><th>路线</th><th>单轮产出规模</th><th>可量化精度 / 成功率</th><th>通量（相对）</th><th>单位成本结构</th><th>TRL</th></tr>
+        <tr><td>筛选式 DFT 高通量</td><td>单战役 2.2M 候选（GNoME）<span class="src src-ac">学术</span></td><td>稳定性预测 &gt;80%；成分预测 33%/百次（旧基线仅 1%）<span class="src src-ac">学术</span></td><td>受算力约束</td><td>算力密集（DFT $100–1000/构型）</td><td class="best">5–6</td></tr>
+        <tr><td>生成式扩散 / GNN</td><td>32M 结构筛选→按需生成</td><td>稳定率 78%（&lt;0.1 eV/atom）；SUN 比旧 SOTA &gt;2×、近平衡近 10×<span class="src src-ac">学术</span></td><td>—（生成边际成本极低）</td><td>训练贵、推理极廉</td><td>4–5</td></tr>
+        <tr><td>神经网络势（MLP）</td><td>替代 DFT 做大规模仿真</td><td class="best">能量误差 1–5 meV/atom（DFT 级）；比 DFT 快 10⁴–10⁶×</td><td>仿真级并行</td><td>推理便宜（10⁴–10⁶× 降本）</td><td class="best">6–7</td></tr>
+        <tr><td>机器人闭环 / 自驱动实验室</td><td>58 目标 / 17 天（A-Lab）</td><td>合成成功率 71%（41/58）；已知材料再发现 2000+<span class="src src-ac">学术</span></td><td class="best">50–100× 人力；&gt;2 材料/天</td><td>重资产，摊薄后低</td><td>4–5</td></tr>
+      </table>
+
+      <h3>同基准对标：生成式模型效果量化</h3>
+      <p>投资人最该警惕"论文数领先"与"核心技术指标领先"混为一谈。下表把 MatterGen 与上一代入选 SOTA（CDVAE / DiffCSP）放在<strong>同一任务、同一数据集（MP-20）</strong>上比，避免被数量误导<span class="src src-ac">学术</span>。</p>
+      <table class="routes">
+        <tr><th>基准指标（MP-20，生成 1000 样本均值）</th><th>CDVAE / DiffCSP（旧 SOTA）</th><th>MatterGen-MP（同数据）</th><th>MatterGen（全量缩放）</th></tr>
+        <tr><td>SUN 结构占比（稳定+独特+新颖）</td><td>基准</td><td>+1.8×</td><td class="best">&gt;2× 旧 SOTA</td></tr>
+        <tr><td>距平衡态 RMSD</td><td>基准</td><td>−3.1×</td><td class="best">近平衡近 10× 更近</td></tr>
+        <tr><td>独特性 @1k → @10M 样本</td><td>更快饱和</td><td>—</td><td class="best">100% → 52%</td></tr>
+        <tr><td>新颖性（相对 Alex-MP-ICSD）</td><td>—</td><td>—</td><td>~61–68%</td></tr>
+        <tr><td>稳定率（&lt;0.1 eV/atom）</td><td>—</td><td>—</td><td>78%（13% &lt;0 eV/atom）</td></tr>
+      </table>
+      <div class="callout">关键读数：生成式路线"效果好"是<b>可量化、可复现</b>的——不是故事。但注意它测的是<em>生成结构本身</em>的质量；能否真实合成（sim-to-real gap）要交给下一节闭环验证。</div>
+
+      <h3>可验证性漏斗：挤掉"发现"的水分</h3>
+      <p>2.2M 候选 ≠ 2.2M 材料。硬科技投资人看的是<strong>后端转化率</strong>——从模型预测到实际可合成的距离，正是"技术确定性"与"商业确定性"错配的量化证据。</p>
+      <table class="routes">
+        <tr><th>阶段</th><th>数量</th><th>相对转化率</th><th>性质</th></tr>
+        <tr><td>GNoME 模型预测候选</td><td>2.2M</td><td>100%（基线）</td><td>计算生成</td></tr>
+        <tr><td>稳定性预测通过</td><td>381K</td><td>17.3% of 候选</td><td>加入 Materials Project<span class="src src-ac">学术</span></td></tr>
+        <tr><td>外部独立实验验证</td><td>736+</td><td>0.19% of 候选</td><td>同期物理实验证实<span class="src src-ac">学术</span></td></tr>
+        <tr><td>A-Lab 机器人成功合成</td><td>41 / 58 目标</td><td class="best">71%（单轮尝试）</td><td>真实闭环<span class="src src-ac">学术</span></td></tr>
+      </table>
+      <div class="callout">漏斗结论：模型侧已可大规模"发现"，但<b>实验闭环的 71% 是当前天花板</b>——且从 2.2M 预测到 41 实际合成，后端转化率极低。这解释了为何平台型公司（晶泰/深势/深度原理）的估值溢价，押注的是"把 71% 天花板往上推、把闭环通量做厚"，而非模型本身。</div>
+
+      <div class="callout">TRL 跨度本身就是投资结论：模型侧已 6+，但"最后一公里"实验闭环仍卡在 4–5。价值与风险的交汇点恰在此处——这解释了为何"技术确定性高、商业确定性低"的错配（见 01 章）。</div>
+      <div class="callout">关键辨析：<b>生成式不是筛选式的替代品，而是其上游扩展器</b>。MatterGen 论文核心结论——生成比筛选快 3–5 个数量级、且能访问未知材料空间<span class="src src-ac">学术</span>。但生成的结构仍需 DFT/实验验证，闭环的"最后一公里"在自动化实验（见 09–11 章）。</div>
+    </section>
+
+    <!-- 05 应用 -->
+    <section id="ch07">
+      <h2><span class="n">07</span>应用场景</h2>
+      <div class="grid c3">
+        <div class="card"><h4>新能源电池</h4><p>固态电解质、锂金属电解液（深势 3 个月设计寿命 450 圈 vs 行业 300 圈 +50%）<span class="src src-co">公司</span>；Microsoft 一周筛出全固态电解质<span class="src src-co">公司</span>。</p></div>
+        <div class="card"><h4>催化剂</h4><p>深度原理 ReactiveAI 用于高效催化材料；GNoME 528 种锂离子导体（前研 25 倍）<span class="src src-ac">学术</span>。</p></div>
+        <div class="card"><h4>半导体材料</h4><p>下一代微芯片替代材料、光刻/封装材料逆向设计。</p></div>
+        <div class="card"><h4>碳捕获吸附剂</h4><p>稀有元素-free 磁铁、CO₂ 捕集 sorbent 的云上生成设计<span class="src src-org">机构</span>。</p></div>
+        <div class="card"><h4>医药 / 化工</h4><p>晶泰主战场（药物发现盈利），材料端向消费健康/化妆品延伸（深度原理欧莱雅配方稳定性 POC）<span class="src src-co">公司</span>。</p></div>
+        <div class="card"><h4>超导体 / 特种材料</h4><p>GNoME 发现 5.2 万层状化合物（前研 1000 种）<span class="src src-ac">学术</span>，潜在超导/电子器件。</p></div>
+      </div>
+    </section>
+
+    <!-- 06 多方观点 -->
+    <section id="ch08">
+      <h2><span class="n">08</span>多方行业观点</h2>
+      <div class="persp-grid">
+        <div class="persp"><div class="who">深度原理 贾皓钧（创业方）</div><div class="pos">务实落地派</div><p>强调"以战代练"——先拿千万元订单（欧莱雅/精细化工厂）养平台，而非空谈范式革命；自研六大算法模块覆盖研发-合成-验证全链<span class="src src-co">公司</span>。</p></div>
+        <div class="persp"><div class="who">深势科技 孙伟杰（平台方）</div><div class="pos">微观达索派</div><p>坚决做"平台不碰管线"，对标达索定义微观研发标准；认为中美无能力代差，中国胜在执行力+供应链+数据，但缺 AlphaFold 级图腾<span class="src src-co">公司</span>。</p></div>
+        <div class="persp"><div class="who">鄂维南院士（学术方）</div><div class="pos">国家战略派</div><p>"AI for Science 是中国科技创新历史上最好的机会，没有之一"——将 AI4S 视为科研基础设施升级工程<span class="src src-ac">学术</span>。</p></div>
+        <div class="persp"><div class="who">审慎方（部分 VC / 产业界）</div><div class="pos">与主线相悖</div><p>指出科学发现领域封闭保守、历史数据缺失，垂直模型"数据基础薄弱"；商业化路径最长，警惕估值透支（论据正文见 11 章）<span class="src src-co">公司</span>。</p></div>
+      </div>
+      <div class="callout">共识：AI4S 是承接大模型之后的前沿叙事（黄仁勋 GTC2024 将 LLM/具身智能/AI4S 并列三大方向<span class="src src-co">公司</span>）。最大不确定性：<b>纯材料发现的变现节奏</b>——比药物发现更慢、数据更荒。</div>
+    </section>
+
+    <div class="part-divider">Part II · 投资视角穿透</div>
+
+    <!-- 07 技术树 -->
+    <section id="ch09">
+      <h2><span class="n">09</span>技术树全貌（系统→原子级）</h2>
+      <div class="stack">
+        <div class="layer"><div class="lh">T1 系统：材料 AI4S 研发平台 <span class="ltier">Tier 1</span></div><div class="lb">端到端"假设生成→计算→合成→表征→回流"闭环</div></div>
+        <div class="layer"><div class="lh">T2 子系统 / 核心模块 <span class="ltier">Tier 2</span></div><div class="lb">生成模型、第一性原理引擎、数据库、机器人实验编排（Uni-Lab-OS / Agent Mira）</div></div>
+        <div class="layer"><div class="lh">T3 底层器件 / 材料 <span class="ltier">Tier 3</span></div><div class="lb">
+          <table>
+            <tr><th>Tier3 节点</th><th>自研/外购</th><th>成熟度</th><th>护城河权重</th></tr>
+            <tr><td>科学基础模型（扩散/GNN）</td><td>自研</td><td>中（快速迭代）</td><td>中（易追/开源思路）</td></tr>
+            <tr><td>第一性原理加速引擎（神经网络势）</td><td>自研</td><td>中高</td><td>高（算法+算力）</td></tr>
+            <tr><td>高质量标注数据库</td><td>外购+自产</td><td>持续积累</td><td>高（数据壁垒）</td></tr>
+            <tr><td>高通量自动化实验平台</td><td>自研（重资产）</td><td>早期-中</td><td>最高（数据飞轮）</td></tr>
+            <tr><td>领域 Know-how（电池/催化）</td><td>合作+自研</td><td>中</td><td>中高（应用壁垒）</td></tr>
+          </table>
+        </div></div>
+      </div>
+      <div class="depnote">层级依赖链：<b>基础模型 → 第一性原理引擎 → 数据库 → 自动化实验 → 领域 Know-how</b>。最短板在<b>自动化实验通量</b>——模型可秒级生成候选，但实验室验证（合成+表征）仍是月-年级瓶颈，决定整个飞轮转速与护城河厚度。</div>
+    </section>
+
+    <!-- 08 投资密度 -->
+    <section id="ch10">
+      <h2><span class="n">10</span>关键技术"投资密度"分析</h2>
+      <div class="dcard">
+        <div class="dh">节点 A：高通量自动化实验平台（数据飞轮） <span class="scorepill">壁垒 9/10</span></div>
+        <div class="db"><b>技术本质：</b>用第一性原理解决"数据荒"——机器人实验室将 AI 设计→合成→表征→回流压缩到天级，持续产出标准化标注数据，反哺模型（深势 Uni-Lab-OS / 深度原理 AI Materials Factory / 晶泰机器人）。</div>
+        <div class="dgrid">
+          <div class="ditem"><b>壁垒判定：</b>know-how 型（重资产+工艺+调度系统，不可逆向复制）</div>
+          <div class="ditem"><b>代际/路线图：</b>当前第 1 代验证，下一代瓶颈在"柔性调度+跨仪器协议"</div>
+          <div class="ditem"><b>成本下降：</b>学习曲线，单实验成本随通量提升 3 年 -50～70%<span class="src src-md">建模</span>，假设机器人利用率&gt;60%</div>
+          <div class="ditem"><b>投资含义：</b>决定平台型公司估值天花板，最该重仓的底层资产</div>
+        </div>
+      </div>
+      <div class="dcard">
+        <div class="dh">节点 B：科学基础模型（生成/筛选） <span class="scorepill">壁垒 7/10</span></div>
+        <div class="db"><b>技术本质：</b>扩散/GNN 直接生成稳定新结构（MatterGen 比筛选快 3–5 数量级<span class="src src-ac">学术</span>），是第一性原理的"上游扩展器"。</div>
+        <div class="dgrid">
+          <div class="ditem"><b>壁垒判定：</b>know-what 型（架构易跟进，开源复现快）</div>
+          <div class="ditem"><b>代际/路线图：</b>从专用到 foundation model（GNoME/MatterGen 已验证）</div>
+          <div class="ditem"><b>成本下降：</b>推理边际成本趋零，瓶颈转训练算力</div>
+          <div class="ditem"><b>投资含义：</b>差异化来自"领域微调数据"，纯模型公司易被云巨头稀释</div>
+        </div>
+      </div>
+      <div class="dcard">
+        <div class="dh">节点 C：第一性原理加速引擎（神经网络势） <span class="scorepill">壁垒 8/10</span></div>
+        <div class="db"><b>技术本质：</b>用神经网络势替代昂贵 DFT，实现近量子精度（MatterSim 精度为前代 10 倍<span class="src src-co">公司</span>），是"算得准且算得快"的关键。</div>
+        <div class="dgrid">
+          <div class="ditem"><b>壁垒判定：</b>know-how 型（物理先验+训练数据飞轮）</div>
+          <div class="ditem"><b>代际/路线图：</b>从无机向有机/聚合物扩展中</div>
+          <div class="ditem"><b>成本下降：</b>单次模拟成本随势函数成熟降 1–2 数量级<span class="src src-md">建模</span></div>
+          <div class="ditem"><b>投资含义：</b>与实验平台协同构成"算+做"双引擎，缺一不可</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 09 生命周期、风险与颠覆 -->
+    <section id="ch11">
+      <h2><span class="n">11</span>生命周期、风险与颠覆</h2>
+      <div class="scurve"><svg id="scurve" viewBox="0 0 640 360" role="img" aria-label="材料AI4S技术生命周期 S 曲线"></svg></div>
+      <h3>阿喀琉斯之踵（一票否决环节）</h3>
+      <div class="callout r">① <b>高质量实验数据稀缺</b>——深度原理贾皓钧自认"数据基础十分薄弱"是最大瓶颈<span class="src src-co">公司</span>；② <b>算力依赖</b>（GPU/超算，深势早期测算至少 10–15 亿算力成本<span class="src src-co">公司</span>）；③ <b>合成验证周期</b>——即使 AI 设计，实验室验证仍需月-年；④ <b>自主实验室安全</b>——生物/化学自动化操作的合规边界。</div>
+      <h3>技术失败模式（机制级，四条）</h3>
+      <div class="rt">
+        <ul>
+          <li><b>① Sim-to-real gap（模拟↔实验鸿沟）：</b>DFT/模型预测"稳定"≠实验室"可合成"。GNoME 220 万预测仅 38.1 万落在凸包（稳定率约 17%），其中 736 个被独立实验合成（占 0.03%）<span class="src src-ac">学术</span>——生成模型筛出的材料，动力学上常因合成路径苛刻而无法制备。</li>
+          <li><b>② OOD 泛化失效：</b>模型在训练分布外（>5 元系、极端温压/氧化态）精度骤降；对全新化学体系的探索能力有限，跨体系泛化是真实短板。</li>
+          <li><b>③ 主动学习人力瓶颈：</b>标注数据仍靠人；通量卡在实验端（合成/表征）而非算法端，"数据飞轮"转速受限于实验科学家供给，难以线性扩张。</li>
+          <li><b>④ 机器人实验通量质疑：</b>自驱动实验室日产样品数 vs 传统高通量是否真降本？A-Lab 17 天合成 41 种，但主要适用于无机粉末；有机/高分子/薄膜体系适配仍难，跨体系通用性是硬约束。</li>
+        </ul>
+      </div>
+      <h3>挑战与风险（三色分层，含反方论据）</h3>
+      <div class="rt">
+        <div class="rt-title t1">产品 / 技术风险（红）</div>
+        <ul>
+          <li><b>物理封顶：稳定性≠可合成性。</b> GNoME 220 万预测中仅 38.1 万落在凸包（稳定率约 17%）<span class="src src-ac">学术</span>；736 个被独立实验合成（占 0.03%）<span class="src src-ac">学术</span>——生成≠落地，验证通量严重不足。</li>
+          <li><b>域外推失效：</b>模型在 5+ 元系以外化学空间预测精度骤降，真实场景误差波动大。</li>
+        </ul>
+      </div>
+      <div class="rt">
+        <div class="rt-title t2">竞争风险（黄）</div>
+        <ul>
+          <li><b>基础模型开源+算力碾压：</b>海外巨头（Microsoft/DeepMind）自带云与数据，MatterGen 思路可复现；Sandbox AQ 首轮即 $500M<span class="src src-co">公司</span>，中国纯材料发现公司融资规模悬殊。</li>
+          <li><b>平台 vs 管线左右互搏：</b>若平台方自研管线，将失去药企/材料巨头信任（深势刻意规避）。</li>
+        </ul>
+      </div>
+      <div class="rt">
+        <div class="rt-title t3">行业 / 监管风险（蓝）</div>
+        <ul>
+          <li><b>自主实验室合规：</b>自动化合成涉及生物/化学安全，监管框架未定型。</li>
+          <li><b>商业化节奏错配：</b>纯材料发现收入滞后于融资节奏，下行情景下现金流断裂风险（参考 VC 对 AI 制药"前六个烧饼"警示）。</li>
+        </ul>
+      </div>
+      <h3>壁垒可防御性归因（四类）</h3>
+      <table class="routes">
+        <tr><th>壁垒类型</th><th>来源</th><th>代表玩家</th><th>可防守年限<span class="src src-md">建模</span></th></tr>
+        <tr><td>数据</td><td>独占实验/工艺数据、闭环飞轮</td><td>深势(Bohrium)、晶泰、Golab</td><td>3–5 年</td></tr>
+        <tr><td>算法</td><td>自研势函数/生成模型</td><td>深势(DPA 系列)、深度原理(ReactiveAI)</td><td>2–4 年</td></tr>
+        <tr><td>算力</td><td>自主超算/云</td><td>深势(玻色)、海外巨头</td><td>1–3 年</td></tr>
+        <tr><td>机理 know-how</td><td>领域专家沉淀、工艺 secret</td><td>晶泰(计算化学)、鄂维南学派</td><td class="best">5–10 年</td></tr>
+      </table>
+      <div class="callout">关键拷问：GNoME/MatterGen 开源后，创业公司的"算法壁垒"还剩多少？真正的护城河在<b>数据与机理 know-how</b>，而非模型本身——这直接支撑"技术确定性高、商业不确定性低"的错配判断（见 01 章）。</div>
+      <h3>技术颠覆假想场景</h3>
+      <div class="callout r">若 <b>量子计算+AI 直接模拟任意材料性质</b>（无需 DFT 近似），则当前神经网络势路线价值部分归零；若 <b>LLM 端到端全自动闭环成熟</b>（设计-合成-验证一体），当前分模块平台或被整合。5 年内发生概率 <b>10–20%</b><span class="src src-md">建模</span>。</div>
+    </section>
+
+    <!-- 10 展望 -->
+    <section id="ch12">
+      <h2><span class="n">12</span>未来展望与演进时间线</h2>
+      <p><b>2026–2028（验证期）：</b>头部平台实验室通量爬坡，出现首批"AI 设计→实验验证"闭环案例；中国若诞生固态电池/催化材料级"AlphaFold 时刻"，板块重估。</p>
+      <p><b>2029–2032（兑现期）：</b>AI 材料发现按机构外推达 $17.9B（2034）<span class="src src-org">机构</span>；平台型公司从"项目制"转向"订阅+ royalty"，单位经济跑通。</p>
+      <p><b>结构性机会：</b>① 自主实验机器人（数据飞轮硬件）；② 垂直领域 Know-how 深厚的"材料 Agent"；③ 第一性原理加速引擎国产替代（应对算力卡脖子）。</p>
+      <h3>演进时间线（2026–2035）</h3>
+      <div class="timeline">
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2026–2028 <span class="tl-tag">验证期 Validation</span></div><div class="tl-body">AI 设计→实验验证闭环首批案例落地；DPA-4 类大原子模型嵌入产业研发流程；自主实验室从"演示"走向"周级连续运行"（Golab 2026.7 干湿闭环 5 天 135 任务）<span class="src src-co">公司</span>；若固态电池/催化出现"AlphaFold 时刻"，板块重估<span class="src src-org">机构</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2029–2032 <span class="tl-tag">兑现期 Scale-up</span></div><div class="tl-body">平台型公司从"项目制"转向"订阅+ royalty"，单位经济跑通；催化/电池材料进入中试；IPO 窗口开启（晶泰已港股，后续梯队跟进）；材料即服务（MaaS）成形<span class="src src-org">机构</span>。</div></div>
+        <div class="tl-row"><span class="tl-dot"></span><div class="tl-yr">2033–2035+ <span class="tl-tag">主流化 Mainstream</span></div><div class="tl-body">科学基础模型成熟，材料设计成为标准研发基础设施；半导体/航空航天等长周期赛道规模化采纳；AI 发现材料占新上市材料比例显著提升<span class="src src-md">建模</span>。</div></div>
+      </div>
+      <h3>适配市场与场景优先级</h3>
+      <table class="routes">
+        <tr><th>赛道</th><th>单笔价值</th><th>验证周期</th><th>数据可得性</th><th>适配时点</th><th>代表玩家</th></tr>
+        <tr><td>药物晶体 / 共晶</td><td class="best">高</td><td>短（晶泰主场）</td><td>高</td><td>近中期</td><td>晶泰</td></tr>
+        <tr><td>电池材料 / 固态电解质</td><td>高</td><td>中</td><td>中</td><td>近–中</td><td>深势 / 微软 / 宁德</td></tr>
+        <tr><td>催化剂（绿氢 / CO₂）</td><td>中–高</td><td>长</td><td>中</td><td>中期</td><td>深度原理 / Open Catalyst</td></tr>
+        <tr><td>半导体材料（光刻胶 / 低 k / 2D）</td><td>极高</td><td>长</td><td>低</td><td>中–长</td><td>华为盘古 / 中科院</td></tr>
+        <tr><td>航空航天复合材料</td><td>高</td><td>长</td><td>低</td><td>长期</td><td>科研院所</td></tr>
+      </table>
+      <div class="callout">投资结论：优先布局"验证周期短 × 数据可得性高 × 单笔价值高"的近中期赛道（药物晶体、电池电解质）；长周期赛道（半导体、航空航天）适合作为平台型公司的能力期权，而非短期收入支柱。</div>
+    </section>
+
+    <!-- 11 方法论 -->
+    <section id="ch13">
+      <h2><span class="n">13</span>研究方法论</h2>
+      <p>数据来源与口径说明（双层口径 / 多源交叉 / 假设透明）：</p>
+      <div class="src">
+        <span class="s">机构：Marketintelo / Precedence / MarketsandMarkets / Grand View / McKinsey / BCG / Lux Research</span>
+        <span class="s">公司：晶泰科技年报 / 深势科技融资公告 / 深度原理披露 / Microsoft / Google DeepMind</span>
+        <span class="s">学术：Nature(GNoME 2023 / MatterGen 2025) / 鄂维南院士论述 / Stanford AI Index</span>
+        <span class="s">建模：市场外延 TAM、成本下降曲线、颠覆概率等基于公开趋势的合理推算（量级锚，非事实）</span>
+      </div>
+      <div class="callout">免责声明：本报告部分预测为合理建模，不构成投资建议；玩家/技术归类与星级基于公开披露与论文，属定性研判，非完整清单；市场区间为两种独立方法交叉验证得出，非单点预测。</div>
+    </section>
+
+    <div class="footer">作者 · HanBuff ｜ 单文件 HTML 报告 ｜ 数据来源标注【机构/公司/学术/建模】</div>
+  </main>
+</div>
+<script>
+// ---- scroll-spy (scroll-listener, robust to last/short sections) ----
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var sections = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); }).filter(Boolean);
+  var map = {};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+  function setActive(id){
+    links.forEach(function(l){ l.classList.remove('active'); });
+    if(map[id]) map[id].classList.add('active');
+  }
+  function onScroll(){
+    if(!sections.length) return;
+    var line = window.innerHeight * 0.28;          // activation line at 28% of viewport
+    var current = sections[0].id;
+    for(var i=0;i<sections.length;i++){
+      if(sections[i].getBoundingClientRect().top <= line) current = sections[i].id; else break;
+    }
+    // precise bottom-of-page fallback: last section can't reach the line (no content below),
+    // so activate it only when truly within 4px of absolute bottom (avoids over-firing on near-bottom sections)
+    if(Math.abs((window.innerHeight + window.scrollY) - document.documentElement.scrollHeight) < 4){
+      current = sections[sections.length-1].id;
+    }
+    setActive(current);
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  onScroll();
+})();
+
+// ---- 柱状图（AI材料发现市场规模，Marketintelo） ----
+(function(){
+  var data = [
+    {label:'2025', v:2.0, h:false},
+    {label:'2027', v:3.28, h:false},
+    {label:'2029', v:5.37, h:false},
+    {label:'2031', v:8.8, h:false},
+    {label:'2034', v:17.9, h:true}
+  ];
+  var svg = document.getElementById('barchart'); if(!svg) return;
+  var W=640,H=300,padL=46,padB=36,padT=18,padR=14;
+  var maxV = Math.max.apply(null, data.map(function(d){return d.v;}))*1.15;
+  var bw = (W-padL-padR)/data.length*0.56, gap=(W-padL-padR)/data.length;
+  var ns='http://www.w3.org/2000/svg';
+  function y(v){ return H-padB - (v/maxV)*(H-padB-padT); }
+  for(var i=0;i<=4;i++){ var gv=maxV*i/4; var gy=y(gv);
+    var ln=document.createElementNS(ns,'line'); ln.setAttribute('x1',padL);ln.setAttribute('x2',W-padR);ln.setAttribute('y1',gy);ln.setAttribute('y2',gy);
+    ln.setAttribute('stroke','#e5e9ef');ln.setAttribute('stroke-width','1');svg.appendChild(ln);
+    var tx=document.createElementNS(ns,'text');tx.setAttribute('x',padL-8);tx.setAttribute('y',gy+4);tx.setAttribute('text-anchor','end');tx.setAttribute('font-size','11');tx.setAttribute('fill','#69737f');tx.textContent='$'+Math.round(gv);svg.appendChild(tx);
+  }
+  data.forEach(function(d,i){
+    var x=padL+gap*i+(gap-bw)/2, yh=y(d.v), bh=H-padB-yh;
+    var r=document.createElementNS(ns,'rect'); r.setAttribute('x',x);r.setAttribute('y',yh);r.setAttribute('width',bw);r.setAttribute('height',bh);r.setAttribute('rx','4');
+    r.setAttribute('fill', d.h?'#bd9a55':'#1d3a5e'); svg.appendChild(r);
+    var vt=document.createElementNS(ns,'text');vt.setAttribute('x',x+bw/2);vt.setAttribute('y',yh-6);vt.setAttribute('text-anchor','middle');vt.setAttribute('font-size','12');vt.setAttribute('font-weight','600');vt.setAttribute('fill', d.h?'#8a6418':'#142b47');vt.textContent='$'+d.v+'B';svg.appendChild(vt);
+    var xt=document.createElementNS(ns,'text');xt.setAttribute('x',x+bw/2);xt.setAttribute('y',H-padB+18);xt.setAttribute('text-anchor','middle');xt.setAttribute('font-size','11.5');xt.setAttribute('fill','#3a4754');xt.textContent=d.label;svg.appendChild(xt);
+  });
+  var cap=document.createElementNS(ns,'text');cap.setAttribute('x',W/2);cap.setAttribute('y',H-4);cap.setAttribute('text-anchor','middle');cap.setAttribute('font-size','11');cap.setAttribute('fill','#69737f');cap.textContent='AI 材料发现市场规模（USD Billion，Marketintelo）';svg.appendChild(cap);
+})();
+
+// ---- S 曲线（技术生命周期） ----
+(function(){
+  var routes = [
+    {name:'筛选式 DFT 高通量', x:0.72, y:0.50, risk:'低', c:'#1e9d6a'},
+    {name:'GNN 稳定性预测', x:0.75, y:0.62, risk:'低', c:'#1e9d6a'},
+    {name:'生成式扩散模型', x:0.55, y:0.74, risk:'中', c:'#bd9a55'},
+    {name:'机器人自动化实验', x:0.35, y:0.45, risk:'低', c:'#3f7bb0'},
+    {name:'科学基础模型', x:0.25, y:0.70, risk:'中', c:'#bd9a55'}
+  ];
+  var svg=document.getElementById('scurve'); if(!svg) return;
+  var W=640,H=360,padL=48,padB=42,padT=20,padR=20;
+  var ns='http://www.w3.org/2000/svg';
+  function X(v){return padL+v*(W-padL-padR);} function Y(v){return H-padB-v*(H-padB-padT);}
+  var ax=document.createElementNS(ns,'line');ax.setAttribute('x1',padL);ax.setAttribute('x2',W-padR);ax.setAttribute('y1',H-padB);ax.setAttribute('y2',H-padB);ax.setAttribute('stroke','#69737f');ax.setAttribute('stroke-width','1');svg.appendChild(ax);
+  var ay=document.createElementNS(ns,'line');ay.setAttribute('x1',padL);ay.setAttribute('x2',padL);ay.setAttribute('y1',padT);ay.setAttribute('y2',H-padB);ay.setAttribute('stroke','#69737f');ay.setAttribute('stroke-width','1');svg.appendChild(ay);
+  var xl=document.createElementNS(ns,'text');xl.setAttribute('x',W/2);xl.setAttribute('y',H-10);xl.setAttribute('text-anchor','middle');xl.setAttribute('font-size','12');xl.setAttribute('fill','#3a4754');xl.textContent='技术成熟度 →';svg.appendChild(xl);
+  var yl=document.createElementNS(ns,'text');yl.setAttribute('x',14);yl.setAttribute('y',H/2);yl.setAttribute('text-anchor','middle');yl.setAttribute('font-size','12');yl.setAttribute('fill','#3a4754');yl.setAttribute('transform','rotate(-90 14 '+(H/2)+')');yl.textContent='性能 / 渗透 →';svg.appendChild(yl);
+  var x0=X(0),x1=X(1),y0=Y(0),y1=Y(1),ym=Y(0.5);
+  var p=document.createElementNS(ns,'path');
+  p.setAttribute('d','M'+x0+' '+y0+' C '+X(0.15)+' '+y0+' '+X(0.35)+' '+ym+' '+X(0.5)+' '+ym+' S '+X(0.85)+' '+y1+' '+x1+' '+y1);
+  p.setAttribute('fill','none');p.setAttribute('stroke','#1d3a5e');p.setAttribute('stroke-width','2.5');p.setAttribute('stroke-dasharray','7 5');svg.appendChild(p);
+  routes.forEach(function(r){
+    var cx=X(r.x),cy=Y(r.y);
+    var c=document.createElementNS(ns,'circle');c.setAttribute('cx',cx);c.setAttribute('cy',cy);c.setAttribute('r','7');c.setAttribute('fill',r.c);c.setAttribute('stroke','#fff');c.setAttribute('stroke-width','2');svg.appendChild(c);
+    var t=document.createElementNS(ns,'text');t.setAttribute('x',cx+11);t.setAttribute('y',cy+4);t.setAttribute('font-size','12');t.setAttribute('font-weight','600');t.setAttribute('fill','#19222e');t.textContent=r.name+'（过时风险'+r.risk+'）';svg.appendChild(t);
+  });
+})();
+</script>
+</body>
+</html>
