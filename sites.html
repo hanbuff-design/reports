@@ -52,6 +52,16 @@
   .card a.go.disabled{background:#cbd5e1;pointer-events:none}
   .note{font-size:12px;color:var(--muted);margin-top:4px}
   footer{margin-top:36px;text-align:center;color:var(--muted);font-size:12px;line-height:1.8}
+  /* 顶部快速检索标签栏 */
+  .quicknav{position:sticky;top:0;z-index:50;background:rgba(245,247,251,.92);backdrop-filter:blur(8px);
+    border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:18px 0 6px;
+    display:flex;gap:8px;flex-wrap:wrap;box-shadow:0 6px 18px rgba(15,39,71,.06)}
+  .quicknav .qn{font-size:13px;font-weight:600;color:var(--muted);background:#fff;border:1px solid var(--line);
+    border-radius:999px;padding:6px 14px;cursor:pointer;text-decoration:none;transition:.15s;white-space:nowrap}
+  .quicknav .qn:hover{border-color:var(--blue);color:var(--blue)}
+  .quicknav .qn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .quicknav .qn .cnt{opacity:.7;font-weight:500;margin-left:4px}
+  @media(max-width:560px){.quicknav .qn{font-size:12px;padding:5px 10px}}
 </style>
 </head>
 <body>
@@ -72,7 +82,17 @@
     <span class="note">内含 19 份报告 + 目录首页，全部走 GitHub Pages、长期有效</span>
   </div>
 
-  <section class="group">
+  <nav class="quicknav" id="quicknav">
+    <a class="qn active" data-target="top">全部<span class="cnt">19</span></a>
+    <a class="qn" data-target="cat-ai4s">AI4S / 材料研发<span class="cnt">3</span></a>
+    <a class="qn" data-target="cat-optical">光通信与光互联<span class="cnt">7</span></a>
+    <a class="qn" data-target="cat-quantum">量子科技<span class="cnt">1</span></a>
+    <a class="qn" data-target="cat-bci">脑机接口 BCI<span class="cnt">4</span></a>
+    <a class="qn" data-target="cat-sensor">智能传感与柔性电子<span class="cnt">3</span></a>
+    <a class="qn" data-target="cat-power">电力电子<span class="cnt">1</span></a>
+  </nav>
+
+  <section class="group" id="cat-ai4s">
     <h2>AI for Science / 材料研发 <span class="tag">3 个</span></h2>
     <div class="grid">
       <div class="card">
@@ -96,7 +116,7 @@
     </div>
   </section>
 
-  <section class="group">
+  <section class="group" id="cat-optical">
     <h2>光通信与光互联 <span class="tag">7 个</span></h2>
     <div class="grid">
       <div class="card">
@@ -144,7 +164,7 @@
     </div>
   </section>
 
-  <section class="group">
+  <section class="group" id="cat-quantum">
     <h2>量子科技 <span class="tag">1 个</span></h2>
     <div class="grid">
       <div class="card">
@@ -156,7 +176,7 @@
     </div>
   </section>
 
-  <section class="group">
+  <section class="group" id="cat-bci">
     <h2>脑机接口（BCI） <span class="tag">4 个</span></h2>
     <div class="grid">
       <div class="card">
@@ -186,7 +206,7 @@
     </div>
   </section>
 
-  <section class="group">
+  <section class="group" id="cat-sensor">
     <h2>智能传感与柔性电子 <span class="tag">3 个</span></h2>
     <div class="grid">
       <div class="card">
@@ -210,7 +230,7 @@
     </div>
   </section>
 
-  <section class="group">
+  <section class="group" id="cat-power">
     <h2>电力电子 <span class="tag">1 个</span></h2>
     <div class="grid">
       <div class="card">
@@ -228,5 +248,46 @@
     永久站：https://hanbuff-design.github.io/reports/ · 由 WorkBuddy 生成
   </footer>
 </div>
+<script>
+(function(){
+  var nav=document.getElementById('quicknav');
+  if(!nav)return;
+  var links=Array.prototype.slice.call(nav.querySelectorAll('.qn'));
+  function scrollToId(id){
+    if(id==='top'){window.scrollTo({top:0,behavior:'smooth'});return;}
+    var el=document.getElementById(id);
+    if(el){var y=el.getBoundingClientRect().top+window.pageYOffset-70;window.scrollTo({top:y,behavior:'smooth'});}
+  }
+  links.forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      links.forEach(function(x){x.classList.remove('active');});
+      a.classList.add('active');
+      scrollToId(a.getAttribute('data-target'));
+    });
+  });
+  // 滚动监听：高亮当前可见分组
+  var sections=[
+    {id:'cat-ai4s',key:'cat-ai4s'},
+    {id:'cat-optical',key:'cat-optical'},
+    {id:'cat-quantum',key:'cat-quantum'},
+    {id:'cat-bci',key:'cat-bci'},
+    {id:'cat-sensor',key:'cat-sensor'},
+    {id:'cat-power',key:'cat-power'}
+  ];
+  function onScroll(){
+    var pos=window.pageYOffset+120, current='top';
+    sections.forEach(function(s){
+      var el=document.getElementById(s.id);
+      if(el && el.offsetTop<=pos) current=s.key;
+    });
+    links.forEach(function(x){
+      x.classList.toggle('active', x.getAttribute('data-target')===current);
+    });
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
+})();
+</script>
 </body>
 </html>
