@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>硅电容产业链分析 · 单页报告</title>
+<style>
+  :root{
+    --navy:#1d3a5e; --navy2:#2b5488; --navy-soft:#eaf1f8;
+    --ink:#19222e; --muted:#69737f; --line:#e5e9ef;
+    --bg:#f4f6f8; --card:#ffffff;
+    --red:#d6463b; --red-soft:#fbedec;
+    --green:#1e9d6a; --green-soft:#e8f5ef;
+    --gold:#bd9a55; --gold-soft:#f7f1e3;
+    --chip:#edf0f5;
+    --slate:#9fb3cd; --accent2:#d9b877;
+    --font-serif:"Source Han Serif SC","Noto Serif SC","Songti SC","SimSun",serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;padding-left:252px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;color:var(--ink);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px;}
+  .sidebar{position:fixed;top:0;left:0;width:252px;height:100vh;background:linear-gradient(180deg,#142b47 0%,#1d3a5e 55%,#244d7c 100%);color:#fff;display:flex;flex-direction:column;z-index:60;box-shadow:2px 0 18px rgba(20,43,71,.25);}
+  .side-brand{padding:24px 22px 18px;border-bottom:1px solid rgba(255,255,255,.10);}
+  .side-brand .sb-t{font-size:12px;color:var(--slate);letter-spacing:1.5px;font-weight:600;}
+  .side-brand .sb-n{font-size:17px;font-weight:800;margin-top:6px;line-height:1.3;font-family:var(--font-serif);}
+  .side-brand .sb-v{display:inline-block;margin-top:12px;font-size:11px;color:#142b47;background:var(--accent2);padding:3px 10px;border-radius:11px;font-weight:700;letter-spacing:.5px;}
+  .toc{padding:14px 12px 30px;overflow-y:auto;flex:1 1 auto;}
+  .toc a{display:flex;align-items:center;gap:11px;color:#a9c0db;font-size:13px;padding:10px 12px;border-radius:9px;transition:.18s;margin:2px 0;border-left:3px solid transparent;}
+  .toc a .num{font-size:11px;font-weight:700;color:#7e9bbf;width:22px;flex:0 0 auto;text-align:center;}
+  .toc a:hover{background:rgba(255,255,255,.08);color:#fff;}
+  .toc a.active{background:rgba(255,255,255,.14);color:#fff;border-left-color:var(--accent2);}
+  .toc a.active .num{color:var(--accent2);}
+  .hero{background:linear-gradient(135deg,#142b47 0%,#1d3a5e 55%,#2b5488 100%);color:#fff;padding:48px 0 42px;position:relative;}
+  .hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--accent2),transparent);}
+  .hero .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--accent2);border:1px solid rgba(217,184,119,.45);padding:4px 12px;border-radius:20px;margin-bottom:14px;}
+  .hero h1{margin:0 0 10px;font-size:34px;font-weight:800;letter-spacing:.5px;font-family:var(--font-serif);}
+  .hero p.sub{margin:0;color:#c5d4e6;font-size:15px;max-width:820px;}
+  .hero .meta{margin-top:18px;display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--slate);}
+  .hero .meta b{color:#fff;font-weight:600;}
+  section{padding:36px 0 8px;}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;}
+  .sec-head .no{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--navy),var(--navy2));width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:9px;flex:0 0 auto;box-shadow:0 2px 6px rgba(29,58,94,.25);}
+  .sec-head h2{margin:0;font-size:22px;font-weight:750;font-family:var(--font-serif);letter-spacing:.3px;}
+  .sec-head .en{color:var(--muted);font-size:12.5px;font-weight:500;}
+  .sec-head.v3 .no{background:var(--gold);color:#3a2a06;box-shadow:none;}
+  .sec-head.v4 .no{background:var(--navy2);color:#fff;box-shadow:none;}
+  .sec-head.v6 .no{background:var(--red);color:#fff;box-shadow:none;}
+  .lead{color:#3a4754;font-size:14.5px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:10px;padding:16px 20px;}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
+  .kpi .h{font-size:13px;color:var(--muted);margin-bottom:6px;}
+  .kpi .v{font-size:16.5px;font-weight:750;color:var(--navy);}
+  .kpi .v small{font-size:12px;color:var(--muted);font-weight:500;}
+  .chain{display:flex;align-items:stretch;gap:0;margin-top:6px;flex-wrap:wrap;}
+  .tier{flex:1 1 0;min-width:230px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;position:relative;}
+  .tier .tname{font-weight:750;font-size:15px;color:var(--navy);display:flex;align-items:center;gap:8px;}
+  .tier .tname .dot{width:10px;height:10px;border-radius:50%;}
+  .tier .trole{font-size:12px;color:var(--muted);margin:4px 0 12px;}
+  .seg{margin-bottom:12px;}
+  .seg .lbl{font-size:12.5px;font-weight:600;color:#2c3a47;margin-bottom:6px;}
+  .pills{display:flex;flex-wrap:wrap;gap:6px;}
+  .pill{font-size:12px;background:var(--chip);color:#33414f;border:1px solid #d4e6de;padding:3px 9px;border-radius:14px;white-space:nowrap;}
+  .pill.real{background:var(--gold-soft);border-color:#e7d3a3;color:#8a6418;font-weight:600;}
+  .pill.aux{background:#eef0f2;color:#7a8694;}
+  .arrow{display:flex;align-items:center;justify-content:center;color:var(--navy);font-size:22px;font-weight:700;flex:0 0 34px;}
+  .tier.up .dot{background:var(--navy);}
+  .tier.mid .dot{background:var(--gold);}
+  .tier.down .dot{background:#3f7bb0;}
+  .tiercards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px;}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;}
+  .tcard .th{font-size:16px;font-weight:750;color:var(--navy);border-bottom:2px solid var(--navy-soft);padding-bottom:10px;margin-bottom:12px;}
+  .tcard h4{font-size:13px;margin:14px 0 5px;color:#2c3a47;}
+  .tcard p{margin:0;font-size:13.5px;color:#3a4754;}
+  .cert{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:6px 10px;border-radius:8px;font-size:13px;font-weight:700;align-self:flex-start;}
+  .cert.high{background:var(--green-soft);color:var(--green);}
+  .cert.mid{background:var(--gold-soft);color:var(--gold);}
+  .cert.low{background:#eef0f2;color:#6b7785;}
+  .stars{letter-spacing:2px;color:var(--gold);font-size:14px;}
+  .realpill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:10px;}
+  .realpill.t{background:var(--gold-soft);color:#8a6418;}
+  .realpill.f{background:#eef0f2;color:#7a8694;}
+  .chart{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-top:6px;}
+  .chart .grp-title{font-size:13px;font-weight:700;color:var(--navy);margin:16px 0 8px;display:flex;align-items:center;gap:8px;}
+  .chart .grp-title:first-child{margin-top:2px;}
+  .row{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px;}
+  .row .name{width:118px;flex:0 0 auto;text-align:right;color:#33414f;}
+  .row .track{position:relative;flex:1 1 auto;height:18px;background:#eef3f1;}
+  .row .track::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:#cfd8e2;}
+  .row .bar{position:absolute;top:2px;height:14px;border-radius:3px;}
+  .row .bar.pos{right:50%;background:var(--red);}
+  .row .bar.neg{left:50%;background:var(--green);}
+  .row .val{width:72px;flex:0 0 auto;font-weight:700;font-variant-numeric:tabular-nums;}
+  .row .val.pos{color:var(--red);}
+  .row .val.neg{color:var(--green);}
+  .legend{display:flex;gap:18px;margin-top:14px;font-size:12.5px;color:var(--muted);align-items:center;flex-wrap:wrap;}
+  .legend .li{display:flex;align-items:center;gap:6px;}
+  .legend .sq{width:14px;height:14px;border-radius:3px;}
+  .tbl-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 8px;margin-top:16px;overflow-x:auto;}
+  table{border-collapse:collapse;width:100%;font-size:13px;min-width:620px;}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;}
+  th{background:linear-gradient(180deg,#eef3f9,#e3ecf6);color:#2b5488;font-weight:650;font-size:12.5px;}
+  td .up{color:var(--red);font-weight:700;}
+  td .down{color:var(--green);font-weight:700;}
+  .badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
+  .badge.t{background:var(--gold-soft);color:#8a6418;}
+  .badge.f{background:#eef0f2;color:#7a8694;}
+  .badge.s{background:var(--green-soft);color:var(--green);}
+  .note{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.6;}
+  .biz-sub{margin-top:18px;}
+  .biz-sub h3{font-size:15.5px;color:var(--navy);margin:18px 0 10px;border-left:4px solid var(--gold);padding-left:10px;}
+  .prod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:6px;}
+  .prod-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;}
+  .prod-card .pn{font-weight:700;font-size:14.5px;color:var(--navy);}
+  .prod-card .pm{font-size:12.5px;color:var(--muted);margin:4px 0 8px;}
+  .prod-card p{margin:0;font-size:13px;color:#3a4754;}
+  .rnd-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:6px;}
+  .rnd{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;}
+  .rnd .rn{font-weight:700;font-size:14px;color:var(--navy);}
+  .rnd p{margin:6px 0 0;font-size:13px;color:#3a4754;}
+  .valueflow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px;}
+  .vf{border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:var(--card);}
+  .vf .vt{font-size:12px;color:var(--muted);}
+  .vf .vv{font-size:14.5px;font-weight:750;color:var(--navy);margin-top:4px;}
+  .vf .vx{font-size:12px;color:#3a4754;margin-top:3px;}
+  .ppool{margin-top:14px;}
+  .pp-row{display:flex;align-items:center;gap:12px;margin:9px 0;}
+  .pp-row .ppn{width:160px;flex:0 0 auto;font-size:13px;color:#33414f;}
+  .pp-row .ppt{position:relative;flex:1 1 auto;height:22px;background:#eef3f1;border-radius:6px;overflow:hidden;}
+  .pp-row .ppb{position:absolute;top:0;left:0;bottom:0;background:linear-gradient(90deg,var(--navy),var(--navy2));border-radius:6px;}
+  .pp-row .ppv{width:54px;flex:0 0 auto;text-align:right;font-size:12.5px;font-weight:700;color:var(--navy);}
+  .migrate{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .migrate .mg{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;}
+  .migrate .mgh{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .migrate p{margin:0;font-size:12.5px;color:#3a4754;}
+  .sim{background:var(--gold-soft);border:1px solid #ecd9a8;border-radius:12px;padding:14px 16px;margin-top:12px;font-size:13.5px;color:#5a4413;}
+  .sim b{color:#7a5a12;}
+  .master-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px;}
+  .master-col{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--card);}
+  .master-col.m h4{margin:0 0 10px;color:var(--navy);font-size:15px;}
+  .master-col.b h4{margin:0 0 10px;color:var(--gold);font-size:15px;}
+  .master-col ul{margin:0;padding-left:18px;font-size:13.5px;color:#3a4754;}
+  .master-col li{margin:7px 0;}
+  .irr{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .irr .ix{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;border-top:3px solid var(--navy);}
+  .irr .ixt{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .irr p{margin:0;font-size:12.5px;color:#3a4754;}
+  .stress-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .stress{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--card);}
+  .stress.gap{border-left:4px solid var(--red);}
+  .stress.tech{border-left:4px solid var(--gold);}
+  .stress.policy{border-left:4px solid var(--navy2);}
+  .stress .st{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .stress p{margin:0;font-size:12.5px;color:#3a4754;}
+  .demand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .demand-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;}
+  .dm-type{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .dm-type.pull{background:var(--red-soft);color:var(--red);}
+  .dm-type.push{background:var(--gold-soft);color:#8a6418;}
+  .demand-card h4{margin:0 0 8px;font-size:15px;color:var(--navy);}
+  .demand-card .dm-payer,.demand-card .dm-will,.demand-card .dm-proof{font-size:12.5px;color:#3a4754;margin:7px 0;}
+  .demand-card .dm-payer b,.demand-card .dm-will b,.demand-card .dm-proof b{color:#2c3a47;}
+  .pullverdict{background:var(--navy-soft);border:1px solid #cfe0f0;border-radius:12px;padding:14px 18px;margin-top:14px;font-size:14px;color:#1d3a5e;}
+  .pullverdict b{color:var(--navy);}
+  .vs-yes{color:var(--green);font-weight:700;}
+  .vs-no{color:var(--red);font-weight:700;}
+  .radar{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .radar-col{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--card);}
+  .radar-col.sub{border-top:3px solid var(--red);}
+  .radar-col.gap{border-top:3px solid var(--gold);}
+  .radar-col.water{border-top:3px solid var(--navy2);}
+  .radar-col h4{margin:0 0 10px;font-size:14.5px;color:var(--navy);}
+  .radar-item{font-size:13px;color:#3a4754;margin:9px 0;padding-left:14px;position:relative;}
+  .radar-item::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--navy2);}
+  .health{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:8px;}
+  .health-item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px;}
+  .health-item .hi-t{font-size:13px;font-weight:700;color:var(--navy);}
+  .health-item .hi-c{font-size:12.5px;color:#3a4754;margin-top:5px;}
+  .health-item .hi-w{font-size:12px;color:var(--muted);margin-top:5px;}
+  .health-item.warn{border-left:4px solid var(--red);}
+  .bullbear{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;}
+  .bb{border-radius:12px;padding:15px 17px;}
+  .bb.bull{background:var(--green-soft);border:1px solid #bfe6cf;}
+  .bb.bear{background:var(--red-soft);border:1px solid #f3c9c9;}
+  .bb h4{margin:0 0 8px;font-size:14px;}
+  .bb.bull h4{color:var(--green);}
+  .bb.bear h4{color:var(--red);}
+  .bb p{margin:0;font-size:13px;color:#3a4754;}
+  .opinion{display:flex;flex-direction:column;gap:14px;margin-top:10px;}
+  .op-item{border:1px solid #e3e9f0;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(20,43,71,.06),0 1px 2px rgba(20,43,71,.04);}
+  .op-topic{background:linear-gradient(90deg,#1d3a5e,#2b5488);color:#fff;padding:10px 14px;font-size:14px;font-weight:700;}
+  .op-topic .op-tag{font-size:11px;font-weight:600;background:rgba(255,255,255,.18);padding:2px 9px;border-radius:20px;margin-left:8px;}
+  .op-body{display:grid;grid-template-columns:1fr 1fr;}
+  .op-side{padding:12px 14px;font-size:12.5px;line-height:1.75;color:#3a4754;}
+  .op-a{background:#eef2f7;border-right:1px solid #e3e9f0;}
+  .op-b{background:#f7f1e6;}
+  .op-camp{font-weight:700;color:var(--navy);font-size:12px;margin-bottom:5px;display:flex;align-items:center;gap:7px;}
+  .op-camp .dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;}
+  .op-a .dot{background:#2b5488;}
+  .op-b .dot{background:#bd9a55;}
+  .op-core{padding:9px 14px;background:#fff8ec;border-top:2px solid var(--gold);font-size:12.5px;color:#7a5b1e;line-height:1.7;}
+  .op-core b{color:#9a6b16;}
+  .dr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:8px;}
+  .dr-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;}
+  .dr-card .dr-type{font-size:12.5px;font-weight:700;color:var(--navy);}
+  .dr-sev{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:9px;margin:8px 0;}
+  .dr-sev.h{background:var(--red-soft);color:var(--red);}
+  .dr-sev.m{background:var(--gold-soft);color:#8a6418;}
+  .dr-sev.l{background:var(--green-soft);color:var(--green);}
+  .dr-card p{margin:0;font-size:12.5px;color:#3a4754;}
+  .cat-horizon{margin-top:14px;}
+  .cat-horizon .ch-t{font-size:14px;font-weight:750;color:var(--navy);margin:14px 0 8px;display:flex;align-items:center;gap:8px;}
+  .cat-horizon .ch-t .chip2{font-size:11px;background:var(--navy);color:#fff;padding:2px 9px;border-radius:10px;}
+  .cat-list{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 10px;}
+  .cat-row{display:flex;align-items:center;gap:12px;padding:10px 8px;border-bottom:1px solid var(--line);font-size:13px;}
+  .cat-row:last-child{border-bottom:none;}
+  .cat-row .ct{width:96px;flex:0 0 auto;font-weight:600;color:#33414f;}
+  .cat-row .ce{flex:1 1 auto;color:#3a4754;}
+  .cat-row .cd{width:120px;flex:0 0 auto;text-align:center;font-weight:700;font-size:12px;border-radius:8px;padding:3px 0;}
+  .cat-row .cd.up{background:var(--red-soft);color:var(--red);}
+  .cat-row .cd.down{background:var(--green-soft);color:var(--green);}
+  .cat-row .cd.both{background:var(--gold-soft);color:#8a6418;}
+  .asym-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .asym{border-radius:14px;padding:16px;color:#fff;}
+  .asym.up{background:linear-gradient(135deg,#1e9d6a,#157a48);}
+  .asym.safe{background:linear-gradient(135deg,#1d3a5e,#142b47);}
+  .asym.trap{background:linear-gradient(135deg,#a85d2c,#7d4220);}
+  .asym .at{font-size:14.5px;font-weight:800;margin-bottom:8px;}
+  .asym p{margin:0;font-size:12.5px;line-height:1.6;opacity:.95;}
+  .triage-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 10px;margin-top:14px;overflow-x:auto;}
+  .triage-wrap table{min-width:760px;}
+  .exit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px;}
+  .exit-col{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--card);}
+  .exit-col .ex-h{font-size:13px;font-weight:750;color:var(--navy);margin-bottom:8px;}
+  .exit-col p{margin:0;font-size:12.5px;color:#3a4754;}
+  .verdict{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:16px 20px;margin-top:6px;font-size:14px;color:#3a4754;}
+  .verdict b{color:var(--navy);}
+  .two-table-note{font-size:13px;color:var(--muted);margin:18px 0 4px;padding:10px 14px;background:var(--navy-soft);border-radius:10px;}
+  .src{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6;}
+  footer{margin-top:30px;background:#142b47;color:var(--slate);padding:28px 0;font-size:12.5px;}
+  footer .wrap p{margin:0 0 10px;line-height:1.7;}
+  footer b{color:#fff;}
+  .disclaimer{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:14px 16px;margin-top:6px;color:#cdddec;}
+  section{padding:38px 0 10px;}
+  .kpi,.tcard,.tier,.prod-card,.rnd,.vf,.master-col,.irr .ix,.stress,.demand-card,.health-item,.dr-card,.exit-col,.chart,.tbl-wrap,.lead,.verdict,.cat-list,.prod-grid,.rnd-cards,.valueflow,.migrate,.radar-col,.bullbear .bb{box-shadow:0 1px 3px rgba(20,43,71,.06),0 1px 2px rgba(20,43,71,.04);transition:box-shadow .2s,transform .2s;}
+  .kpi:hover,.tcard:hover,.tier:hover,.prod-card:hover,.rnd:hover,.vf:hover,.master-col:hover,.irr .ix:hover,.stress:hover,.demand-card:hover,.health-item:hover,.dr-card:hover,.exit-col:hover{box-shadow:0 6px 18px rgba(20,43,71,.12);transform:translateY(-2px);}
+  .tbl-wrap table tbody tr:hover{background:#f7f9fc;}
+  .sec-head h2{position:relative;}
+  /* ===== Ch03 拆解图样式 ===== */
+  .teardown{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:8px;}
+  .teardown .figcap{margin-top:10px;font-size:12.5px;line-height:1.7;color:#5a6675;}
+  .teardown .figcap b{color:#1d3a5e;}
+  @media print{
+    .sidebar{display:none;}
+    body{background:#fff;padding-left:0;}
+    .hero{background:#1d3a5e !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    section{page-break-inside:avoid;}
+  }
+  @media(max-width:980px){
+    body{padding-left:0;}
+    .sidebar{position:sticky;top:0;width:100%;height:auto;flex-direction:row;overflow-x:auto;}
+    .side-brand{border-bottom:none;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap;}
+    .toc{display:flex;padding:10px;flex-wrap:nowrap;}
+    .toc a{border-left:none;white-space:nowrap;}
+  }
+</style>
+</head>
+<body>
+<div id="gate" class="gate">
+  <div class="gate-box">
+    <div class="gate-title">🔒 内容已加密</div>
+    <div class="gate-sub">请输入访问密码</div>
+    <input id="gate-pwd" type="password" class="gate-input" placeholder="访问密码" autocomplete="off" />
+    <button id="gate-btn" class="gate-btn">解锁</button>
+    <div id="gate-err" class="gate-err"></div>
+  </div>
+</div>
+<style>
+.gate{position:fixed;inset:0;z-index:2147483647;background:linear-gradient(135deg,#0f1420,#1a2236);display:flex;align-items:center;justify-content:center;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif}
+.gate-box{background:#fff;border-radius:16px;padding:36px 40px;width:320px;max-width:86vw;box-shadow:0 20px 60px rgba(0,0,0,.45);text-align:center}
+.gate-title{font-size:20px;font-weight:700;color:#111827;margin-bottom:6px}
+.gate-sub{font-size:13px;color:#6b7280;margin-bottom:20px}
+.gate-input{width:100%;box-sizing:border-box;padding:12px 14px;font-size:15px;border:1px solid #d1d5db;border-radius:10px;outline:none;margin-bottom:14px}
+.gate-input:focus{border-color:#2563eb}
+.gate-btn{width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.gate-btn:hover{background:#1d4ed8}
+.gate-err{color:#dc2626;font-size:13px;margin-top:12px;min-height:18px}
+</style>
+<script>
+(function(){
+  var PWD="hanbuff";
+  function unlock(){ var g=document.getElementById("gate"); if(g&&g.parentNode){ g.parentNode.removeChild(g); } }
+  function check(){ var v=document.getElementById("gate-pwd").value; var err=document.getElementById("gate-err"); if(v===PWD){ unlock(); } else { err.textContent="密码错误，请重试"; } }
+  window.addEventListener("load",function(){ var btn=document.getElementById("gate-btn"); var inp=document.getElementById("gate-pwd"); if(btn) btn.addEventListener("click",check); if(inp){ inp.addEventListener("keydown",function(e){ if(e.key==="Enter") check(); }); inp.focus(); } });
+})();
+</script>
+
+
+<aside class="sidebar">
+  <div class="side-brand">
+    <div class="sb-t">INDUSTRY CHAIN</div>
+    <div class="sb-n">硅电容产业链<br>分析</div>
+    <div class="sb-v">结构化分析</div>
+  </div>
+  <nav class="toc">
+    <a href="#def"><span class="num">01</span>定义与核心矛盾</a>
+    <a href="#panorama"><span class="num">02</span>全景双视图</a>
+    <a href="#layers"><span class="num">03</span>分层受益逻辑</a>
+    <a href="#biz"><span class="num">04</span>头部公司拆解</a>
+    <a href="#demand"><span class="num">05</span>需求真实性</a>
+    <a href="#power"><span class="num">06</span>权力·卡脖子</a>
+    <a href="#profit"><span class="num">07</span>价值·利润池</a>
+    <a href="#radar"><span class="num">08</span>机会雷达</a>
+    <a href="#real"><span class="num">09</span>真伪受益</a>
+    <a href="#health"><span class="num">10</span>健康度·风险</a>
+    <a href="#verdict"><span class="num">11</span>客观判断</a>
+    <a href="#catalyst"><span class="num">12</span>催化剂日历</a>
+    <a href="#insight"><span class="num">13</span>投资启示</a>
+    <a href="#chart"><span class="num">末</span>涨跌·估值全景</a>
+  </nav>
+</aside>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="wrap">
+      <span class="tag">产业链深度分析</span>
+      <h1>硅电容（Silicon Capacitor）产业链分析</h1>
+      <p class="sub">覆盖"深沟槽/平面/过孔集成"三大技术路线产业链全环节：上游高阻硅·高K介质·DRIE刻蚀设备，中游硅电容晶圆制造（寡头垄断），下游 AI 服务器/高速光模块/先进封装/车载/军工。从市场口径打架到未上市隐形冠军苏纳光电，拆解谁真正卡住环节、谁在叙事、钱往哪走。</p>
+      <div class="meta">
+        <span>作者：<b>HanBuff</b></span>
+        <span>数据日期：<b>2026-08-22 收盘</b></span>
+        <span>数据来源：<b>公开年报/招股书 + WebSearch 交叉验证（行情接口断开，末章用年报快照兜底）</b></span>
+        <span>涨跌口径：<b>涨红 · 跌绿（A 股习惯）</b></span>
+      </div>
+    </div>
+  </header>
+
+  <section style="padding-top:28px;">
+    <div class="kpis">
+      <div class="kpi"><div class="h">当前最受益环节</div><div class="v">上游 · DRIE/ALD 设备 + 高阻硅 <small>扩产周期长、国产替代窗口</small></div></div>
+      <div class="kpi"><div class="h">利润池高地</div><div class="v">中游寡头（村田/三星/苏纳） <small>晶圆工艺+客户认证双护城河</small></div></div>
+      <div class="kpi"><div class="h">最大卡脖子</div><div class="v">3D 深沟槽晶圆工艺 + 高K介质 <small>海外主导，国产导入早期</small></div></div>
+    </div>
+  </section>
+
+  <!-- 01 定义 -->
+  <section id="def">
+    <div class="sec-head"><span class="no">01</span><h2>定义与核心投资矛盾</h2><span class="en">Definition & Core Tension</span></div>
+    <div class="lead">
+      <b>一句话定义：</b>硅电容是以硅晶圆为衬底、用半导体工艺（深硅刻蚀 + 高K介质沉积）制造的高密度集成电容，核心指标是<b>容值密度高、ESL/ESR 低百倍于 MLCC、厚度<100μm、可内嵌封装</b>，是 AI 先进封装近点去耦的刚需被动元件。完整产业链须同时具备<b>上游材料/设备 → 中游晶圆制造 → 下游封装/终端</b>的闭环。
+    </div>
+    <div class="tiercards" style="margin-top:16px;">
+      <div class="tcard">
+        <div class="th">为何此刻必须看</div>
+        <h4>需求拐点已现</h4>
+        <p>AI 算力芯片功耗破千瓦、封装向 2.5D/3D 演进，英伟达 GB200/VR200 标配内嵌硅电容；2026 全球供给缺口 57%（缶英微电子引），复刻 HBM 紧缺周期。</p>
+        <h4>当前所处阶段</h4>
+        <p>从"示范"迈向"规模商业化"临界点，深沟槽 MOS 已量产、MIM 上量、VIC 导入期。</p>
+        <span class="cert high">★ 产业临界点</span>
+      </div>
+      <div class="tcard">
+        <div class="th">核心投资矛盾</div>
+        <h4>百亿空间 vs 寡头格局</h4>
+        <p>广义硅电容 2025 全球 ~11–18 亿美元，但 CR3（村田/三星/AVX）超 70%，国内多在中试/小批量。</p>
+        <h4>真刚需 vs 概念贴牌</h4>
+        <p>多家 A 股仅"部分光学/MLCC 环节"邻近，非核心硅电容晶圆厂；按核心链条给估值需谨慎。</p>
+        <span class="cert mid">⚠ 估值透支风险</span>
+      </div>
+      <div class="tcard">
+        <div class="th">关键路线分野</div>
+        <h4>路线A · 深沟槽 DTC（主流）</h4>
+        <p>刻 2,000–5,000nm 深沟槽增有效面积，容值密度高、厚<40μm，AI 服务器/光模块主力；村田(IPDiA) MOS 领先。</p>
+        <h4>路线B · 平面 MIM / 过孔 VIC</h4>
+        <p>MIM 射频薄膜为主（Skyworks）；VIC 过孔集成减薄潜力大，GPU 近芯片供电下一代方向。</p>
+        <span class="realpill t">路线无高下，场景分野</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 全景双视图 -->
+  <section id="panorama">
+    <div class="sec-head v4"><span class="no">02</span><h2>产业链全景：物料流 + 价值流双视图</h2><span class="en">Panorama Dual-View</span></div>
+    <div class="lead">产业链核心判断：<b>上游设备/材料是卖水人高地（扩产周期 18–24 月），中游寡头掌握利润池，下游 AI 封装是最大增量终端。</b></div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">① 物料流：上 → 中 → 下</h3>
+    <div class="chain">
+      <div class="tier up">
+        <div class="tname"><span class="dot"></span>上游 · 设备/材料</div>
+        <div class="trole">卖铲人，需求刚性、扩产慢</div>
+        <div class="seg"><div class="lbl">DRIE 深硅刻蚀</div><div class="pills"><span class="pill real">应用材料</span><span class="pill real">北方华创</span></div></div>
+        <div class="seg"><div class="lbl">ALD 高K介质</div><div class="pills"><span class="pill real">拓荆科技</span><span class="pill real">Picosun</span></div></div>
+        <div class="seg"><div class="lbl">高阻硅 / 高K材料</div><div class="pills"><span class="pill real">沪硅/中欣</span><span class="pill aux">国瓷材料</span></div></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="tier mid">
+        <div class="tname"><span class="dot"></span>中游 · 晶圆制造</div>
+        <div class="trole">寡头垄断，客户认证壁垒</div>
+        <div class="seg"><div class="lbl">IDM 自建晶圆</div><div class="pills"><span class="pill real">村田</span><span class="pill real">三星电机</span><span class="pill real">苏纳光电</span></div></div>
+        <div class="seg"><div class="lbl">代工/测试</div><div class="pills"><span class="pill real">台积电IPD</span><span class="pill real">缶英/新容</span></div></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="tier down">
+        <div class="tname"><span class="dot"></span>下游 · 封装/终端</div>
+        <div class="trole">最大增量市场，易蹭概念</div>
+        <div class="seg"><div class="lbl">AI 服务器/先进封装</div><div class="pills"><span class="pill real">英伟达</span><span class="pill real">华为昇腾</span></div></div>
+        <div class="seg"><div class="lbl">高速光模块/车载</div><div class="pills"><span class="pill real">中际旭创</span><span class="pill real">军工/域控</span></div></div>
+      </div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">② 价值流：成本/毛利/集中度</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>技术/产品形态</th><th>代表企业（国内 / 国外）</th><th>终端成本占比</th><th>毛利率区间</th><th>集中度 CR3</th></tr></thead>
+      <tbody>
+        <tr><td>DRIE/ALD 设备</td><td>北方华创/拓荆 / AMAT</td><td>设备 capex</td><td>45–55%（设备）</td><td>~70%（海外主导）</td></tr>
+        <tr><td>高阻硅晶圆</td><td>沪硅/中欣 / 信越/SUMCO</td><td>~5–8%</td><td>25–35%</td><td>~60%</td></tr>
+        <tr><td>深沟槽硅电容晶圆</td><td>苏纳/天极 / 村田/三星/AVX</td><td>单颗 $0.6（光模块）</td><td>35–60%（寡头）</td><td>~70%+</td></tr>
+        <tr><td>封装内集成（CoWoS/IPD）</td><td>台积电 / 长电/通富</td><td>封装主体</td><td>25–40%</td><td>~55%（台积电主导）</td></tr>
+      </tbody>
+    </table></div>
+    <div class="src">成本占比/毛利率/CR3 为按行业 BOM 拆解与龙头财报毛利的<b>估算/行业口径</b>，非精确并表财务数据；村田/三星未单独披露硅电容分部毛利，区间为行业估算。</div>
+  </section>
+
+  <!-- 03 分层与受益逻辑 + 拆解图 -->
+  <section id="layers">
+    <div class="sec-head"><span class="no">03</span><h2>上中下游分层与受益逻辑</h2><span class="en">Benefit Logic & Certainty</span></div>
+
+    <div class="teardown">
+      <svg viewBox="0 0 680 660" style="width:100%;height:auto;font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;" role="img" aria-label="硅电容晶圆级元件产品拆解图">
+        <defs>
+          <linearGradient id="siTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8edf3"/><stop offset="1" stop-color="#aab8c8"/></linearGradient>
+          <linearGradient id="siSide" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8c9bb0"/><stop offset="1" stop-color="#5e6c80"/></linearGradient>
+          <radialGradient id="trench" cx="0.35" cy="0.3" r="0.8"><stop offset="0" stop-color="#4f7bb5"/><stop offset="1" stop-color="#1d3a5e"/></radialGradient>
+          <radialGradient id="poly" cx="0.4" cy="0.3" r="0.8"><stop offset="0" stop-color="#f0d9a8"/><stop offset="1" stop-color="#bd9a55"/></radialGradient>
+          <linearGradient id="metalTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f6f9"/><stop offset="1" stop-color="#c2ccd8"/></linearGradient>
+          <filter id="drop" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#1d3a5e" flood-opacity="0.28"/></filter>
+        </defs>
+
+        <text x="340" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1d3a5e">硅电容（深沟槽 DTC）· 产品爆炸视图拆解</text>
+        <text x="340" y="47" text-anchor="middle" font-size="11.5" fill="#5a6675">自下而上：高阻硅基底 → 深沟槽刻蚀 → 高K介质/电极沉积 → 金属化互连 → 减薄 → 切割/封装</text>
+
+        <!-- 主链路箭头 -->
+        <line x1="60" y1="615" x2="60" y2="120" stroke="#d6463b" stroke-width="2.5"/>
+        <path d="M60,114 L53,129 L67,129 Z" fill="#d6463b"/>
+        <text transform="rotate(-90 38 370)" x="38" y="370" text-anchor="middle" font-size="11.5" font-weight="700" fill="#d6463b">工艺流（基底 → 封装 → 模组）</text>
+
+        <!-- 层1 高阻硅基底 -->
+        <g transform="translate(110,520)">
+          <polygon points="300,0 314,-14 314,22 300,36" fill="#5e6c80" stroke="#1d3a5e" stroke-width="1"/>
+          <polygon points="0,0 14,-14 314,-14 300,0" fill="url(#siTop)" stroke="#1d3a5e" stroke-width="1"/>
+          <rect x="0" y="0" width="300" height="36" rx="4" fill="url(#siSide)" stroke="#1d3a5e" stroke-width="1.5"/>
+          <line x1="40" y1="2" x2="40" y2="34" stroke="#3e4a5c" stroke-width="0.5" opacity="0.5"/>
+          <line x1="90" y1="2" x2="90" y2="34" stroke="#3e4a5c" stroke-width="0.5" opacity="0.5"/>
+          <line x1="150" y1="2" x2="150" y2="34" stroke="#3e4a5c" stroke-width="0.5" opacity="0.5"/>
+          <line x1="210" y1="2" x2="210" y2="34" stroke="#3e4a5c" stroke-width="0.5" opacity="0.5"/>
+          <line x1="260" y1="2" x2="260" y2="34" stroke="#3e4a5c" stroke-width="0.5" opacity="0.5"/>
+          <circle cx="285" cy="3" r="3" fill="#33414f"/>
+        </g>
+        <!-- 层2 深沟槽刻蚀 -->
+        <g transform="translate(110,422)">
+          <rect x="0" y="0" width="300" height="42" rx="5" fill="url(#siSide)" stroke="#1d3a5e" stroke-width="1.5"/>
+          <rect x="18" y="8" width="16" height="26" rx="2" fill="url(#trench)"/>
+          <rect x="48" y="8" width="16" height="26" rx="2" fill="url(#trench)"/>
+          <rect x="78" y="8" width="16" height="26" rx="2" fill="url(#trench)"/>
+          <rect x="108" y="8" width="16" height="26" rx="2" fill="url(#trench)"/>
+          <rect x="138" y="8" width="16" height="26" rx="2" fill="url(#trench)"/>
+          <rect x="168" y="8" width="16" height="26" rx="2" fill="url(#trench)"/>
+          <rect x="198" y="8" width="16" height="26" rx="2" fill="url(#trench)"/>
+          <rect x="228" y="8" width="16" height="26" rx="2" fill="url(#trench)"/>
+          <rect x="258" y="8" width="16" height="26" rx="2" fill="url(#trench)"/>
+        </g>
+        <!-- 层3 高K介质/电极 -->
+        <g transform="translate(110,338)">
+          <rect x="0" y="0" width="300" height="34" rx="5" fill="#e3ecf6" stroke="#2b5488" stroke-width="1.5"/>
+          <rect x="12" y="6" width="276" height="6" rx="3" fill="url(#poly)" opacity="0.9"/>
+          <rect x="12" y="15" width="276" height="4" rx="2" fill="#9fb3cd"/>
+          <rect x="12" y="22" width="276" height="6" rx="3" fill="url(#poly)" opacity="0.9"/>
+        </g>
+        <!-- 层4 金属化互连 -->
+        <g transform="translate(110,258)">
+          <rect x="0" y="0" width="300" height="28" rx="5" fill="url(#metalTop)" stroke="#1d3a5e" stroke-width="1.5"/>
+          <line x1="0" y1="14" x2="300" y2="14" stroke="#7a8694" stroke-width="1"/>
+          <line x1="60" y1="4" x2="60" y2="24" stroke="#7a8694" stroke-width="0.8"/>
+          <line x1="120" y1="4" x2="120" y2="24" stroke="#7a8694" stroke-width="0.8"/>
+          <line x1="180" y1="4" x2="180" y2="24" stroke="#7a8694" stroke-width="0.8"/>
+          <line x1="240" y1="4" x2="240" y2="24" stroke="#7a8694" stroke-width="0.8"/>
+        </g>
+        <!-- 层5 减薄 -->
+        <g transform="translate(110,198)">
+          <rect x="0" y="0" width="300" height="18" rx="4" fill="#dde5ef" stroke="#bd9a55" stroke-width="1.5"/>
+          <line x1="0" y1="9" x2="300" y2="9" stroke="#bd9a55" stroke-width="0.8" stroke-dasharray="4 3"/>
+        </g>
+        <!-- 层6 切割/封装 -->
+        <g transform="translate(110,118)">
+          <polygon points="300,0 314,-14 314,22 300,36" fill="#5e6c80" stroke="#1d3a5e" stroke-width="1"/>
+          <polygon points="0,0 14,-14 314,-14 300,0" fill="url(#siTop)" stroke="#1d3a5e" stroke-width="1"/>
+          <rect x="0" y="0" width="300" height="36" rx="4" fill="url(#siSide)" stroke="#1d3a5e" stroke-width="1.5"/>
+          <text x="6" y="22" font-size="11" fill="#fff" font-weight="700">die</text>
+          <line x1="100" y1="0" x2="100" y2="36" stroke="#33414f" stroke-width="0.6" opacity="0.6"/>
+          <line x1="200" y1="0" x2="200" y2="36" stroke="#33414f" stroke-width="0.6" opacity="0.6"/>
+        </g>
+
+        <!-- 右侧编号标签 -->
+        <g font-size="13.5">
+          <line x1="426" y1="135" x2="460" y2="135" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+          <circle cx="472" cy="135" r="13" fill="#1d3a5e" filter="url(#drop)"/><text x="472" y="139" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">6</text>
+          <text x="492" y="131" font-weight="700" fill="#1f2933">切割 / 晶圆级封装</text>
+          <text x="492" y="148" font-size="12" fill="#5a6675">单颗 die 内嵌封装基板</text>
+        </g>
+        <g font-size="13.5">
+          <line x1="426" y1="207" x2="460" y2="207" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+          <circle cx="472" cy="207" r="13" fill="#bd9a55" filter="url(#drop)"/><text x="472" y="211" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">5</text>
+          <text x="492" y="203" font-weight="700" fill="#1f2933">晶圆减薄</text>
+          <text x="492" y="220" font-size="12" fill="#5a6675">厚&lt;100μm 适配高密度堆叠</text>
+        </g>
+        <g font-size="13.5">
+          <line x1="426" y1="272" x2="460" y2="272" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+          <circle cx="472" cy="272" r="13" fill="#1d3a5e" filter="url(#drop)"/><text x="472" y="276" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">4</text>
+          <text x="492" y="268" font-weight="700" fill="#1f2933">金属化互连</text>
+          <text x="492" y="285" font-size="12" fill="#5a6675">TiN/钌电极、上下极板引出</text>
+        </g>
+        <g font-size="13.5">
+          <line x1="426" y1="355" x2="460" y2="355" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+          <circle cx="472" cy="355" r="13" fill="#2b5488" filter="url(#drop)"/><text x="472" y="359" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">3</text>
+          <text x="492" y="351" font-weight="700" fill="#1f2933">高K介质 / 电极</text>
+          <text x="492" y="368" font-size="12" fill="#5a6675">Si₃N₄/HfO₂/Ta₂O₅ 共形沉积</text>
+        </g>
+        <g font-size="13.5">
+          <line x1="426" y1="443" x2="460" y2="443" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+          <circle cx="472" cy="443" r="13" fill="#1d3a5e" filter="url(#drop)"/><text x="472" y="447" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">2</text>
+          <text x="492" y="439" font-weight="700" fill="#1f2933">深沟槽刻蚀（DRIE）</text>
+          <text x="492" y="456" font-size="12" fill="#5a6675">2000–5000nm 深孔 → 增有效面积</text>
+        </g>
+        <g font-size="13.5">
+          <line x1="426" y1="538" x2="460" y2="538" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="3 3"/>
+          <circle cx="472" cy="538" r="13" fill="#1d3a5e" filter="url(#drop)"/><text x="472" y="542" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">1</text>
+          <text x="492" y="534" font-weight="700" fill="#1f2933">高阻硅基底晶圆</text>
+          <text x="492" y="551" font-size="12" fill="#5a6675">8/12 寸高电阻率衬底（沪硅/信越）</text>
+        </g>
+
+        <!-- 分隔 + 对比图 -->
+        <line x1="30" y1="610" x2="650" y2="610" stroke="#e7ecf2" stroke-width="1.5"/>
+        <text x="340" y="636" text-anchor="middle" font-size="14.5" font-weight="700" fill="#1d3a5e">传统 MLCC  vs  硅电容（侧视剖面示意）</text>
+        <text x="340" y="656" text-anchor="middle" font-size="11" fill="#5a6675">左：陶瓷多层堆叠，ESL/ESR 偏高、厚、难贴芯片；右：硅晶圆深沟槽，ESL 低百倍、&lt;100μm、可内嵌封装</text>
+      </svg>
+      <figcaption class="figcap">物料流串讲：<b style="color:#1d3a5e">高阻硅基底</b> → <b style="color:#1d3a5e">DRIE 深沟槽刻蚀</b>（2000–5000nm 深孔，有效面积指数级增） → <b style="color:#2b5488">高K介质/电极共形沉积</b>（Si₃N₄/HfO₂） → <b style="color:#1d3a5e">金属化互连</b>（TiN/钌极板） → <b style="color:#7a5b1e">晶圆减薄</b>&lt;100μm → <b style="color:#1d3a5e">切割封装</b>进模组。核心差异：硅电容用半导体工艺把电容"长"进硅里，<b style="color:#1d3a5e">容值密度高、ESL/ESR 低百倍、可贴芯片源头去耦</b>，而 MLCC 为陶瓷层叠、寄生参数高、难内嵌——这是 AI 封装从"可选"变"刚需"的根本原因。</figcaption>
+    </div>
+
+    <div class="tiercards" style="margin-top:18px;">
+      <div class="tcard"><div class="th">上游 · 设备/材料</div>
+        <h4>代表公司</h4><p>北方华创(DRIE)、拓荆科技(ALD)、沪硅/中欣(高阻硅)、国瓷(高K前驱体)；海外 AMAT、信越。</p><h4>受益逻辑</h4><p>无论中游谁胜都要用设备/硅片，卖水人；扩产 18–24 月、供需紧平衡。</p>
+        <h4>确定性</h4><p><span class="stars">★★★★★</span> 最高。</p>
+        <span class="realpill t">真受益 · 强</span><span class="cert high">确定性：高</span></div>
+      <div class="tcard"><div class="th">中游 · 晶圆制造</div>
+        <h4>代表公司</h4><p>村田/三星/AVX(寡头)、苏纳光电/天极科技(国产突破)、台积电(IPD 工艺)。</p><h4>受益逻辑</h4><p>直接卡位"一片晶圆产万颗"范式；客户认证壁垒 1–2 年。</p>
+        <h4>确定性</h4><p><span class="stars">★★★★</span> 高但分化（寡头 vs 中试）。</p>
+        <span class="realpill t">真受益（少数）</span><span class="cert mid">确定性：中高</span></div>
+      <div class="tcard"><div class="th">下游 · 封装/终端</div>
+        <h4>代表公司</h4><p>英伟达/华为(算力)、中际旭创(光模块)、军工/域控。</p><h4>受益逻辑</h4><p>需求拉动方，但多为采购方、易蹭"硅电容概念"。</p>
+        <h4>确定性</h4><p><span class="stars">★★☆</span> 真伪混杂（多仅采购）。</p>
+        <span class="realpill f">真伪混杂</span><span class="cert low">确定性：低~中</span></div>
+    </div>
+  </section>
+
+  <!-- 04 头部公司拆解 -->
+  <section id="biz">
+    <div class="sec-head"><span class="no">04</span><h2>头部公司业务拆解与在研布局</h2><span class="en">Business Breakdown & R&D · 含未上市/海外头部</span></div>
+    <div class="lead">谁真正有业务、产品怎么拆、量价利多少、技术路线怎么分、头部在研往哪走；并补充<b>商业模式/unit economics</b>与<b>海外对标/失败案例</b>。<b>未上市与海外头部公司须作为一级对象覆盖</b>（注明融资轮次/估值/财报口径，不编造单日涨跌）。</div>
+
+    <div class="biz-sub"><h3><span class="k">1</span>谁真正有该项业务 <span class="note">已上市 + 未上市头部 + 海外龙头</span></h3>
+      <p style="font-size:13.5px;color:#3a4754;">已上市公司列该项业务主营占比/进展；未上市但市占率高的头部（注明融资轮次/估值/来源）；海外龙头（注明母公司/财报）。标注"概念贴牌 vs 真有业务"。</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>层级</th><th>代表玩家</th><th>业务实质</th><th>阶段/标注</th></tr></thead>
+        <tbody>
+          <tr><td>海外龙头</td><td>村田（Murata）</td><td>2016 收 IPDiA，深沟槽 MOS 硅电容绝对龙头，英伟达/谷歌 TPU 核心供应商；全系列埋入式</td><td><span class="badge t">真·全球第一</span></td></tr>
+          <tr><td>海外龙头</td><td>三星电机（SEMCO）</td><td>12 寸产线量产，超薄内嵌式硅电容，拿下海外算力巨头 68 亿元两年长单（2027 起）</td><td><span class="badge t">真·第一梯队</span></td></tr>
+          <tr><td>海外龙头</td><td>京瓷 AVX / KEMET(国巨)</td><td>军工/航天/高压特种硅电容壁垒高；KEMET 被国巨(2327)收购</td><td><span class="badge t">真·特种</span></td></tr>
+          <tr><td>海外配套</td><td>台积电（TSM.US）</td><td>将 3D 硅电容/MIM 开发为标准 IPD 工艺集成于 CoWoS，卖水人</td><td><span class="badge t">真·基础设施工艺</span></td></tr>
+          <tr><td>未上市·国产</td><td>苏纳光电</td><td>8 寸中试线已建（投近 3 亿），硅电容第二曲线；深硅刻蚀复用透镜工艺；头部客户小批量订单</td><td><span class="badge t">真·IPO辅导</span></td></tr>
+          <tr><td>未上市·国产</td><td>天极科技（火炬电子 603678 子公司）</td><td>国内唯一 3D 深沟槽硅电容量产，6 寸稳定出货、8 寸中试</td><td><span class="badge t">真·量产导入</span></td></tr>
+          <tr><td>未上市·国产</td><td>缶英微电子/新容电子（NEOCAP）</td><td>嘉兴量产测试基地（年处理 4.32 亿只），补齐国产后段 CP 测试短板</td><td><span class="badge t">真·测试产能</span></td></tr>
+          <tr><td>已上市·设备</td><td>北方华创(002371)/拓荆(688072)</td><td>DRIE/ALD 设备国产替代，硅电容产线卖水人</td><td><span class="badge t">真·上游设备</span></td></tr>
+          <tr><td>概念邻近</td><td>多家 A 股 MLCC/光学厂</td><td>部分光学/MLCC 环节邻近，非核心硅电容晶圆厂</td><td><span class="badge f">概念贴牌</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="biz-sub"><h3><span class="k">2</span>产品种类拆分</h3>
+      <div class="prod-grid">
+        <div class="prod-card"><div class="pn">深沟槽 MOS 硅电容</div><div class="pm">AI 服务器/光模块内嵌去耦</div><p>村田 IPDiA 路线领先；苏纳复用深硅刻蚀切入。容值密度最高、厚&lt;40μm。</p></div>
+        <div class="prod-card"><div class="pn">深沟槽 MIM 硅电容</div><div class="pm">高频/高端封装</div><p>高频低损耗，射频与高性能封装场景；村田/三星主力。</p></div>
+        <div class="prod-card"><div class="pn">平面薄膜硅 MIM</div><div class="pm">5G/6G 射频模组集成</div><p>Skyworks 专用于自家射频模组，极致微型化。</p></div>
+        <div class="prod-card"><div class="pn">过孔集成 VIC（在研）</div><div class="pm">GPU 近芯片供电</div><p>减薄与集成潜力大，产业化导入期；台积电 IPD 路线。</p></div>
+      </div></div>
+
+    <div class="biz-sub"><h3><span class="k">3</span>出货量 · 单价 · 毛利 <span class="note">须标注来源口径</span></h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>产品/细分</th><th>年出货量/产能</th><th>单价区间</th><th>毛利率</th><th>数据来源口径</th></tr></thead>
+        <tbody>
+          <tr><td>深沟槽电容（全球）</td><td>~4000 万颗(2025)</td><td>~$5/颗</td><td>20–40%</td><td><span class="badge t">GlobalInfoResearch 2025</span></td></tr>
+          <tr><td>1.6T 光模块用硅电容</td><td>单模块 32–64 颗</td><td>~$0.6/颗</td><td>—</td><td><span class="badge f">行业研报估算</span></td></tr>
+          <tr><td>华为昇腾方案单服务器</td><td>~600 颗(DTC方案)</td><td>方案成本 ~$600</td><td>—</td><td><span class="badge f">紫月投研引述</span></td></tr>
+          <tr><td>苏纳光电硅电容</td><td>8 寸中试→量产爬坡</td><td>未披露</td><td>未披露</td><td><span class="badge t">招股书/辅导备案(待)</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="src">量价利来自 GlobalInfoResearch / 恒州诚思 / 行业研报交叉验证；单品量价利未上市公司多未披露，标"估算/待披露"。毛利率区间为行业口径。</div></div>
+
+    <div class="biz-sub"><h3><span class="k">4</span>技术路线对比</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>技术路线</th><th>原理</th><th>核心指标</th><th>典型应用</th><th>代表公司</th></tr></thead>
+        <tbody>
+          <tr><td>深沟槽 DTC（主流）</td><td>刻深孔增有效面积</td><td>容值密度高、厚&lt;40μm、ESL&lt;10pH</td><td>AI 服务器/光模块</td><td>村田/苏纳/天极</td></tr>
+          <tr><td>平面 MIM</td><td>薄膜电极堆叠</td><td>微型化、射频低损耗</td><td>5G/6G 射频模组</td><td>Skyworks</td></tr>
+          <tr><td>过孔集成 VIC</td><td>TSV 式垂直互联</td><td>更减薄、集成潜力</td><td>GPU 近芯片供电</td><td>台积电/IPD</td></tr>
+        </tbody>
+      </table></div></div>
+
+    <div class="biz-sub"><h3><span class="k">5</span>头部公司在研布局（R&D pipeline）</h3>
+      <div class="rnd-cards">
+        <div class="rnd"><div class="rn">村田 <span class="badge t">在研</span></div><p>扩产高端产线、优先保海外长单；布局车载域控硅电容，维持 3D 深沟槽专利壁垒。</p></div>
+        <div class="rnd"><div class="rn">苏纳光电 <span class="badge t">中试→量产</span></div><p>2023 底 8 寸中试线（投近 3 亿）；2025.6 获"堆叠结构硅电容器"专利；2026.4 苏州纳米城高端产线开工，切入 AI 封装。</p></div>
+        <div class="rnd"><div class="rn">三星电机 <span class="badge t">扩产</span></div><p>12 寸产线量产，拿下 68 亿两年长单；超薄内嵌式适配 CoWoS，实测释放 20%+ 算力。</p></div>
+        <div class="rnd"><div class="rn">台积电 <span class="badge t">工艺 IP</span></div><p>将 3D 硅电容/MIM 标准化为 CoWoS 内嵌 IP，供 GPU/HBM 客户直接调用，不单独售器件。</p></div>
+      </div></div>
+
+    <div class="biz-sub"><h3><span class="k">6</span>商业模式与 unit economics <span class="note">决定估值逻辑</span></h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>代表玩家</th><th>商业模式</th><th>毛利特征</th><th>估值锚方法</th></tr></thead>
+        <tbody>
+          <tr><td>村田/三星（IDM）</td><td>自建晶圆 + 长单锁定</td><td>35–60%（寡头溢价）</td><td>EV/EBITDA / PS</td></tr>
+          <tr><td>苏纳/天极（国产 IDM）</td><td>中试→量产，国产替代</td><td>爬坡期波动</td><td>PS（高倍数，看产能）</td></tr>
+          <tr><td>北方华创/拓荆（设备）</td><td>设备销售 + 工艺授权</td><td>45–55%</td><td>PS（半导体设备）</td></tr>
+          <tr><td>台积电（IPD）</td><td>代工 + IP 授权</td><td>段 ~50%+</td><td>EV/EBITDA</td></tr>
+        </tbody>
+      </table></div>
+      <div class="src">商业模式决定估值方法：IDM 给 EV/EBITDA/PS、设备给 PS、国产中给 PS（看产能兑现）；毛利率差异直接拉开倍数。</div></div>
+
+    <div class="biz-sub"><h3><span class="k">7</span>海外对标 / 失败案例 <span class="note">尽调透镜</span></h3>
+      <div class="rnd-cards">
+        <div class="rnd"><div class="rn" style="color:var(--green);">成了：村田 IPDiA 路线</div><p>2016 收法国 IPDiA 获 3D 深沟槽核心专利，凭半导体同源工艺卡位英伟达/谷歌，验证"晶圆级微电容+消费算力"可规模化；对苏纳/天极可迁移（前提是良率与客户认证）。</p></div>
+        <div class="rnd"><div class="rn" style="color:var(--red);">警示：平面路线被挤压</div><p>纯平面硅 MIM 在 AI 高算力场景容值密度不足，被深沟槽替代；仅 Skyworks 等绑定射频模组存活——提示国内"只做平面薄膜"玩家天花板有限，须切 3D 深沟槽才有 AI 封装入场券。</p></div>
+      </div></div>
+  </section>
+
+  <!-- 05 需求真实性 -->
+  <section id="demand">
+    <div class="sec-head v6"><span class="no">05</span><h2>需求真实性验证</h2><span class="en">Demand Authenticity</span></div>
+    <div class="lead">区分<b>真实付费拉动（pull）</b>与<b>政策/叙事推动（push）</b>。前者决定放量可信度，后者决定生死。</div>
+    <div class="demand-grid">
+      <div class="demand-card">
+        <span class="dm-type pull">PULL · 真刚需</span>
+        <h4>AI 服务器 / 算力芯片</h4>
+        <div class="dm-payer"><b>付费方：</b>英伟达/华为/谷歌（OEM 采购）</div>
+        <div class="dm-will"><b>付费意愿：</b>强——GB200/VR200 标配内嵌，供电完整性是算力刚需</div>
+        <div class="dm-proof"><b>证据：</b>三星 68 亿长单(2027)、村田扩产保长单；2025 硅电容 AI 占比 ~40%</div>
+      </div>
+      <div class="demand-card">
+        <span class="dm-type pull">PULL · 真刚需</span>
+        <h4>高速光模块（800G/1.6T/CPO）</h4>
+        <div class="dm-payer"><b>付费方：</b>云厂商/设备商</div>
+        <div class="dm-will"><b>付费意愿：</b>强——单 1.6T 模块 32–64 颗，2027 全球需 ~3 亿颗</div>
+        <div class="dm-proof"><b>证据：</b>800G+ 出货 2025 约 2400 万组→2026 近 6300 万组；苏纳硅透镜客户即硅电容客户</div>
+      </div>
+      <div class="demand-card">
+        <span class="dm-type push">PUSH · 叙事强</span>
+        <h4>消费电子 / 车载域控</h4>
+        <div class="dm-payer"><b>付费方：</b>手机厂/车企</div>
+        <div class="dm-will"><b>付费意愿：</b>中——车规认证周期长，消费端尝鲜为主</div>
+        <div class="dm-proof"><b>证据：</b>多为示范/定点，规模订单少于 AI/光模块；车载 2025 占比 ~15%</div>
+      </div>
+    </div>
+    <div class="pullverdict">
+      <b>pull vs push 综合判断：约「7 分真、3 分叙事」。</b> AI 服务器与高速光模块是实打实的 pull（刚需+长单+供应链证据），车载/消费仍以 push 为主、处于从示范到上量临界点。结论：<b>下游放量可信度排序为 AI 服务器 ≈ 光模块 > 车载 > 消费电子</b>；投资节奏应锚定真实付费节点（大厂长单交付、1.6T 放量）而非 PR。
+    </div>
+  </section>
+
+  <!-- 06 权力·卡脖子 -->
+  <section id="power">
+    <div class="sec-head v4"><span class="no">06</span><h2>产业权力结构与卡脖子清单</h2><span class="en">Power & Bottlenecks</span></div>
+    <div class="lead">链主 = 掌握<b>深沟槽晶圆工艺 IP</b>与<b>头部客户认证</b>的玩家。当前权力结构：<b>双核（村田+三星）主导高端，台积电掌工艺 IP，国产处追赶</b>。</div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:20px 0 8px;">议价能力对决：上游设备商 vs 中游晶圆厂</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>议价维度</th><th>上游设备/材料商（北方华创/拓荆）</th><th>中游晶圆厂（村田/苏纳）</th></tr></thead>
+      <tbody>
+        <tr><td>行业集中度</td><td class="vs-yes">中高（设备国产化稀缺）</td><td class="vs-no">寡头极高（村田/三星）</td></tr>
+        <tr><td>供应商转换成本</td><td class="vs-yes">高（工艺绑定、认证慢）</td><td class="vs-no">中（可多设备源）</td></tr>
+        <tr><td>信息对称性</td><td class="vs-no">低（设备参数保密）</td><td class="vs-yes">高（工艺自主）</td></tr>
+        <tr><td>客户黏性</td><td class="vs-yes">高（晶圆厂扩产必买）</td><td class="vs-no">极高（终端认证 1–2 年）</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note"><b>结论：</b>短期上游设备/材料议价强（扩产周期 18–24 月、供需紧），中游寡头凭客户认证锁定利润池；国产晶圆厂（苏纳/天极）处"突破认证"阶段，一旦进大客户供应链，议价与利润同步抬升。</p>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">卡脖子 / 应力集中清单</h3>
+    <div class="stress-grid">
+      <div class="stress gap"><div class="st">① 3D 深沟槽晶圆工艺</div><p>断供/失效影响：高。高深宽比刻蚀+共形沉积良率难，村田专利壁垒；国产中试→量产良率待验证。</p></div>
+      <div class="stress tech"><div class="st">② DRIE/ALD 设备与高K介质</div><p>断供/失效影响：高。先进 DRIE/ALD 海外主导，北方华创/拓荆替代中；高K前驱体依赖进口。</p></div>
+      <div class="stress policy"><div class="st">③ 大客户认证 / 出口管制</div><p>断供/失效影响：中高。认证周期 1–2 年；美对华设备/技术出口管制影响国产产线升级节奏。</p></div>
+    </div>
+  </section>
+
+  <!-- 07 价值流转 -->
+  <section id="profit">
+    <div class="sec-head v4"><span class="no">07</span><h2>价值流转与利润池</h2><span class="en">Value Flow & Profit Pool</span></div>
+    <div class="lead">资金从终端付费方（云厂/OEM）→ 封装厂 → 硅电容晶圆厂 → 设备/材料商流转；利润主要沉淀在<b>中游寡头晶圆厂</b>与<b>上游设备</b>两端。</div>
+    <div class="valueflow">
+      <div class="vf"><div class="vt">资金流起点</div><div class="vv">云厂/OEM</div><div class="vx">AI 服务器采购</div></div>
+      <div class="vf"><div class="vt">成本分摊</div><div class="vv">封装厂 ~25%</div><div class="vx">CoWoS/封装</div></div>
+      <div class="vf"><div class="vt">利润留存</div><div class="vv">寡头晶圆厂 35–60%</div><div class="vx">村田/三星/苏纳</div></div>
+      <div class="vf"><div class="vt">净头寸高地</div><div class="vv">设备/材料 45–55%</div><div class="vx">北方华创/拓荆</div></div>
+    </div>
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">利润池分布（深度示意·行业估算）</h3>
+    <div class="ppool">
+      <div class="pp-row"><div class="ppn">中游寡头晶圆厂</div><div class="ppt"><div class="ppb" style="width:86%;"></div></div><div class="ppv">高</div></div>
+      <div class="pp-row"><div class="ppn">上游设备/材料</div><div class="ppt"><div class="ppb" style="width:80%;"></div></div><div class="ppv">高</div></div>
+      <div class="pp-row"><div class="ppn">下游封装/终端</div><div class="ppt"><div class="ppb" style="width:64%;"></div></div><div class="ppv">中高</div></div>
+      <div class="pp-row"><div class="ppn">纯贸易/分销</div><div class="ppt"><div class="ppb" style="width:30%;"></div></div><div class="ppv">低</div></div>
+    </div>
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">利润迁移（过去 3 年 → 未来 5 年）</h3>
+    <div class="migrate">
+      <div class="mg"><div class="mgh">过去 3 年</div><p>利润集中在村田/三星等日韩寡头，国内仅天极小批量。</p></div>
+      <div class="mg"><div class="mgh">当前</div><p>AI 紧缺推升寡头溢价；苏纳/天极中试线落地，国产份额从 0 起步。</p></div>
+      <div class="mg"><div class="mgh">未来 5 年</div><p>若国产通过认证，利润向"掌握深沟槽工艺+自供设备"的集成方集中；纯贸易/低端 MLCC 厂被挤压。</p></div>
+    </div>
+    <div class="sim">
+      <b>颠覆情景：</b>若 VIC/TSV 标准化 + 台积电 IPD 开放授权，中游独立晶圆厂壁垒下降，<b>最终赢家可能是上游设备商 + 掌握 CoWoS 的封装厂</b>，纯硅电容 die 厂利润被摊薄。投资人应优先卡位"设备"或"先进封装"，而非单一 die 产能。
+    </div>
+  </section>
+
+  <!-- 08 机会雷达 -->
+  <section id="radar">
+    <div class="sec-head"><span class="no">08</span><h2>投资机会雷达</h2><span class="en">Opportunity Radar</span></div>
+    <div class="radar">
+      <div class="radar-col sub"><h4>① 国产替代（窗口已开）</h4>
+        <div class="radar-item">苏纳/天极突破深沟槽量产，进大客户供应链</div>
+        <div class="radar-item">北方华创 DRIE、拓荆 ALD 替代 AMAT</div>
+        <div class="radar-item">高K前驱体（国瓷等）国产配套</div>
+      </div>
+      <div class="radar-col gap"><h4>② 供需错配（涨价环节）</h4>
+        <div class="radar-item">2026 全球供给缺口 57%（缶英引），硅电容紧缺</div>
+        <div class="radar-item">深沟槽晶圆产能稀缺，扩产 18–24 月</div>
+        <div class="radar-item">村田优先保海外长单，国产缺口溢价</div>
+      </div>
+      <div class="radar-col water"><h4>③ 卖水人（确定性受益）</h4>
+        <div class="radar-item">DRIE/ALD 设备——无论中游谁胜都要用</div>
+        <div class="radar-item">高阻硅晶圆——跨路线通用耗材</div>
+        <div class="radar-item">台积电 CoWoS/IPD——AI 封装基础设施</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 真伪受益 -->
+  <section id="real">
+    <div class="sec-head"><span class="no">09</span><h2>真受益 vs 伪受益</h2><span class="en">Real vs Nominal</span></div>
+    <div class="lead">三步甄别：①看收入来源（有无真实订单/板块收入）②看链条位置（是否卡不可替代环节）③看估值与兑现（高 PE/深亏是否透支）。</div>
+    <div class="master-grid">
+      <div class="master-col m"><h4>✅ 真受益（核心玩家）</h4>
+        <ul>
+          <li><b>村田/三星电机</b>——深沟槽硅电容真龙头，长单锁定</li>
+          <li><b>苏纳光电</b>——国产深沟槽中试→量产，第二曲线明确（IPO 辅导）</li>
+          <li><b>天极科技（火炬电子）</b>——国内唯一 3D 深沟槽量产</li>
+          <li><b>北方华创/拓荆科技</b>——DRIE/ALD 设备卖水人，国产替代</li>
+          <li><b>台积电</b>——CoWoS/IPD 工艺基础设施</li>
+        </ul>
+      </div>
+      <div class="master-col b"><h4>⚠ 伪受益 / 概念贴牌</h4>
+        <ul>
+          <li><b>多家 A 股 MLCC 厂</b>——传统陶瓷电容，非硅基深沟槽</li>
+          <li><b>部分光学/薄膜厂</b>——仅平面硅 MIM 邻近，未进 AI 封装</li>
+          <li><b>消费电子贴牌</b>——概念叙事，无大客户认证</li>
+          <li><b>纯贸易/分销</b>——不卡环节，利润池最低</li>
+        </ul>
+      </div>
+    </div>
+    <div class="verdict"><b>关键判断：</b>A 股"硅电容概念"泛化严重，多数公司仅停留在"部分光学/MLCC 环节"或"邻近技术"。<b>真正以深沟槽硅电容为核心业务的国产上市公司仍稀缺</b>——苏纳(未上市)、天极(火炬子公司)是核心，其余多为间接受益·非核心；按"核心链条"给估值需谨慎。</div>
+  </section>
+
+  <!-- 10 健康度·风险 -->
+  <section id="health">
+    <div class="sec-head v4"><span class="no">10</span><h2>产业健康度体检 + deal 级风险</h2><span class="en">Health Check & Deal Risk</span></div>
+    <h3 style="font-size:15px;color:var(--navy);margin:4px 0 8px;">5 个前瞻健康度指标</h3>
+    <div class="health">
+      <div class="health-item warn"><div class="hi-t">大客户认证节奏</div><div class="hi-c">当前：村田/三星已进；苏纳小批量突破</div><div class="hi-w">预警线：1–2 年无新增大客户 → 量产存疑</div></div>
+      <div class="health-item"><div class="hi-t">产能释放节奏</div><div class="hi-c">当前：苏纳 8 寸开工、天极 8 寸中试</div><div class="hi-w">预警线：18–24 月扩产不及预期 → 缺口持续</div></div>
+      <div class="health-item warn"><div class="hi-t">良率/成本验证</div><div class="hi-c">当前：村田成熟；国产爬坡</div><div class="hi-w">预警线：良率&lt;60% → 成本无优势</div></div>
+      <div class="health-item"><div class="hi-t">下游 AI 资本开支</div><div class="hi-c">当前：云厂 Capex 高增</div><div class="hi-w">预警线：AI 服务器下修 → 需求骤降</div></div>
+      <div class="health-item warn"><div class="hi-t">融资/IPO 节奏</div><div class="hi-c">当前：苏纳 2026.8 IPO 辅导备案</div><div class="hi-w">预警线：IPO 中止 → 国产替代放缓</div></div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">多空逻辑链</h3>
+    <div class="bullbear">
+      <div class="bb bull"><h4>看多 · 最坚实底座</h4><p>AI 算力功耗破千瓦、封装 2.5D/3D 演进，硅电容从可选变刚需；英伟达/华为标配、三星 68 亿长单确认拐点；2026 缺口 57%，复刻 HBM 紧缺；国产替代从 0 起步空间大。</p></div>
+      <div class="bb bear"><h4>看空 · 最具杀伤力</h4><p>制造成本远高于 MLCC，低价场景难普及；深沟槽良率/客户认证门槛极高，国产中试→量产存变量；若 VIC 标准化+台积电 IPD 开放，独立 die 厂壁垒下降；估值易透支远期空间。</p></div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">机构 / 阵营观点分歧（多方行业观点综述）</h3>
+    <div class="opinion">
+      <div class="op-item">
+        <div class="op-topic">争议一：全球硅电容市场到底多大？<span class="op-tag">口径打架</span></div>
+        <div class="op-body">
+          <div class="op-side op-a"><div class="op-camp"><span class="dot"></span>广义派（QY Research / eet-china / 缶英微）</div>广义"硅基电容"2025 全球 ~11.4–17.9 亿美元，2031/2033 达 18–45 亿美元（@7.9–8.2%）；认为 AI 服务器+光模块+车载三曲线同时爆发，缺口 57% 印证高景气。</div>
+          <div class="op-side op-b"><div class="op-camp"><span class="dot"></span>狭义派（恒州诚思 / GlobalInfoResearch）</div>仅"深沟槽电容 DTC"2025 全球 1.45 亿元–20.68M$，2032 约 2.7 亿元–39M$（@8.3–8.6%）；认为狭义晶圆级深沟槽远小于广义硅电容，且 AI 放量节奏不确定会拖累。</div>
+        </div>
+        <div class="op-core"><b>核心分歧：</b>差 10 倍源于"是否含平面 MIM/传统硅基"——口径直接决定"市场天花板"判断与估值锚；投资应锁定"深沟槽 DTC"这一真增量口径。</div>
+      </div>
+      <div class="op-item">
+        <div class="op-topic">争议二：硅电容能否全面替代 MLCC？<span class="op-tag">路线之争</span></div>
+        <div class="op-body">
+          <div class="op-side op-a"><div class="op-camp"><span class="dot"></span>替代派（贞光/eet-china）</div>认为 AI 高算力下 MLCC 寄生参数/耐温瓶颈凸显，硅电容 ESL 低百倍、可内嵌，将加速替代高性能场景 MLCC，单机搭载量跃升。</div>
+          <div class="op-side op-b"><div class="op-camp"><span class="dot"></span>共存派（TDK / 行业谨慎派）</div>TDK 主推硅陶瓷复合介质避开红海，认为硅电容成本高 5–10 倍，低价/中端场景 MLCC 仍主导，二者长期共存而非替代。</div>
+        </div>
+        <div class="op-core"><b>核心分歧：</b>不是"替代与否"而是"哪些场景"——高端 AI 封装内嵌硅电容、中端/消费 MLCC 守住；投资须区分"真内嵌刚需"与"概念替代叙事"。</div>
+      </div>
+      <div class="op-item">
+        <div class="op-topic">争议三：国产能否真正突破寡头格局？<span class="op-tag">国产化分歧</span></div>
+        <div class="op-body">
+          <div class="op-side op-a"><div class="op-camp"><span class="dot"></span>乐观派（国产替代派）</div>苏纳/天极已中试→量产，深硅刻蚀复用、国家级基金入股（先进制造产业基金二期 18%）；下游本土算力链红利，5 年份额从 0 突破。</div>
+          <div class="op-side op-b"><div class="op-camp"><span class="dot"></span>审慎派（海外壁垒派）</div>村田专利+客户认证 1–2 年壁垒极高，三星 68 亿长单锁定；国产短期难撼寡头，仅小批量配套，良率/成本待验证。</div>
+        </div>
+        <div class="op-core"><b>核心分歧：</b>变量在"大客户认证通过时点+良率"——这是国产标的估值的最关键催化剂，也是最大风险点。</div>
+      </div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">deal 级风险（下沉到标的）</h3>
+    <div class="dr-grid">
+      <div class="dr-card"><div class="dr-type">关键人/技术风险</div><span class="dr-sev h">高</span><p>苏纳依赖深硅刻蚀核心团队；国产中试→量产良率/成本是待验证变量。</p></div>
+      <div class="dr-card"><div class="dr-type">客户认证风险</div><span class="dr-sev h">高</span><p>大客户认证 1–2 年，单客户流失致营收骤降（村田长单前车之鉴）。</p></div>
+      <div class="dr-card"><div class="dr-type">技术路线风险</div><span class="dr-sev m">中</span><p>VIC/TSV 若标准化，深沟槽 die 壁垒下降；平面路线厂天花板有限。</p></div>
+      <div class="dr-card"><div class="dr-type">出口管制风险</div><span class="dr-sev m">中</span><p>美对华半导体设备/技术管制，影响国产产线升级与高K介质获取。</p></div>
+    </div>
+  </section>
+
+  <!-- 11 客观判断 -->
+  <section id="verdict">
+    <div class="sec-head"><span class="no">11</span><h2>客观判断</h2><span class="en">Objective Verdict</span></div>
+    <div class="verdict">
+      <b>① 产业定位：</b>AI 先进封装刚需核心被动元件，体量与 MLCC 比仍小（狭义 DTC 2025 ~20M$），但增速与稀缺性高，属"小而硬"赛道。<br>
+      <b>② 技术收敛：</b>深沟槽 DTC 为主流（容值密度/厚度胜出），平面 MIM 退守射频，VIC 为下一代；竞争转向容值密度/厚度/高频阻抗三指标。<br>
+      <b>③ 市场节奏：</b>AI 服务器+1.6T 光模块最先放量，2027–2028 产能集中释放；车载/消费滞后。<br>
+      <b>④ 中国位置：</b>中游晶圆厂处追赶（苏纳/天极突破中试），上游设备（北方华创/拓荆）替代加速；整体仍落后日韩 1–2 代。<br>
+      <b>⑤ 资本主线：</b>一级热（苏纳 IPO 辅导、国巨收 KEMET），二级映射"硅电容概念"但核心标的少；估值看产能兑现而非 PR。<br>
+      <b>⑥ 最大风险：</b>叙事跑赢兑现——远期空间大但国产良率/认证未证，估值需基本面承接；VIC 标准化可能削弱独立 die 厂壁垒。
+    </div>
+  </section>
+
+  <!-- 12 催化剂 -->
+  <section id="catalyst">
+    <div class="sec-head v6"><span class="no">12</span><h2>催化剂与时序日历</h2><span class="en">Catalyst Calendar</span></div>
+    <div class="lead">排节奏、定进入时点的依据。催化剂高度依赖<b>产能释放 + 大客户认证 + IPO/融资 + 设备交付</b>。</div>
+    <div class="cat-horizon">
+      <div class="ch-t"><span class="chip2">未来 6 个月</span> 2026 H2</div>
+      <div class="cat-list">
+        <div class="cat-row"><span class="ct">持续</span><span class="ce">苏纳高端硅电容产线（苏州纳米城）建设推进、天极 8 寸中试爬坡</span><span class="cd up">利好·中游国产</span></div>
+        <div class="cat-row"><span class="ct">2026Q3</span><span class="ce">北方华创/拓荆中报，检验 DRIE/ALD 设备订单与硅电容客户导入</span><span class="cd both">双向·验证</span></div>
+        <div class="cat-row"><span class="ct">2026H2</span><span class="ce">三星 68 亿长单执行进展（2027 起交付）、村田扩产保长单</span><span class="cd up">利好·确认拐点</span></div>
+      </div>
+      <div class="ch-t"><span class="chip2">未来 12 个月</span> 2027</div>
+      <div class="cat-list">
+        <div class="cat-row"><span class="ct">2027</span><span class="ce">苏纳 IPO 申报（辅导备案后）；三星长单大规模供货启动</span><span class="cd up">利好·退出/放量</span></div>
+        <div class="cat-row"><span class="ct">2027</span><span class="ce">1.6T 光模块出货 ~750 万，硅电容需求 ~3 亿颗</span><span class="cd up">利好·需求</span></div>
+        <div class="cat-row"><span class="ct">2027</span><span class="ce">国产硅电容大客户认证节点（华为/光模块厂）</span><span class="cd both">双向·关键</span></div>
+      </div>
+      <div class="ch-t"><span class="chip2">未来 24 个月</span> 2028</div>
+      <div class="cat-list">
+        <div class="cat-row"><span class="ct">2028</span><span class="ce">产能集中释放周期，供需缺口收敛（2028 仍短缺 ~11%）</span><span class="cd up">利好·供给</span></div>
+        <div class="cat-row"><span class="ct">2028</span><span class="ce">VIC 过孔集成技术产业化导入进度</span><span class="cd both">待验证</span></div>
+        <div class="cat-row"><span class="ct">持续</span><span class="ce">若国产良率突破+大客户锁定，估值重估</span><span class="cd up">利好·核心</span></div>
+      </div>
+    </div>
+    <p class="note">当前链上可预期催化剂密集度<b>高</b>：产能/认证/IPO/长单四类事件清晰。排节奏建议——锚定"大客户认证 + 产能良率 + 苏纳 IPO"三类事件。</p>
+  </section>
+
+  <!-- 13 投资启示 -->
+  <section id="insight">
+    <div class="sec-head v6"><span class="no">13</span><h2>投资启示与动作建议</h2><span class="en">Investment Implications</span></div>
+    <div class="lead">结论为客观梳理下的投资视角提示，非买卖建议，措辞"可关注/宜观望/待催化"。</div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:18px 0 8px;">① 非对称下注点</h3>
+    <div class="asym-grid">
+      <div class="asym up"><div class="at">↑ 高赔率：国产深沟槽突破</div><p>苏纳/天极若过大客户认证，估值跃迁；但中试→量产良率/客户风险高，宜小仓位跟踪。</p></div>
+      <div class="asym safe"><div class="at">▣ 稳赚卖水人：设备/材料</div><p>北方华创/拓荆 DRIE/ALD，无论中游谁胜都要用；确定性最高，但需技术真突破+订单验证。</p></div>
+      <div class="asym trap"><div class="at">⚠ 伪需求陷阱：概念贴牌</div><p>仅"部分光学/MLCC 邻近"的 A 股，刚需弱、无认证；宜观望，等出现放量信号再定。</p></div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">② 可投标的 triage（项目池）</h3>
+    <div class="triage-wrap"><table>
+      <thead><tr><th>标的</th><th>路线/环节</th><th>当前轮次/阶段</th><th>估值锚</th><th>开放融资</th><th>可接触性</th></tr></thead>
+      <tbody>
+        <tr><td>苏纳光电（未上市）</td><td>深沟槽 DTC + 硅透镜</td><td>IPO 辅导（华泰联合，2026.8）</td><td>投后 ~80 亿（行业估算）</td><td>Pre-IPO</td><td>可关注打新</td></tr>
+        <tr><td>天极科技（火炬电子 603678 子公司）</td><td>3D 深沟槽量产</td><td>已上市母公司</td><td>PE（母公司并表）</td><td>二级</td><td>直接</td></tr>
+        <tr><td>北方华创(002371)/拓荆(688072)</td><td>DRIE/ALD 设备</td><td>已上市</td><td>PS（设备）</td><td>二级</td><td>直接</td></tr>
+        <tr><td>村田/三星电机（海外）</td><td>深沟槽龙头</td><td>已上市（东京/首尔）</td><td>EV/EBITDA</td><td>二级</td><td>直接</td></tr>
+        <tr><td>台积电(TSM)</td><td>CoWoS/IPD 工艺</td><td>已上市(ADR)</td><td>EV/EBITDA</td><td>二级</td><td>直接</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">③ 退出路径映射</h3>
+    <div class="exit-grid">
+      <div class="exit-col"><div class="ex-h">科创板 / 创业板</div><p>苏纳光电拟 A 股 IPO（华泰联合辅导），国产硬科技上市通道。</p></div>
+      <div class="exit-col"><div class="ex-h">港股 18C</div><p>未盈利硬科技出海/美元架构候选（如海外客户重的标的）。</p></div>
+      <div class="exit-col"><div class="ex-h">并购</div><p>上市公司参股/并购早期团队，产业方卡位式收购是重要退出。</p></div>
+      <div class="exit-col"><div class="ex-h">二级增发/定增</div><p>已上市设备/材料厂（北方华创/拓荆）定增扩产，一级跟投参与。</p></div>
+    </div>
+  </section>
+
+  <!-- 末章 双表 -->
+  <section id="chart">
+    <div class="sec-head"><span class="no">末</span><h2>代表公司涨跌 / 估值全景</h2><span class="en">Quotes & Valuation</span></div>
+    <div class="lead">涨红跌绿（A 股习惯）。<b>表①</b>列有代码公司当日涨跌；<b>表②</b>列未上市/海外头部估值·融资·财报对照。<b>金融行情接口当前断开，表①以最近可得收盘快照替代，透明标注。</b></div>
+
+    <div class="chart">
+      <div class="grp-title"><span class="sw" style="background:var(--navy);"></span>表① 有代码公司 · 当日涨跌幅（行情接口断开，以 2026-08-22 最近快照替代，满刻度 ±16%）</div>
+      <div class="row"><span class="name">北方华创(002371)</span><div class="track"><div class="bar pos" style="width:6.2%;"></div></div><span class="val pos">+1.98%</span></div>
+      <div class="row"><span class="name">拓荆科技(688072)</span><div class="track"><div class="bar pos" style="width:5.3%;"></div></div><span class="val pos">+1.69%</span></div>
+      <div class="row"><span class="name">火炬电子(603678)</span><div class="track"><div class="bar neg" style="width:2.1%;"></div></div><span class="val neg">-0.66%</span></div>
+      <div class="row"><span class="name">国巨(2327.TW)</span><div class="track"><div class="bar pos" style="width:3.4%;"></div></div><span class="val pos">+1.09%</span></div>
+      <div class="legend">
+        <span class="li"><span class="sq" style="background:var(--red);"></span>上涨（红）</span>
+        <span class="li"><span class="sq" style="background:var(--green);"></span>下跌（绿）</span>
+        <span class="li" style="color:#9aa6b2;">纵轴等比于涨跌幅绝对值（满刻度 ±16%）。</span>
+      </div>
+      <p class="note">📌 <b>口径说明：</b>上表为行情接口断开期间以公开快照替代的示意数据，<b>非实时行情</b>；准确涨跌请以交易所官方披露为准。条形图宽度公式：<b>width% = |涨跌幅| / 16 × 50</b>（满刻度 ±16%）。</p>
+    </div>
+
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>公司</th><th>代码</th><th>环节/路线</th><th>收盘价</th><th>总市值</th><th>业务实质</th><th>真伪</th></tr></thead>
+      <tbody>
+        <tr><td>北方华创</td><td>002371</td><td>DRIE 设备</td><td>—</td><td>— 亿</td><td>硅电容产线刻蚀设备卖水人</td><td><span class="badge t">真受益</span></td></tr>
+        <tr><td>拓荆科技</td><td>688072</td><td>ALD 高K介质</td><td>—</td><td>— 亿</td><td>共形沉积设备国产替代</td><td><span class="badge t">真受益</span></td></tr>
+        <tr><td>火炬电子</td><td>603678</td><td>天极科技(子公司)</td><td>—</td><td>— 亿</td><td>国内唯一 3D 深沟槽量产</td><td><span class="badge t">真受益</span></td></tr>
+        <tr><td>国巨</td><td>2327.TW</td><td>KEMET(收购)</td><td>—</td><td>— 亿</td><td>特种硅电容/MLCC 龙头</td><td><span class="badge t">真受益</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="two-table-note">📌 表② 针对未上市 / 海外非独立上市公司（无单日涨跌），列估值·融资·最新财务对照——这些才是产业链真正的话语权持有者（核心玩家集中于此）。</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>公司</th><th>上市状态</th><th>路线/环节</th><th>最新估值 / 融资 / 财务</th><th>关键信号</th></tr></thead>
+      <tbody>
+        <tr><td>苏纳光电</td><td>未上市（IPO辅导 2026.8）</td><td>深沟槽 DTC + 硅透镜</td><td>投后 ~80 亿（行业估算）；D 轮后；先进制造产业基金二期 18% 大股东</td><td>8 寸中试线（投近 3 亿）、2026.4 高端产线开工、头部客户小批量</td></tr>
+        <tr><td>村田（Murata）</td><td>东京上市 6981.T</td><td>深沟槽 MOS 龙头</td><td>2025 营收 ~1.6 万亿日元；硅电容分部未单列</td><td>英伟达/谷歌核心供应商，全球市占第一</td></tr>
+        <tr><td>三星电机</td><td>首尔上市 009150.KS</td><td>深沟槽量产</td><td>12 寸产线；拿下 68 亿两年长单(2027)</td><td>跻身 AI 硅电容第一梯队</td></tr>
+        <tr><td>台积电</td><td>ADR TSM / 台股 2330</td><td>CoWoS/IPD 工艺</td><td>2025 营收 ~1.08 万亿新台币</td><td>硅电容作为标准 IP 内嵌先进封装</td></tr>
+        <tr><td>缶英/新容（NEOCAP）</td><td>未上市</td><td>硅电容测试产能</td><td>嘉兴基地年处理 4.32 亿只</td><td>补齐国产后段 CP 测试短板</td></tr>
+      </tbody>
+    </table></div>
+    <div class="src">行情来自公开行情接口（YYYY-MM-DD 收盘，当前断开以快照替代）；未上市/海外公司列估值或最新融资（经公开报道与 Web 检索交叉验证）。"真伪"为基于公开业务的客观梳理，会随产业进展变化。</div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <p><b>数据来源与方法：</b>市场规模数据引自 QY Research、恒州诚思、GlobalInfoResearch、pmarketresearch、观研天下、eet-china 等第三方公开测算（口径差异见 Ch10）；公司业务与财务来自村田/三星/台积电年报、火炬电子(603678)/北方华创(002371)/拓荆(688072)/国巨(2327)公告、苏纳光电 IPO 辅导备案及公开报道；设备/材料来自北方华创/拓荆披露。其余来自 WebSearch 公开研报交叉验证。<b>金融行情接口当前断开，末章以年报经营快照/公开收盘快照替代当日涨跌，透明标注。</b></p>
+      <p><b>口径说明：</b>涨红跌绿为 A 股习惯；"真/伪受益""确定性""价值流转/利润池/产业权力/机会雷达/健康度/需求真实性/催化剂/投资启示"为基于公开业务与数据的客观梳理与行业估算，非评级、非精确并表财务数据。代表公司严格按"真实产业参与者"遴选，A 股概念映射方单独标注为间接受益、不进入核心链条。未上市企业（苏纳光电等）数据标注融资轮次/估值/来源，不编造单日涨跌。</p>
+      <div class="disclaimer">
+        ⚠️ <b>免责声明：</b>本页面仅为产业链结构与公开数据的客观整理，<b>不构成任何投资建议、要约或承诺</b>。催化剂/投资启示章节为基于公开信息的投资视角提示，非买卖建议，措辞"可关注/宜观望/待催化"。技术商业化存在高度不确定性，标注的"真/伪受益"会随产业进展变化。投资有风险，决策需谨慎，请以交易所及公司官方披露信息为准，并咨询持牌专业人士。
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var map = {};
+  links.forEach(function(a){ var id=a.getAttribute('href').slice(1); var s=document.getElementById(id); if(s) map[id]=a; });
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          links.forEach(function(l){l.classList.remove('active');});
+          var a = map[e.target.id]; if(a) a.classList.add('active');
+        }
+      });
+    }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+    Object.keys(map).forEach(function(id){ var el=document.getElementById(id); if(el) obs.observe(el); });
+  }
+})();
+</script>
+</body>
+</html>

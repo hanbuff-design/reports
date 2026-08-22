@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<!-- 脚手架示例：v6 = KPI摘要 + 13 编号章 + 末章双表 = 14 块。硅透镜产业链分析 · 单页报告（含 Ch03 产品拆解 SVG + Ch10 机构/阵营观点分歧）。 -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>硅透镜产业链分析 · 单页报告</title>
+<style>
+  :root{
+    --navy:#1d3a5e; --navy2:#2b5488; --navy-soft:#eaf1f8;
+    --ink:#19222e; --muted:#69737f; --line:#e5e9ef;
+    --bg:#f4f6f8; --card:#ffffff;
+    --red:#d6463b; --red-soft:#fbedec;   /* 涨 = 红 */
+    --green:#1e9d6a; --green-soft:#e8f5ef; /* 跌 = 绿 */
+    --gold:#bd9a55; --gold-soft:#f7f1e3;
+    --chip:#edf0f5;
+    --slate:#9fb3cd; --accent2:#d9b877;
+    --font-serif:"Source Han Serif SC","Noto Serif SC","Songti SC","SimSun",serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;padding-left:252px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;color:var(--ink);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px;}
+  /* ===== LEFT SIDEBAR TOC ===== */
+  .sidebar{position:fixed;top:0;left:0;width:252px;height:100vh;background:linear-gradient(180deg,#142b47 0%,#1d3a5e 55%,#244d7c 100%);color:#fff;display:flex;flex-direction:column;z-index:60;box-shadow:2px 0 18px rgba(20,43,71,.25);}
+  .side-brand{padding:24px 22px 18px;border-bottom:1px solid rgba(255,255,255,.10);}
+  .side-brand .sb-t{font-size:12px;color:var(--slate);letter-spacing:1.5px;font-weight:600;}
+  .side-brand .sb-n{font-size:17px;font-weight:800;margin-top:6px;line-height:1.3;font-family:var(--font-serif);}
+  .side-brand .sb-v{display:inline-block;margin-top:12px;font-size:11px;color:#142b47;background:var(--accent2);padding:3px 10px;border-radius:11px;font-weight:700;letter-spacing:.5px;}
+  .toc{padding:14px 12px 30px;overflow-y:auto;flex:1 1 auto;}
+  .toc a{display:flex;align-items:center;gap:11px;color:#a9c0db;font-size:13px;padding:10px 12px;border-radius:9px;transition:.18s;margin:2px 0;border-left:3px solid transparent;}
+  .toc a .num{font-size:11px;font-weight:700;color:#7e9bbf;width:22px;flex:0 0 auto;text-align:center;}
+  .toc a:hover{background:rgba(255,255,255,.08);color:#fff;}
+  .toc a.active{background:rgba(255,255,255,.14);color:#fff;border-left-color:var(--accent2);}
+  .toc a.active .num{color:var(--accent2);}
+  .hero{background:linear-gradient(135deg,#142b47 0%,#1d3a5e 55%,#2b5488 100%);color:#fff;padding:48px 0 42px;position:relative;}
+  .hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--accent2),transparent);}
+  .hero .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--accent2);border:1px solid rgba(217,184,119,.45);padding:4px 12px;border-radius:20px;margin-bottom:14px;}
+  .hero h1{margin:0 0 10px;font-size:34px;font-weight:800;letter-spacing:.5px;font-family:var(--font-serif);}
+  .hero p.sub{margin:0;color:#c5d4e6;font-size:15px;max-width:820px;}
+  .hero .meta{margin-top:18px;display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--slate);}
+  .hero .meta b{color:#fff;font-weight:600;}
+  section{padding:36px 0 8px;}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;}
+  .sec-head .no{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--navy),var(--navy2));width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:9px;flex:0 0 auto;box-shadow:0 2px 6px rgba(29,58,94,.25);}
+  .sec-head h2{margin:0;font-size:22px;font-weight:750;font-family:var(--font-serif);letter-spacing:.3px;}
+  .sec-head .en{color:var(--muted);font-size:12.5px;font-weight:500;}
+  .sec-head.v3 .no{background:var(--gold);color:#3a2a06;box-shadow:none;}
+  .sec-head.v4 .no{background:var(--navy2);color:#fff;box-shadow:none;}
+  .sec-head.v6 .no{background:var(--red);color:#fff;box-shadow:none;}
+  .lead{color:#3a4754;font-size:14.5px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:10px;padding:16px 20px;}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
+  .kpi .h{font-size:13px;color:var(--muted);margin-bottom:6px;}
+  .kpi .v{font-size:16.5px;font-weight:750;color:var(--navy);}
+  .kpi .v small{font-size:12px;color:var(--muted);font-weight:500;}
+  .chain{display:flex;align-items:stretch;gap:0;margin-top:6px;flex-wrap:wrap;}
+  .tier{flex:1 1 0;min-width:230px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;position:relative;}
+  .tier .tname{font-weight:750;font-size:15px;color:var(--navy);display:flex;align-items:center;gap:8px;}
+  .tier .tname .dot{width:10px;height:10px;border-radius:50%;}
+  .tier .trole{font-size:12px;color:var(--muted);margin:4px 0 12px;}
+  .seg{margin-bottom:12px;}
+  .seg .lbl{font-size:12.5px;font-weight:600;color:#2c3a47;margin-bottom:6px;}
+  .pills{display:flex;flex-wrap:wrap;gap:6px;}
+  .pill{font-size:12px;background:var(--chip);color:#33414f;border:1px solid #d4e6de;padding:3px 9px;border-radius:14px;white-space:nowrap;}
+  .pill.real{background:var(--gold-soft);border-color:#e7d3a3;color:#8a6418;font-weight:600;}
+  .pill.aux{background:#eef0f2;color:#7a8694;}
+  .arrow{display:flex;align-items:center;justify-content:center;color:var(--navy);font-size:22px;font-weight:700;flex:0 0 34px;}
+  @media(max-width:860px){.arrow{transform:rotate(90deg);flex-basis:100%;height:30px;}}
+  .tier.up .dot{background:var(--navy);}
+  .tier.mid .dot{background:var(--gold);}
+  .tier.down .dot{background:#3f7bb0;}
+  .tier.aux .dot{background:#7a8694;}
+  .tiercards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px;}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;}
+  .tcard .th{font-size:16px;font-weight:750;color:var(--navy);border-bottom:2px solid var(--navy-soft);padding-bottom:10px;margin-bottom:12px;}
+  .tcard h4{font-size:13px;margin:14px 0 5px;color:#2c3a47;}
+  .tcard p{margin:0;font-size:13.5px;color:#3a4754;}
+  .cert{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:6px 10px;border-radius:8px;font-size:13px;font-weight:700;align-self:flex-start;}
+  .cert.high{background:var(--green-soft);color:var(--green);}
+  .cert.mid{background:var(--gold-soft);color:var(--gold);}
+  .cert.low{background:#eef0f2;color:#6b7785;}
+  .stars{letter-spacing:2px;color:var(--gold);font-size:14px;}
+  .realpill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:10px;}
+  .realpill.t{background:var(--gold-soft);color:#8a6418;}
+  .realpill.f{background:#eef0f2;color:#7a8694;}
+  .chart{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-top:6px;}
+  .chart .grp-title{font-size:13px;font-weight:700;color:var(--navy);margin:16px 0 8px;display:flex;align-items:center;gap:8px;}
+  .chart .grp-title:first-child{margin-top:2px;}
+  .chart .grp-title .sw{width:18px;height:4px;border-radius:2px;}
+  .row{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px;}
+  .row .name{width:118px;flex:0 0 auto;text-align:right;color:#33414f;}
+  .row .track{position:relative;flex:1 1 auto;height:18px;background:#eef3f1;}
+  .row .track::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:#cfd8e2;}
+  .row .bar{position:absolute;top:2px;height:14px;border-radius:3px;}
+  .row .bar.pos{right:50%;background:var(--red);}
+  .row .bar.neg{left:50%;background:var(--green);}
+  .row .val{width:72px;flex:0 0 auto;font-weight:700;font-variant-numeric:tabular-nums;}
+  .row .val.pos{color:var(--red);}
+  .row .val.neg{color:var(--green);}
+  .legend{display:flex;gap:18px;margin-top:14px;font-size:12.5px;color:var(--muted);align-items:center;flex-wrap:wrap;}
+  .legend .li{display:flex;align-items:center;gap:6px;}
+  .legend .sq{width:14px;height:14px;border-radius:3px;}
+  .tbl-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 8px;margin-top:16px;overflow-x:auto;}
+  table{border-collapse:collapse;width:100%;font-size:13px;min-width:620px;}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;}
+  th{background:linear-gradient(180deg,#eef3f9,#e3ecf6);color:#2b5488;font-weight:650;font-size:12.5px;}
+  td .up{color:var(--red);font-weight:700;}
+  td .down{color:var(--green);font-weight:700;}
+  .badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
+  .badge.t{background:var(--gold-soft);color:#8a6418;}
+  .badge.f{background:#eef0f2;color:#7a8694;}
+  .badge.s{background:var(--green-soft);color:var(--green);}
+  .note{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.6;}
+  .biz-sub{margin-top:18px;}
+  .biz-sub h3{font-size:15.5px;color:var(--navy);margin:18px 0 10px;border-left:4px solid var(--gold);padding-left:10px;}
+  .biz-sub h3 .k{display:inline-flex;width:22px;height:22px;background:var(--navy);color:#fff;align-items:center;justify-content:center;border-radius:6px;font-size:12px;margin-right:6px;}
+  .prod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:6px;}
+  .prod-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;}
+  .prod-card .pn{font-weight:700;font-size:14.5px;color:var(--navy);}
+  .prod-card .pm{font-size:12.5px;color:var(--muted);margin:4px 0 8px;}
+  .prod-card p{margin:0;font-size:13px;color:#3a4754;}
+  .rnd-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:6px;}
+  .rnd{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;}
+  .rnd .rn{font-weight:700;font-size:14px;color:var(--navy);}
+  .rnd p{margin:6px 0 0;font-size:13px;color:#3a4754;}
+  .valueflow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px;}
+  .vf{border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:var(--card);}
+  .vf .vt{font-size:12px;color:var(--muted);}
+  .vf .vv{font-size:14.5px;font-weight:750;color:var(--navy);margin-top:4px;}
+  .vf .vx{font-size:12px;color:#3a4754;margin-top:3px;}
+  .ppool{margin-top:14px;}
+  .pp-row{display:flex;align-items:center;gap:12px;margin:9px 0;}
+  .pp-row .ppn{width:160px;flex:0 0 auto;font-size:13px;color:#33414f;}
+  .pp-row .ppt{position:relative;flex:1 1 auto;height:22px;background:#eef3f1;border-radius:6px;overflow:hidden;}
+  .pp-row .ppb{position:absolute;top:0;left:0;bottom:0;background:linear-gradient(90deg,var(--navy),var(--navy2));border-radius:6px;}
+  .pp-row .ppv{width:54px;flex:0 0 auto;text-align:right;font-size:12.5px;font-weight:700;color:var(--navy);}
+  .migrate{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .migrate .mg{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;}
+  .migrate .mgh{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .migrate p{margin:0;font-size:12.5px;color:#3a4754;}
+  .sim{background:var(--gold-soft);border:1px solid #ecd9a8;border-radius:12px;padding:14px 16px;margin-top:12px;font-size:13.5px;color:#5a4413;}
+  .sim b{color:#7a5a12;}
+  .master-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px;}
+  .master-col{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--card);}
+  .master-col.m h4{margin:0 0 10px;color:var(--navy);font-size:15px;}
+  .master-col.b h4{margin:0 0 10px;color:var(--gold);font-size:15px;}
+  .master-col ul{margin:0;padding-left:18px;font-size:13.5px;color:#3a4754;}
+  .master-col li{margin:7px 0;}
+  .irr{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .irr .ix{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;border-top:3px solid var(--navy);}
+  .irr .ix.hi{border-top-color:var(--red);}
+  .irr .ix.mid{border-top-color:var(--gold);}
+  .irr .ix.lo{border-top-color:var(--green);}
+  .irr .ixt{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .irr p{margin:0;font-size:12.5px;color:#3a4754;}
+  .stress-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .stress{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--card);}
+  .stress.gap{border-left:4px solid var(--red);}
+  .stress.tech{border-left:4px solid var(--gold);}
+  .stress.policy{border-left:4px solid var(--navy2);}
+  .stress .st{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .stress p{margin:0;font-size:12.5px;color:#3a4754;}
+  /* demand v6 */
+  .demand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .demand-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;}
+  .dm-type{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .dm-type.pull{background:var(--red-soft);color:var(--red);}
+  .dm-type.push{background:var(--gold-soft);color:#8a6418;}
+  .demand-card h4{margin:0 0 8px;font-size:15px;color:var(--navy);}
+  .demand-card .dm-payer,.demand-card .dm-will,.demand-card .dm-proof{font-size:12.5px;color:#3a4754;margin:7px 0;}
+  .demand-card .dm-payer b,.demand-card .dm-will b,.demand-card .dm-proof b{color:#2c3a47;}
+  .pullverdict{background:var(--navy-soft);border:1px solid #cfe0f0;border-radius:12px;padding:14px 18px;margin-top:14px;font-size:14px;color:#1d3a5e;}
+  .pullverdict b{color:var(--navy);}
+  /* good/bad marker */
+  .vs-yes{color:var(--green);font-weight:700;}
+  .vs-no{color:var(--red);font-weight:700;}
+  /* radar */
+  .radar{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .radar-col{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--card);}
+  .radar-col.sub{border-top:3px solid var(--red);}
+  .radar-col.gap{border-top:3px solid var(--gold);}
+  .radar-col.water{border-top:3px solid var(--navy2);}
+  .radar-col h4{margin:0 0 10px;font-size:14.5px;color:var(--navy);}
+  .radar-item{font-size:13px;color:#3a4754;margin:9px 0;padding-left:14px;position:relative;}
+  .radar-item::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--navy2);}
+  /* health */
+  .health{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:8px;}
+  .health-item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px;}
+  .health-item .hi-t{font-size:13px;font-weight:700;color:var(--navy);}
+  .health-item .hi-c{font-size:12.5px;color:#3a4754;margin-top:5px;}
+  .health-item .hi-w{font-size:12px;color:var(--muted);margin-top:5px;}
+  .health-item.warn{border-left:4px solid var(--red);}
+  .bullbear{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;}
+  .bb{border-radius:12px;padding:15px 17px;}
+  .bb.bull{background:var(--green-soft);border:1px solid #bfe6cf;}
+  .bb.bear{background:var(--red-soft);border:1px solid #f3c9c9;}
+  .bb h4{margin:0 0 8px;font-size:14px;}
+  .bb.bull h4{color:var(--green);}
+  .bb.bear h4{color:var(--red);}
+  .bb p{margin:0;font-size:13px;color:#3a4754;}
+  /* 机构/阵营观点分歧 */
+  .opinion{display:flex;flex-direction:column;gap:14px;margin-top:10px;}
+  .op-item{border:1px solid #e3e9f0;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(20,43,71,.06),0 1px 2px rgba(20,43,71,.04);}
+  .op-topic{background:linear-gradient(90deg,#1d3a5e,#2b5488);color:#fff;padding:10px 14px;font-size:14px;font-weight:700;}
+  .op-topic .op-tag{font-size:11px;font-weight:600;background:rgba(255,255,255,.18);padding:2px 9px;border-radius:20px;margin-left:8px;}
+  .op-body{display:grid;grid-template-columns:1fr 1fr;}
+  .op-side{padding:12px 14px;font-size:12.5px;line-height:1.75;color:#3a4754;}
+  .op-a{background:#eef2f7;border-right:1px solid #e3e9f0;}
+  .op-b{background:#f7f1e6;}
+  .op-camp{font-weight:700;color:var(--navy);font-size:12px;margin-bottom:5px;display:flex;align-items:center;gap:7px;}
+  .op-camp .dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;}
+  .op-a .dot{background:#2b5488;}
+  .op-b .dot{background:#bd9a55;}
+  .op-core{padding:9px 14px;background:#fff8ec;border-top:2px solid var(--gold);font-size:12.5px;color:#7a5b1e;line-height:1.7;}
+  .op-core b{color:#9a6b16;}
+  /* deal risk */
+  .dr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:8px;}
+  .dr-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;}
+  .dr-card .dr-type{font-size:12.5px;font-weight:700;color:var(--navy);}
+  .dr-sev{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:9px;margin:8px 0;}
+  .dr-sev.h{background:var(--red-soft);color:var(--red);}
+  .dr-sev.m{background:var(--gold-soft);color:#8a6418;}
+  .dr-sev.l{background:var(--green-soft);color:var(--green);}
+  .dr-card p{margin:0;font-size:12.5px;color:#3a4754;}
+  /* catalyst */
+  .cat-horizon{margin-top:14px;}
+  .cat-horizon .ch-t{font-size:14px;font-weight:750;color:var(--navy);margin:14px 0 8px;display:flex;align-items:center;gap:8px;}
+  .cat-horizon .ch-t .chip2{font-size:11px;background:var(--navy);color:#fff;padding:2px 9px;border-radius:10px;}
+  .cat-list{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 10px;}
+  .cat-row{display:flex;align-items:center;gap:12px;padding:10px 8px;border-bottom:1px solid var(--line);font-size:13px;}
+  .cat-row:last-child{border-bottom:none;}
+  .cat-row .ct{width:96px;flex:0 0 auto;font-weight:600;color:#33414f;}
+  .cat-row .ce{flex:1 1 auto;color:#3a4754;}
+  .cat-row .cd{width:120px;flex:0 0 auto;text-align:center;font-weight:700;font-size:12px;border-radius:8px;padding:3px 0;}
+  .cat-row .cd.up{background:var(--red-soft);color:var(--red);}
+  .cat-row .cd.down{background:var(--green-soft);color:var(--green);}
+  .cat-row .cd.both{background:var(--gold-soft);color:#8a6418;}
+  /* insight */
+  .asym-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .asym{border-radius:14px;padding:16px;color:#fff;}
+  .asym.up{background:linear-gradient(135deg,#1e9d6a,#157a48);}
+  .asym.safe{background:linear-gradient(135deg,#1d3a5e,#142b47);}
+  .asym.trap{background:linear-gradient(135deg,#a85d2c,#7d4220);}
+  .asym .at{font-size:14.5px;font-weight:800;margin-bottom:8px;}
+  .asym p{margin:0;font-size:12.5px;line-height:1.6;opacity:.95;}
+  .triage-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 10px;margin-top:14px;overflow-x:auto;}
+  .triage-wrap table{min-width:760px;}
+  .exit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px;}
+  .exit-col{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--card);}
+  .exit-col .ex-h{font-size:13px;font-weight:750;color:var(--navy);margin-bottom:8px;}
+  .exit-col p{margin:0;font-size:12.5px;color:#3a4754;}
+  .verdict{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:16px 20px;margin-top:6px;font-size:14px;color:#3a4754;}
+  .verdict b{color:var(--navy);}
+  .two-table-note{font-size:13px;color:var(--muted);margin:18px 0 4px;padding:10px 14px;background:var(--navy-soft);border-radius:10px;}
+  .src{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6;}
+  footer{margin-top:30px;background:#142b47;color:var(--slate);padding:28px 0;font-size:12.5px;}
+  footer .wrap p{margin:0 0 10px;line-height:1.7;}
+  footer b{color:#fff;}
+  .disclaimer{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:14px 16px;margin-top:6px;color:#cdddec;}
+  /* ===== polish ===== */
+  section{padding:38px 0 10px;}
+  .kpi,.tcard,.tier,.prod-card,.rnd,.vf,.master-col,.irr .ix,.stress,.demand-card,.health-item,.dr-card,.exit-col,.chart,.tbl-wrap,.lead,.verdict,.cat-list,.prod-grid,.rnd-cards,.valueflow,.migrate,.radar-col,.bullbear .bb{box-shadow:0 1px 3px rgba(20,43,71,.06),0 1px 2px rgba(20,43,71,.04);transition:box-shadow .2s,transform .2s;}
+  .kpi:hover,.tcard:hover,.tier:hover,.prod-card:hover,.rnd:hover,.vf:hover,.master-col:hover,.irr .ix:hover,.stress:hover,.demand-card:hover,.health-item:hover,.dr-card:hover,.exit-col:hover{box-shadow:0 6px 18px rgba(20,43,71,.12);transform:translateY(-2px);}
+  .tbl-wrap table tbody tr:hover{background:#f7f9fc;}
+  .sec-head h2{position:relative;}
+  @media print{
+    .sidebar{display:none;}
+    body{background:#fff;padding-left:0;}
+    .hero{background:#1d3a5e !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    section{page-break-inside:avoid;}
+  }
+  @media(max-width:980px){
+    body{padding-left:0;}
+    .sidebar{position:sticky;top:0;width:100%;height:auto;flex-direction:row;overflow-x:auto;}
+    .side-brand{border-bottom:none;border-right:1px solid rgba(255,255,255,.1);white-space:nowrap;}
+    .toc{display:flex;padding:10px;flex-wrap:nowrap;}
+    .toc a{border-left:none;white-space:nowrap;}
+  }
+</style>
+</head>
+<body>
+<div id="gate" class="gate">
+  <div class="gate-box">
+    <div class="gate-title">🔒 内容已加密</div>
+    <div class="gate-sub">请输入访问密码</div>
+    <input id="gate-pwd" type="password" class="gate-input" placeholder="访问密码" autocomplete="off" />
+    <button id="gate-btn" class="gate-btn">解锁</button>
+    <div id="gate-err" class="gate-err"></div>
+  </div>
+</div>
+<style>
+.gate{position:fixed;inset:0;z-index:2147483647;background:linear-gradient(135deg,#0f1420,#1a2236);display:flex;align-items:center;justify-content:center;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif}
+.gate-box{background:#fff;border-radius:16px;padding:36px 40px;width:320px;max-width:86vw;box-shadow:0 20px 60px rgba(0,0,0,.45);text-align:center}
+.gate-title{font-size:20px;font-weight:700;color:#111827;margin-bottom:6px}
+.gate-sub{font-size:13px;color:#6b7280;margin-bottom:20px}
+.gate-input{width:100%;box-sizing:border-box;padding:12px 14px;font-size:15px;border:1px solid #d1d5db;border-radius:10px;outline:none;margin-bottom:14px}
+.gate-input:focus{border-color:#2563eb}
+.gate-btn{width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.gate-btn:hover{background:#1d4ed8}
+.gate-err{color:#dc2626;font-size:13px;margin-top:12px;min-height:18px}
+</style>
+<script>
+(function(){
+  var PWD="hanbuff";
+  function unlock(){ var g=document.getElementById("gate"); if(g&&g.parentNode){ g.parentNode.removeChild(g); } }
+  function check(){ var v=document.getElementById("gate-pwd").value; var err=document.getElementById("gate-err"); if(v===PWD){ unlock(); } else { err.textContent="密码错误，请重试"; } }
+  window.addEventListener("load",function(){ var btn=document.getElementById("gate-btn"); var inp=document.getElementById("gate-pwd"); if(btn) btn.addEventListener("click",check); if(inp){ inp.addEventListener("keydown",function(e){ if(e.key==="Enter") check(); }); inp.focus(); } });
+})();
+</script>
+
+
+<!-- LEFT SIDEBAR TOC -->
+<aside class="sidebar">
+  <div class="side-brand">
+    <div class="sb-t">INDUSTRY CHAIN</div>
+    <div class="sb-n">硅透镜产业链<br>分析</div>
+    <div class="sb-v">结构化分析</div>
+  </div>
+  <nav class="toc">
+    <a href="#def"><span class="num">01</span>定义与核心矛盾</a>
+    <a href="#panorama"><span class="num">02</span>全景双视图</a>
+    <a href="#layers"><span class="num">03</span>分层受益逻辑</a>
+    <a href="#biz"><span class="num">04</span>头部公司拆解</a>
+    <a href="#demand"><span class="num">05</span>需求真实性</a>
+    <a href="#power"><span class="num">06</span>权力·卡脖子</a>
+    <a href="#profit"><span class="num">07</span>价值·利润池</a>
+    <a href="#radar"><span class="num">08</span>机会雷达</a>
+    <a href="#real"><span class="num">09</span>真伪受益</a>
+    <a href="#health"><span class="num">10</span>健康度·风险</a>
+    <a href="#verdict"><span class="num">11</span>客观判断</a>
+    <a href="#catalyst"><span class="num">12</span>催化剂日历</a>
+    <a href="#insight"><span class="num">13</span>投资启示</a>
+    <a href="#chart"><span class="num">末</span>涨跌·估值全景</a>
+  </nav>
+</aside>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="wrap">
+      <span class="tag">产业链深度分析</span>
+      <h1>硅透镜（Silicon Lens / 晶圆级光学元件）产业链分析</h1>
+      <p class="sub">覆盖硅基/玻璃晶圆级透镜（WLO/WLS）上中下游全环节：从上游光刻·热模压·玻璃晶圆设备与材料，到中游晶圆级光学元件制造，再到下游智能手机 3D sensing、AR/VR、车载 LiDAR、红外热成像等终端。拆解谁真正卡住工艺、谁在叙事、钱往哪走。结构：全景双视图 + 头部公司拆解 + 需求真实性 + 权力与卡脖子 + 价值流转 + 机会雷达 + 真伪受益 + 健康度 + 客观判断 + 催化剂 + 投资启示 + 涨跌/估值双表。</p>
+      <div class="meta">
+        <span>作者：<b>HanBuff</b></span>
+        <span>数据日期：<b>2026-08-22（年报/招股书快照，非当日行情）</b></span>
+        <span>数据来源：<b>公司招股书/年报 + WebSearch 公开研报交叉验证</b></span>
+        <span>涨跌口径：<b>涨红 · 跌绿（A 股习惯）</b></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- KEY TAKEAWAYS -->
+  <section style="padding-top:28px;">
+    <div class="kpis">
+      <div class="kpi"><div class="h">当前最受益环节</div><div class="v">上游 · 设备 + 玻璃/硅晶圆 <small>确定性最高（卖铲人）</small></div></div>
+      <div class="kpi"><div class="h">利润池高地</div><div class="v">晶圆级光刻/热模压设备 + 微纳光学龙头 <small>壁垒+客户双护城河；苏纳占硅透镜全球 70%+</small></div></div>
+      <div class="kpi"><div class="h">最大卡脖子</div><div class="v">WLO 光刻/纳米压印设备 + 高纯玻璃晶圆 <small>海外主导；硅透镜 IDM 国内已突破</small></div></div>
+    </div>
+  </section>
+
+  <!-- 01 定义 -->
+  <section id="def">
+    <div class="sec-head"><span class="no">01</span><h2>定义与核心投资矛盾</h2><span class="en">Definition & Core Tension</span></div>
+    <div class="lead">
+      <b>一句话定义：</b>硅透镜指以<b>硅晶圆或玻璃晶圆</b>为基底，用<b>光刻、热模压、纳米压印、镀膜</b>等半导体级工艺在晶圆上<b>批量制造</b>的微光学元件（微透镜阵列 MLA、衍射光学元件 DOE、晶圆级透镜 WLO、晶圆级透镜堆叠 WLS）。它把传统"研磨-抛光"的单件光学，升级为"一片晶圆同时产出成千上万个透镜"的半导体制造范式，是智能手机 3D sensing、AR/VR、车载 LiDAR、红外热成像小型化的底层使能技术。
+    </div>
+    <div class="tiercards" style="margin-top:16px;">
+      <div class="tcard">
+        <div class="th">为何此刻必须看</div>
+        <h4>技术 + 需求拐点</h4>
+        <p>①AR/VR 与 AI 眼镜光学预算占比从 2020 年 8% 升至 22%（IDC capex 跟踪，DataHorizzon 引述）；②手机计算摄影多摄化、潜望式长焦普及；③车载 LiDAR 固态化催热 WLO-DOE 光束整形；④红外热成像晶圆级封装降本放量。</p>
+        <h4>当前所处阶段</h4>
+        <p>部分环节（手机 3D sensing 用 WLO 微透镜）已规模化；AR/车载 LiDAR 仍商业化早期，处于从"示范"到"上量"临界点。</p>
+        <span class="cert high">★ 多场景同时 inflection</span>
+      </div>
+      <div class="tcard">
+        <div class="th">核心投资矛盾</div>
+        <h4>宏大叙事 vs 极早期兑现</h4>
+        <p>远期 WLO 市场空间被多家机构给出 12.8 亿~89 亿美元（2030）的悬殊口径，但当前多数国内参与者该业务营收占比仍低，估值易透支。</p>
+        <h4>真刚需 vs 伪叙事</h4>
+        <p>区分手机 3D sensing（已验证刚需）与消费级 AR 光波导（仍待爆款）。避免把"概念贴牌"当"核心玩家"。</p>
+        <span class="cert mid">⚠ 估值透支风险</span>
+      </div>
+      <div class="tcard">
+        <div class="th">关键路线/形态分野</div>
+        <h4>路线A：玻璃晶圆级（热模压）</h4>
+        <p>蓝特光学、AMS OSRAM 主用；高折射率玻璃、低损耗，适合成像与 AR。</p>
+        <h4>路线B：硅基晶圆级刻蚀微透镜</h4>
+        <p>半导体工艺兼容、成本极低，适合 MLA/DOE 大批量；<b>苏纳光电</b>以晶圆级深硅刻蚀工艺占据光通信硅透镜全球 70%+ 份额，红外硅透镜用于 8–14μm 透射。</p>
+        <span class="realpill t">路线无高下，场景分野</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 全景双视图 -->
+  <section id="panorama">
+    <div class="sec-head v4"><span class="no">02</span><h2>产业链全景：物料流 + 价值流双视图</h2><span class="en">Panorama Dual-View</span></div>
+    <div class="lead">产业链核心判断：<b>上游设备与高纯玻璃晶圆是卖水人高地（无论哪条路线都要用），中游晶圆级光学制造是当前估值博弈主战场，下游应用最易蹭概念。</b></div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">① 物料流：上 → 中 → 下</h3>
+    <div class="chain">
+      <div class="tier up">
+        <div class="tname"><span class="dot"></span>上游 · 设备与材料</div>
+        <div class="trole">卖铲人，需求刚性</div>
+        <div class="seg"><div class="lbl">晶圆级制造设备</div><div class="pills"><span class="pill real">EV Group</span><span class="pill real">SUSS MicroTec</span><span class="pill real">Applied/Canon 纳米压印</span></div></div>
+        <div class="seg"><div class="lbl">基底材料</div><div class="pills"><span class="pill real">Corning 高纯熔融石英</span><span class="pill real">HOYA/AGC 高折玻璃</span><span class="pill real">硅晶圆</span></div></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="tier mid">
+        <div class="tname"><span class="dot"></span>中游 · 晶圆级光学制造</div>
+        <div class="trole">掌握核心工艺，分化</div>
+        <div class="seg"><div class="lbl">玻璃晶圆级透镜</div><div class="pills"><span class="pill real">蓝特光学</span><span class="pill real">AMS OSRAM</span><span class="pill real">炬光科技(收购)</span></div></div>
+        <div class="seg"><div class="lbl">硅基晶圆级微透镜</div><div class="pills"><span class="pill real">苏纳光电</span><span class="pill real">苏州迈时光电</span><span class="pill real">未上市·IPO辅导</span></div></div>
+        <div class="seg"><div class="lbl">红外/精密透镜</div><div class="pills"><span class="pill real">水晶光电</span><span class="pill real">舜宇光学</span><span class="pill real">福光股份</span></div></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="tier down">
+        <div class="tname"><span class="dot"></span>下游 · 终端应用</div>
+        <div class="trole">用产品的人，最易蹭概念</div>
+        <div class="seg"><div class="lbl">消费电子</div><div class="pills"><span class="pill real">苹果/华为 3D sensing</span><span class="pill real">Meta/Apple AR</span></div></div>
+        <div class="seg"><div class="lbl">车载/红外</div><div class="pills"><span class="pill real">禾赛/速腾 LiDAR</span><span class="pill real">睿创/高德/大立 热成像</span></div></div>
+      </div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">② 价值流：成本/毛利/集中度</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>技术/产品形态</th><th>代表企业（国内 / 国外）</th><th>终端成本占比</th><th>毛利率区间</th><th>集中度 CR3</th></tr></thead>
+      <tbody>
+        <tr><td>WLO 光刻/热模压设备</td><td>EVG/SUSS/Canon / 国产在研</td><td>产线资本开支主体</td><td>55–70%（设备）</td><td>~85%（外资主导）</td></tr>
+        <tr><td>高纯玻璃/硅晶圆</td><td>Corning/HOYA / 蓝特(部分)</td><td>~8–15%</td><td>40–60%</td><td>~70%（海外）</td></tr>
+        <tr><td>晶圆级光学元件(MLA/DOE/硅透镜)</td><td>苏纳/蓝特/水晶/AMS / 舜宇</td><td>模组 3–12%</td><td>45–65%（龙头）</td><td>~55%（硅透镜 CR1 极高）</td></tr>
+        <tr><td>下游光学模组/整机</td><td>舜宇/欧菲/睿创/高德</td><td>终端售价主体</td><td>30–55%</td><td>~35%（分散）</td></tr>
+      </tbody>
+    </table></div>
+    <div class="src">成本占比/毛利率/CR3 为按行业 BOM 拆解与龙头财报毛利的<b>估算/行业口径</b>，非精确并表财务数据；WLO 市场规模口径差异见 Ch10 观点分歧。</div>
+  </section>
+
+  <!-- 03 分层与受益逻辑 + 产品拆解图 -->
+  <section id="layers">
+    <div class="sec-head"><span class="no">03</span><h2>上中下游分层与受益逻辑</h2><span class="en">Benefit Logic & Certainty</span></div>
+    <div class="tiercards">
+      <div class="tcard"><div class="th">上游 · 设备与材料</div>
+        <h4>代表公司</h4><p>EV Group（WLO 光刻/压印/堆叠设备）、Corning（高纯熔融石英玻璃晶圆）、HOYA（高折玻璃）、Zeiss/Nikon/Canon（光刻物镜）。</p><h4>受益逻辑</h4><p>无论中游谁胜、哪条技术路线，都要采购设备与基底材料——典型卖水人。</p>
+        <h4>确定性</h4><p><span class="stars">★★★★★</span> 最高。</p>
+        <span class="realpill t">真受益 · 强</span><span class="cert high">确定性：高</span></div>
+      <div class="tcard"><div class="th">中游 · 晶圆级光学制造</div>
+        <h4>代表公司</h4><p><b>苏纳光电（未上市·IPO辅导）</b>：光通信硅透镜全球市占率 70%+，累计出货超 7 亿只，客户覆盖全球 95% 以上光模块企业。蓝特光学（玻璃非球面热模压、玻璃晶圆 WLO）、水晶光电（红外截止滤光片/棱镜）、AMS OSRAM（WLO 微透镜 3D sensing）、炬光科技（收购 ams OSRAM 微纳光学资产）。</p><h4>受益逻辑</h4><p>直接卡位"一片晶圆产万颗透镜"的范式升级；客户认证壁垒高。硅透镜细分已被苏纳占据绝对龙头，新进入者机会在玻璃 WLO 与车载/AR 新场景。</p>
+        <h4>确定性</h4><p><span class="stars">★★★☆</span> 中高但分化（手机已放量，AR/车载早期）。</p>
+        <span class="realpill t">真受益（少数）</span><span class="cert mid">确定性：中</span></div>
+      <div class="tcard"><div class="th">下游 · 终端应用</div>
+        <h4>代表公司</h4><p>苹果/华为（3D sensing）、Meta/Apple（AR）、禾赛/速腾（LiDAR）、睿创/高德/大立（红外热成像）。</p><h4>受益逻辑</h4><p>需求拉动端；但"硅透镜概念"易被整机厂与二三线光学厂蹭。</p>
+        <h4>确定性</h4><p><span class="stars">★★☆</span> 易蹭概念。</p>
+        <span class="realpill f">真伪混杂</span><span class="cert low">确定性：低~中</span></div>
+    </div>
+
+    <!-- 产品拆解图（爆炸视图 + 传统/新结构对比） -->
+    <figure style="margin:26px 0;background:#fff;border:1px solid #e7ecf2;border-left:4px solid #bd9a55;border-radius:14px;padding:20px 22px 16px;box-shadow:0 6px 20px rgba(29,58,94,.08);">
+      <svg viewBox="0 0 680 815" style="width:100%;height:auto;font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;" role="img" aria-label="硅透镜晶圆级光学元件产品爆炸视图拆解">
+        <defs>
+          <!-- 阴影滤镜 -->
+          <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+            <feOffset dx="0" dy="4" result="offsetblur"/>
+            <feComponentTransfer>
+              <feFuncA type="linear" slope="0.25"/>
+            </feComponentTransfer>
+            <feMerge>
+              <feMergeNode/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+            <feOffset dx="0" dy="6" result="offsetblur"/>
+            <feComponentTransfer>
+              <feFuncA type="linear" slope="0.18"/>
+            </feComponentTransfer>
+            <feMerge>
+              <feMergeNode/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <!-- 硅晶圆金属质感 -->
+          <linearGradient id="siWaferTop" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#8a9caf"/>
+            <stop offset="25%" stop-color="#c9d4df"/>
+            <stop offset="45%" stop-color="#eef3f7"/>
+            <stop offset="55%" stop-color="#dfe8ef"/>
+            <stop offset="75%" stop-color="#a7b8c7"/>
+            <stop offset="100%" stop-color="#7a8fa3"/>
+          </linearGradient>
+          <linearGradient id="siWaferEdge" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#5c6f7f"/>
+            <stop offset="40%" stop-color="#94a6b6"/>
+            <stop offset="100%" stop-color="#4d5e6d"/>
+          </linearGradient>
+          <!-- 玻璃质感 -->
+          <linearGradient id="glassTop" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#e8f4fa" stop-opacity="0.95"/>
+            <stop offset="30%" stop-color="#ffffff" stop-opacity="0.98"/>
+            <stop offset="50%" stop-color="#d6eaf2" stop-opacity="0.92"/>
+            <stop offset="70%" stop-color="#f0f8fb" stop-opacity="0.96"/>
+            <stop offset="100%" stop-color="#c8dde8" stop-opacity="0.94"/>
+          </linearGradient>
+          <linearGradient id="glassEdge" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#a8c8d6"/>
+            <stop offset="50%" stop-color="#d6eaf2"/>
+            <stop offset="100%" stop-color="#8fb8c9"/>
+          </linearGradient>
+          <!-- 光刻胶/压印胶 -->
+          <linearGradient id="resistTop" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f5e6c8"/>
+            <stop offset="35%" stop-color="#fdf6e3"/>
+            <stop offset="55%" stop-color="#f9edd0"/>
+            <stop offset="80%" stop-color="#e8d4a8"/>
+            <stop offset="100%" stop-color="#d9c188"/>
+          </linearGradient>
+          <linearGradient id="resistEdge" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#cbb27a"/>
+            <stop offset="100%" stop-color="#a68b52"/>
+          </linearGradient>
+          <!-- 镀膜虹彩 -->
+          <linearGradient id="coatTop" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#9fcde0"/>
+            <stop offset="20%" stop-color="#c4e0ec"/>
+            <stop offset="40%" stop-color="#e8d9f0"/>
+            <stop offset="60%" stop-color="#d4e8b8"/>
+            <stop offset="80%" stop-color="#b8dce8"/>
+            <stop offset="100%" stop-color="#9fcde0"/>
+          </linearGradient>
+          <linearGradient id="coatEdge" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#7aa8bd"/>
+            <stop offset="100%" stop-color="#5d8da3"/>
+          </linearGradient>
+          <!-- 微透镜球面 -->
+          <radialGradient id="lensDome" cx="35%" cy="30%" r="65%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+            <stop offset="20%" stop-color="#e8f4fa" stop-opacity="0.85"/>
+            <stop offset="55%" stop-color="#b8d4e3" stop-opacity="0.75"/>
+            <stop offset="85%" stop-color="#7aa8bd" stop-opacity="0.55"/>
+            <stop offset="100%" stop-color="#4d8198" stop-opacity="0.35"/>
+          </radialGradient>
+          <radialGradient id="lensDomeHighlight" cx="30%" cy="25%" r="40%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+          </radialGradient>
+          <!-- 光线路径 -->
+          <linearGradient id="rayGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#d6463b" stop-opacity="0.15"/>
+            <stop offset="50%" stop-color="#d6463b" stop-opacity="0.45"/>
+            <stop offset="100%" stop-color="#d6463b" stop-opacity="0.15"/>
+          </linearGradient>
+          <!-- 晶圆notch -->
+          <linearGradient id="notch" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#4d5e6d"/>
+            <stop offset="100%" stop-color="#6a7e90"/>
+          </linearGradient>
+        </defs>
+
+        <!-- 标题 -->
+        <text x="340" y="30" text-anchor="middle" font-size="18" font-weight="800" fill="#1d3a5e">晶圆级光学元件（WLO）· 产品爆炸视图拆解</text>
+        <text x="340" y="52" text-anchor="middle" font-size="12.5" fill="#3a4754">自下而上：硅/玻璃基底 → 光刻胶图形化 → 微透镜阵列 MLA/DOE → 光学镀膜 → 晶圆级堆叠键合 → 切割封装</text>
+
+        <!-- 主链路红色箭头（左） -->
+        <line x1="54" y1="485" x2="54" y2="95" stroke="#d6463b" stroke-width="2.5" stroke-opacity="0.7"/>
+        <path d="M54,89 L47,104 L61,104 Z" fill="#d6463b"/>
+        <text transform="rotate(-90 30 290)" x="30" y="290" text-anchor="middle" font-size="11.5" font-weight="700" fill="#d6463b">工艺流（基底 → 封装）</text>
+
+        <!-- 中心虚轴 -->
+        <line x1="260" y1="500" x2="260" y2="75" stroke="#aeb9c7" stroke-width="1" stroke-dasharray="3 5"/>
+
+        <!-- ===== 爆炸视图层：从底到顶 ===== -->
+        <!-- 第6层 切割/封装 -->
+        <g transform="translate(120,75)" filter="url(#dropShadow)">
+          <path d="M12,14 L288,14 L300,0 L24,0 Z" fill="#eaf0f6" stroke="#7a8fa3" stroke-width="1"/>
+          <path d="M0,28 L12,14 L288,14 L300,0 L300,22 L288,36 L12,36 L0,22 Z" fill="url(#siWaferTop)" stroke="#5c6f7f" stroke-width="1.5"/>
+          <path d="M0,28 L0,22 L12,36 L12,42 Z" fill="url(#siWaferEdge)"/>
+          <path d="M288,36 L300,22 L300,28 L288,42 Z" fill="#4d5e6d"/>
+          <circle cx="26" cy="18" r="11" fill="#2b5488" stroke="#fff" stroke-width="1.5"/>
+          <text x="26" y="22" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">6</text>
+          <line x1="60" y1="14" x2="60" y2="36" stroke="#4d5e6d" stroke-width="1" stroke-dasharray="2 2"/>
+          <line x1="240" y1="14" x2="240" y2="36" stroke="#4d5e6d" stroke-width="1" stroke-dasharray="2 2"/>
+        </g>
+
+        <!-- 第5层 WLS堆叠键合 -->
+        <g transform="translate(120,135)" filter="url(#dropShadow)">
+          <path d="M8,10 L292,10 L304,-4 L20,-4 Z" fill="#f9edd0" stroke="#cbb27a" stroke-width="1"/>
+          <path d="M0,24 L8,10 L292,10 L304,-4 L304,16 L292,30 L8,30 L0,16 Z" fill="url(#resistTop)" stroke="#a68b52" stroke-width="1.5"/>
+          <path d="M0,24 L0,16 L8,30 L8,38 Z" fill="url(#resistEdge)"/>
+          <path d="M292,30 L304,16 L304,24 L292,38 Z" fill="#a68b52"/>
+          <circle cx="26" cy="14" r="11" fill="#bd9a55" stroke="#fff" stroke-width="1.5"/>
+          <text x="26" y="18" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">5</text>
+        </g>
+
+        <!-- 第4层 光学镀膜 -->
+        <g transform="translate(120,205)" filter="url(#dropShadow)">
+          <path d="M4,6 L296,6 L308,-8 L16,-8 Z" fill="#b8dce8" stroke="#7aa8bd" stroke-width="1"/>
+          <path d="M0,16 L4,6 L296,6 L308,-8 L308,8 L296,18 L4,18 L0,8 Z" fill="url(#coatTop)" stroke="#5d8da3" stroke-width="1.5"/>
+          <path d="M0,16 L0,8 L4,18 L4,26 Z" fill="url(#coatEdge)"/>
+          <path d="M296,18 L308,8 L308,16 L296,26 Z" fill="#5d8da3"/>
+          <circle cx="26" cy="8" r="11" fill="#2b5488" stroke="#fff" stroke-width="1.5"/>
+          <text x="26" y="12" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">4</text>
+        </g>
+
+        <!-- 第3层 微透镜阵列 MLA/DOE -->
+        <g transform="translate(120,265)" filter="url(#softShadow)">
+          <path d="M0,0 L8,-12 L292,-12 L300,0 L300,18 L292,30 L8,30 L0,18 Z" fill="url(#glassTop)" stroke="#8fb8c9" stroke-width="1.5"/>
+          <path d="M0,0 L0,18 L8,30 L8,12 Z" fill="url(#glassEdge)"/>
+          <path d="M292,30 L300,18 L300,0 L292,12 Z" fill="#7aa8bd"/>
+          <g transform="translate(18,-12)">
+            <ellipse cx="20" cy="0" rx="18" ry="8" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.5"/>
+            <ellipse cx="20" cy="-2" rx="7" ry="3" fill="url(#lensDomeHighlight)"/>
+            <ellipse cx="58" cy="0" rx="18" ry="8" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.5"/>
+            <ellipse cx="58" cy="-2" rx="7" ry="3" fill="url(#lensDomeHighlight)"/>
+            <ellipse cx="96" cy="0" rx="18" ry="8" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.5"/>
+            <ellipse cx="96" cy="-2" rx="7" ry="3" fill="url(#lensDomeHighlight)"/>
+            <ellipse cx="134" cy="0" rx="18" ry="8" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.5"/>
+            <ellipse cx="134" cy="-2" rx="7" ry="3" fill="url(#lensDomeHighlight)"/>
+            <ellipse cx="172" cy="0" rx="18" ry="8" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.5"/>
+            <ellipse cx="172" cy="-2" rx="7" ry="3" fill="url(#lensDomeHighlight)"/>
+            <ellipse cx="210" cy="0" rx="18" ry="8" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.5"/>
+            <ellipse cx="210" cy="-2" rx="7" ry="3" fill="url(#lensDomeHighlight)"/>
+            <ellipse cx="248" cy="0" rx="18" ry="8" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.5"/>
+            <ellipse cx="248" cy="-2" rx="7" ry="3" fill="url(#lensDomeHighlight)"/>
+          </g>
+          <g transform="translate(38,0)">
+            <ellipse cx="20" cy="0" rx="16" ry="7" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.5" opacity="0.85"/>
+            <ellipse cx="58" cy="0" rx="16" ry="7" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.5" opacity="0.85"/>
+            <ellipse cx="96" cy="0" rx="16" ry="7" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.5" opacity="0.85"/>
+            <ellipse cx="134" cy="0" rx="16" ry="7" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.5" opacity="0.85"/>
+            <ellipse cx="172" cy="0" rx="16" ry="7" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.5" opacity="0.85"/>
+            <ellipse cx="210" cy="0" rx="16" ry="7" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.5" opacity="0.85"/>
+          </g>
+          <circle cx="26" cy="10" r="11" fill="#1d3a5e" stroke="#fff" stroke-width="1.5"/>
+          <text x="26" y="14" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">3</text>
+        </g>
+
+        <!-- 第2层 光刻胶/压印胶 -->
+        <g transform="translate(120,345)" filter="url(#dropShadow)">
+          <path d="M8,10 L292,10 L304,-4 L20,-4 Z" fill="#f9edd0" stroke="#cbb27a" stroke-width="1"/>
+          <path d="M0,24 L8,10 L292,10 L304,-4 L304,16 L292,30 L8,30 L0,16 Z" fill="url(#resistTop)" stroke="#a68b52" stroke-width="1.5"/>
+          <path d="M0,24 L0,16 L8,30 L8,38 Z" fill="url(#resistEdge)"/>
+          <path d="M292,30 L304,16 L304,24 L292,38 Z" fill="#a68b52"/>
+          <rect x="30" y="8" width="20" height="10" rx="1" fill="#bd9a55" opacity="0.4"/>
+          <rect x="60" y="8" width="20" height="10" rx="1" fill="#bd9a55" opacity="0.4"/>
+          <rect x="90" y="8" width="20" height="10" rx="1" fill="#bd9a55" opacity="0.4"/>
+          <rect x="120" y="8" width="20" height="10" rx="1" fill="#bd9a55" opacity="0.4"/>
+          <rect x="150" y="8" width="20" height="10" rx="1" fill="#bd9a55" opacity="0.4"/>
+          <rect x="180" y="8" width="20" height="10" rx="1" fill="#bd9a55" opacity="0.4"/>
+          <rect x="210" y="8" width="20" height="10" rx="1" fill="#bd9a55" opacity="0.4"/>
+          <rect x="240" y="8" width="20" height="10" rx="1" fill="#bd9a55" opacity="0.4"/>
+          <circle cx="26" cy="14" r="11" fill="#bd9a55" stroke="#fff" stroke-width="1.5"/>
+          <text x="26" y="18" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">2</text>
+        </g>
+
+        <!-- 第1层 基底晶圆 -->
+        <g transform="translate(120,415)" filter="url(#softShadow)">
+          <ellipse cx="150" cy="38" rx="158" ry="28" fill="#000" opacity="0.08"/>
+          <ellipse cx="150" cy="0" rx="150" ry="28" fill="url(#siWaferTop)" stroke="#5c6f7f" stroke-width="1.5"/>
+          <path d="M0,0 A150,28 0 0,0 300,0 L300,18 A150,28 0 0,1 0,18 Z" fill="url(#siWaferEdge)" stroke="#4d5e6d" stroke-width="1"/>
+          <path d="M285,8 L300,0 L300,18 L285,10 Z" fill="url(#notch)"/>
+          <path d="M30,4 L270,4" stroke="#7a8fa3" stroke-width="0.5" opacity="0.3"/>
+          <path d="M30,12 L270,12" stroke="#7a8fa3" stroke-width="0.5" opacity="0.3"/>
+          <path d="M30,20 L270,20" stroke="#7a8fa3" stroke-width="0.5" opacity="0.3"/>
+          <path d="M60,-18 L60,22" stroke="#7a8fa3" stroke-width="0.5" opacity="0.3"/>
+          <path d="M120,-24 L120,26" stroke="#7a8fa3" stroke-width="0.5" opacity="0.3"/>
+          <path d="M180,-24 L180,26" stroke="#7a8fa3" stroke-width="0.5" opacity="0.3"/>
+          <path d="M240,-18 L240,22" stroke="#7a8fa3" stroke-width="0.5" opacity="0.3"/>
+          <circle cx="30" cy="-10" r="11" fill="#1d3a5e" stroke="#fff" stroke-width="1.5"/>
+          <text x="30" y="-6" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">1</text>
+        </g>
+
+        <!-- 光线路径示意 -->
+        <g opacity="0.7">
+          <path d="M40,180 Q120,170 150,265" stroke="url(#rayGrad)" stroke-width="3" fill="none"/>
+          <path d="M40,240 Q120,230 150,265" stroke="url(#rayGrad)" stroke-width="3" fill="none"/>
+          <path d="M40,300 Q120,290 150,265" stroke="url(#rayGrad)" stroke-width="3" fill="none"/>
+          <path d="M150,265 Q180,230 260,220" stroke="url(#rayGrad)" stroke-width="3" fill="none"/>
+          <path d="M150,265 Q180,290 260,300" stroke="url(#rayGrad)" stroke-width="3" fill="none"/>
+          <circle cx="40" cy="180" r="3" fill="#d6463b"/>
+          <circle cx="40" cy="240" r="3" fill="#d6463b"/>
+          <circle cx="40" cy="300" r="3" fill="#d6463b"/>
+          <text x="32" y="245" text-anchor="end" font-size="12" fill="#d6463b" font-weight="800">入射光</text>
+        </g>
+
+        <!-- 右侧编号标签（主注释区：大字号、高对比、浅底衬板） -->
+        <g>
+          <rect x="456" y="82" width="178" height="36" rx="6" fill="#f7f9fb" stroke="#e1e7ee" stroke-width="1"/>
+          <line x1="424" y1="100" x2="456" y2="100" stroke="#1d3a5e" stroke-width="1.5"/>
+          <circle cx="470" cy="100" r="13" fill="#1d3a5e" filter="url(#dropShadow)"/><text x="470" y="105" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">6</text>
+          <text x="488" y="96" font-size="14" font-weight="800" fill="#0f1c2e">切割 / 晶圆级封装</text>
+          <text x="488" y="112" font-size="12" fill="#3a4754">晶圆级封装 → 进入 3D sensing / AR 模组</text>
+        </g>
+        <g>
+          <rect x="456" y="142" width="178" height="36" rx="6" fill="#f7f9fb" stroke="#e1e7ee" stroke-width="1"/>
+          <line x1="424" y1="160" x2="456" y2="160" stroke="#bd9a55" stroke-width="1.5"/>
+          <circle cx="470" cy="160" r="13" fill="#bd9a55" filter="url(#dropShadow)"/><text x="470" y="165" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">5</text>
+          <text x="488" y="156" font-size="14" font-weight="800" fill="#0f1c2e">WLS 晶圆级透镜堆叠</text>
+          <text x="488" y="172" font-size="12" fill="#3a4754">ams OSRAM WLS 多层对准键合</text>
+        </g>
+        <g>
+          <rect x="456" y="204" width="178" height="36" rx="6" fill="#f7f9fb" stroke="#e1e7ee" stroke-width="1"/>
+          <line x1="424" y1="222" x2="456" y2="222" stroke="#2b5488" stroke-width="1.5"/>
+          <circle cx="470" cy="222" r="13" fill="#2b5488" filter="url(#dropShadow)"/><text x="470" y="227" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">4</text>
+          <text x="488" y="218" font-size="14" font-weight="800" fill="#0f1c2e">光学镀膜</text>
+          <text x="488" y="234" font-size="12" fill="#3a4754">水晶光电窄带/红外截止膜系</text>
+        </g>
+        <g>
+          <rect x="456" y="274" width="178" height="36" rx="6" fill="#f7f9fb" stroke="#e1e7ee" stroke-width="1"/>
+          <line x1="424" y1="292" x2="456" y2="292" stroke="#1d3a5e" stroke-width="1.5"/>
+          <circle cx="470" cy="292" r="13" fill="#1d3a5e" filter="url(#dropShadow)"/><text x="470" y="297" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">3</text>
+          <text x="488" y="288" font-size="14" font-weight="800" fill="#0f1c2e">MLA / DOE 微透镜阵列</text>
+          <text x="488" y="304" font-size="12" fill="#3a4754">蓝特/AMS 热模压或光刻一次成形</text>
+        </g>
+        <g>
+          <rect x="456" y="349" width="178" height="36" rx="6" fill="#f7f9fb" stroke="#e1e7ee" stroke-width="1"/>
+          <line x1="424" y1="367" x2="456" y2="367" stroke="#bd9a55" stroke-width="1.5"/>
+          <circle cx="470" cy="367" r="13" fill="#bd9a55" filter="url(#dropShadow)"/><text x="470" y="372" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">2</text>
+          <text x="488" y="363" font-size="14" font-weight="800" fill="#0f1c2e">光刻胶 / 纳米压印胶</text>
+          <text x="488" y="379" font-size="12" fill="#3a4754">SUSS/EVG 光刻或纳米压印定义阵列</text>
+        </g>
+        <g>
+          <rect x="456" y="427" width="178" height="36" rx="6" fill="#f7f9fb" stroke="#e1e7ee" stroke-width="1"/>
+          <line x1="424" y1="445" x2="456" y2="445" stroke="#1d3a5e" stroke-width="1.5"/>
+          <circle cx="470" cy="445" r="13" fill="#1d3a5e" filter="url(#dropShadow)"/><text x="470" y="450" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">1</text>
+          <text x="488" y="441" font-size="14" font-weight="800" fill="#0f1c2e">硅 / 玻璃基底晶圆</text>
+          <text x="488" y="457" font-size="12" fill="#3a4754">硅 / Corning 高纯石英 / HOYA 高折玻璃</text>
+        </g>
+
+        <!-- 分隔线 -->
+        <line x1="30" y1="522" x2="650" y2="522" stroke="#e7ecf2" stroke-width="1.5"/>
+
+        <!-- 传统 vs 晶圆级 侧视剖面对比 -->
+        <text x="340" y="548" text-anchor="middle" font-size="16" font-weight="800" fill="#1d3a5e">传统分立光学  vs  晶圆级光学（侧视剖面示意）</text>
+        <text x="340" y="570" text-anchor="middle" font-size="12.5" fill="#3a4754">左：单件研磨-抛光-镀膜-组装，多道工序、低一致性；右：一片晶圆一次成形万颗、高一致性、低成本</text>
+        <text x="340" y="590" text-anchor="middle" font-size="11.5" fill="#5a6675">图例：<tspan fill="#d6463b" font-weight="800">— 旧式分立互连/空气间隙</tspan>　<tspan fill="#2b5488" font-weight="800">■ 晶圆级集成结构</tspan>　<tspan fill="#bd9a55" font-weight="800">■ 胶层/键合层</tspan></text>
+
+        <!-- 左：传统分立光学 侧视 -->
+        <rect x="45" y="605" width="280" height="170" rx="8" fill="#fbedec" stroke="#f3c9c9" stroke-width="1.5"/>
+        <text x="185" y="630" text-anchor="middle" font-size="14" font-weight="800" fill="#d6463b">传统分立光学</text>
+        <rect x="70" y="645" width="30" height="115" rx="2" fill="#d4dbe3" stroke="#9aa8b8" stroke-width="1"/>
+        <rect x="260" y="645" width="30" height="115" rx="2" fill="#d4dbe3" stroke="#9aa8b8" stroke-width="1"/>
+        <rect x="100" y="655" width="160" height="95" rx="3" fill="#eaf0f6" stroke="#b9c2cd" stroke-width="1" stroke-dasharray="4 3"/>
+        <path d="M115,670 Q130,655 145,670 Q130,685 115,670 Z" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.8"/>
+        <path d="M118,670 L142,670" stroke="#7aa8bd" stroke-width="0.5" opacity="0.5"/>
+        <path d="M165,685 Q180,670 195,685 Q180,700 165,685 Z" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.8"/>
+        <path d="M168,685 L192,685" stroke="#7aa8bd" stroke-width="0.5" opacity="0.5"/>
+        <path d="M215,700 Q230,685 245,700 Q230,715 215,700 Z" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.8"/>
+        <path d="M218,700 L242,700" stroke="#7aa8bd" stroke-width="0.5" opacity="0.5"/>
+        <line x1="115" y1="670" x2="145" y2="685" stroke="#d6463b" stroke-width="1.5" stroke-dasharray="4 2"/>
+        <line x1="165" y1="685" x2="195" y2="700" stroke="#d6463b" stroke-width="1.5" stroke-dasharray="4 2"/>
+        <path d="M55,690 L115,670" stroke="#d6463b" stroke-width="1.5" stroke-dasharray="3 2" fill="none" opacity="0.6"/>
+        <path d="M115,670 L165,685" stroke="#d6463b" stroke-width="1.5" stroke-dasharray="3 2" fill="none" opacity="0.6"/>
+        <path d="M165,685 L215,700" stroke="#d6463b" stroke-width="1.5" stroke-dasharray="3 2" fill="none" opacity="0.6"/>
+        <path d="M215,700 L280,690" stroke="#d6463b" stroke-width="1.5" stroke-dasharray="3 2" fill="none" opacity="0.6"/>
+        <text x="185" y="748" text-anchor="middle" font-size="12" fill="#3a4754">单件加工：研磨→抛光→镀膜→组装</text>
+        <text x="185" y="764" text-anchor="middle" font-size="12" fill="#3a4754">工序多、空气间隙大、一致性靠人工</text>
+
+        <!-- 右：晶圆级光学 侧视 -->
+        <rect x="355" y="605" width="280" height="170" rx="8" fill="#eef2f7" stroke="#cfe0f0" stroke-width="1.5"/>
+        <text x="495" y="630" text-anchor="middle" font-size="14" font-weight="800" fill="#2b5488">晶圆级光学（WLO）</text>
+        <rect x="380" y="705" width="230" height="35" rx="4" fill="url(#siWaferTop)" stroke="#5c6f7f" stroke-width="1"/>
+        <rect x="380" y="695" width="230" height="10" rx="2" fill="url(#resistTop)" stroke="#a68b52" stroke-width="0.8"/>
+        <rect x="380" y="670" width="230" height="25" rx="2" fill="url(#glassTop)" stroke="#8fb8c9" stroke-width="1"/>
+        <path d="M385,670 Q390,660 395,670 Q400,680 405,670 Q410,660 415,670 Q420,680 425,670 Q430,660 435,670 Q440,680 445,670 Q450,660 455,670 Q460,680 465,670 Q470,660 475,670 Q480,680 485,670 Q490,660 495,670 Q500,680 505,670 Q510,660 515,670" fill="url(#lensDome)" stroke="#7aa8bd" stroke-width="0.6"/>
+        <rect x="380" y="665" width="230" height="5" rx="1" fill="url(#coatTop)" stroke="#5d8da3" stroke-width="0.6"/>
+        <rect x="380" y="640" width="230" height="25" rx="2" fill="url(#glassTop)" stroke="#8fb8c9" stroke-width="1" opacity="0.9"/>
+        <rect x="380" y="635" width="230" height="5" rx="1" fill="url(#resistTop)" stroke="#a68b52" stroke-width="0.6"/>
+        <path d="M365,690 L385,670 L415,660 L445,670 L475,660 L505,670 L535,660" stroke="#2b5488" stroke-width="2.5" fill="none" opacity="0.7"/>
+        <path d="M365,690 L385,670" stroke="#1e9d6a" stroke-width="2" fill="none" opacity="0.8"/>
+        <path d="M535,660 L570,650" stroke="#2b5488" stroke-width="2" fill="none" opacity="0.7"/>
+        <text x="495" y="748" text-anchor="middle" font-size="12" fill="#3a4754">一片晶圆一次光刻成形，万颗同版</text>
+        <text x="495" y="764" text-anchor="middle" font-size="12" fill="#3a4754">无空气间隙、一致性极高、尺寸↓70%</text>
+
+        <text x="340" y="792" text-anchor="middle" font-size="11.5" fill="#5a6675">注：本对比为制程范式示意，非具体产品工程图；剖面、尺寸与层厚均已压缩以适配版面。</text>
+      </svg>
+      <figcaption style="margin-top:12px;font-size:13px;line-height:1.75;color:#3a4754;">物料流串讲：<b style="color:#1d3a5e">硅/玻璃基底晶圆</b> → <b style="color:#7a5b1e">图形化胶定义阵列</b> → <b style="color:#1d3a5e">微透镜阵列 MLA/DOE 一次成形</b> → <b style="color:#2b5488">光学镀膜</b> → <b style="color:#7a5b1e">WLS 多层堆叠键合</b> → <b style="color:#1d3a5e">切割晶圆级封装</b>进模组。传统 vs 晶圆级的核心差异：前者单件研磨-抛光-镀膜-组装、一致性靠人工、成本随精度指数涨；后者一片晶圆同版产出万颗、一次光刻成形、一致性极高、单位成本随规模骤降——<b style="color:#1d3a5e">价值向"掌握晶圆级工艺与设备"的集成方收敛，纯单件冷加工厂被挤压</b>。</figcaption>
+    </figure>
+  </section>
+
+  <!-- 04 头部公司业务拆解 -->
+  <section id="biz">
+    <div class="sec-head"><span class="no">04</span><h2>头部公司业务拆解与在研布局</h2><span class="en">Business Breakdown & R&D · 含未上市/海外头部</span></div>
+    <div class="lead">谁真正有业务、产品怎么拆、量价利多少、技术路线怎么分、头部在研往哪走；并补充<b>商业模式/unit economics</b>与<b>海外对标/失败案例</b>。<b>未上市与海外龙头公司须作为一级对象覆盖</b>。</div>
+    <div class="biz-sub"><h3><span class="k">1</span>谁真正有该项业务 <span class="note">已上市 + 未上市头部 + 海外龙头</span></h3>
+      <p style="font-size:13.5px;color:#3a4754;">已上市公司列该项业务主营占比/进展；未上市但市占率高的头部（注明融资轮次/估值/来源）；海外龙头（注明母公司/财报）。标注"概念贴牌 vs 真有业务"。</p></div>
+    <div class="biz-sub"><h3><span class="k">2</span>产品种类拆分</h3>
+      <div class="prod-grid">
+        <div class="prod-card"><div class="pn">玻璃非球面透镜（热模压）</div><div class="pm">成像/激光准直/车载/光通信</div><p>蓝特光学核心，自研模具补偿+多模多穴热模压（来源：蓝特光学 2020 招股书）。</p></div>
+        <div class="prod-card"><div class="pn">玻璃晶圆 / WLO 晶圆</div><div class="pm">AR 波导基底、WLO 加工母版</div><p>蓝特 2025 光学晶圆营收约 1.17 亿元（占 7.68%）；扩产 12 吋碳化硅/高折玻璃晶圆（来源：蓝特 2026 定增公告）。</p></div>
+        <div class="prod-card"><div class="pn">WLO 微透镜 / WLS 堆叠</div><div class="pm">手机 3D sensing、内窥镜</div><p>ams OSRAM 拥有国际领先 WLO/WLS 技术；炬光科技 2024 收购其微纳光学资产获工艺（来源：炬光科技 2024 公告）。</p></div>
+        <div class="prod-card"><div class="pn">硅基晶圆级微透镜芯片</div><div class="pm">光通信 100G–1.6T 光模块 / CPO / 红外测温成像</div><p><b>苏纳光电</b>：国内首家、全球第三家大规模量产，累计出货超 7 亿只，光通信市占率 70%+，客户覆盖全球 95% 以上光模块企业；2026 年 8 月 IPO 辅导备案（华泰联合）。</p></div>
+        <div class="prod-card"><div class="pn">红外截止滤光片 / 棱镜</div><div class="pm">手机摄像、潜望式、3D 窄带</div><p>水晶光电主营，薄膜光学镀膜龙头（来源：水晶光电 2008 招股书）。</p></div>
+      </div></div>
+    <div class="biz-sub"><h3><span class="k">3</span>出货量 · 单价 · 毛利 <span class="note">须标注来源口径</span></h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>产品/细分</th><th>年出货量/产能</th><th>单价区间</th><th>毛利率</th><th>数据来源口径</th></tr></thead>
+        <tbody>
+          <tr><td>蓝特光学玻璃晶圆</td><td>2025 产量 65.65 万件 / 销量 62.89 万件</td><td>—</td><td>主营毛利 ~40-50%（估算）</td><td><span class="badge t">公司公告 2025</span></td></tr>
+          <tr><td>水晶光电红外截止滤光片</td><td>年出货亿级（组立件）</td><td>—</td><td>薄膜光学毛利 ~25-30%</td><td><span class="badge t">年报/招股书</span></td></tr>
+          <tr><td>ams OSRAM WLO 微透镜</td><td>随旗舰手机 3D sensing 放量</td><td>—</td><td>光学半导体段 EBITDA ~23%</td><td><span class="badge f">海外财报 2024Q3</span></td></tr>
+          <tr><td>苏纳光电硅透镜</td><td>累计出货超 7 亿只；光通信全球市占率 70%+</td><td>—</td><td>未披露（估算 45–60%）</td><td><span class="badge t">公司官网/辅导公告 2026</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="src">行业量价利来自行业研报；单品量价利来自公司公告/IR/招股书；未上市/海外以融资/估值/财报披露为准；非披露的一律标"估算/行业口径"。</div></div>
+    <div class="biz-sub"><h3><span class="k">4</span>技术路线对比</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>技术路线</th><th>原理</th><th>核心指标</th><th>典型应用</th><th>代表公司</th></tr></thead>
+        <tbody>
+          <tr><td>玻璃晶圆级热模压</td><td>模具补偿+多穴压型</td><td>面形 PV&lt;0.1λ、批量化</td><td>成像/AR 基底</td><td>蓝特光学、AMS</td></tr>
+          <tr><td>硅基晶圆级深硅刻蚀 MLA</td><td>大尺寸硅晶圆阵列化刻蚀，半导体工艺</td><td>纳米级精度、高一致性、低成本</td><td>光通信/CPO/红外</td><td>苏纳光电、苏州迈时光电</td></tr>
+          <tr><td>光刻/纳米压印 MLA</td><td>光刻胶图形化一次阵列</td><td>亚微米对准、低成本</td><td>DOE、手机 3D</td><td>EVG/SUSS、炬光</td></tr>
+          <tr><td>硅基红外透镜</td><td>硅 8-14μm 高透射</td><td>耐环境、增透镀膜</td><td>红外热成像</td><td>苏纳光电、睿创/高德/大立</td></tr>
+        </tbody>
+      </table></div></div>
+    <div class="biz-sub"><h3><span class="k">5</span>头部公司在研布局（R&D pipeline）</h3>
+      <div class="rnd-cards">
+        <div class="rnd"><div class="rn">蓝特光学 <span class="badge t">在研</span></div><p>12 吋碳化硅/高折玻璃/铌酸锂光学晶圆，AR 波导产业化项目（2026 定增，达产预计营收 9.17 亿元）。</p></div>
+        <div class="rnd"><div class="rn">炬光科技 <span class="badge t">在研</span></div><p>整合 ams OSRAM 微纳光学 WLO/WLS 资产，拓展消费电子内窥镜与汽车投影照明。</p></div>
+        <div class="rnd"><div class="rn">ams OSRAM <span class="badge t">在研</span></div><p>紧凑型近红外 WLO 图像传感器（AR 眼动追踪）、1130nm VCSEL 3D 相机（抗阳光）。</p></div>
+        <div class="rnd"><div class="rn">苏纳光电 <span class="badge t">未上市·IPO辅导</span></div><p>硅透镜基本盘扩产（苏州纳米城 46 栋新基地、泰国工厂）；第二曲线 8 英寸硅电容/IPD 产线已开工，切入 AI 先进封装/高速光模块。</p></div>
+        <div class="rnd"><div class="rn">EV Group <span class="badge t">在研</span></div><p>WLO 高量产 lithography/molding/stacking 系统，2026 年收到多家大厂订单（PMR 引述）。</p></div>
+      </div></div>
+    <div class="biz-sub"><h3><span class="k">6</span>商业模式与 unit economics <span class="note">决定估值逻辑</span></h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>代表玩家</th><th>商业模式</th><th>毛利特征</th><th>估值锚方法</th></tr></thead>
+        <tbody>
+          <tr><td>苏纳光电（IDM·未上市）</td><td>晶圆级硅透镜+硅电容 IDM 全链条</td><td>估算 45–60%（龙头壁垒）</td><td>IPO 估值 / PS</td></tr>
+          <tr><td>蓝特/水晶（元件供应）</td><td>定制化光学元件量产</td><td>40–65%（技术壁垒）</td><td>PE / 出货量折现</td></tr>
+          <tr><td>EV Group（设备）</td><td>设备销售 + 工艺授权</td><td>55–70%</td><td>PS（高倍数）</td></tr>
+          <tr><td>ams OSRAM（IDM）</td><td> emitter+微光学+传感器集成</td><td>段 EBITDA ~20-23%</td><td>EV/EBITDA</td></tr>
+        </tbody>
+      </table></div>
+      <div class="src">商业模式决定估值方法：设备给 PS、元件给 PE、IDM 看 EBITDA；毛利率差异直接拉开估值倍数。</div></div>
+    <div class="biz-sub"><h3><span class="k">7</span>海外对标 / 失败案例 <span class="note">尽调透镜</span></h3>
+      <div class="rnd-cards">
+        <div class="rnd"><div class="rn" style="color:var(--green);">成了：苏纳光电 硅透镜</div><p>以晶圆级深硅刻蚀工艺做到光通信硅透镜全球 70%+、累计出货 7 亿只，证明"半导体工艺+光学"在国内可走通 IDM 规模化；对后续硅电容/IPD 扩张有估值参照。</p></div>
+        <div class="rnd"><div class="rn" style="color:var(--green);">成了：ams OSRAM WLO 微透镜</div><p>凭 WLO/WLS 卡位苹果 3D sensing 与内窥镜，验证"晶圆级微光学+消费电子"可规模化；对国内（蓝特/炬光）可迁移。</p></div>
+        <div class="rnd"><div class="rn" style="color:var(--red);">警示：ams OSRAM microLED 关键项目被砍</div><p>2024 年遭客户取消 microLED 关键项目，计提 5.76 亿欧元，凸显大客户集中与单一项目依赖风险；对国内依赖北美大客户的元件厂是警示。</p></div>
+      </div></div>
+  </section>
+
+  <!-- 05 需求真实性 -->
+  <section id="demand">
+    <div class="sec-head v6"><span class="no">05</span><h2>需求真实性验证</h2><span class="en">Demand Authenticity</span></div>
+    <div class="lead">区分<b>真实付费拉动（pull）</b>与<b>政策/叙事推动（push）</b>。前者决定放量可信度，后者决定生死。</div>
+    <div class="demand-grid">
+      <div class="demand-card">
+        <span class="dm-type pull">PULL · 真刚需</span>
+        <h4>智能手机 3D sensing / 多摄</h4>
+        <div class="dm-payer"><b>付费方：</b>苹果/华为/安卓旗舰（BOM 内必选）</div>
+        <div class="dm-will"><b>付费意愿：</b>强——结构光/ToF/潜望长焦已成标配，WLO 微透镜是核心件</div>
+        <div class="dm-proof"><b>证据：</b>ams OSRAM WLO 已进入旗舰供应链；蓝特长条棱镜自 iPhone X 起主供（招股书）</div>
+      </div>
+      <div class="demand-card">
+        <span class="dm-type push">PUSH · 叙事强</span>
+        <h4>AR/VR 与 AI 眼镜</h4>
+        <div class="dm-payer"><b>付费方：</b>Meta/Apple/终端消费者</div>
+        <div class="dm-will"><b>付费意愿：</b>中——光波导+WLO 预算占比升至 22%，但爆款未现</div>
+        <div class="dm-proof"><b>证据：</b>多为 PR/示范；蓝特 AR 晶圆营收仅 7.68%（2025），待规模订单</div>
+      </div>
+      <div class="demand-card">
+        <span class="dm-type pull">PULL · 真刚需</span>
+        <h4>数据中心高速光模块 / CPO</h4>
+        <div class="dm-payer"><b>付费方：</b>全球光模块厂商（中际/新易盛/Coherent 等）</div>
+        <div class="dm-will"><b>付费意愿：</b>强——100G–1.6T 光模块硅透镜为标配，AI 算力驱动需求刚性</div>
+        <div class="dm-proof"><b>证据：</b>苏纳光电硅透镜累计出货超 7 亿只，覆盖全球 95% 以上光模块企业，光通信市占率 70%+</div>
+      </div>
+      <div class="demand-card">
+        <span class="dm-type push">PUSH · 场景扩张</span>
+        <h4>车载 LiDAR / 红外热成像</h4>
+        <div class="dm-payer"><b>付费方：</b>车企 ADAS / 军工 / 工业测温</div>
+        <div class="dm-will"><b>付费意愿：</b>中——固态 LiDAR 催热 WLO-DOE；红外晶圆级封装降本</div>
+        <div class="dm-proof"><b>证据：</b>LiDAR WLO 订单 2024-25 增 34%（DataHorizzon）；红外全球 ~35 亿美元（2025，东方财富引）</div>
+      </div>
+    </div>
+    <div class="pullverdict">
+      <b>pull vs push 综合判断：约「7 分真、3 分叙事」。</b> 光模块/CPO 与手机 3D sensing/多摄是实打实的 pull（刚需+支付路径+供应链证据），AR/车载/红外仍以 push 为主、处于从示范到上量的临界点。结论：<b>下游放量可信度排序为光模块/CPO &gt; 手机 &gt; 红外 &gt; 车载 LiDAR &gt; 消费 AR</b>；投资节奏应锚定真实付费节点（AI 光模块 Capex、旗舰机型迭代、LiDAR 车型量产）而非 PR。
+    </div>
+  </section>
+
+  <!-- 06 权力·卡脖子 -->
+  <section id="power">
+    <div class="sec-head v4"><span class="no">06</span><h2>产业权力结构与卡脖子清单</h2><span class="en">Power & Bottlenecks</span></div>
+    <div class="lead">链主 = 掌握<b>晶圆级制造设备 IP</b>与<b>高纯玻璃晶圆</b>的玩家。当前权力结构：上游设备（EVG/SUSS/Canon）与材料（Corning/HOYA）双核主导，中游制造分散竞争。</div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:20px 0 8px;">议价能力对决：上游设备/材料商 vs 中游光学元件厂</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>议价维度</th><th>上游设备/材料商（EVG/Corning）</th><th>中游光学元件厂（蓝特/水晶等）</th></tr></thead>
+      <tbody>
+        <tr><td>行业集中度</td><td class="vs-yes">高（设备 CR3 ~85%）</td><td class="vs-no">中（多玩家竞争）</td></tr>
+        <tr><td>供应商转换成本</td><td class="vs-yes">高（工艺绑定设备）</td><td class="vs-no">中（可多源采购材料）</td></tr>
+        <tr><td>信息对称性</td><td class="vs-no">低（设备工艺保密）</td><td class="vs-yes">高（下游主导）</td></tr>
+        <tr><td>备选方案</td><td class="vs-no">少（国产替代早期）</td><td class="vs-yes">有（多基底/工艺路线）</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note"><b>结论：</b>上游短期议价强（设备与高纯材料壁垒），但中游龙头通过纵向延伸至玻璃晶圆/硅晶圆、自研模具削弱外采依赖。在硅透镜细分，<b>苏纳光电已占全球光通信 70%+ 份额，议价权向单一龙头集中</b>；长期议价向"掌握晶圆级工艺+部分自供材料"的集成方倾斜。</p>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">卡脖子 / 应力集中清单</h3>
+    <div class="stress-grid">
+      <div class="stress gap"><div class="st">① WLO 光刻/纳米压印设备</div><p>断供/失效影响：高。EVG/SUSS/Canon 主导，国产光刻级压印设备仍早期。</p></div>
+      <div class="stress tech"><div class="st">② 高纯玻璃晶圆 / 特种材料</div><p>断供/失效影响：高。Corning 熔融石英、HOYA 高折玻璃海外主导；蓝特部分自供。</p></div>
+      <div class="stress policy"><div class="st">③ 大客户认证 / 出口管制</div><p>断供/失效影响：中高。北美大客户集中（ams 前车之鉴）；半导体设备出口管制扰动。</p></div>
+    </div>
+  </section>
+
+  <!-- 07 价值流转 -->
+  <section id="profit">
+    <div class="sec-head v4"><span class="no">07</span><h2>价值流转与利润池</h2><span class="en">Value Flow & Profit Pool</span></div>
+    <div class="lead">资金从终端付费方 → 模组厂 → 元件厂 → 设备/材料商流转；利润主要沉淀在<b>上游设备/材料</b>与<b>掌握晶圆级工艺的中游龙头</b>两端。</div>
+    <div class="valueflow">
+      <div class="vf"><div class="vt">资金流起点</div><div class="vv">终端付费方</div><div class="vx">手机/AR/LiDAR/红外</div></div>
+      <div class="vf"><div class="vt">成本分摊</div><div class="vv">模组厂 X%</div><div class="vx">舜宇/欧菲/整机</div></div>
+      <div class="vf"><div class="vt">利润留存</div><div class="vv">元件厂 X%</div><div class="vx">苏纳/蓝特/水晶/ams</div></div>
+      <div class="vf"><div class="vt">净头寸高地</div><div class="vv">设备/材料 X%</div><div class="vx">EVG/Corning 壁垒</div></div>
+    </div>
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">利润池分布（深度示意·行业估算）</h3>
+    <div class="ppool">
+      <div class="pp-row"><div class="ppn">上游 WLO 设备 / 高纯晶圆</div><div class="ppt"><div class="ppb" style="width:90%;"></div></div><div class="ppv">最高</div></div>
+      <div class="pp-row"><div class="ppn">中游晶圆级光学元件</div><div class="ppt"><div class="ppb" style="width:70%;"></div></div><div class="ppv">中高</div></div>
+      <div class="pp-row"><div class="ppn">下游品牌模组/整机</div><div class="ppt"><div class="ppb" style="width:62%;"></div></div><div class="ppv">中(分散)</div></div>
+      <div class="pp-row"><div class="ppn">单件冷加工（被挤压）</div><div class="ppt"><div class="ppb" style="width:38%;"></div></div><div class="ppv">低</div></div>
+    </div>
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">利润迁移（过去 3 年 → 未来 5 年）</h3>
+    <div class="migrate">
+      <div class="mg"><div class="mgh">过去 3 年</div><p>利润集中在单件精密冷加工与薄膜镀膜（水晶/蓝特传统主业）。</p></div>
+      <div class="mg"><div class="mgh">当前</div><p>向晶圆级工艺（WLO/WLS）与玻璃/硅晶圆材料迁移；<b>苏纳光电硅透镜全球光通信市占率 70%+</b>，蓝特 AR 晶圆营收占比升至 7.68%。</p></div>
+      <div class="mg"><div class="mgh">未来 5 年</div><p>若 AR/车载放量，利润向"掌握晶圆级工艺+自供材料"的集成方集中；硅透镜细分龙头（苏纳）与玻璃 WLO 龙头（蓝特/ams）分化加剧。</p></div>
+    </div>
+    <div class="sim">
+      <b>颠覆情景：</b>若纳米压印/光刻 WLO 设备国产化突破且标准化，中游工艺壁垒下降，<b>最终赢家可能是上游标准设备商 + 下游数据/品牌平台</b>，纯光学元件厂利润被挤压。投资人应优先卡位"设备标准"或"材料资产"。
+    </div>
+  </section>
+
+  <!-- 08 机会雷达 -->
+  <section id="radar">
+    <div class="sec-head"><span class="no">08</span><h2>投资机会雷达</h2><span class="en">Opportunity Radar</span></div>
+    <div class="radar">
+      <div class="radar-col sub"><h4>① 国产替代（窗口已开）</h4>
+        <div class="radar-item">WLO 光刻/纳米压印设备国产化（EVG/SUSS 替代）</div>
+        <div class="radar-item">高纯玻璃晶圆/特种光学材料自供（蓝特碳化硅晶圆立项）</div>
+        <div class="radar-item">硅透镜/硅电容 IDM 龙头 IPO 前窗口（苏纳光电）</div>
+        <div class="radar-item">红外硅透镜全流程自主（苏纳/睿创/高德 IDM）</div>
+      </div>
+      <div class="radar-col gap"><h4>② 供需错配（涨价环节）</h4>
+        <div class="radar-item">AR 光波导基底晶圆产能稀缺、扩产周期长</div>
+        <div class="radar-item">高折玻璃/铌酸锂晶圆供给集中，需求随 AR 起量</div>
+        <div class="radar-item">车规级 WLO-DOE 认证稀缺享溢价</div>
+      </div>
+      <div class="radar-col water"><h4>③ 卖水人（确定性受益）</h4>
+        <div class="radar-item">上游 WLO 设备——无论哪条路线都要用（EVG 类）</div>
+        <div class="radar-item">高纯玻璃晶圆——跨应用通用基底</div>
+        <div class="radar-item">薄膜光学镀膜——跨产品通用工艺</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 真伪受益 -->
+  <section id="real">
+    <div class="sec-head"><span class="no">09</span><h2>真受益 vs 伪受益</h2><span class="en">Real vs Nominal</span></div>
+    <div class="lead">三步甄别：①看收入来源（有无真实订单/板块收入）②看链条位置（是否卡不可替代环节）③看估值与兑现（高 PE/深亏是否透支）。</div>
+    <div class="master-grid">
+      <div class="master-col m"><h4>✅ 真受益（核心玩家）</h4>
+        <ul>
+          <li><b>苏纳光电</b>——硅基晶圆级微透镜芯片全球龙头（光通信市占率 70%+，累计出货超 7 亿只），未上市·IPO 辅导中</li>
+          <li><b>蓝特光学</b>——玻璃非球面热模压+玻璃晶圆 WLO 真有业务（AR 晶圆营收 1.17 亿/2025）</li>
+          <li><b>水晶光电</b>——红外截止滤光片/棱镜薄膜光学龙头，主业即此</li>
+          <li><b>炬光科技</b>——收购 ams OSRAM 微纳光学资产，获 WLO/WLS 工艺</li>
+          <li><b>EV Group</b>——WLO 设备卖水人，2026 获多家大厂订单</li>
+          <li><b>睿创/高德/大立</b>——红外硅透镜 IDM/整机，晶圆级封装降本</li>
+        </ul>
+      </div>
+      <div class="master-col b"><h4>⚠ 伪受益 / 概念贴牌</h4>
+        <ul>
+          <li><b>多数"光学概念"二三线厂</b>——仅部分环节、未构成晶圆级能力</li>
+          <li><b>蹭 AR 光波导叙事者</b>——无实质量产、营收占比极低</li>
+          <li><b>单纯设备代理商</b>——非核心工艺持有者</li>
+          <li><b>多家"AI 眼镜概念"</b>——仅部分结构件，未卡晶圆级链路</li>
+        </ul>
+      </div>
+    </div>
+    <div class="verdict"><b>关键判断：</b>A 股"硅透镜/WLO 概念"泛化严重，多数公司仅停留在"部分光学环节"或"参股/切入早期"。<b>真正以晶圆级光学为核心业务的上市公司仍稀缺；未上市龙头苏纳光电已占光通信硅透镜全球 70%+</b>——按"核心链条"给估值需谨慎，其余多为间接受益·非核心。</div>
+  </section>
+
+  <!-- 10 健康度·风险 -->
+  <section id="health">
+    <div class="sec-head v4"><span class="no">10</span><h2>产业健康度体检 + deal 级风险</h2><span class="en">Health Check & Deal Risk</span></div>
+    <h3 style="font-size:15px;color:var(--navy);margin:4px 0 8px;">5 个前瞻健康度指标</h3>
+    <div class="health">
+      <div class="health-item warn"><div class="hi-t">大客户认证节奏</div><div class="hi-c">当前：蓝特/ams 已进旗舰供应链；苏纳覆盖全球 95%+ 光模块企业</div><div class="hi-w">预警线：单一大客户流失 → 营收骤降（ams microLED 前车之鉴）</div></div>
+      <div class="health-item"><div class="hi-t">AR/车载放量进度</div><div class="hi-c">当前：AR 晶圆营收占比仅 7.68%</div><div class="hi-w">预警线：连续 2 年无规模订单 → 叙事证伪</div></div>
+      <div class="health-item warn"><div class="hi-t">设备/材料国产替代</div><div class="hi-c">当前：WLO 设备仍 EVG/SUSS 主导</div><div class="hi-w">预警线：国产化无突破 → 成本与供给受制海外</div></div>
+      <div class="health-item"><div class="hi-t">费用率/盈利</div><div class="hi-c">当前：龙头毛利 40-65%</div><div class="hi-w">预警线：扩产折旧拖累、费用率畸高 → 兑现遥远</div></div>
+      <div class="health-item warn"><div class="hi-t">出口管制/地缘</div><div class="hi-c">当前：半导体设备管制持续</div><div class="hi-w">预警线：关键设备/材料断供 → 产线停摆</div></div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">多空逻辑链</h3>
+    <div class="bullbear">
+      <div class="bb bull"><h4>看多 · 最坚实底座</h4><p>多场景同时 inflection（手机多摄/3D、AR 光学预算升至 22%、固态 LiDAR、红外晶圆级降本）；晶圆级范式把单位成本随规模骤降，是光学小型化不可逆方向；国产替代政策必选。</p></div>
+      <div class="bb bear"><h4>看空 · 最具杀伤力</h4><p>商业化极早期（AR 爆款未现、车载 LiDAR 渗透低）；概念营收占比极低（蓝特 AR 仅 7.68%）；大客户集中依赖（ams 项目被砍计提 5.76 亿欧）；估值易透支叙事。</p></div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">机构 / 阵营观点分歧（多方行业观点综述）</h3>
+    <div class="opinion">
+      <div class="op-item">
+        <div class="op-topic">争议一：WLO 整体市场规模到底多大<span class="op-tag">口径打架</span></div>
+        <div class="op-body">
+          <div class="op-side op-a"><div class="op-camp"><span class="dot"></span>大口径派（pmarketresearch / DataHorizzon）</div>pmarketresearch 给出 2030 年 89 亿美元（@14.2% CAGR，含微透镜/光栅/微镜广义元件）；DataHorizzon 2025 年 24.7 亿美元（@12.3%）。认为 AR+车载 LiDAR+手机计算摄影+AI 光模块四市场同时爆发，行业正从 8-9% 历史增速 inflection 至 12%+。</div>
+          <div class="op-side op-b"><div class="op-camp"><span class="dot"></span>审慎派（Bosson / WiseGuy / 苏纳实绩反推）</div>Bosson 2024 年仅 12.8 亿美元（@15.5%）、WiseGuy 21.8 亿美元（@7.8%）。认为口径含混、狭义 WLO（晶圆级透镜/MLA）远小于广义"微光学元件"；苏纳光电虽在光通信硅透镜占全球 70%+，但该细分整体规模仍有限，AR 放量不及预期会拖累大口径假设。</div>
+        </div>
+        <div class="op-core"><b>核心分歧：</b>差距达 3-7 倍，源于"广义微光学元件"vs"狭义晶圆级透镜"的口径差异。<b>定价含义：</b>若按大口径，国内龙头远期空间被低估；若按审慎口径，当前估值已隐含过高渗透假设。</div>
+      </div>
+      <div class="op-item">
+        <div class="op-topic">争议二：晶圆级路线能否全面替代传统光学<span class="op-tag">路线之争</span></div>
+        <div class="op-body">
+          <div class="op-side op-a"><div class="op-camp"><span class="dot"></span>晶圆级乐观派（EV Group / ams OSRAM / 蓝特）</div>认为 WLO/WLS 把系统尺寸降 70%、单位成本随规模骤降、一致性极高，是手机/AR/内窥镜不可逆方向；EVG 2026 获多家大厂高量产订单印证。</div>
+          <div class="op-side op-b"><div class="op-camp"><span class="dot"></span>传统工艺审慎派（单件冷加工厂 / 部分车载红外）</div>认为晶圆级在超大口径、超高精度非球面、极端环境（车载/军工红外）仍不如单件研磨-镀膜可靠；玻璃晶圆翘曲致复杂设计良率&lt;60%，成本优势仅在超大批量化兑现。</div>
+        </div>
+        <div class="op-core"><b>核心分歧：</b>不是"谁取代谁"，而是<b>场景分野</b>——消费电子/医疗微型化走晶圆级，超大口径/极端环境仍留单件工艺。<b>定价含义：</b>纯单件厂被挤压但非归零，晶圆级厂估值溢价需靠规模订单兑现。</div>
+      </div>
+      <div class="op-item">
+        <div class="op-topic">争议三：AR/AI 眼镜能否成为第二增长极<span class="op-tag">放量时点</span></div>
+        <div class="op-body">
+          <div class="op-side op-a"><div class="op-camp"><span class="dot"></span>乐观派（Meta/Apple 供应链 / 蓝特定增）</div>认为 AI 眼镜 2025-27 起量，光波导+WLO 预算占比从 8%(2020) 升至 22%，蓝特 AR 晶圆扩产（达产营收 9.17 亿）是提前卡位。</div>
+          <div class="op-side op-b"><div class="op-camp"><span class="dot"></span>怀疑派（终端出货跟踪）</div>认为消费 AR 爆款未现，蓝特 AR 晶圆营收占比仅 7.68%(2025)，多数项目仍示范/研发；若 2 年内无规模订单，扩产折旧将拖累利润。</div>
+        </div>
+        <div class="op-core"><b>核心分歧：</b>AR 是"已 inflection"还是"仍需等待"。<b>定价含义：</b>这是中游制造商业绩弹性的最大变量，应锚定旗舰机型/爆款眼镜真实出货而非 PR。</div>
+      </div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">deal 级风险（下沉到标的）</h3>
+    <div class="dr-grid">
+      <div class="dr-card"><div class="dr-type">关键人风险</div><span class="dr-sev h">高</span><p>蓝特实控人徐云明持股集中；技术依赖核心工艺团队，变动影响路线。</p></div>
+      <div class="dr-card"><div class="dr-type">大客户风险</div><span class="dr-sev h">高</span><p>北美大客户集中（ams 遭项目取消计提 5.76 亿欧为前车之鉴），单客户波动致营收骤降。苏纳虽客户覆盖广，但仍需关注光模块行业周期。</p></div>
+      <div class="dr-card"><div class="dr-type">估值/IPO 定价风险</div><span class="dr-sev h">高</span><p>苏纳光电 IPO 辅导中（投后估值约 80 亿），硅透镜基本盘优秀但第二曲线硅电容/IPD 尚未放量；上市定价易透支"AI 算力+国产替代"双叙事。</p></div>
+      <div class="dr-card"><div class="dr-type">技术风险</div><span class="dr-sev m">中</span><p>玻璃晶圆翘曲、复杂 WLO 设计良率&lt;60%，扩产到满产需 3-4 年爬坡。</p></div>
+      <div class="dr-card"><div class="dr-type">地缘/管制风险</div><span class="dr-sev m">中</span><p>半导体级设备/材料出口管制扰动供应链；高纯玻璃海外主导。</p></div>
+    </div>
+  </section>
+
+  <!-- 11 客观判断 -->
+  <section id="verdict">
+    <div class="sec-head"><span class="no">11</span><h2>客观判断</h2><span class="en">Objective Verdict</span></div>
+    <div class="verdict">
+      <b>① 产业定位：</b>晶圆级光学是光学小型化与低成本批量的底层使能技术，横跨消费电子/AR/车载/红外，属"卖铲人+核心元件"双属性。<br>
+      <b>② 技术收敛：</b>玻璃热模压（成像/AR）与光刻/压印 MLA（DOE/手机）两路线并存，非替代；硅基红外透镜在热成像独立成立。竞争从"能否做"转向"良率+成本+客户认证"。<br>
+      <b>③ 市场节奏：</b>手机 3D sensing 已放量（最确定的 pull）；红外随晶圆级封装降本加速；车载 LiDAR/AR 处于 0→1 临界，关键兑现窗在 2026-28。<br>
+      <b>④ 中国位置：</b>中游元件已具全球竞争力——<b>苏纳光电</b>占光通信硅透镜全球 70%+，蓝特/水晶/炬光在玻璃 WLO/镀膜/收购资产上各有卡位；上游设备（EVG 类）与高纯玻璃仍落后，国产替代刚起步。<br>
+      <b>⑤ 资本主线：</b>一级热捧微纳光学/AR 光波导，二级聚焦"真有业务"的元件龙头；估值分化大。<br>
+      <b>⑥ 最大风险：</b>叙事跑赢兑现（AR 占比仅个位数）、大客户集中、估值透支——需基本面（规模订单+良率）承接。
+    </div>
+  </section>
+
+  <!-- 12 催化剂 -->
+  <section id="catalyst">
+    <div class="sec-head v6"><span class="no">12</span><h2>催化剂与时序日历</h2><span class="en">Catalyst Calendar</span></div>
+    <div class="lead">排节奏、定进入时点的依据。催化剂高度依赖<b>旗舰机型迭代 + 大客户设计 win + 扩产达产 + 政策国产替代</b>。</div>
+    <div class="cat-horizon">
+      <div class="ch-t"><span class="chip2">未来 6 个月</span> 2026 H2</div>
+      <div class="cat-list">
+        <div class="cat-row"><span class="ct">持续</span><span class="ce">蓝特 AR 光学晶圆产业化项目推进（定增获批/开工）</span><span class="cd up">利好·中游</span></div>
+        <div class="cat-row"><span class="ct">2026Q3</span><span class="ce">中报披露，检验 AR 晶圆营收占比是否提升</span><span class="cd both">双向·验证</span></div>
+        <div class="cat-row"><span class="ct">2026H2</span><span class="ce">苏纳光电 IPO 辅导推进，关注招股说明书披露与估值定价</span><span class="cd up">利好·一级/Pre-IPO</span></div>
+        <div class="cat-row"><span class="ct">2026H2</span><span class="ce">EVG WLO 设备订单交付、国产压印设备样机进展</span><span class="cd up">利好·上游设备</span></div>
+      </div>
+      <div class="ch-t"><span class="chip2">未来 12 个月</span> 2027</div>
+      <div class="cat-list">
+        <div class="cat-row"><span class="ct">2027</span><span class="ce">蓝特 AR 项目第三年投产（负荷 35%）</span><span class="cd up">利好·中游</span></div>
+        <div class="cat-row"><span class="ct">2027</span><span class="ce">旗舰手机新机迭代，3D sensing/WLO 微透镜增量</span><span class="cd up">利好·全链</span></div>
+        <div class="cat-row"><span class="ct">2027</span><span class="ce">车载 LiDAR 车型量产，WLO-DOE 采购上量</span><span class="cd both">双向</span></div>
+      </div>
+      <div class="ch-t"><span class="chip2">未来 24 个月</span> 2028</div>
+      <div class="cat-list">
+        <div class="cat-row"><span class="ct">2028</span><span class="ce">蓝特 AR 项目满产（负荷 100%，营收 9.17 亿）</span><span class="cd up">利好·里程碑</span></div>
+        <div class="cat-row"><span class="ct">2028</span><span class="ce">消费 AR 爆款若现，第二增长极确认</span><span class="cd up">利好·退出</span></div>
+        <div class="cat-row"><span class="ct">持续</span><span class="ce">若 AR 出货不及预期，扩产折旧拖累利润</span><span class="cd both">待验证</span></div>
+      </div>
+    </div>
+    <p class="note">当前链上可预期催化剂密集度<b>中高</b>：定增开工、中报验证、设备订单三线并行，但缺"AR 爆款"这一明确引爆点。排节奏建议——锚定"大客户设计 win + 扩产达产 + 中报业务占比"三类事件。</p>
+  </section>
+
+  <!-- 13 投资启示 -->
+  <section id="insight">
+    <div class="sec-head v6"><span class="no">13</span><h2>投资启示与动作建议</h2><span class="en">Investment Implications</span></div>
+    <div class="lead">结论为客观梳理下的投资视角提示，非买卖建议，措辞"可关注/宜观望/待催化"。</div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:18px 0 8px;">① 非对称下注点</h3>
+    <div class="asym-grid">
+      <div class="asym up"><div class="at">↑ 高赔率：AR 光波导/晶圆级</div><p>蓝特 AR 晶圆扩产若遇爆款，利润跃迁；但 2-4 年爬坡、依赖单一场景，风险高。</p></div>
+      <div class="asym safe"><div class="at">▣ 稳赚卖水人：WLO 设备/材料</div><p>EVG 类设备、Corning 高纯玻璃——无论中游谁胜都要用；确定性最高，但国产替代前以海外为主。</p></div>
+      <div class="asym trap"><div class="at">⚠ 伪需求陷阱：纯 AR 概念贴牌</div><p>营收占比个位数、无实质量产；宜观望，等出现规模订单再定。</p></div>
+    </div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">② 可投标的 triage（项目池）</h3>
+    <div class="triage-wrap"><table>
+      <thead><tr><th>标的</th><th>路线/环节</th><th>当前轮次/阶段</th><th>估值锚</th><th>开放融资</th><th>可接触性</th></tr></thead>
+      <tbody>
+        <tr><td>蓝特光学(688127)</td><td>玻璃晶圆级/WLO</td><td>已上市</td><td>PE/出货量折现</td><td>二级</td><td>直接</td></tr>
+        <tr><td>水晶光电(002273)</td><td>红外截止/棱镜镀膜</td><td>已上市</td><td>PE</td><td>二级</td><td>直接</td></tr>
+        <tr><td>炬光科技(688167)</td><td>微纳光学/WLO 资产</td><td>已上市</td><td>PE/整合预期</td><td>二级</td><td>直接</td></tr>
+        <tr><td>EV Group（未上市）</td><td>WLO 设备</td><td>私有</td><td>未盈利硬科技</td><td>已不开放</td><td>难</td></tr>
+        <tr><td>苏纳光电</td><td>硅基晶圆级微透镜/硅电容</td><td>未上市·IPO辅导</td><td>IPO 估值/PS（投后约 80 亿）</td><td>Pre-IPO</td><td>一级</td></tr>
+        <tr><td>ams OSRAM（瑞士上市）</td><td>WLO/WLS 微光学</td><td>已上市(SIX:AMS)</td><td>EV/EBITDA</td><td>二级</td><td>直接</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 style="font-size:15px;color:var(--navy);margin:22px 0 8px;">③ 退出路径映射</h3>
+    <div class="exit-grid">
+      <div class="exit-col"><div class="ex-h">科创板</div><p>已上市元件龙头（蓝特/水晶/炬光）主战场，关注定增与业务占比兑现。</p></div>
+      <div class="exit-col"><div class="ex-h">港股 18C</div><p>未盈利微纳光学/AR 资产出海架构候选（如被并购整合后分拆）。</p></div>
+      <div class="exit-col"><div class="ex-h">北交所</div><p>更早阶段光学材料/设备企业培育通道。</p></div>
+      <div class="exit-col"><div class="ex-h">并购</div><p>上市公司收购微纳光学团队（炬光收购 ams 资产即为范本），产业方卡位式收购是重要退出。</p></div>
+    </div>
+  </section>
+
+  <!-- 末章 双表 -->
+  <section id="chart">
+    <div class="sec-head"><span class="no">末</span><h2>代表公司涨跌 / 估值全景</h2><span class="en">Quotes & Valuation</span></div>
+    <div class="lead">涨红跌绿（A 股习惯）。<b>表①</b>列有代码公司当日涨跌；<b>表②</b>列未上市/海外头部估值·融资·财报对照。注：<b>金融行情接口当前断开，下表为年报/招股书经营快照口径，非当日实时涨跌</b>，仅作业务实质与估值锚参考。</div>
+
+    <div class="two-table-note">📌 行情接口（腾讯自选股/wind/NeoData）目前均断开，无法拉取当日涨跌幅。下表以<b>2025 年报经营快照 + 业务占比</b>替代，透明标注；待连接器恢复后替换实时涨跌。</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>公司</th><th>代码</th><th>环节/路线</th><th>2025 关键经营</th><th>业务实质</th><th>真伪</th></tr></thead>
+      <tbody>
+        <tr><td>蓝特光学</td><td>688127</td><td>玻璃晶圆级/WLO</td><td>营收 ~15.36 亿，归母 ~3.9 亿；AR 晶圆营收 1.17 亿(7.68%)</td><td>玻璃非球面热模压+玻璃晶圆真有业务</td><td><span class="badge t">真受益</span></td></tr>
+        <tr><td>水晶光电</td><td>002273</td><td>红外截止/棱镜镀膜</td><td>薄膜光学龙头，主业即此</td><td>红外截止滤光片/棱镜量产</td><td><span class="badge t">真受益</span></td></tr>
+        <tr><td>炬光科技</td><td>688167</td><td>微纳光学/WLO 资产</td><td>2024 收购 ams OSRAM 微纳光学资产</td><td>获 WLO/WLS 工艺与产能</td><td><span class="badge t">真受益</span></td></tr>
+        <tr><td>睿创微纳</td><td>688002</td><td>红外硅透镜/IDM</td><td>全球非制冷红外出货份额 ~33%（第一）</td><td>红外探测+光学+整机 IDM</td><td><span class="badge t">真受益</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="two-table-note">📌 表② 针对未上市 / 海外非独立上市公司（无单日涨跌），列估值·融资·最新财务对照——这些才是产业链真正的话语权持有者（核心玩家集中于此）。</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>公司</th><th>上市状态</th><th>路线/环节</th><th>最新估值 / 融资 / 财务</th><th>关键信号</th></tr></thead>
+      <tbody>
+        <tr><td>苏纳光电</td><td>未上市·IPO辅导（华泰联合）</td><td>硅基晶圆级微透镜/硅电容/IPD</td><td>累计出货超 7 亿只；光通信硅透镜全球市占率 70%+；客户覆盖全球 95% 以上光模块企业；投后估值约 80 亿元</td><td>国内首家/全球第三家大规模量产硅透镜；第二曲线硅电容/IPD 切入 AI 先进封装</td></tr>
+        <tr><td>EV Group（EVG）</td><td>未上市（私有）</td><td>WLO 设备</td><td>私有；2026 获多家大厂高量产订单</td><td>晶圆级光刻/压印/堆叠设备卖水人</td></tr>
+        <tr><td>ams OSRAM</td><td>瑞士上市 SIX:AMS</td><td>WLO/WLS 微光学</td><td>2024 营收 ~34 亿欧元；光学半导体段 EBITDA ~23%</td><td>WLO 微透镜卡位苹果 3D sensing；大客户集中风险</td></tr>
+        <tr><td>Corning</td><td>美股 GLW</td><td>高纯熔融石英玻璃晶圆</td><td>高纯石英/ULE 玻璃供应 EUV/DUV 与 WLO</td><td>上游材料卖水人，海外主导</td></tr>
+        <tr><td>高德红外</td><td>002414（A 股）</td><td>红外硅透镜/IDM</td><td>制冷+非制冷全链，军工总体资质</td><td>红外全产业链自主</td></tr>
+      </tbody>
+    </table></div>
+    <div class="src">行情/市值数据因接口断开，以公司公告、年报、IR 与公开研报（经 Web 检索交叉验证）替代；市场规模数据引自第三方公开测算（见 Ch10 分歧）。"真伪"为基于公开业务的客观梳理，会随产业进展变化。</div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <p><b>数据来源与方法：</b>公司业务与财务数据来自蓝特光学(688127) 2020 招股书及 2025/2026 公告、水晶光电(002273) 招股书、炬光科技(688167) 2024 收购公告、ams OSRAM 2024 年报、<b>苏纳光电官网及 2026 年 8 月 IPO 辅导备案公告</b>；市场规模与行业数据来自 Bosson / WiseGuy / DataHorizzon / pmarketresearch 等第三方公开测算（口径差异见 Ch10）；其余来自 WebSearch 公开研报交叉验证。<b>金融行情接口当前断开，末章以年报经营快照替代当日涨跌，透明标注。</b></p>
+      <p><b>口径说明：</b>涨红跌绿为 A 股习惯；"真/伪受益""确定性""价值流转/利润池/产业权力/机会雷达/健康度/需求真实性/催化剂/投资启示"为基于公开业务与数据的客观梳理与行业估算，非评级、非精确并表财务数据。代表公司严格按"真实产业参与者"遴选，A 股概念映射方单独标注为间接受益、不进入核心链条。</p>
+      <div class="disclaimer">
+        ⚠️ <b>免责声明：</b>本页面仅为产业链结构与公开数据的客观整理，<b>不构成任何投资建议、要约或承诺</b>。催化剂/投资启示章节为基于公开信息的投资视角提示，非买卖建议，措辞"可关注/宜观望/待催化"。技术商业化存在高度不确定性，标注的"真/伪受益"会随产业进展变化。投资有风险，决策需谨慎，请以交易所及公司官方披露信息为准，并咨询持牌专业人士。
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var map = {};
+  links.forEach(function(a){ var id=a.getAttribute('href').slice(1); var s=document.getElementById(id); if(s) map[id]=a; });
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          links.forEach(function(l){l.classList.remove('active');});
+          var a = map[e.target.id]; if(a) a.classList.add('active');
+        }
+      });
+    }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+    Object.keys(map).forEach(function(id){ var el=document.getElementById(id); if(el) obs.observe(el); });
+  }
+})();
+</script>
+</body>
+</html>
