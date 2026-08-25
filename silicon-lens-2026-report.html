@@ -280,36 +280,7 @@
   }
 </style>
 </head>
-<body>
-<div id="gate" class="gate">
-  <div class="gate-box">
-    <div class="gate-title">🔒 内容已加密</div>
-    <div class="gate-sub">请输入访问密码</div>
-    <input id="gate-pwd" type="password" class="gate-input" placeholder="访问密码" autocomplete="off" />
-    <button id="gate-btn" class="gate-btn">解锁</button>
-    <div id="gate-err" class="gate-err"></div>
-  </div>
-</div>
-<style>
-.gate{position:fixed;inset:0;z-index:2147483647;background:linear-gradient(135deg,#0f1420,#1a2236);display:flex;align-items:center;justify-content:center;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif}
-.gate-box{background:#fff;border-radius:16px;padding:36px 40px;width:320px;max-width:86vw;box-shadow:0 20px 60px rgba(0,0,0,.45);text-align:center}
-.gate-title{font-size:20px;font-weight:700;color:#111827;margin-bottom:6px}
-.gate-sub{font-size:13px;color:#6b7280;margin-bottom:20px}
-.gate-input{width:100%;box-sizing:border-box;padding:12px 14px;font-size:15px;border:1px solid #d1d5db;border-radius:10px;outline:none;margin-bottom:14px}
-.gate-input:focus{border-color:#2563eb}
-.gate-btn{width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
-.gate-btn:hover{background:#1d4ed8}
-.gate-err{color:#dc2626;font-size:13px;margin-top:12px;min-height:18px}
-</style>
-<script>
-(function(){
-  var PWD="hanbuff";
-  function unlock(){ var g=document.getElementById("gate"); if(g&&g.parentNode){ g.parentNode.removeChild(g); } }
-  function check(){ var v=document.getElementById("gate-pwd").value; var err=document.getElementById("gate-err"); if(v===PWD){ unlock(); } else { err.textContent="密码错误，请重试"; } }
-  window.addEventListener("load",function(){ var btn=document.getElementById("gate-btn"); var inp=document.getElementById("gate-pwd"); if(btn) btn.addEventListener("click",check); if(inp){ inp.addEventListener("keydown",function(e){ if(e.key==="Enter") check(); }); inp.focus(); } });
-})();
-</script>
-
+<body><div id="gate" class="gate"><div class="gate-box"><div class="gate-lock">🔒</div><h2>内容已加密</h2><p>请输入访问密码以查看报告</p><input id="gate-pwd" type="password" placeholder="请输入密码" autocomplete="off"/><button id="gate-btn">解锁</button><div id="gate-err" class="gate-err"></div></div></div><style>.gate{position:fixed;inset:0;z-index:2147483647;background:linear-gradient(135deg,#0f1420,#1a2236);display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}.gate-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:36px 40px;text-align:center;color:#e8edf5;max-width:340px}.gate-lock{font-size:40px;margin-bottom:8px}.gate-box h2{margin:6px 0;font-size:20px;font-weight:600}.gate-box p{margin:0 0 18px;font-size:13px;color:#9fb0c8}.gate-box input{width:100%;box-sizing:border-box;padding:11px 14px;border-radius:9px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);color:#fff;font-size:15px;outline:none;margin-bottom:12px}.gate-box input:focus{border-color:#6ea8fe}.gate-box button{width:100%;padding:11px;border:none;border-radius:9px;background:linear-gradient(135deg,#3b6fd4,#5b8def);color:#fff;font-size:15px;font-weight:600;cursor:pointer}.gate-box button:hover{opacity:.92}.gate-err{color:#ff8a8a;font-size:12px;min-height:16px;margin-top:8px}</style><script>(function(){var PWD="hanbuff";function unlock(){var g=document.getElementById("gate");if(g&&g.parentNode){g.parentNode.removeChild(g);}}function check(){var v=(document.getElementById("gate-pwd")||{}).value||"";var e=document.getElementById("gate-err");if(v===PWD){try{localStorage.setItem("gate_ok","1");}catch(_){}unlock();}else{if(e)e.textContent="密码错误，请重试";}}function init(){var b=document.getElementById("gate-btn");if(b)b.addEventListener("click",check);var i=document.getElementById("gate-pwd");if(i){i.addEventListener("keydown",function(ev){if(ev.key==="Enter")check();});}try{if(localStorage.getItem("gate_ok")==="1"){unlock();}}catch(_){}}window.addEventListener("load",init);})();</script>
 
 <!-- LEFT SIDEBAR TOC -->
 <aside class="sidebar">
