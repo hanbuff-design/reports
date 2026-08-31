@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<!--
+  travel-handbook · 国际航班版（普吉岛国庆）
+  基底：travel-handbook 统一模板（福州优化版）视觉一致
+  改造点：地图瓦片→OpenStreetMap（泰国 WGS-84 可用）；预算改为「机票+住宿固定+人均花费」；
+          第三章改为当地交通（Grab/包车/双条/渡轮）；补签证/货币/SIM/时差等行前项。
+  行程主源：《十一普吉岛行程.docx》（10.2 芭东 / 10.3 跳岛 / 10.4 海钓 / 10.5 Andamanda+普吉镇），
+          补 10.1 抵达 / 10.6 返程形成 6 日。机票/签证/网络/SIM/汇率等通用行前项为公开常识补充。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>普吉岛国庆 6 日 · 芭东+跳岛+普吉镇</title>
+<link rel="stylesheet" href="https://lib.baomitu.com/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://lib.baomitu.com/leaflet/1.9.4/leaflet.min.css">
+<script src="https://lib.baomitu.com/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  :root{
+    --paper:#f3efe6; --ink:#232220; --ink2:#5b574f; --line:#d8d2c4;
+    --vermilion:#b5462f; --vermilion-soft:#c9664f;
+    --blue:#3a5a82; --amber:#a9761f; --purple:#6a4f8c; --green:#3f7d5a; --cyan:#2f7e86; --pink:#a8456b;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased;}
+  .serif{font-family:Georgia,"Songti SC","Noto Serif SC",serif;}
+  .no-print{}
+  .hero{background:#1b1a18;color:#ece7dc;padding:64px 40px 52px;}
+  .hero .wrap{max-width:1320px;margin:0 auto;}
+  .hero h1{font-size:42px;line-height:1.1;margin:0 0 14px;font-weight:500;letter-spacing:.5px;}
+  .hero .meta{font-size:13px;color:#b9b2a4;letter-spacing:1px;}
+  .hero .sub{font-size:14px;color:#cfc8ba;margin-top:10px;max-width:680px;}
+  .hero .sign{display:inline-block;margin-top:18px;font-size:12px;color:var(--vermilion-soft);border:1px solid #4a4138;padding:3px 10px;border-radius:2px;}
+  .toc{max-width:1320px;margin:18px auto 0;display:flex;flex-wrap:wrap;gap:8px;}
+  .toc a{font-size:12.5px;color:#cdc6b8;text-decoration:none;border:1px solid #423a30;padding:5px 11px;border-radius:20px;transition:.2s;}
+  .toc a:hover{background:var(--vermilion);color:#fff;border-color:var(--vermilion);}
+  .layout{max-width:1320px;margin:0 auto;padding:0 28px 80px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,2fr);gap:40px;align-items:start;}
+  .content{min-width:0;}
+  .rail{position:sticky;top:20px;}
+  .chapter{margin-top:56px;scroll-margin-top:20px;}
+  .ch-head{display:flex;align-items:baseline;gap:16px;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:22px;}
+  .ch-num{font-family:Georgia,serif;font-size:34px;color:var(--vermilion);font-weight:500;line-height:1;}
+  .ch-title{font-size:22px;font-weight:500;margin:0;}
+  .ch-en{font-size:12px;letter-spacing:2px;color:var(--ink2);text-transform:uppercase;margin-left:auto;}
+  h3.sec{font-size:16px;margin:26px 0 10px;font-weight:600;}
+  p{margin:8px 0;color:#34322d;}
+  .muted{color:var(--ink2);font-size:13.5px;}
+  .daytabs{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 22px;}
+  .daytab{font-size:13px;padding:7px 14px;border:1px solid var(--line);background:#fff;border-radius:2px;cursor:pointer;transition:.15s;color:var(--ink2);}
+  .daytab.on{background:var(--ink);color:#f3efe6;border-color:var(--ink);}
+  .daytab.today{box-shadow:0 0 0 2px var(--vermilion);}
+  .today-badge{display:inline-block;background:var(--vermilion);color:#fff;font-size:11px;padding:1px 8px;border-radius:10px;margin-left:8px;vertical-align:middle;}
+  .countdown{background:#f7efe9;border-left:3px solid var(--vermilion);padding:8px 14px;margin:8px 0 14px;font-size:13.5px;border-radius:0 3px 3px 0;}
+  .timeline{position:relative;padding-left:26px;border-left:1px solid var(--line);}
+  .tl{position:relative;margin-bottom:18px;cursor:pointer;}
+  .tl::before{content:"";position:absolute;left:-31px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--vermilion);border:2px solid var(--paper);}
+  .tl:hover .n{color:var(--vermilion);}
+  .tl .t{font-size:13px;color:var(--vermilion);font-weight:600;letter-spacing:.5px;}
+  .tl .n{font-weight:600;font-size:15px;margin:1px 0 2px;transition:.15s;}
+  .tl .d{font-size:13.5px;color:#3a382f;}
+  .tl .row{font-size:12.5px;color:var(--ink2);margin-top:3px;}
+  .tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:10px;margin-right:5px;color:#fff;}
+  .tag.交通{background:var(--pink);} .tag.美食{background:var(--amber);} .tag.景点{background:var(--blue);} .tag.文化{background:var(--purple);} .tag.购物{background:var(--green);} .tag.住宿{background:var(--cyan);}
+  .cloth{background:#eef2ec;border-left:3px solid var(--green);padding:8px 12px;margin:12px 0;font-size:13px;border-radius:0 3px 3px 0;}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0;}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
+  th{background:#e9e3d6;font-weight:600;color:var(--ink);}
+  tr:nth-child(even) td{background:#f8f5ee;}
+  .num{text-align:right;white-space:nowrap;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:12px 0;}
+  .card{border:1px solid var(--line);background:#fbf9f3;padding:14px 16px;border-radius:3px;}
+  .card h4{margin:0 0 6px;font-size:14.5px;}
+  .card .m{font-size:12.5px;color:var(--ink2);}
+  .note{border-left:3px solid var(--vermilion);background:#f7efe9;padding:10px 14px;margin:14px 0;font-size:13.5px;border-radius:0 3px 3px 0;}
+  .pack li{list-style:none;padding:7px 0 7px 30px;border-bottom:1px dashed var(--line);position:relative;font-size:13.5px;cursor:pointer;}
+  .pack li .cb{position:absolute;left:4px;top:9px;width:16px;height:16px;}
+  .pack li.done{color:var(--ink2);text-decoration:line-through;}
+  .lv{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:8px;margin-right:6px;color:#fff;}
+  .lv.S{background:var(--vermilion);} .lv.A{background:var(--amber);} .lv.B{background:var(--ink2);}
+  .pill{display:inline-block;font-size:12px;border:1px solid var(--line);background:#fff;border-radius:20px;padding:3px 10px;margin:3px 4px 0 0;}
+  .paxbar{display:flex;align-items:center;gap:14px;margin:10px 0 6px;flex-wrap:wrap;}
+  .paxbar input[type=range]{width:220px;}
+  .budcards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0;}
+  .budcards .b{background:#fbf9f3;border:1px solid var(--line);border-radius:4px;padding:14px;text-align:center;}
+  .budcards .b.rec{border-color:var(--vermilion);box-shadow:0 0 0 1px var(--vermilion);}
+  .budcards .b h4{margin:0 0 4px;font-size:14px;}
+  .budcards .b .per{font-size:12px;color:var(--ink2);}
+  .budcards .b .tot{font-size:20px;font-weight:600;color:var(--vermilion);margin-top:6px;}
+  .hidden{color:var(--green);font-size:12.5px;} .avoid{color:var(--vermilion);font-size:12.5px;}
+  .emerg{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;}
+  .emerg button{font-size:13px;border:1px solid var(--line);background:#fff;border-radius:3px;padding:7px 12px;cursor:pointer;}
+  .emerg button:hover{border-color:var(--vermilion);}
+  .phrase{font-size:13px;padding:4px 0;border-bottom:1px dashed var(--line);}
+  .phrase b{color:var(--blue);}
+  #map{width:100%;height:560px;display:block;background:#dfe6e1;border:1px solid var(--line);border-radius:4px;position:relative;}
+  .leaflet-popup-content .iw{font-size:12.5px;line-height:1.6;}
+  .iw-h{font-weight:700;margin-bottom:4px;}
+  .iw-d{color:#34322d;}
+  .iw-r,.iw-t{color:var(--ink2);margin-top:3px;}
+  .map-fail{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:#f7f5f0;color:var(--ink2);font-size:14px;text-align:center;border-radius:4px;}
+  .map-hint{font-size:12px;color:var(--ink2);margin-top:8px;}
+  .map-title{font-size:13px;font-weight:700;color:var(--ink);align-self:center;}
+  .map-info{margin-top:10px;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:4px;font-size:13px;min-height:56px;}
+  .map-info .mi-d{color:var(--ink2);margin-top:3px;}
+  .map-info .mi-r,.map-info .mi-t{font-size:12.5px;color:var(--ink2);margin-top:3px;}
+  .tilebtn{font-size:12px;border:1px solid var(--line);background:#fff;border-radius:2px;padding:4px 9px;cursor:pointer;margin-right:6px;}
+  .tilebtn.on{background:var(--ink);color:#f3efe6;border-color:var(--ink);}
+  .depart{font-size:13px;margin:8px 0;}
+  .depart input{font-size:13px;padding:4px 8px;border:1px solid var(--line);border-radius:3px;}
+  .fam{background:#eef3f6;border-left:3px solid var(--blue);padding:10px 14px;margin:14px 0;font-size:13.5px;border-radius:0 3px 3px 0;}
+  .map-controls{display:flex;align-items:center;gap:6px;margin-top:8px;}
+  @media(max-width:860px){
+    .layout{grid-template-columns:1fr;padding:0 18px 60px;}
+    .rail{position:static;}
+    #map{max-height:62vh;}
+    .hero{padding:44px 18px 36px;}
+    .hero h1{font-size:32px;}
+    .grid2,.grid3,.budcards{grid-template-columns:1fr;}
+  }
+  @media print{
+    .no-print{display:none !important;}
+    .hero{background:#fff;color:#000;padding:20px 0;}
+    .toc{display:none;}
+    body{background:#fff;}
+    .chapter{margin-top:24px;page-break-inside:avoid;}
+    #map{max-height:62vh;}
+    a{color:#000;text-decoration:none;}
+  }
+</style>
+</head>
+<body><div id="gate" class="gate"><div class="gate-box"><div class="gate-lock">🔒</div><h2>内容已加密</h2><p>请输入访问密码以查看报告</p><input id="gate-pwd" type="password" placeholder="请输入密码" autocomplete="off"/><button id="gate-btn">解锁</button><div id="gate-err" class="gate-err"></div></div></div><style>.gate{position:fixed;inset:0;z-index:2147483647;background:linear-gradient(135deg,#0f1420,#1a2236);display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}.gate-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:36px 40px;text-align:center;color:#e8edf5;max-width:340px}.gate-lock{font-size:40px;margin-bottom:8px}.gate-box h2{margin:6px 0;font-size:20px;font-weight:600}.gate-box p{margin:0 0 18px;font-size:13px;color:#9fb0c8}.gate-box input{width:100%;box-sizing:border-box;padding:11px 14px;border-radius:9px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);color:#fff;font-size:15px;outline:none;margin-bottom:12px}.gate-box input:focus{border-color:#6ea8fe}.gate-box button{width:100%;padding:11px;border:none;border-radius:9px;background:linear-gradient(135deg,#3b6fd4,#5b8def);color:#fff;font-size:15px;font-weight:600;cursor:pointer}.gate-box button:hover{opacity:.92}.gate-err{color:#ff8a8a;font-size:12px;min-height:16px;margin-top:8px}</style><script>(function(){var PWD="hanbuff";function unlock(){var g=document.getElementById("gate");if(g&&g.parentNode){g.parentNode.removeChild(g);}}function check(){var v=(document.getElementById("gate-pwd")||{}).value||"";var e=document.getElementById("gate-err");if(v===PWD){try{localStorage.setItem("gate_ok","1");}catch(_){}unlock();}else{if(e)e.textContent="密码错误，请重试";}}function init(){var b=document.getElementById("gate-btn");if(b)b.addEventListener("click",check);var i=document.getElementById("gate-pwd");if(i){i.addEventListener("keydown",function(ev){if(ev.key==="Enter")check();});}try{if(localStorage.getItem("gate_ok")==="1"){unlock();}}catch(_){}}window.addEventListener("load",init);})();</script>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="meta">SUZHOU → PHUKET · 6 DAYS · FAMILY FLIGHT TRIP</div>
+    <h1 class="serif">普吉岛国庆 6 日家庭手册</h1>
+    <div class="sub">苏州（经上海）出发，4 人家庭，芭东海滩为据点 + 跳岛 + 海钓 + 普吉镇老城。10/1 抵达、10/6 返程可直接出行版 · 含行李清单、预算、每日时刻表、当地交通、住宿美食、地图联动。路线 / 美食 / 玩法以《十一普吉岛行程.docx》为准。</div>
+    <br>
+    <span class="sign">作者：HanBuff</span>
+  </div>
+  <nav class="toc no-print">
+    <a href="#c0">00 行前准备</a>
+    <a href="#c1">01 预算明细</a>
+    <a href="#c2">02 每日行程</a>
+    <a href="#c3">03 当地交通</a>
+    <a href="#c4">04 住宿甄选</a>
+    <a href="#c5">05 美食清单</a>
+    <a href="#c6">06 实用贴士</a>
+  </nav>
+</header>
+
+<div class="layout">
+  <main class="content">
+
+    <!-- 00 行前准备 -->
+    <section class="chapter" id="c0">
+      <div class="ch-head"><span class="ch-num serif">00</span><h2 class="ch-title">行前准备</h2><span class="ch-en">Before you go</span></div>
+      <div class="note"><b>中泰永久互免签证</b>：中国普通护照赴泰旅游 <b>免签 30 天</b>（2024-03-01 起永久生效）。无需提前办签，但需：护照有效期 ≥ 6 个月、往返机票、酒店订单，<b>入境可能抽查每人 ≥ 1 万泰铢（或等值人民币 ≈ ¥2000）现金</b>。国庆为旺季，建议提前 2–3 个月订机票酒店。</div>
+      <div class="fam"><b>👨‍👩‍👧‍👦 家庭专项</b>：① 儿童防晒 + 泳衣 + 浮潜镜自备（岛上租的贵且 hygien 存疑）；② 备防水袋装手机；③ 晕船药（跳岛/海钓必备）；④ 常用药 + 驱蚊；⑤ 境外旅游险（含水上运动）一定买。</div>
+
+      <h3 class="sec"><i class="fa-solid fa-list-check"></i> 倒计时时间线</h3>
+      <table>
+        <tr><th>时点</th><th>动作</th><th>备注</th></tr>
+        <tr><td>出发前 2–3 月</td><td>订往返机票 + 芭东住宿（可免费取消锁价）</td><td>国庆机酒大涨，越早越省</td></tr>
+        <tr><td>出发前 1 月</td><td>买境外旅游险、预约跳岛/海钓/Andamanda（Klook/Kkday）</td><td>平台比现场便宜 20–40%</td></tr>
+        <tr><td>出发前 1 周</td><td>换泰铢现金（每人≥1万铢）、装 Grab/Google Maps/翻译 APP、开通境外流量/旅游 SIM</td><td>机场也能买 SIM，但贵</td></tr>
+        <tr><td>出发当天</td><td>带齐护照+机票+酒店单、提前 3h 到浦东/虹桥、落地签通道走免签</td><td>护照+三件套</td></tr>
+      </table>
+
+      <h3 class="sec"><i class="fa-solid fa-suitcase"></i> 行李清单（可勾选 · 自动保存）</h3>
+      <p class="muted">点击条目打勾，状态存浏览器本地。按 S（必带）/A（重要）/B（可选）。</p>
+      <ul class="pack" id="packList"></ul>
+
+      <h3 class="sec"><i class="fa-solid fa-mobile-screen"></i> 必装 APP / 工具</h3>
+      <span class="pill">Grab（东南亚滴滴，打车/送餐）</span><span class="pill">Google Maps（导航）</span><span class="pill">Google 翻译（拍照翻译菜单）</span><span class="pill">Klook / Kkday（玩乐预订）</span><span class="pill">Agoda / Booking（酒店）</span><span class="pill">XE Currency（泰铢换算）</span>
+    </section>
+
+    <!-- 01 预算 -->
+    <section class="chapter" id="c1">
+      <div class="ch-head"><span class="ch-num serif">01</span><h2 class="ch-title">预算明细</h2><span class="ch-en">Budget</span></div>
+      <p class="muted">泰国无国内高速费概念；预算大头是 <b>机票 + 住宿</b>。下方默认 <b>4 人家庭（2 间房）</b>，拖动滑块看不同人数「家庭合计」与「人均」。<b>机票 ¥2700/人</b>（上海→普吉往返，国庆中位，含托运）、<b>住宿固定 ¥6500</b>（5 晚 × 2 间 × ¥650，芭东国庆价）。餐饮/活动/当地交通按人均档位估算。</p>
+      <div class="paxbar no-print">
+        <span>同行人数：</span>
+        <input type="range" id="pax" min="1" max="6" value="4" oninput="updateBudget()">
+        <b id="paxLabel" style="color:var(--vermilion)">4 人</b>
+      </div>
+      <div class="budcards">
+        <div class="b"><h4>经济型</h4><div class="per" id="per_eco">人均 ≈ ¥—</div><div class="tot" id="tot_eco">¥—</div></div>
+        <div class="b rec"><h4>舒适型 <span style="color:var(--vermilion)">← 推荐</span></h4><div class="per" id="per_com">人均 ≈ ¥—</div><div class="tot" id="tot_com">¥—</div></div>
+        <div class="b"><h4>轻奢型</h4><div class="per" id="per_lux">人均 ≈ ¥—</div><div class="tot" id="tot_lux">¥—</div></div>
+      </div>
+      <table>
+        <tr><th>类别</th><th>明细（4 人家庭）</th><th class="num">合计 ¥</th><th>说明</th></tr>
+        <tr><td>机票</td><td>上海↔普吉 往返 × 4 人</td><td class="num">10,800</td><td>含托运；苏→沪高铁/打车另算 ¥200/人</td></tr>
+        <tr><td>住宿</td><td>5 晚 × 2 间房（芭东）</td><td class="num">6,500</td><td>国庆 ¥550–750/间/晚，含早优先</td></tr>
+        <tr><td>餐饮</td><td>5 天正餐 + 小吃</td><td class="num">4,000</td><td>人均 ¥200/天（海鲜大餐另计）</td></tr>
+        <tr><td>活动</td><td>跳岛 + 海钓 + Andamanda</td><td class="num">5,200</td><td>跳岛 ¥500/人、海钓 ¥700/人、乐园 ¥400/人</td></tr>
+        <tr><td>当地交通</td><td>Grab + 包车 + 渡轮接驳</td><td class="num">1,600</td><td>机场往返包车约 ¥200/趟；岛内 Grab 短途 ¥15–30</td></tr>
+        <tr><td>合计</td><td>4 人家庭</td><td class="num"><b>28,100</b></td><td>舒适型取中位 ≈ 人均 ¥7,000</td></tr>
+      </table>
+      <div class="note">以上为 <b>估算</b>：机票随出发城市/日期浮动大（直飞 vs 经曼谷中转差 ¥800+），海鲜与跳岛淡旺季价差明显。活动项建议在 Klook 提前订，比码头现买省 20–40%。</div>
+    </section>
+
+    <!-- 02 每日行程 -->
+    <section class="chapter" id="c2">
+      <div class="ch-head"><span class="ch-num serif">02</span><h2 class="ch-title">每日行程</h2><span class="ch-en">Day by day</span></div>
+      <div class="depart no-print">
+        出发日期：<input type="date" id="depDate" value="2026-10-01" onchange="syncToday()"> <span id="cdText" class="muted"></span>
+      </div>
+      <div class="daytabs no-print" id="dayTabs"></div>
+      <div id="timelineBox"></div>
+    </section>
+
+    <!-- 03 当地交通 -->
+    <section class="chapter" id="c3">
+      <div class="ch-head"><span class="ch-num serif">03</span><h2 class="ch-title">当地交通</h2><span class="ch-en">Getting around</span></div>
+      <h3 class="sec"><i class="fa-solid fa-plane-arrival"></i> 大交通 · 飞行</h3>
+      <p>苏州无机场，<b>经上海浦东/虹桥 → 普吉（HKT）</b>。国庆有上海直飞（约 5h，航司如东航/上航/泰国航），或经曼谷/广州/昆明中转（便宜但多 3–5h）。抵达后 <b>机场→芭东</b> 约 45km / 50min，建议 <b>提前订包车（¥150–220/车）</b> 或机场柜台出租车（打表+50铢机场费），别坐黑车。</p>
+      <div class="note"><b>时差</b>：普吉比北京 <b>晚 1 小时</b>（UTC+7）。落地先把手表/手机调慢 1h，跳岛集合时间别算错。</div>
+
+      <h3 class="sec"><i class="fa-solid fa-car"></i> 岛内交通 · Grab 与双条</h3>
+      <p>· <b>Grab</b>＝东南亚版滴滴，芭东/普吉镇内短途 ¥15–30，最省心，绑定支付宝/信用卡。<br>
+      · <b>双条车（Songthaew）</b>：芭东↔普吉镇约 ¥8–15/人，招手即停，但不打表、需砍价。<br>
+      · <b>突突车（Tuk-tuk）</b>：短途体验用，价格虚高，务必先谈价。<br>
+      · <b>包车一日游</b>：普吉镇+查龙寺+神仙半岛 半天约 ¥200–300/车，比打车灵活。</p>
+
+      <h3 class="sec"><i class="fa-solid fa-sailboat"></i> 出海接驳 · 跳岛/海钓</h3>
+      <p>· 跳岛/海钓均 <b>含码头接送</b>（普吉主要从查龙码头 Chalong 出发）。订 Klook 一日游会到酒店接。<br>
+      · 皮皮岛/皇帝岛需坐快艇（约 45–90min），风浪大时易晕，备晕船药。<br>
+      · 攀牙湾从北岸码头出发，多为长尾船/大船，相对平稳。</p>
+    </section>
+
+    <!-- 04 住宿甄选 -->
+    <section class="chapter" id="c4">
+      <div class="ch-head"><span class="ch-num serif">04</span><h2 class="ch-title">住宿甄选</h2><span class="ch-en">Where to stay</span></div>
+      <p class="muted">本行程以 <b>芭东（Patong）</b> 为据点最顺：海滩 + Jungceylon 商场 + 班赞海鲜 + 多个夜市全在步行范围，跳岛接送也方便。想要安静可住卡伦/卡塔，想要文艺住普吉镇老城（D5 顺路）。</p>
+      <table>
+        <tr><th>区域</th><th>代表</th><th class="num">价格/间/晚</th><th>优劣</th><th>平台</th></tr>
+        <tr><td>芭东·海边</td><td>芭东美爵（Mercure Patong，OTOP 夜市门口）/ Amari Phuket</td><td class="num">¥650–950</td><td>出门即海滩+夜市，方便但吵</td><td>Agoda/携程</td></tr>
+        <tr><td>芭东·巷内</td><td>Baan Laimai Beach Resort /  Novotel Phuket Resort</td><td class="num">¥500–700</td><td>性价比高、泳池大，步行到海滩 5min</td><td>Agoda/Booking</td></tr>
+        <tr><td>普吉镇</td><td>The Memory At On On Hotel（百年骑楼）/ 文艺精品民宿</td><td class="num">¥400–650</td><td>D5 逛老城顺住，氛围好，但离海远</td><td>Booking/小红书</td></tr>
+      </table>
+      <div class="note">国庆房价上浮，<b>提前 3 周订</b>；选「可免费取消」锁价。<b>4 人家庭订 2 间房（或 1 间家庭套房），优先含早 + 泳池 + 近 Jungceylon。</b></div>
+    </section>
+
+    <!-- 05 美食清单 -->
+    <section class="chapter" id="c5">
+      <div class="ch-head"><span class="ch-num serif">05</span><h2 class="ch-title">美食清单</h2><span class="ch-en">Food map</span></div>
+      <div class="grid2">
+        <div class="card"><h4><i class="fa-solid fa-utensils"></i> 芭东 · 班赞海鲜市场</h4>
+          <div class="m">· 一楼选海鲜、二楼加工，就在 Jungceylon 隔壁<br>
+          · <b>大只皮皮虾</b> 约 700–800 铢；<b>龙虾套餐</b> 砍价后约 1800 铢<br>
+          <span class="avoid">避坑：缅甸人开的摊位价格较黑，优先泰国人摊位；看清单位是公斤还是斤</span></div></div>
+        <div class="card"><h4><i class="fa-solid fa-utensils"></i> 芭东 · 夜市</h4>
+          <div class="m">· <b>马琳夜市 Malin Plaza</b>（芭东南端，价公道）<br>
+          · <b>OTOP 夜市</b>（美爵门口，实惠）· <b>大龙夜市</b>（三街，性价比高）<br>
+          · 班赞夜市偏贵；只收现金、可砍价</div></div>
+        <div class="card"><h4><i class="fa-solid fa-utensils"></i> 普吉镇 · 老城餐厅</h4>
+          <div class="m">· <b>Tu kab khao</b>：泰式红烧肉、茶汤米线（大龙虾招牌，高峰等位 30min+，菜量小）<br>
+          · <b>O Cha Rot</b> 牛肉丸汤粉（7:00–15:30，无空调）<br>
+          · <b>On Chun 一纯</b> 烤猪颈肉（可中文点餐，仅现金）<br>
+          · <b>Kopitiam by Wilai</b> 福建面（周三休，排队久）</div></div>
+        <div class="card"><h4><i class="fa-solid fa-utensils"></i> 拉威 · 海鲜市场</h4>
+          <div class="m">· <b>拉威海鲜市场</b>（比班赞活鲜更多、价稍低，离芭东 20min）<br>
+          · 活龙虾 1800–2500 铢/kg；皮皮虾小的 1200–1400、大的 1800–2200 铢/kg<br>
+          · 推荐加工店 <b>Mookdee Manne</b></div></div>
+      </div>
+      <div class="note"><b>街边小吃参考价</b>：椰子饼 20 铢、烧烤大虾 50 铢、芒果糯米饭 60 铢、烤大明虾 200 铢、鲜榨果汁 20–40 铢、榴莲 130 铢/2 大块。海鲜大排档龙虾按 100g 计价（100–400 铢），点前看清价再坐。</div>
+      <div class="note src">📌 <b>信息来源说明</b>：本页美食 / 住宿 / 路线中的店名、玩法与价格，主要来自你提供的《十一普吉岛行程.docx》（含班赞/马琳/OTOP 夜市、普吉镇 6 家餐厅、拉威市场与 Mookdee 加工店等真实信息，2025–2026 内容）。<b>机票 / 签证 / 上网 SIM / 汇率 / 时差 / 当地交通方式等通用行前项，为本助手基于公开常识补充，非来自该文档，实际以航司、使领馆与平台实时为准。</b>网红店口碑波动大，预订与到店前请以平台实时评分、最新点评为准。</div>
+    </section>
+
+    <!-- 06 实用贴士 -->
+    <section class="chapter" id="c6">
+      <div class="ch-head"><span class="ch-num serif">06</span><h2 class="ch-title">实用贴士</h2><span class="ch-en">Tips &amp; emergency</span></div>
+      <div class="note"><b>季节提示</b>：十一正值普吉 <b>西南季风尾声</b>，海况总体平稳但偶有风浪；<b>斯米兰群岛 10 月中旬前封岛（5/15–10/15 季风休岛）</b>，故 D3 跳岛以皮皮岛 / 皇帝岛 / 攀牙湾三选一，斯米兰暂不开放。</div>
+      <div class="note"><b>货币与支付</b>：泰铢（฿）≈ 1 元 = 5 铢（2026 浮动）。7-11、BigC、Jungceylon 多数支持支付宝/微信/银联；街边与小摊只收现金，备每人 ≥1 万铢入境抽查。</div>
+
+      <h3 class="sec"><i class="fa-solid fa-phone"></i> 紧急联络（点击复制）</h3>
+      <div class="emerg no-print" id="emergBox"></div>
+      <p class="muted">泰国报警 <b>191</b> · 急救 <b>1669</b> · 旅游警察（中文） <b>1155</b> · 中国领事保护 <b>12308</b> / 驻普吉领办 <b>+66-76-304-219</b></p>
+
+      <h3 class="sec"><i class="fa-solid fa-language"></i> 常用泰语短语</h3>
+      <div class="phrase"><b>多少钱？</b> — เท่าไหร่ (tao rai)</div>
+      <div class="phrase"><b>太贵了</b> — แพงไป (phaeng pai，砍价用)</div>
+      <div class="phrase"><b>不要辣</b> — ไม่เผ็ด (mai phet)</div>
+      <div class="phrase"><b>谢谢</b> — ขอบคุณ (khob khun)</div>
+
+      <h3 class="sec"><i class="fa-solid fa-triangle-exclamation"></i> 安全与兜底</h3>
+      <p>· <b>水上活动买保险</b>：跳岛/海钓/浮潜务必确认含意外险，风浪大日听从船长。<br>
+      · 防晒！普吉紫外线极强，补涂 + 晒后修复；海边有离岸流，看旗（红=禁泳）。<br>
+      · 小费文化：餐厅/按摩留 10–20 铢，不给也行但别给硬币（不礼貌）。<br>
+      · 防诈骗：班赞缅甸人摊位、突突车低价拉客到珠宝店，一律拒绝。<br>
+      · 护照拍照备份存云；遗失立刻联系中国领办 + 报警 191。<br>
+      · 多人同行双司机轮换（包车日）；常用药随身。</p>
+    </section>
+
+  </main>
+
+  <aside class="rail no-print">
+    <div class="ch-head" style="border:none;margin-bottom:8px;"><span class="ch-num serif">📍</span><h2 class="ch-title" style="font-size:16px">路线地图</h2></div>
+    <div id="map"></div>
+    <div class="map-hint">点击圆点或左侧时间轴条目查看详情。切 DAY 看当日路线（朱色虚线），或切「全部」看全程。</div>
+    <div class="map-controls">
+      <span id="mapTitle" class="map-title">DAY1</span>
+      <span style="flex:1"></span>
+      <button class="tilebtn on" id="btnDay" onclick="switchMapMode('day')">当日</button>
+      <button class="tilebtn" id="btnAll" onclick="switchMapMode('all')">全部</button>
+    </div>
+    <div id="mapInfo" class="map-info"><span class="muted">点击地图圆点或左侧时间轴条目查看详情</span></div>
+  </aside>
+</div>
+
+<script>
+/* ---------- 数据（普吉岛真实坐标 WGS-84） ----------
+   DAYS 每条目: { day, label, cloth, pois:[{t,name,cat,coord:[lat,lng],d,trans,cost,tip}] }
+   cat ∈ 交通/美食/景点/文化/购物/住宿（决定地图圆点颜色，见 CATC）
+*/
+const DAYS = [
+  { day:1, label:'D1 · 10/1 出发地 → 普吉（飞行日）', cloth:'飞机轻装+薄外套（机舱冷）；随身护照/机票单。', pois:[
+    {t:'13:00', name:'苏州 → 上海浦东', cat:'交通', d:'高铁/打车到浦东，提前 3h 到', trans:'高铁/出租', cost:'¥60–200/人', tip:'行李托运额看清', coord:[31.15,121.80]},
+    {t:'17:00', name:'上海 → 普吉 HKT', cat:'交通', d:'航班约 5h（含时差落地晚 1h）', trans:'直飞/中转', cost:'机票 ¥2700/人', tip:'降落调慢 1h 手表', coord:[7.996,98.316]},
+    {t:'23:00', name:'抵达普吉·包车到芭东', cat:'住宿', d:'机场→芭东 45km/50min，入住休整', trans:'包车 ¥150–220', cost:'住宿 ¥650/间', tip:'免签通道直接过', coord:[7.8956,98.2969]}
+  ]},
+  { day:2, label:'D2 · 10/2 芭东海滩 + Jungceylon + 班赞海鲜', cloth:'泳衣+防晒+沙滩鞋；傍晚看日落带薄衫。', pois:[
+    {t:'10:00', name:'芭东海滩', cat:'景点', d:'沙滩漫步，摩托艇/滑翔伞（摩托艇 800 铢/15min，滑翔伞 1500–1800 铢）', trans:'步行', cost:'免费/项目另计', tip:'傍晚 6 点看日落最美；躺椅 200–300 铢', coord:[7.8956,98.2969]},
+    {t:'14:00', name:'Jungceylon 购物中心', cat:'购物', d:'普吉最大商场：丛林区按摩/美食、植物区品牌、花园区餐厅市集、海湾区夜秀', trans:'步行', cost:'免费逛', tip:'泰式按摩+各地泰餐一站式', coord:[7.8945,98.2980]},
+    {t:'18:00', name:'班赞海鲜市场', cat:'美食', d:'一楼选海鲜二楼加工；皮皮虾 700–800 铢、龙虾套餐砍价 1800 铢', trans:'步行', cost:'人均 ¥150–250', tip:'优先泰国人摊位；看清公斤/斤', coord:[7.8938,98.2995]},
+    {t:'20:30', name:'芭东夜市', cat:'美食', d:'马琳/OTOP/大龙夜市逛吃，椰子饼 20 铢、芒果糯米饭 60 铢', trans:'步行', cost:'现金', tip:'只收现金可砍价', coord:[7.8860,98.3000]}
+  ]},
+  { day:3, label:'D3 · 10/3 跳岛（皮皮岛/皇帝岛/攀牙湾 三选一）', cloth:'泳衣+防晒+晕船药；带防水袋装手机。', pois:[
+    {t:'08:00', name:'酒店接送 → 查龙码头', cat:'交通', d:'一日游含接送，到码头登船', trans:'接送车', cost:'含在船票', tip:'风浪大备晕船药', coord:[7.8170,98.3340]},
+    {t:'09:30', name:'皮皮岛（推荐）', cat:'景点', d:'天堂湾+玛雅湾+鸡蛋岛浮潜，五彩鱼多、海滩有猫', trans:'快艇', cost:'¥500/人', tip:'线路2 水上活动最丰富；斯米兰 10 月未开', coord:[7.7410,98.7780]},
+    {t:'12:30', name:'船上/岛上午餐', cat:'美食', d:'一日游含简餐或岛上午餐', trans:'船餐', cost:'含/¥60', tip:'带零食补水', coord:[7.7300,98.7700]},
+    {t:'15:30', name:'返程 → 芭东', cat:'交通', d:'快艇回查龙，车送回酒店', trans:'快艇+车', cost:'含', tip:'晒后修复补水', coord:[7.8956,98.2969]}
+  ]},
+  { day:4, label:'D4 · 10/4 海钓', cloth:'防晒+晕船药+帽子；海上风大带薄外套。', pois:[
+    {t:'08:00', name:'查龙码头登船', cat:'景点', d:'拼船/包船海钓，含钓具与午餐，目标鲹鱼/石斑', trans:'接送+渔船', cost:'¥700/人', tip:'新手也能钓；包船更自由', coord:[7.8170,98.3340]},
+    {t:'12:00', name:'船上午餐 + 钓获加工', cat:'美食', d:'现钓现做，船家帮忙处理', trans:'船上', cost:'含', tip:'晕船贴提前贴', coord:[7.8500,98.3600]},
+    {t:'16:00', name:'返港 → 芭东', cat:'交通', d:'码头送回酒店，晚上自由活动', trans:'车', cost:'含', tip:'钓获可带班赞加工', coord:[7.8956,98.2969]}
+  ]},
+  { day:5, label:'D5 · 10/5 Andamanda 乐园 + 普吉镇', cloth:'泳衣+防晒；乐园内赤脚玩水。', pois:[
+    {t:'10:00', name:'Andamanda 水上乐园', cat:'景点', d:'333/3 Moo 1 Kathu，10:00–19:00，主项目约 5h，园内餐厅不贵', trans:'Grab/包车', cost:'¥400/人', tip:'带娃首选；储物柜另租', coord:[7.9300,98.3150]},
+    {t:'16:00', name:'普吉镇老城', cat:'文化', d:'Thalang 路彩色骑楼、Soi Romanee 巷、泰华博物馆、定光堂钟楼', trans:'Grab', cost:'免费', tip:'周日有步行街夜市', coord:[7.8845,98.3870]},
+    {t:'18:30', name:'普吉镇晚餐', cat:'美食', d:'Tu kab khao 红烧肉 / On Chun 烤猪颈肉 / Tom Yum Kung 冬阴功', trans:'步行', cost:'人均 ¥80–120', tip:'On Chun 仅现金；Kopitiam 周三休', coord:[7.8845,98.3870]},
+    {t:'20:30', name:'返回芭东', cat:'交通', d:'Grab 回酒店，收拾行李', trans:'Grab', cost:'¥25', tip:'次日返程早休息', coord:[7.8956,98.2969]}
+  ]},
+  { day:6, label:'D6 · 10/6 普吉 → 上海 → 苏州（返程）', cloth:'留足时间到机场；免税店可最后补。', pois:[
+    {t:'10:00', name:'芭东 → 普吉机场', cat:'交通', d:'包车/出租车 45km，提前 3h 到', trans:'包车 ¥150–220', cost:'车费', tip:'退税单据机场办', coord:[7.8956,98.2969]},
+    {t:'13:00', name:'普吉 → 上海', cat:'交通', d:'航班约 5h（落地北京时+1h）', trans:'直飞', cost:'机票', tip:'免税/手信最后买', coord:[7.996,98.316]},
+    {t:'20:00', name:'上海 → 苏州', cat:'交通', d:'高铁/打车回家', trans:'高铁', cost:'¥60–200', tip:'到家收尾', coord:[31.30,120.62]}
+  ]}
+];
+
+const PACK = [
+  {lv:'S',t:'护照（有效期≥6个月）+ 机票/酒店订单打印或截图'},
+  {lv:'S',t:'每人 ≥1 万泰铢现金（入境可能抽查）或等值人民币'},
+  {lv:'S',t:'境外旅游险（含水上运动/意外）'},
+  {lv:'S',t:'防晒霜 SPF50+ + 晒后修复 + 墨镜 + 帽'},
+  {lv:'S',t:'泳衣 ×2 + 防水手机袋 + 沙滩鞋'},
+  {lv:'S',t:'浮潜镜/呼吸管（自备更卫生，岛上租的贵）'},
+  {lv:'S',t:'常用药 + 晕船药 + 肠胃药 + 创可贴 + 驱蚊'},
+  {lv:'S',t:'转换插头（泰国 A/B/C/F 型，220V，备一个更稳）'},
+  {lv:'A',t:'Grab / Google Maps / 翻译 APP 提前装好'},
+  {lv:'A',t:'薄外套（机舱/商场冷气）+ 拖鞋'},
+  {lv:'A',t:'充电宝 + 英标/美标转换头 + 数据线'},
+  {lv:'A',t:'小额泰铢零钱（付小费/打车）'},
+  {lv:'B',t:'浮潜袜（防珊瑚划伤）'},
+  {lv:'B',t:'便携烧水壶（喝热水习惯）'},
+  {lv:'B',t:'水下相机/GoPro（跳岛拍照）'}
+];
+
+const EMERG = [
+  {n:'泰国报警',p:'191'},{n:'急救',p:'1669'},{n:'旅游警察(中文)',p:'1155'},{n:'中国领事保护',p:'12308'},{n:'驻普吉领办',p:'+66-76-304-219'}
+];
+
+/* ---------- 预算 ---------- */
+// 机票按人均；住宿固定（2间房5晚）；TIERS 为人均餐饮+活动+当地交通
+const FLIGHT = 2700;       // 人均往返机票（上海→普吉，国庆中位）
+const ROOM_FIXED = 6500;   // 住宿固定：5晚 × 2 间 × ¥650
+const TIERS = { eco:2600, com:4100, lux:6600 };
+function updateBudget(){
+  const p = +document.getElementById('pax').value;
+  document.getElementById('paxLabel').textContent = p + ' 人';
+  ['eco','com','lux'].forEach(k=>{
+    const total = FLIGHT*p + ROOM_FIXED + TIERS[k]*p;
+    const per = Math.round(total/p);
+    document.getElementById('tot_'+k).textContent = '¥' + total.toLocaleString();
+    document.getElementById('per_'+k).textContent = '人均 ≈ ¥' + per.toLocaleString();
+  });
+}
+
+/* ---------- 行李清单 ---------- */
+function renderPack(){
+  const box = document.getElementById('packList');
+  const saved = JSON.parse(localStorage.getItem('hb_pack_v1')||'{}');
+  box.innerHTML='';
+  PACK.forEach((it,i)=>{
+    const li=document.createElement('li');
+    li.className = saved[i] ? 'done' : '';
+    li.innerHTML = '<input class="cb" type="checkbox" '+(saved[i]?'checked':'')+' onchange="togglePack('+i+',this)"> <span class="lv '+it.lv+'">'+it.lv+'</span>'+it.t;
+    box.appendChild(li);
+  });
+}
+function togglePack(i,el){
+  const saved = JSON.parse(localStorage.getItem('hb_pack_v1')||'{}');
+  saved[i]=el.checked;
+  localStorage.setItem('hb_pack_v1',JSON.stringify(saved));
+  el.closest('li').classList.toggle('done',el.checked);
+}
+
+/* ---------- 紧急电话 ---------- */
+function renderEmerg(){
+  const box=document.getElementById('emergBox');
+  box.innerHTML='';
+  EMERG.forEach(e=>{
+    const b=document.createElement('button');
+    b.innerHTML='<i class="fa-solid fa-copy"></i> '+e.n+' '+e.p;
+    b.onclick=()=>{navigator.clipboard.writeText(e.p); b.innerHTML='<i class="fa-solid fa-check"></i> 已复制 '+e.p; setTimeout(()=>b.innerHTML='<i class="fa-solid fa-copy"></i> '+e.n+' '+e.p,1500);};
+    box.appendChild(b);
+  });
+}
+
+/* ---------- 地图：Leaflet + OpenStreetMap（泰国 WGS-84 可用） ---------- */
+const CATC={'交通':'#a8456b','美食':'#a9761f','景点':'#3a5a82','文化':'#6a4f8c','购物':'#3f7d5a','住宿':'#2f7e86'};
+let map, markersLayer, routeLayer, curMapPois=[], mapMode='day';
+function setMapErr(msg){
+  const el=document.getElementById('mapInfo'); if(el) el.innerHTML='<span class="avoid"><i class="fa-solid fa-triangle-exclamation"></i> '+esc(msg)+'</span>';
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmtInfo(p){
+  return '<div class="iw"><div class="iw-h">'+esc(p.t+' · '+p.name)+' <span class="tag '+p.cat+'">'+p.cat+'</span></div><div class="iw-d">'+esc(p.d)+'</div><div class="iw-r">🚗 '+esc(p.trans)+' &nbsp;|&nbsp; 💰 '+esc(p.cost)+'</div><div class="iw-t">💡 '+esc(p.tip)+'</div></div>';
+}
+function initMap(){
+  const el=document.getElementById('map');
+  if(typeof L==='undefined'){
+    el.innerHTML='<div class="map-fail"><i class="fa-solid fa-triangle-exclamation"></i> 地图库加载失败，请检查网络后刷新。</div>';
+    return;
+  }
+  try{
+    map=L.map('map',{scrollWheelZoom:false}).setView([7.9,98.4],10);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      subdomains:'abc', maxZoom:19, attribution:'© OpenStreetMap'
+    }).addTo(map);
+    markersLayer=L.layerGroup().addTo(map);
+    routeLayer=L.layerGroup().addTo(map);
+    renderMap(curDay);
+    setTimeout(()=>{ try{ if(map) map.invalidateSize(); }catch(e){} },300);
+    window.addEventListener('load',()=>{ try{ if(map) map.invalidateSize(); }catch(e){} });
+    window.addEventListener('resize',()=>{ try{ if(map) map.invalidateSize(); }catch(e){} });
+  }catch(e){ setMapErr('地图初始化失败：'+e.message); }
+}
+function markerIcon(i,cat){
+  const c=CATC[cat]||'#3a5a82';
+  return L.divIcon({
+    className:'map-marker',
+    html:'<div style="width:26px;height:26px;border-radius:50%;background:'+c+';color:#fff;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">'+i+'</div>',
+    iconSize:[26,26], iconAnchor:[13,13]
+  });
+}
+function updateMap(pois,title,fit){
+  try{
+    if(!map){ setMapErr('地图实例尚未初始化，请稍候或刷新重试'); return; }
+    curMapPois=pois;
+    const mt=document.getElementById('mapTitle'); if(mt) mt.textContent=title;
+    markersLayer.clearLayers();
+    routeLayer.clearLayers();
+    pois.forEach((p,i)=>{
+      const m=L.marker(p.coord,{icon:markerIcon(i+1,p.cat),properties:{idx:i,poi:p}}).addTo(markersLayer);
+      m.bindPopup(fmtInfo(p));
+      m.on('click',()=>{ focusMarker(i); });
+    });
+    if(pois.length>1){
+      L.polyline(pois.map(p=>p.coord),{color:'#B5462F',weight:4,dashArray:'6,6',opacity:.9}).addTo(routeLayer);
+    }
+    if(fit && pois.length){
+      const bounds=L.latLngBounds(pois.map(p=>p.coord));
+      map.fitBounds(bounds,{padding:[40,40],maxZoom:14});
+    }
+    setTimeout(()=>{ try{ if(map) map.invalidateSize(); }catch(e){} },60);
+    document.getElementById('mapInfo').innerHTML='<span class="muted">点击地图标记或左侧时间轴条目查看详情</span>';
+  }catch(e){ setMapErr('地图更新失败：'+e.message); }
+}
+function renderMap(di){ mapMode='day'; updateMap(DAYS[di].pois.filter(p=>p.coord&&p.coord.length===2),DAYS[di].label,true); }
+function renderMapAll(){ const pois=[]; DAYS.forEach(d=>d.pois.filter(p=>p.coord&&p.coord.length===2).forEach(p=>pois.push(p))); mapMode='all'; updateMap(pois,'全部行程',true); }
+function focusMarker(i){
+  if(i<0 || i>=curMapPois.length) return;
+  const p=curMapPois[i];
+  map.flyTo(p.coord,14,{duration:.8});
+  markersLayer.eachLayer(l=>{ if(l.options&&l.options.properties&&l.options.properties.idx===i){ l.openPopup(); }});
+  document.getElementById('mapInfo').innerHTML=fmtInfo(p);
+}
+function switchMapMode(m){
+  mapMode=m;
+  document.getElementById('btnDay').classList.toggle('on',m==='day');
+  document.getElementById('btnAll').classList.toggle('on',m==='all');
+  if(m==='day') renderMap(curDay); else renderMapAll();
+  setTimeout(()=>{ try{ if(map) map.invalidateSize(); }catch(e){} },50);
+}
+
+/* ---------- 每日卡片 ---------- */
+let curDay=0, todayIdx=-1;
+function renderDays(){
+  const box=document.getElementById('dayTabs'); box.innerHTML='';
+  DAYS.forEach((d,i)=>{
+    const b=document.createElement('button');
+    b.className='daytab'+(i===curDay?' on':'')+(i===todayIdx?' today':'');
+    b.innerHTML='DAY'+(i+1)+(i===todayIdx?'<span class="today-badge">今日</span>':'');
+    b.onclick=()=>{curDay=i;mapMode='day';document.getElementById('btnDay').classList.add('on');document.getElementById('btnAll').classList.remove('on');renderDays();renderTimeline();renderMap(i);};
+    box.appendChild(b);
+  });
+}
+function renderTimeline(){
+  const d=DAYS[curDay];
+  let h='<p class="muted">'+d.label+'</p><div class="timeline">';
+  d.pois.forEach((p,i)=>{
+    h+='<div class="tl" onclick="flyTo('+i+')"><div class="t">'+p.t+'</div>'+
+       '<div class="n"><span class="tag '+p.cat+'">'+p.cat+'</span>'+p.name+'</div>'+
+       '<div class="d">'+p.d+'</div>'+
+       '<div class="row">🚗 '+p.trans+' &nbsp;|&nbsp; 💰 '+p.cost+'</div>'+
+       '<div class="row">💡 '+p.tip+'</div></div>';
+  });
+  h+='</div><div class="cloth"><i class="fa-solid fa-shirt"></i> 今日穿搭：'+d.cloth+'</div>';
+  document.getElementById('timelineBox').innerHTML=h;
+}
+function flyTo(i){ focusMarker(i); }
+
+/* ---------- 今日高亮 ---------- */
+function syncToday(){
+  const dep=new Date(document.getElementById('depDate').value);
+  const now=new Date();
+  const days=Math.ceil((dep-now)/86400000);
+  const cd=document.getElementById('cdText');
+  if(days>0) cd.textContent='距离出发还有 '+days+' 天';
+  else if(days===0) cd.textContent='今天出发！';
+  else cd.textContent='已出发 '+(-days)+' 天';
+  todayIdx=-1;
+  const off=Math.floor((now-dep)/86400000);
+  if(off>=0 && off<DAYS.length) todayIdx=off;
+  renderDays();
+}
+
+/* ---------- init ---------- */
+window.addEventListener('load',()=>{
+  renderPack(); renderEmerg(); updateBudget();
+  renderDays(); renderTimeline(); syncToday();
+  initMap();
+});
+</script>
+</body>
+</html>
