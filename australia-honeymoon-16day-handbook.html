@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<!--
+  travel-handbook · 国际航班行（12月盛夏版）
+  行程：2026.12.5 上海出发 → 悉尼 → 凯恩斯 → 墨尔本(大洋路3天2夜) → 广州 → 12.20 返沪，共 16 日
+  地图：双模式 —— 广州段用高德栅格（国内秒开）；澳洲段用 OSM（境外真实街图，需科学上网），
+        若 8 秒内无瓦片加载则自动降级为零依赖 SVG 示意图。
+  作者：HanBuff
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>澳洲三城蜜月 16 日 · 悉尼 + 大堡礁 + 墨尔本大洋路 + 广州（2026.12.5–12.20）</title>
+<link rel="stylesheet" href="https://lib.baomitu.com/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://lib.baomitu.com/leaflet/1.9.4/leaflet.min.css">
+<script src="https://lib.baomitu.com/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  :root{
+    --paper:#f3efe6; --ink:#232220; --ink2:#5b574f; --line:#d8d2c4;
+    --vermilion:#b5462f; --vermilion-soft:#c9664f;
+    --blue:#3a5a82; --amber:#a9761f; --purple:#6a4f8c; --green:#3f7d5a; --cyan:#2f7e86; --pink:#a8456b;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased;}
+  .serif{font-family:Georgia,"Songti SC","Noto Serif SC",serif;}
+  .no-print{}
+  .hero{background:#1b1a18;color:#ece7dc;padding:64px 40px 52px;}
+  .hero .wrap{max-width:1320px;margin:0 auto;}
+  .hero h1{font-size:42px;line-height:1.1;margin:0 0 14px;font-weight:500;letter-spacing:.5px;}
+  .hero .meta{font-size:13px;color:#b9b2a4;letter-spacing:1px;}
+  .hero .sub{font-size:14px;color:#cfc8ba;margin-top:10px;max-width:680px;}
+  .hero .sign{display:inline-block;margin-top:18px;font-size:12px;color:var(--vermilion-soft);border:1px solid #4a4138;padding:3px 10px;border-radius:2px;}
+  .toc{max-width:1320px;margin:18px auto 0;display:flex;flex-wrap:wrap;gap:8px;}
+  .toc a{font-size:12.5px;color:#cdc6b8;text-decoration:none;border:1px solid #423a30;padding:5px 11px;border-radius:20px;transition:.2s;}
+  .toc a:hover{background:var(--vermilion);color:#fff;border-color:var(--vermilion);}
+  .layout{max-width:1320px;margin:0 auto;padding:0 28px 80px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,2fr);gap:40px;align-items:start;}
+  .content{min-width:0;}
+  .rail{position:sticky;top:20px;}
+  .chapter{margin-top:56px;scroll-margin-top:20px;}
+  .ch-head{display:flex;align-items:baseline;gap:16px;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:22px;}
+  .ch-num{font-family:Georgia,serif;font-size:34px;color:var(--vermilion);font-weight:500;line-height:1;}
+  .ch-title{font-size:22px;font-weight:500;margin:0;}
+  .ch-en{font-size:12px;letter-spacing:2px;color:var(--ink2);text-transform:uppercase;margin-left:auto;}
+  h3.sec{font-size:16px;margin:26px 0 10px;font-weight:600;}
+  p{margin:8px 0;color:#34322d;}
+  .muted{color:var(--ink2);font-size:13.5px;}
+  .daytabs{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 22px;}
+  .daytab{font-size:13px;padding:7px 14px;border:1px solid var(--line);background:#fff;border-radius:2px;cursor:pointer;transition:.15s;color:var(--ink2);}
+  .daytab.on{background:var(--ink);color:#f3efe6;border-color:var(--ink);}
+  .daytab.today{box-shadow:0 0 0 2px var(--vermilion);}
+  .today-badge{display:inline-block;background:var(--vermilion);color:#fff;font-size:11px;padding:1px 8px;border-radius:10px;margin-left:8px;vertical-align:middle;}
+  .countdown{background:#f7efe9;border-left:3px solid var(--vermilion);padding:8px 14px;margin:8px 0 14px;font-size:13.5px;border-radius:0 3px 3px 0;}
+  .timeline{position:relative;padding-left:26px;border-left:1px solid var(--line);}
+  .tl{position:relative;margin-bottom:18px;cursor:pointer;}
+  .tl::before{content:"";position:absolute;left:-31px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--vermilion);border:2px solid var(--paper);}
+  .tl:hover .n{color:var(--vermilion);}
+  .tl .t{font-size:13px;color:var(--vermilion);font-weight:600;letter-spacing:.5px;}
+  .tl .n{font-weight:600;font-size:15px;margin:1px 0 2px;transition:.15s;}
+  .tl .d{font-size:13.5px;color:#3a382f;}
+  .tl .row{font-size:12.5px;color:var(--ink2);margin-top:3px;}
+  .tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:10px;margin-right:5px;color:#fff;}
+  .tag.交通{background:var(--pink);} .tag.美食{background:var(--amber);} .tag.景点{background:var(--blue);} .tag.文化{background:var(--purple);} .tag.购物{background:var(--green);} .tag.住宿{background:var(--cyan);}
+  .cloth{background:#eef2ec;border-left:3px solid var(--green);padding:8px 12px;margin:12px 0;font-size:13px;border-radius:0 3px 3px 0;}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0;}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
+  th{background:#e9e3d6;font-weight:600;color:var(--ink);}
+  tr:nth-child(even) td{background:#f8f5ee;}
+  .num{text-align:right;white-space:nowrap;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:12px 0;}
+  .card{border:1px solid var(--line);background:#fbf9f3;padding:14px 16px;border-radius:3px;}
+  .card h4{margin:0 0 6px;font-size:14.5px;}
+  .card .m{font-size:12.5px;color:var(--ink2);}
+  .note{border-left:3px solid var(--vermilion);background:#f7efe9;padding:10px 14px;margin:14px 0;font-size:13.5px;border-radius:0 3px 3px 0;}
+  .note.warn{border-left-color:#b5462f;background:#fbeae6;}
+  .note.ok{border-left-color:var(--green);background:#eef2ec;}
+  .pack li{list-style:none;padding:7px 0 7px 30px;border-bottom:1px dashed var(--line);position:relative;font-size:13.5px;cursor:pointer;}
+  .pack li .cb{position:absolute;left:4px;top:9px;width:16px;height:16px;}
+  .pack li.done{color:var(--ink2);text-decoration:line-through;}
+  .lv{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:8px;margin-right:6px;color:#fff;}
+  .lv.S{background:var(--vermilion);} .lv.A{background:var(--amber);} .lv.B{background:var(--ink2);}
+  .pill{display:inline-block;font-size:12px;border:1px solid var(--line);background:#fff;border-radius:20px;padding:3px 10px;margin:3px 4px 0 0;}
+  .paxbar{display:flex;align-items:center;gap:14px;margin:10px 0 6px;flex-wrap:wrap;}
+  .paxbar input[type=range]{width:220px;}
+  .budcards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0;}
+  .budcards .b{background:#fbf9f3;border:1px solid var(--line);border-radius:4px;padding:14px;text-align:center;}
+  .budcards .b.rec{border-color:var(--vermilion);box-shadow:0 0 0 1px var(--vermilion);}
+  .budcards .b h4{margin:0 0 4px;font-size:14px;}
+  .budcards .b .per{font-size:12px;color:var(--ink2);}
+  .budcards .b .tot{font-size:20px;font-weight:600;color:var(--vermilion);margin-top:6px;}
+  .hidden{color:var(--green);font-size:12.5px;} .avoid{color:var(--vermilion);font-size:12.5px;}
+  .emerg{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;}
+  .emerg button{font-size:13px;border:1px solid var(--line);background:#fff;border-radius:3px;padding:7px 12px;cursor:pointer;}
+  .emerg button:hover{border-color:var(--vermilion);}
+  .phrase{font-size:13px;padding:4px 0;border-bottom:1px dashed var(--line);}
+  .phrase b{color:var(--blue);}
+  #map{width:100%;height:560px;display:block;background:#eef1ec;border:1px solid var(--line);border-radius:4px;position:relative;overflow:hidden;}
+  #mapLeaflet,#mapSvgWrap{position:absolute;inset:0;}
+  #mapLeaflet{display:none;}
+  #mapSvgWrap{display:block;}
+  #mapSvgWrap svg{display:block;width:100%;height:100%;}
+  .svg-legend{font-size:10.5px;fill:#5b574f;}
+  .svg-label{font-size:11px;fill:#232220;font-weight:600;}
+  .svg-sub{font-size:9.5px;fill:#5b574f;}
+  .tilebtn.sm{font-size:11px;padding:3px 8px;}
+  .leaflet-popup-content .iw{font-size:12.5px;line-height:1.6;}
+  .iw-h{font-weight:700;margin-bottom:4px;}
+  .iw-d{color:#34322d;}
+  .iw-r,.iw-t{color:var(--ink2);margin-top:3px;}
+  .map-fail{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:#f7f5f0;color:var(--ink2);font-size:14px;text-align:center;border-radius:4px;}
+  .map-hint{font-size:12px;color:var(--ink2);margin-top:8px;}
+  .map-title{font-size:13px;font-weight:700;color:var(--ink);align-self:center;}
+  .map-info{margin-top:10px;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:4px;font-size:13px;min-height:56px;}
+  .map-info .mi-d{color:var(--ink2);margin-top:3px;}
+  .map-info .mi-r,.map-info .mi-t{font-size:12.5px;color:var(--ink2);margin-top:3px;}
+  .tilebtn{font-size:12px;border:1px solid var(--line);background:#fff;border-radius:2px;padding:4px 9px;cursor:pointer;margin-right:6px;}
+  .tilebtn.on{background:var(--ink);color:#f3efe6;border-color:var(--ink);}
+  .depart{font-size:13px;margin:8px 0;}
+  .depart input{font-size:13px;padding:4px 8px;border:1px solid var(--line);border-radius:3px;}
+  .fam{background:#eef3f6;border-left:3px solid var(--blue);padding:10px 14px;margin:14px 0;font-size:13.5px;border-radius:0 3px 3px 0;}
+  .map-controls{display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap;}
+  @media(max-width:860px){
+    .layout{grid-template-columns:1fr;padding:0 18px 60px;}
+    .rail{position:static;}
+    #map{max-height:62vh;}
+    .hero{padding:44px 18px 36px;}
+    .hero h1{font-size:32px;}
+    .grid2,.grid3,.budcards{grid-template-columns:1fr;}
+  }
+  @media print{
+    .no-print{display:none !important;}
+    .hero{background:#fff;color:#000;padding:20px 0;}
+    .toc{display:none;}
+    body{background:#fff;}
+    .chapter{margin-top:24px;page-break-inside:avoid;}
+    #map{max-height:62vh;}
+    a{color:#000;text-decoration:none;}
+  }
+</style>
+</head>
+<body><div id="gate" class="gate"><div class="gate-box"><div class="gate-lock">🔒</div><h2>内容已加密</h2><p>请输入访问密码以查看报告</p><input id="gate-pwd" type="password" placeholder="请输入密码" autocomplete="off"/><button id="gate-btn">解锁</button><div id="gate-err" class="gate-err"></div></div></div><style>.gate{position:fixed;inset:0;z-index:2147483647;background:linear-gradient(135deg,#0f1420,#1a2236);display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}.gate-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:36px 40px;text-align:center;color:#e8edf5;max-width:340px}.gate-lock{font-size:40px;margin-bottom:8px}.gate-box h2{margin:6px 0;font-size:20px;font-weight:600}.gate-box p{margin:0 0 18px;font-size:13px;color:#9fb0c8}.gate-box input{width:100%;box-sizing:border-box;padding:11px 14px;border-radius:9px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);color:#fff;font-size:15px;outline:none;margin-bottom:12px}.gate-box input:focus{border-color:#6ea8fe}.gate-box button{width:100%;padding:11px;border:none;border-radius:9px;background:linear-gradient(135deg,#3b6fd4,#5b8def);color:#fff;font-size:15px;font-weight:600;cursor:pointer}.gate-box button:hover{opacity:.92}.gate-err{color:#ff8a8a;font-size:12px;min-height:16px;margin-top:8px}</style><script>(function(){var PWD="hanbuff";function unlock(){var g=document.getElementById("gate");if(g&&g.parentNode){g.parentNode.removeChild(g);}}function check(){var v=(document.getElementById("gate-pwd")||{}).value||"";var e=document.getElementById("gate-err");if(v===PWD){try{localStorage.setItem("gate_ok","1");}catch(_){}unlock();}else{if(e)e.textContent="密码错误，请重试";}}function init(){var b=document.getElementById("gate-btn");if(b)b.addEventListener("click",check);var i=document.getElementById("gate-pwd");if(i){i.addEventListener("keydown",function(ev){if(ev.key==="Enter")check();});}try{if(localStorage.getItem("gate_ok")==="1"){unlock();}}catch(_){}}window.addEventListener("load",init);})();</script>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="meta">上海 → 悉尼 → 凯恩斯 → 墨尔本 → 广州 → 上海 · 16 DAYS · 2026.12.5 – 12.20 · HONEYMOON</div>
+    <h1 class="serif">澳洲三城 蜜月 16 日手册</h1>
+    <div class="sub">冬季出发，落地南半球盛夏。松弛版：不赶景点，只去想去的地方。<b>悉尼</b>海港与海滩 5 天 → <b>凯恩斯</b>大堡礁与雨林 3 天 → <b>墨尔本</b>咖啡、涂鸦与大洋路 3 天 → 直飞<b>广州</b>玩 3 天（长隆 + 老西关 + 越秀登高）。每城住 2–4 晚、只搬 3 次家。<b>⚠️ 12 月凯恩斯正值雨季 + 水母季，出海有讲究，见「实用贴士」。</b></div>
+    <br>
+    <span class="sign">作者：HanBuff</span>
+  </div>
+  <nav class="toc no-print">
+    <a href="#c0">00 行前准备</a>
+    <a href="#c1">01 预算明细</a>
+    <a href="#c2">02 每日行程</a>
+    <a href="#c3">03 交通与自驾</a>
+    <a href="#c4">04 住宿甄选</a>
+    <a href="#c5">05 美食清单</a>
+    <a href="#c6">06 实用贴士</a>
+  </nav>
+</header>
+
+<div class="layout">
+  <main class="content">
+
+    <!-- 00 行前准备 -->
+    <section class="chapter" id="c0">
+      <div class="ch-head"><span class="ch-num serif">00</span><h2 class="ch-title">行前准备</h2><span class="ch-en">Before you go</span></div>
+
+      <div class="note warn"><b>⚠️ 12 月是南半球盛夏，三个季节变化必须先知道</b><br>
+      ① <b>凯恩斯进入雨季 + 水母季 + 气旋季</b>（11 月–5 月）：气温 31℃、湿度 80%+，午后常有雷阵雨；<b>海边不能随便下水，必须穿防蜇服（stinger suit）</b>；偶发热带气旋可能取消出海。好消息是 12 月凯恩斯是<b>淡季</b>，住宿与团费有折扣。<br>
+      ② <b>悉尼 / 墨尔本正值盛夏</b>（26–28℃），海滩是最佳状态，但紫外线极强、可能遇 40℃ 热浪。<br>
+      ③ <b>广州是冬季</b>（10–20℃），和 10 月完全不同——<b>需要薄外套甚至毛衣</b>，别再按 10 月的炎热准备。</div>
+
+      <div class="note"><b>签证与行程</b>：只去澳大利亚，<b>只需办一个澳签</b>（600 子类电子访客签，线上申请，建议提前 1–2 个月）。不入境新西兰，无需 NZeTA / IVL。广州段为国内行程，身份证即可。</div>
+
+      <div class="note warn"><b>⚠️ 12 月是澳洲旺季（凯恩斯除外），务必早订</b>：澳洲人圣诞+新年连休、学校假期从 12 月中下旬开始，热门住宿「常需提前数月」。你的行程 12/5–12/20 正好卡在旺季爬升期（赶在圣诞最挤的一周前回国，这点安排得不错）。<b>国际机票、内陆机票、悉尼/墨尔本住宿建议提前 3–4 个月锁定</b>；凯恩斯因是淡季，可稍晚订、还可能捡到折扣。</div>
+
+      <div class="fam"><b>💑 松弛版设计原则</b>：① 每天只排 1–2 个主项，其余留给咖啡馆、海滩、发呆；② 悉尼 4 晚 / 凯恩斯 3 晚 / 墨尔本 2 晚 + 大洋路 2 晚 / 广州 3 晚，<b>全程只搬 3 次家</b>；③ 不赶日出、不追打卡，累了就砍掉当天最后一站；④ 凯恩斯多留一天做<b>天气缓冲</b>，出海被取消也能改期。</div>
+
+      <h3 class="sec"><i class="fa-solid fa-list-check"></i> 倒计时时间线</h3>
+      <table>
+        <tr><th>时点</th><th>动作</th><th>备注</th></tr>
+        <tr><td>出发前 4 个月<br>（≈ 8 月中）</td><td>订国际机票（<b>上海进 / 广州出</b>开口程）+ 澳洲内陆 2 段</td><td>12 月旺季，早订省最多</td></tr>
+        <tr><td>出发前 3 个月<br>（≈ 9 月初）</td><td>办澳签 600；订悉尼 / 墨尔本住宿（旺季最紧）</td><td>凯恩斯是淡季，可稍后订</td></tr>
+        <tr><td>出发前 2 个月<br>（≈ 10 月初）</td><td>订外堡礁一日游 + 库兰达雨林；订大洋路租车（3 天）</td><td>选<b>可免费退改</b>的团，应对气旋天气</td></tr>
+        <tr><td>出发前 1 个月</td><td>订广州段（长隆门票、广州酒店、广州→上海返程）；买境外险</td><td>长隆标准票 ¥300，网购常减 20–30</td></tr>
+        <tr><td>出发前 1 周</td><td>确认驾照英文翻译件、租车；查澳洲天气与气旋预警</td><td>澳洲 Type I 插头；备防蜇/防晒</td></tr>
+        <tr><td>出发当天</td><td>护照 + 澳签截图 + 身份证（广州段）+ 驾照及翻译件 + 信用卡</td><td>澳洲入境严禁肉蛋奶、新鲜果蔬，务必申报</td></tr>
+      </table>
+
+      <h3 class="sec"><i class="fa-solid fa-suitcase"></i> 行李清单（可勾选 · 自动保存）</h3>
+      <p class="muted">点击条目打勾，状态存浏览器本地。按 S（必带）/A（重要）/B（可选）。</p>
+      <ul class="pack" id="packList"></ul>
+
+      <h3 class="sec"><i class="fa-solid fa-mobile-screen"></i> 必装 APP / 工具</h3>
+      <span class="pill">Google Maps（导航）</span><span class="pill">Opal Travel（悉尼公交渡轮）</span><span class="pill">PTV + myki（墨尔本公交）</span><span class="pill">Uber / DiDi（打车）</span><span class="pill">BOM Weather（澳洲气象局，查气旋）</span><span class="pill">Booking / 携程（住宿）</span><span class="pill">飞猪 / Experience Oz（活动比价）</span><span class="pill">长隆旅游 App（演出时刻）</span><span class="pill">广州地铁 / 羊城通（国内段）</span>
+    </section>
+
+    <!-- 01 预算 -->
+    <section class="chapter" id="c1">
+      <div class="ch-head"><span class="ch-num serif">01</span><h2 class="ch-title">预算明细</h2><span class="ch-en">Budget</span></div>
+      <p class="muted">蜜月以<b>两人</b>为基准，<b>已按 12 月旺季上浮</b>。「固定项」为情侣共享（国际开口程 + 澳洲内陆 2 段 + 大洋路租车），「人均」为住宿 + 餐饮 + 门票。汇率参考：<b>1 AUD ≈ ¥4.7</b>。拖动滑块看不同人数合计。</p>
+      <div class="paxbar no-print">
+        <span>同行人数：</span>
+        <input type="range" id="pax" min="2" max="4" value="2" oninput="updateBudget()">
+        <b id="paxLabel" style="color:var(--vermilion)">2 人</b>
+      </div>
+      <div class="budcards">
+        <div class="b"><h4>经济型</h4><div class="per" id="per_eco">人均 ≈ ¥—</div><div class="tot" id="tot_eco">¥—</div></div>
+        <div class="b rec"><h4>舒适型 <span style="color:var(--vermilion)">← 推荐</span></h4><div class="per" id="per_com">人均 ≈ ¥—</div><div class="tot" id="tot_com">¥—</div></div>
+        <div class="b"><h4>轻奢型</h4><div class="per" id="per_lux">人均 ≈ ¥—</div><div class="tot" id="tot_lux">¥—</div></div>
+      </div>
+      <table>
+        <tr><th>类别</th><th>明细（2 人）</th><th class="num">合计 ¥</th><th>说明</th></tr>
+        <tr><td>国际机票</td><td>上海→悉尼 + 墨尔本→广州（开口程）+ 广州→上海国内段</td><td class="num">≈26,000</td><td>12 月旺季，国际段 ≈¥10,000–13,000/人</td></tr>
+        <tr><td>澳洲内陆机票</td><td>悉尼→凯恩斯（3h15m）+ 凯恩斯→墨尔本（3h40m）</td><td class="num">≈7,000</td><td>旺季 A$250–400/人/段</td></tr>
+        <tr><td>大洋路租车</td><td>3 天 + 全险（墨尔本取还）</td><td class="num">≈1,800</td><td>澳洲夏季路况好，无需异地还车</td></tr>
+        <tr><td>住宿</td><td>悉尼 4 晚 + 凯恩斯 3 晚 + 墨尔本 2 晚 + 阿波罗湾 1 晚 + 坎贝尔港 1 晚 + 广州 3 晚（共 14 晚）</td><td class="num">≈19,500</td><td>悉尼/墨尔本旺季上浮；<b>凯恩斯淡季反而便宜</b>；广州 ¥600–1,200/晚（比墨尔本便宜，多住 1 晚反而更省）</td></tr>
+        <tr><td>餐饮</td><td>16 天正餐 + 咖啡 + 早茶</td><td class="num">≈10,000</td><td>澳洲人均 ¥350/天，广州人均 ¥200/天</td></tr>
+        <tr><td>活动门票</td><td>外堡礁 ¥1,540×2 + 库兰达 ¥585×2 + 丹翠雨林 + 蓝山 + 歌剧院导览 + 菲利普岛/酒庄 + 长隆 ¥300×2 + 珠江夜游</td><td class="num">≈11,000</td><td>大堡礁是最贵单项，但值得</td></tr>
+        <tr><td>合计</td><td>2 人蜜月 16 日</td><td class="num"><b>≈61,000–89,000</b></td><td>舒适型取中位 ≈ ¥73,000</td></tr>
+      </table>
+      <div class="note"><b>比 10 月版贵在哪</b>：① 天数 +2；② 12 月旺季机票住宿上浮约 20–30%；③ 大洋路升级为 3 天 2 夜多一晚。<br>
+      <b>省钱点</b>：凯恩斯 12 月是淡季，酒店和出海团常有折扣，可以在这里把钱省回来。<b>外堡礁别贪便宜</b>——低价团（A$125–165）去的是内堡礁，珊瑚受损、人挤人；A$220–450 的外堡礁（摩尔礁 / 阿金考特礁）才值回票价。实际以航司 / 平台实时报价为准。</div>
+    </section>
+
+    <!-- 02 每日行程 -->
+    <section class="chapter" id="c2">
+      <div class="ch-head"><span class="ch-num serif">02</span><h2 class="ch-title">每日行程</h2><span class="ch-en">Day by day</span></div>
+      <div class="depart no-print">
+        出发日期：<input type="date" id="depDate" value="2026-12-05" onchange="syncToday()"> <span id="cdText" class="muted"></span>
+      </div>
+      <div class="daytabs no-print" id="dayTabs"></div>
+      <div id="timelineBox"></div>
+    </section>
+
+    <!-- 03 交通与自驾 -->
+    <section class="chapter" id="c3">
+      <div class="ch-head"><span class="ch-num serif">03</span><h2 class="ch-title">交通与自驾</h2><span class="ch-en">Transport &amp; driving</span></div>
+
+      <h3 class="sec"><i class="fa-solid fa-plane"></i> 大交通 · 四段飞行</h3>
+      <p>① <b>上海 → 悉尼</b>（直飞约 11h，夜机为佳）；② <b>悉尼 → 凯恩斯</b>（直飞约 3h15m，Qantas / Jetstar / Virgin 每日多班）；③ <b>凯恩斯 → 墨尔本</b>（直飞约 3h40m）；④ <b>墨尔本 → 广州</b>（南航 <b>CZ322 10:20 起飞、18:00 落地</b>，直飞 9h40m，每日两班全年稳定）；⑤ <b>广州 → 上海</b>（国内段约 2.5h）。</p>
+      <div class="note ok"><b>💡 这条路线最大的松弛红利</b>：回程是<b>墨尔本直飞广州</b>，早上 10:20 走、傍晚 18:00 就落地，<b>当天晚上就能在广州吃上饭</b>，不用跨国中转耗 16 小时。这也是把墨尔本排在最后一站的原因。</div>
+      <div class="note"><b>⚠️ 时差（12 月）</b>：澳洲东部实行夏令时，<b>悉尼、墨尔本比北京快 3 小时</b>；但<b>昆士兰（凯恩斯）全年不实行夏令时，比北京只快 2 小时</b>。所以 <b>悉尼 → 凯恩斯时间要减 1 小时，凯恩斯 → 墨尔本要加 1 小时</b>。订内陆机票和报团集合时间时务必核对，这是最容易搞错的一处。</div>
+
+      <h3 class="sec"><i class="fa-solid fa-ship"></i> 悉尼段（不租车）</h3>
+      <p>市区 + 蓝山用 <b>Opal 卡（公交 / 火车 / 渡轮）</b>或 Uber / DiDi；蓝山可火车前往或报一日游。12 月是海滩季，<b>去邦迪/曼利坐渡轮本身就是最好的观光</b>。</p>
+
+      <h3 class="sec"><i class="fa-solid fa-water"></i> 凯恩斯段（不租车也能玩）</h3>
+      <p>· 凯恩斯市中心距机场仅约 8km，<b>市区和 Esplanade 全靠步行</b>。<br>
+      · 绝大多数一日游（大堡礁、库兰达、丹翠）<b>含酒店接送</b>，不用自己开车。<br>
+      · 想去道格拉斯港：接驳车约 1 小时（A$40–60/人）或自驾；<b>更省事的做法是报「含凯恩斯–道格拉斯港接送」的外堡礁团</b>，住凯恩斯不搬行李也能去最好的礁。<br>
+      · <b>12 月海水有水母，市区海滩不要下水</b>——请去<b>免费的海滨泻湖 Esplanade Lagoon</b>（有防蜇网）。</p>
+
+      <h3 class="sec"><i class="fa-solid fa-tram-front"></i> 墨尔本段（电车为主）</h3>
+      <p>· <b>CBD 有免费电车区</b>（Free Tram Zone），市中心范围内随便坐；出区刷 <b>myki 卡</b>。<br>
+      · <b>City Circle Tram</b>（酒红 + 金色复古电车）免费，绕城一圈带语音讲解。<br>
+      · 机场往返：<b>SkyBus</b> 到南十字星车站约 25 分钟、单程约 A$20；打车 A$60–80。<br>
+      · 去圣基尔达坐电车约 20 分钟。</p>
+
+      <h3 class="sec"><i class="fa-solid fa-car-side"></i> 大洋路自驾（3 天 2 夜，也可报团）</h3>
+      <p>· <b>右舵靠左行驶</b>。<b>中国驾照 + 认可的英文翻译件</b>（NAATI 翻译或领事馆认证）方可租车，各州细则不同，取车前与租车公司确认。<br>
+      · <b>建议正向走</b>（墨尔本 → 十二门徒方向）：观景台与停车带多在行进方向<b>右侧</b>，右舵车可直接靠边停，不用横穿马路。<br>
+      · <b>3 天 2 夜是官方公认的 sweet spot</b>（2 天只能赶路，3 天才叫旅行）：D1 住阿波罗湾、D2 看完十二门徒日落直接住坎贝尔港（距 10 分钟，<b>不用开夜路</b>）、D3 从容走完余下景点午后返程。<br>
+      · 弯道多、部分路段窄，<b>新手可报两日/三日团</b>。<br>
+      · 出发前<b>务必查天气与路况</b>：山火、暴雨洪水都可能临时封闭路段（近年多次发生）。<br>
+      · 十二门徒有直升机观光（约 A$165/15 分钟），预算允许很值得。</p>
+    </section>
+
+    <!-- 04 住宿甄选 -->
+    <section class="chapter" id="c4">
+      <div class="ch-head"><span class="ch-num serif">04</span><h2 class="ch-title">住宿甄选</h2><span class="ch-en">Where to stay</span></div>
+      <table>
+        <tr><th>区域</th><th>代表（蜜月向）</th><th class="num">价格/间/晚</th><th>优劣</th><th>预订平台</th></tr>
+        <tr><td>悉尼·环形码头</td><td><b>Park Hyatt Sydney</b>（歌剧院景标杆）/ Shangri-La（36 层夜景）/ Capella（古迹奢华）</td><td class="num">AU$600–1,000</td><td>Park Hyatt 海港景封神；<b>12 月旺季涨最狠，越早订越好</b></td><td>官网/携程</td></tr>
+        <tr><td>悉尼·邦迪</td><td>QT Bondi（海滩前）</td><td class="num">AU$450+</td><td>12 月海滩季住这里很爽，但离市区远</td><td>Booking</td></tr>
+        <tr><td>凯恩斯·Esplanade</td><td><b>Crystalbrook Riley</b>（最高端）/ Crystalbrook Flynn / Park Regis City Quays（中档，屋顶泳池）</td><td class="num">¥700–1,600</td><td>住滨海大道一带，步行到泻湖与码头；<b>12 月淡季常有折扣</b></td><td>Booking/携程</td></tr>
+        <tr><td>道格拉斯港（可选升级）</td><td><b>QT Port Douglas</b> / Mantra Aqueous on Port / 雨林奢华 <b>Silky Oaks Lodge</b></td><td class="num">¥1,000–2,600</td><td>四英里海滩日落无人群、餐厅人均更好，<b>蜜月氛围胜过凯恩斯</b></td><td>Booking/官网</td></tr>
+        <tr><td>墨尔本·CBD</td><td><b>Grand Hyatt</b> / The Langham（河景）/ Ovolo（设计感）</td><td class="num">AU$350–650</td><td>步行到涂鸦街、Flinders St、餐厅</td><td>官网/携程</td></tr>
+        <tr><td>墨尔本·南岸 Southbank</td><td>Crown Towers（奢华）/ 河畔酒店</td><td class="num">AU$400–850</td><td>雅拉河景、夜景好</td><td>Booking</td></tr>
+        <tr><td>大洋路·阿波罗湾</td><td>Apollo Bay Hotel（中档）/ Chris’s Beacon Point（高档）/ Eco YHA（预算）</td><td class="num">AU$200–450</td><td><b>地理中点 + 美食最好</b>，D1 首选住处</td><td>Booking</td></tr>
+        <tr><td>大洋路·坎贝尔港</td><td>Anchors Port Campbell / Port Campbell Hostel / 汽车营地小屋</td><td class="num">AU$180–400</td><td><b>离十二门徒仅 10 分钟，D2 住这里看完日落不用开夜路</b></td><td>Booking</td></tr>
+        <tr><td><b>广州·珠江新城</b></td><td><b>广州瑰丽酒店</b>（530m 高空塔景）/ 四季 / 柏悦</td><td class="num">¥1,200–2,500</td><td>蜜月收尾首选，夜景无敌</td><td>携程/官网</td></tr>
+        <tr><td><b>广州·沙面</b></td><td><b>白天鹅宾馆</b>（沙面岛江景）</td><td class="num">¥900–1,600</td><td>历史感 + 出门即景</td><td>携程/官网</td></tr>
+      </table>
+      <div class="note"><b>住宿策略</b>：本行程<b>每城住 2–4 晚、只搬 3 次家</b>（悉尼 4 晚 → 凯恩斯 3 晚 → 墨尔本 2 晚 + 大洋路 2 晚 → 广州 3 晚）。<b>不建议在凯恩斯和道格拉斯港之间来回搬</b>——接驳单程就要 1 小时。想体验道格拉斯港的高级度假感，用「含接送的外堡礁一日团」实现即可。<br>
+      <b>12 月特别提示</b>：悉尼、墨尔本旺季房源紧张且贵，<b>优先订可免费取消的，并尽早锁定</b>；凯恩斯是淡季，可以等临近再订、甚至捡折扣。</div>
+    </section>
+
+    <!-- 05 美食清单 -->
+    <section class="chapter" id="c5">
+      <div class="ch-head"><span class="ch-num serif">05</span><h2 class="ch-title">美食清单</h2><span class="ch-en">Food map</span></div>
+      <div class="grid2">
+        <div class="card"><h4><i class="fa-solid fa-utensils"></i> 悉尼 · 海港与鱼市</h4>
+          <div class="m">· <b>Sydney Fish Market</b>：现捞生蚝、龙虾、寿司，上午最新鲜<br>
+          · <b>Cafe Sydney</b>（海关大楼顶层）：海港全景，蜜月晚餐位<br>
+          · <b>岩石区 The Glenmore</b>：rooftop 看歌剧院 + 大桥<br>
+          · 12 月是海滩季，邦迪/曼利的海景餐厅都开了露天位<br>
+          <span class="hidden">本地人线：Newtown / Surry Hills 咖啡馆与早午餐</span></div></div>
+        <div class="card"><h4><i class="fa-solid fa-utensils"></i> 悉尼 · 蓝山</h4>
+          <div class="m">· Katoomba 小镇 café 英式下午茶<br>
+          · 洛恩/卡通巴沿线农家餐厅（本地羊肉、派）<br>
+          <span class="avoid">避坑：景区内团队餐一般，下山回市区吃更好</span></div></div>
+        <div class="card"><h4><i class="fa-solid fa-fish"></i> 凯恩斯 · 热带海鲜</h4>
+          <div class="m">· <b>泥蟹（Mud Crab）</b>：北昆士兰特产，肉肥味甜<br>
+          · Esplanade 沿线海鲜餐厅，看泻湖日落<br>
+          · 凯恩斯夜市：平价小吃、按摩一条街<br>
+          · 外堡礁团<b>含自助午餐</b>，早餐吃好即可<br>
+          <span class="hidden">12 月炎热潮湿，多补水与电解质；热带水果正当季</span></div></div>
+        <div class="card"><h4><i class="fa-solid fa-mug-hot"></i> 墨尔本 · 咖啡之都</h4>
+          <div class="m">· <b>Flat White（澳白）</b>：墨尔本灵魂饮品，小巷独立咖啡馆随便进不踩雷<br>
+          · <b>Magic</b>：双份 ristretto + 牛奶，本地人点单暗号<br>
+          · <b>Patricia Coffee Brewers</b>（Little Bourke St）：站吧式精品咖啡，A$5<br>
+          · <b>Higher Ground</b>：发电站改造的工业风 Brunch 天花板<br>
+          · <b>Lune Croissanterie</b>：全澳最火可颂，早起排队也值<br>
+          · <b>Industry Beans</b>（Fitzroy）、<b>Code Black</b>（Brunswick）</div></div>
+        <div class="card"><h4><i class="fa-solid fa-bowl-food"></i> 墨尔本 · 正餐与市场</h4>
+          <div class="m">· <b>Chin Chin</b>（Flinders Lane）：东南亚融合菜，A$22–36，<b>不接受预订</b>，排队值得<br>
+          · <b>South Melbourne Market</b>（<b>周三营业</b>）：海鲜、现开生蚝、咖啡，本地人市场 —— <b>本行程安排的是这个</b><br>
+          · <b>Victoria Queen Market</b>：德国香肠 A$10、<b>甜甜圈车 A$5 五个</b>（1950 年至今），但<b>周一、周三休市</b><br>
+          · <b>Brunetti Classico</b>：意大利甜品，拿破仑千层必点<br>
+          · <b>Acland Street</b>（圣基尔达）：欧陆蛋糕店一条街<br>
+          · <b>Eau de Vie</b>：禁酒令风格 speakeasy，鸡尾酒 A$24<br>
+          <span class="avoid">避坑：维妈市场周一、周三休市，而本次墨尔本只停周一与周三 —— <b>所以改去南墨市场</b></span></div></div>
+        <div class="card"><h4><i class="fa-solid fa-mug-hot"></i> 广州 · 早茶（一盅两件）</h4>
+          <div class="m">· <b>陶陶居</b>（第十甫路总店）：百年老字号，复古装修体验感最佳<br>
+          · <b>广州酒家</b>（文昌南路总店）：老字号代表<br>
+          · <b>点都德</b>：连锁品质稳定、创新茶点多<br>
+          · <b>泮溪酒家</b>：园林式，环境最出片<br>
+          必点：虾饺、烧卖、叉烧包、红米肠、沙皇包、艇仔粥、蛋挞<br>
+          <span class="hidden">12 月广州转凉，一盅两件配热茶正合适</span></div></div>
+        <div class="card"><h4><i class="fa-solid fa-bowl-food"></i> 广州 · 西关小吃与粤菜</h4>
+          <div class="m">· <b>银记肠粉</b>：布拉肠皮薄馅足（鲜虾肠 / 牛肉肠）<br>
+          · <b>陈添记鱼皮</b>（宝华路）、<b>顺记冰室</b>椰子雪糕<br>
+          · <b>南信牛奶甜品</b>双皮奶、<b>开记甜品</b>绿豆沙、<b>凌记濑粉</b><br>
+          · 12 月必吃：<b>打边炉（广式火锅）</b>、煲仔饭、萝卜牛杂、猪脚姜<br>
+          · 高端粤菜：<b>炳胜品味</b>（黑叉烧 + 菠萝包）、利苑、御宝轩<br>
+          <span class="avoid">避坑：上下九/北京路部分小吃店价格虚高，认老字号</span></div></div>
+      </div>
+      <div class="note src">📌 <b>信息来源说明</b>：① <b>悉尼 / 凯恩斯 / 墨尔本段</b>的路线、玩法、住宿、餐厅店名与价格，来自公开平台聚合检索（Visit Melbourne、greatoceanroad.com.au、greatbarrierreeftours.com、cairns-tours、hotelpair、飞猪 / 携程 / Klook / Experience Oz 票务页、马蜂窝与本地生活攻略，2025–2026 年内容）。② <b>12 月季节数据</b>（凯恩斯 12 月均温 31℃/24℃、降雨 175mm、水母季 11–5 月、气旋季 12–3 月；悉尼 12 月均高 26℃；墨尔本均高 24–27℃）来自澳洲气象与旅游局公开资料汇总。③ <b>广州段</b>的长隆门票（标准票 ¥300 / 优待 ¥210 / 青少年 ¥240）、营业时间 9:30–18:00、园区分区与表演时刻、交通接驳、停车收费，来自<b>长隆官网与携程 / 同程 / 广州本地宝</b>。④ 航班信息（南航 CZ322 墨尔本 10:20→广州 18:00，每日两班）来自航司班表与票务平台。<br>
+      <b>诚实标注</b>：餐厅/酒店口碑波动，<b>预订与到店前请以平台实时评分、最新点评、官网报价为准</b>；长隆表演时刻按季节调整，<b>务必出行前在「长隆旅游 App」复核</b>；<b>大堡礁出海受天气（雨季/气旋）影响，务必选可退改的团并当天确认</b>；大洋路受山火/暴雨影响可能临时封路，出发当天查路况。机票 / 签证 / 汇率 / 时差 / 右舵自驾规则等通用行前项为我基于公开常识补充，实际以航司 / 使领馆 / 平台实时为准。<br>
+      <b>地图口径</b>：地图默认是<b>内嵌矢量地图</b> —— 真实海岸线与国界数据（Natural Earth）<b>直接写在本文件里</b>，用 SVG 绘制，<b>不请求任何外部资源，断网也能看</b>（此前试过的 OSM / Carto / Wikimedia 在国内均不可达，已全部弃用）。若你的网络环境允许，点地图下方<b>「在线底图（Esri）」</b>可切换到真实街道图，并能在<b>街道 / 卫星 / 地形</b>三种图层间切换（大洋路与十二门徒建议切<b>卫星图</b>看海岸线）；切到在线模式后，广州段会自动改用高德底图（坐标已由 WGS-84 换算为 GCJ-02）。<b>内嵌矢量地图为 110m 示意精度，城市尺度不够精细，实际导航请以 Google Maps 或当地地图 App 为准。</b></div>
+    </section>
+
+    <!-- 06 实用贴士 -->
+    <section class="chapter" id="c6">
+      <div class="ch-head"><span class="ch-num serif">06</span><h2 class="ch-title">实用贴士</h2><span class="ch-en">Tips &amp; emergency</span></div>
+
+      <h3 class="sec"><i class="fa-solid fa-water"></i> 12 月大堡礁 · 安全与避坑（重点）</h3>
+      <div class="note warn"><b>⚠️ 水母季（11 月–5 月），12 月正在其中</b>：热带昆士兰海域有<b>箱形水母（可能致命）和 Irukandji（极小但危险）</b>。<br>
+      · <b>下海必须穿全身防蜇服（stinger suit）</b>——正规礁船都会免费提供，<b>照穿，别逞强</b>。<br>
+      · <b>凯恩斯/道格拉斯港的市区海滩不要下水</b>（除非在有防蜇网的区域），想泡水去 <b>Esplanade Lagoon 泻湖</b> 或雨林里的淡水瀑布。<br>
+      · 避免<b>黎明、黄昏、雨后</b>下水——这些时段水母最活跃。<br>
+      · <b>外堡礁（Outer Reef）风险显著低于近岸</b>，所以更要去外堡礁，而不是图便宜去绿岛等近岸点。</div>
+      <div class="note"><b>雨季 + 气旋季的应对</b>：12 月是凯恩斯雨季开端（降雨 175mm，1–2 月最湿），也是气旋季（12–3 月）。<br>
+      · <b>雨多是午后的短时雷阵雨</b>，通常不影响上午出海；行程尽量把出海安排在上午。<br>
+      · <b>外堡礁离岸远，陆地下雨时海上往往还是晴的</b>；而且雨水径流影响的是近岸，外堡礁能见度依然不错。<br>
+      · 气旋罕见但可能（当地潜店的说法是「平均两年影响一周」），<b>务必订可退改的团</b>，并留意澳洲气象局 BOM 预警。<br>
+      · <b>这就是 D8 留作天气缓冲日的原因</b>——D6 若因天气取消，D8 可以补上，不至于白跑一趟。<br>
+      · <b>深潜后 24 小时内不要坐飞机</b>，别把深潜排在离境前一天。</div>
+      <div class="note ok"><b>✅ 好消息</b>：12 月凯恩斯是<b>淡季</b>，酒店和出海团常有折扣；水温暖（27℃）浮潜舒服；12 月初通常晴天较多（你正好 12/9–12/12 在凯恩斯）；而且<b>12 月是海龟产卵季</b>，有机会看到海龟上岸产卵。</div>
+
+      <h3 class="sec"><i class="fa-solid fa-sun"></i> 南半球盛夏 · 防晒与健康</h3>
+      <p>· <b>12 月澳洲紫外线指数「极高（extreme）」</b>，不是普通的晒——<b>SPF50+ 防晒、墨镜、帽子、防晒衣</b>是刚需，阴天也要涂。<br>
+      · 悉尼/墨尔本可能遇 <b>40℃ 热浪</b>，正午避免长时间户外，多补水。<br>
+      · 凯恩斯<b>湿度 80%+</b>，闷热易中暑，穿透气衣物、勤补电解质。<br>
+      · 大堡礁浮潜请用 <b>Reef-safe 防晒霜</b>（不含氧苯酮），普通防晒会伤害珊瑚。</p>
+
+      <h3 class="sec"><i class="fa-solid fa-road"></i> 大洋路 · 避坑要点</h3>
+      <p>· <b>十二门徒日落最震撼，日出次之</b>，正午光线最平。3 天 2 夜的走法：D1 住阿波罗湾，D2 看完日落直接住<b>坎贝尔港</b>（距 10 分钟），<b>不用开夜路</b>。<br>
+      · <b>肯尼特河（Kennett River）可免费看野生考拉</b>，抬头在桉树上找，长焦更好拍。<br>
+      · 洛克阿德峡谷（Loch Ard Gorge）常被认为<b>比十二门徒更震撼</b>，别跳过。<br>
+      · 墨尔本「一天四季」不是玩笑——<b>12 月虽是夏天，早晚仍可能只有 13℃</b>，短袖 + 薄外套分层穿。<br>
+      · 大洋路夏季天气总体不错，但南岸海风大，且<b>山火风险存在</b>，出发前查路况。<br>
+      · <b>菲利普岛企鹅归巢 / 亚拉河谷酒庄</b>是墨尔本两大经典一日游，但各需一整天——本次 16 天把富余时间给了广州，<b>若想加进去，需从大洋路或广州匀出一天</b>。</p>
+
+      <h3 class="sec"><i class="fa-solid fa-paw"></i> 长隆野生动物世界 · 避坑要点</h3>
+      <p>· <b>必须从北门坐小火车</b>：南门附近是<b>缆车站不是小火车</b>，穿越自驾区的猛兽小火车只在北门乘游区。<br>
+      · <b>小火车坐右手边</b>，动物更多；全程约 40 分钟，有讲解。<br>
+      · <b>谢绝自带食物</b>（婴儿食品与本人饮用水除外）。<br>
+      · <b>园区至少 2 万步</b>，舒适走鞋是刚需。12 月广州转凉，走起来正舒服。<br>
+      · 长颈鹿投喂树枝 30 元/枝，选 1–2 样最有兴趣的即可。<br>
+      · 下载<b>「长隆旅游」App</b> 查当日演出时刻与排队时长。</p>
+
+      <h3 class="sec"><i class="fa-solid fa-phone"></i> 紧急联络（点击复制）</h3>
+      <div class="emerg no-print" id="emergBox"></div>
+      <p class="muted">澳大利亚紧急 000 · 中国领事保护（全球）12308 · 长隆客服 020-84783333 · 广州紧急 110/120。驻悉尼/墨尔本领馆联系方式请以<b>外交部官网出发前公布</b>的为准。</p>
+
+      <h3 class="sec"><i class="fa-solid fa-language"></i> 常用短语</h3>
+      <div class="phrase"><b>A flat white / a magic, please.</b> — 来一杯澳白 / Magic（墨尔本咖啡店点单）</div>
+      <div class="phrase"><b>Is this an outer reef trip?</b> — 这是去外堡礁的吗？（订团时必问）</div>
+      <div class="phrase"><b>Do we need stinger suits today?</b> — 今天需要穿防蜇服吗？（下水前问船员）</div>
+      <div class="phrase"><b>Do I need a certified translation of my licence?</b> — 驾照需要认证翻译件吗？（租车时确认）</div>
+      <div class="phrase"><b>唔该 / 几多钱？</b> — 谢谢 / 多少钱？（广州，粤语通用）</div>
+
+      <h3 class="sec"><i class="fa-solid fa-triangle-exclamation"></i> 安全与兜底</h3>
+      <p>· 澳洲右舵靠左，过马路先看右边；自驾头两天慢开适应。<br>
+      · <b>12 月凯恩斯出海受天气影响大</b>，订可退改的团，出发前致电确认；关注 BOM 气旋预警。<br>
+      · <b>海边游泳只在有防蜇网的区域，或穿防蜇服</b>；凯恩斯市区海滩不要下水。<br>
+      · <b>深潜后 24 小时禁飞</b>，安排行程时留足间隔。<br>
+      · 澳洲紫外线极强，防晒霜、墨镜、帽子是刚需；正午避开长时间暴晒。<br>
+      · 大洋路部分路段手机无信号，提前下离线地图。<br>
+      · <b>广州 12 月是冬天（10–20℃）</b>，带薄外套/毛衣，别只带短袖；室内可能无暖气。<br>
+      · 两人各存一份护照、签证、酒店与活动确认单截图。</p>
+    </section>
+
+  </main>
+
+  <aside class="rail no-print">
+    <div class="ch-head" style="border:none;margin-bottom:8px;"><span class="ch-num serif">📍</span><h2 class="ch-title" style="font-size:16px">路线地图</h2></div>
+    <div id="map">
+      <div id="mapLeaflet"></div>
+      <div id="mapSvgWrap"></div>
+    </div>
+    <div class="map-hint" id="mapHint"><b>内嵌矢量地图</b>：真实海岸线，零网络依赖，断网也能看。</div>
+    <div class="map-controls">
+      <span id="mapTitle" class="map-title">DAY1</span>
+      <span style="flex:1"></span>
+      <button class="tilebtn on" id="btnDay" onclick="switchMapMode('day')">当日</button>
+      <button class="tilebtn" id="btnAll" onclick="switchMapMode('all')">全部</button>
+    </div>
+    <div class="map-controls">
+      <button class="tilebtn sm" id="btnOffline" onclick="toggleOffline()">在线底图（Esri）</button>
+      <span class="muted" style="font-size:11px" id="mapSrcTag">底图：内嵌矢量地图</span>
+    </div>
+    <div class="map-controls" id="styleBar">
+      <span class="muted" style="font-size:11px">图层</span>
+      <button class="tilebtn sm on" id="btnStyle_street" onclick="setEsriStyle('street')">街道</button>
+      <button class="tilebtn sm" id="btnStyle_imagery" onclick="setEsriStyle('imagery')">卫星</button>
+      <button class="tilebtn sm" id="btnStyle_topo" onclick="setEsriStyle('topo')">地形</button>
+    </div>
+    <div id="mapInfo" class="map-info"><span class="muted">点击地图圆点或左侧时间轴条目查看详情</span></div>
+  </aside>
+</div>
+
+<script>
+/* ---------- 数据（悉尼+凯恩斯+墨尔本+广州，WGS-84 坐标）
+   2026.12.5 出发，16 日；12 月为南半球盛夏，凯恩斯雨季+水母季
+   cat ∈ 交通/美食/景点/文化/购物/住宿
+   外堡礁坐标（阿金考特礁）为示意点，非精确礁盘位置
+*/
+const DAYS = [
+  { day:1, label:'D1 · 12/5(六) 上海 → 悉尼（飞行日）', cloth:'机上穿舒压衣；带颈枕眼罩，落地别排满。', pois:[
+    {t:'20:30', name:'上海浦东 PVG 出发', cat:'交通', d:'直飞悉尼约 11h，夜宿机上', trans:'飞机', cost:'机票', tip:'选靠窗位；悉尼夏令时比北京快 3h，落地为次日上午', coord:[31.15,121.80]},
+    {t:'10:30+1', name:'抵达悉尼 Kingsford Smith 机场', cat:'交通', d:'入境、取行李、买 Opal 卡', trans:'Uber/火车', cost:'打车 ≈¥200', tip:'落地当天只安排轻松项目，倒时差优先', coord:[-33.946,151.177]}
+  ]},
+  { day:2, label:'D2 · 12/6(日) 悉尼经典海港（慢半拍）', cloth:'夏季短袖 + 防晒；傍晚海风凉，带薄外套。', pois:[
+    {t:'11:30', name:'入住环形码头酒店', cat:'住宿', d:'Park Hyatt / Shangri-La 海港景', trans:'步行', cost:'AU$600–1,000/晚', tip:'12 月旺季，海港景房要提前数月锁', coord:[-33.860,151.211]},
+    {t:'13:00', name:'岩石区 The Rocks 午餐', cat:'美食', d:'殖民石屋餐厅 + 周末市集（周日最热闹）', trans:'步行', cost:'人均 ¥200', tip:'落地第一顿吃清淡，别太撑', coord:[-33.859,151.209]},
+    {t:'14:30', name:'悉尼歌剧院内部导览', cat:'文化', d:'官方导览 1h，看贝壳帆顶结构', trans:'步行', cost:'≈¥300/人', tip:'12 月演出季，提前官网订时段', coord:[-33.857,151.215]},
+    {t:'16:00', name:'皇家植物园 + 麦考利夫人座椅', cat:'景点', d:'明信片机位，歌剧院与海港大桥同框', trans:'步行', cost:'免费', tip:'夏季日落晚（约 20:00），下午光线正好', coord:[-33.858,151.229]},
+    {t:'18:30', name:'达令港黄昏游船晚餐', cat:'美食', d:'游船看日落 + 海港夜景套餐', trans:'渡轮+游船', cost:'≈¥800/人', tip:'蜜月晚餐位，提前订窗边；夏季天暗得晚', coord:[-33.873,151.201]}
+  ]},
+  { day:3, label:'D3 · 12/7(一) 邦迪海滩 + 海岸步道（海滩日）', cloth:'泳衣 + 防晒 + 墨镜；紫外线极强。', pois:[
+    {t:'08:30', name:'邦迪海滩 Bondi Icebergs', cat:'景点', d:'无边际泳池 + 冲浪氛围，12 月是最佳状态', trans:'公交/打车', cost:'泳池 ≈¥80', tip:'北半球冬天来南半球过夏天，这里最能体会', coord:[-33.891,151.276]},
+    {t:'10:00', name:'Bondi → Bronte 海岸步道', cat:'景点', d:'约 2.5km 悬崖海景步道，经 Tamarama 到 Bronte', trans:'步行', cost:'免费', tip:'夏季日晒强，早上走最舒服；累了在 Bronte 折返即可', coord:[-33.902,151.263]},
+    {t:'12:30', name:'Bronte 海滩午餐', cat:'美食', d:'海边 café，海鲜 + 冰饮，坐看冲浪', trans:'步行', cost:'人均 ¥180', tip:'12 月旺季海景位要等；也可超市买食材去野餐', coord:[-33.903,151.258]},
+    {t:'15:00', name:'新南威尔士美术馆（或回酒店泳池）', cat:'文化', d:'澳洲重要美术馆，馆藏丰富、免费', trans:'公交', cost:'免费', tip:'热浪天躲进美术馆最舒服；想躺平就回酒店泳池', coord:[-33.8687,151.2173]},
+    {t:'18:30', name:'环形码头晚餐', cat:'美食', d:'海港边餐厅，看歌剧院亮灯', trans:'步行', cost:'人均 ¥250', tip:'夏季日落约 20:00，饭后天还亮着', coord:[-33.861,151.211]}
+  ]},
+  { day:4, label:'D4 · 12/8(二) 蓝山一日游', cloth:'山区比市区凉 + 防晒；防滑鞋。', pois:[
+    {t:'08:00', name:'悉尼中央车站 → 卡通巴', cat:'交通', d:'火车/一日游约 2h 到 Katoomba', trans:'火车/一日游', cost:'往返 ≈¥200/人', tip:'早点出发，避开午后雷阵雨', coord:[-33.713,150.310]},
+    {t:'10:00', name:'三姐妹峰 + Scenic World', cat:'景点', d:'贾米森谷悬崖观景，雨林步道 + 三段缆车', trans:'缆车+步行', cost:'套票 ≈¥400/人', tip:'缆车风大，帽子抓好', coord:[-33.735,150.312]},
+    {t:'12:30', name:'卡通巴小镇午餐', cat:'美食', d:'英式下午茶 + 小镇 café', trans:'步行', cost:'人均 ¥180', tip:'山区餐一般，两人分食即可', coord:[-33.712,150.311]},
+    {t:'15:00', name:'回声谷观景台', cat:'景点', d:'三姐妹峰侧视机位，人少', trans:'步行', cost:'免费', tip:'累了可跳过，早点回市区', coord:[-33.730,150.310]},
+    {t:'18:00', name:'返回悉尼', cat:'交通', d:'黄昏回城，晚上自由活动', trans:'火车', cost:'—', tip:'不想爬山就全天泡海滩，节奏随你调', coord:[-33.860,151.211]}
+  ]},
+  { day:5, label:'D5 · 12/9(三) 塔龙加动物园 + 曼利（渡轮一日）', cloth:'轻装 + 防晒 + 走鞋；动物园建在陡坡上。', pois:[
+    {t:'09:00', name:'环形码头 → 塔龙加动物园（渡轮）', cat:'交通', d:'环形码头 4 号码头乘 F2 线，12 分钟直达动物园码头', trans:'渡轮', cost:'AU$8.39/人', tip:'渡轮本身就是海港观光，右侧看歌剧院与大桥；<b>Zoo Express 套票</b>（渡轮+门票+接驳）AU$67 更划算', coord:[-33.861,151.211]},
+    {t:'09:30', name:'塔龙加动物园 Taronga Zoo', cat:'景点', d:'1916 年开园的海港边动物园：考拉、袋鼠、鸭嘴兽、长颈鹿', trans:'接驳巴士+步行', cost:'≈AU$51/人（线上购票更便宜）', tip:'⚠️ <b>Sky Safari 缆车 2023 年已停运</b>（新缆车预计 2027 年底才回归），现在坐<b>免费 Zoo Express 接驳巴士</b>上下山，也可步行 800m（较陡）', coord:[-33.843,151.241]},
+    {t:'11:00', name:'长颈鹿观景台 + 澳洲动物区', cat:'景点', d:'长颈鹿以海港为背景是经典机位；考拉、袋鼠可近距离看', trans:'步行', cost:'含门票', tip:'上午动物最活跃，下午猛兽多在打盹；园区坡度大穿好鞋', coord:[-33.843,151.241]},
+    {t:'13:00', name:'园内午餐（可自带）', cat:'美食', d:'Top of Taronga 餐厅有海景位；园区允许自带食物与非酒精饮料', trans:'步行', cost:'人均 ¥150', tip:'园区 cashless，只能刷卡', coord:[-33.843,151.241]},
+    {t:'15:00', name:'曼利海滩 Manly', cat:'景点', d:'渡轮过海到曼利，海滩 + Manly→Shelly Beach 海滨步道', trans:'渡轮/巴士', cost:'Opal ≈¥40', tip:'海边步道很舒服，适合蜜月散步', coord:[-33.797,151.287]},
+    {t:'17:30', name:'曼利渡轮返回环形码头', cat:'交通', d:'约 30 分钟渡轮，甲板看海港落日', trans:'渡轮', cost:'Opal ≈¥40', tip:'回程右侧看市区天际线亮灯', coord:[-33.861,151.211]}
+  ]},
+  { day:6, label:'D6 · 12/10(四) 悉尼慢时光 → 飞凯恩斯', cloth:'轻装；凯恩斯炎热潮湿，机上换成夏装。', pois:[
+    {t:'09:00', name:'悉尼鱼市场早餐', cat:'美食', d:'现捞生蚝、龙虾、寿司，上午最新鲜', trans:'步行/轻轨', cost:'人均 ¥150', tip:'吃完在达令港边散步消食', coord:[-33.870,151.194]},
+    {t:'11:00', name:'岩石区/环形码头闲逛买手信', cat:'购物', d:'羊毛制品、Ugg、保健品', trans:'步行', cost:'—', tip:'别买太满，后面还有墨尔本和广州', coord:[-33.859,151.209]},
+    {t:'13:00', name:'退房 → 机场', cat:'交通', d:'前往 SYD 机场', trans:'Uber/火车', cost:'≈¥200', tip:'国内航班提前 2h 到', coord:[-33.946,151.177]},
+    {t:'15:30', name:'悉尼 → 凯恩斯 直飞', cat:'交通', d:'约 3h15m，Qantas / Jetstar / Virgin 每日多班', trans:'飞机', cost:'A$250–400/人', tip:'⚠️ 昆士兰不实行夏令时，抵达时间比悉尼慢 1h', coord:[-16.886,145.755]},
+    {t:'17:45', name:'抵达凯恩斯·入住 Esplanade', cat:'住宿', d:'机场到市区约 15min，住滨海大道一带', trans:'Uber/接送', cost:'¥700–1,600/晚', tip:'12 月是淡季，常有折扣；Crystalbrook Riley 最高端', coord:[-16.920,145.775]},
+    {t:'19:00', name:'Esplanade 泻湖日落 + 晚餐', cat:'美食', d:'免费海滨泻湖（有防蜇网），沿线海鲜餐厅', trans:'步行', cost:'人均 ¥200', tip:'⚠️ 12 月市区海滩有水母，别下海，去泻湖', coord:[-16.920,145.775]}
+  ]},
+  { day:7, label:'D7 · 12/11(五) 大堡礁外礁一日（全程高光）', cloth:'泳衣 + 速干衣；⚠️ 必须穿防蜇服；晕船药提前吃。', pois:[
+    {t:'07:30', name:'酒店接送 → 码头', cat:'交通', d:'含凯恩斯接送的团会先北上道格拉斯港（约 1h）', trans:'接送车', cost:'含团费', tip:'前一晚早睡；早餐吃好，船上含午餐', coord:[-16.918,145.778]},
+    {t:'08:45', name:'启航前往阿金考特外堡礁', cat:'景点', d:'双体船约 1.5h 到外堡礁边缘', trans:'双体船', cost:'含团费', tip:'晕船药提前 30–60min 吃；坐船尾较稳', coord:[-16.483,145.463]},
+    {t:'10:30', name:'第一礁点：浮潜 / 深潜 / 海底漫步', cat:'景点', d:'水温暖（27℃）、能见度好，海龟、礁鲨、巨蚌、热带鱼群', trans:'船+浮潜', cost:'¥1,390–1,540/人', tip:'⚠️ 全程穿防蜇服；不摸珊瑚不追海龟；深潜后 24h 禁飞', coord:[-16.050,145.850]},
+    {t:'12:30', name:'船上热带自助午餐', cat:'美食', d:'含在团费内，热带水果 + 热食', trans:'船上', cost:'含团费', tip:'船上提供热茶咖啡与淡水淋浴', coord:[-16.050,145.850]},
+    {t:'14:30', name:'第二/第三礁点继续下水', cat:'景点', d:'好船会去 2–3 个礁点，珊瑚与鱼况不同', trans:'船+浮潜', cost:'含团费', tip:'体力有限就在甲板晒太阳，别硬撑', coord:[-16.050,145.850]},
+    {t:'16:30', name:'返航', cat:'交通', d:'约 1.5h 回港', trans:'双体船', cost:'—', tip:'午后常有雷阵雨，早点进舱', coord:[-16.483,145.463]},
+    {t:'19:00', name:'凯恩斯晚餐', cat:'美食', d:'泥蟹或 Esplanade 海鲜，早点休息', trans:'步行', cost:'人均 ¥250', tip:'玩一天很累，别再排夜生活', coord:[-16.920,145.775]}
+  ]},
+  { day:8, label:'D8 · 12/12(六) 库兰达雨林（雨季绿意最盛）', cloth:'透气夏装 + 走鞋；带雨具与驱蚊水。', pois:[
+    {t:'09:00', name:'Skyrail 缆车上山', cat:'景点', d:'7.5km 缆车飞越亿年雨林树冠，中途可下车走步道', trans:'Skyrail', cost:'≈¥585/人', tip:'雨季雨林最苍翠，瀑布水量大；早点去人少', coord:[-16.830,145.690]},
+    {t:'10:30', name:'库兰达小镇 + 雨林公园', cat:'景点', d:'艺术市集、蝴蝶园、抱考拉（可选）', trans:'步行', cost:'雨林公园另计', tip:'小镇很旅游化，逛 1–1.5h 即可', coord:[-16.820,145.630]},
+    {t:'12:30', name:'库兰达午餐', cat:'美食', d:'小镇 café，热带水果冰沙', trans:'步行', cost:'人均 ¥150', tip:'景观餐厅要提前订窗边', coord:[-16.820,145.630]},
+    {t:'14:30', name:'百年观光火车返回', cat:'交通', d:'穿越峡谷与瀑布的复古火车，约 1.5h', trans:'观光火车', cost:'含套票', tip:'右侧靠窗风景更好；雨季瀑布最壮观', coord:[-16.820,145.630]},
+    {t:'17:00', name:'Esplanade 泻湖游泳放松', cat:'景点', d:'免费咸水泻湖，有防蜇网，可放心下水', trans:'步行', cost:'免费', tip:'蜜月最松弛的一站：泡水、发呆、看日落', coord:[-16.920,145.775]},
+    {t:'19:00', name:'凯恩斯夜市 / 海鲜晚餐', cat:'美食', d:'平价小吃街，也有按摩', trans:'步行', cost:'人均 ¥120', tip:'想正式点可选 Esplanade 海鲜餐厅', coord:[-16.920,145.775]}
+  ]},
+  { day:9, label:'D9 · 12/13(日) 丹翠雨林 / 天气缓冲 → 飞墨尔本', cloth:'夏装 + 雨具；驱蚊水必备。', pois:[
+    {t:'08:00', name:'丹翠雨林 + 苦难角（可选）', cat:'景点', d:'世界最古老雨林，鳄鱼河巡游 + Mossman 峡谷', trans:'一日游/自驾', cost:'¥890–950/人', tip:'⚠️ 若 D7 出海被天气取消，今天用来补出海，丹翠可舍', coord:[-16.170,145.410]},
+    {t:'12:00', name:'雨林午餐', cat:'美食', d:'雨林小镇 café 或团餐', trans:'—', cost:'人均 ¥150', tip:'跟团通常含午餐', coord:[-16.170,145.410]},
+    {t:'15:00', name:'返回凯恩斯收拾行李', cat:'交通', d:'回市区取行李', trans:'接送车', cost:'含团费', tip:'留足时间，别赶', coord:[-16.920,145.775]},
+    {t:'17:30', name:'凯恩斯 → 墨尔本 直飞', cat:'交通', d:'约 3h40m', trans:'飞机', cost:'A$250–400/人', tip:'⚠️ 墨尔本夏令时 UTC+11，抵达时间比凯恩斯快 1h', coord:[-37.669,144.841]},
+    {t:'22:00', name:'抵达墨尔本 → SkyBus 进市区', cat:'交通', d:'SkyBus 到南十字星车站约 25min，A$20/人', trans:'SkyBus', cost:'A$20/人', tip:'打车约 A$60–80；住 CBD 可步行到多数景点', coord:[-37.818,144.967]}
+  ]},
+  { day:10, label:'D10 · 12/14(一) 墨尔本晨间 + 大洋路 Day1 → 阿波罗湾', cloth:'夏季装 + 防风外套（海风大）+ 墨镜。', pois:[
+    {t:'07:30', name:'小巷咖啡早餐', cat:'美食', d:'Flat White 或本地暗号「Magic」；Patricia / Higher Ground', trans:'步行', cost:'人均 ¥80', tip:'趁早去，涂鸦街还没人，好拍空镜', coord:[-37.815,144.965]},
+    {t:'08:30', name:'霍西尔巷涂鸦街 + 联邦广场', cat:'文化', d:'全球最出名的街头艺术巷道，涂鸦每周都在变', trans:'步行', cost:'免费', tip:'相连的 Rutledge Lane、ACDC Lane 人少同样精彩', coord:[-37.819,144.973]},
+    {t:'10:30', name:'取车出发 → 吉朗', cat:'交通', d:'M1 往吉朗方向约 1h', trans:'自驾', cost:'租车 ≈¥600/天', tip:'出发前查天气与路况，山火/暴雨可能封路', coord:[-38.150,144.360]},
+    {t:'11:30', name:'托尔坎 + 贝尔斯海滩', cat:'景点', d:'澳洲冲浪文化圣地，夏季浪况好能看到冲浪者', trans:'自驾', cost:'免费', tip:'每处停 15–20 分钟即可，今天要赶到阿波罗湾', coord:[-38.370,144.290]},
+    {t:'13:00', name:'洛恩午餐 + 栈桥', cat:'美食', d:'海滨小镇，炸鱼薯条或 café', trans:'自驾', cost:'人均 ¥150', tip:'夏季旺季，餐厅可能要等位', coord:[-38.540,143.970]},
+    {t:'15:00', name:'肯尼特河看野生考拉', cat:'景点', d:'路边桉树上常有野生考拉，免费', trans:'自驾', cost:'免费', tip:'抬头慢找，长焦更好拍；停车注意安全', coord:[-38.600,143.870]},
+    {t:'17:00', name:'抵达阿波罗湾·入住', cat:'住宿', d:'地理中点 + 美食最好的中转镇', trans:'自驾', cost:'AU$200–450/晚', tip:'Apollo Bay Hotel 中档；Chris’s Beacon Point 高档', coord:[-38.760,143.660]},
+    {t:'19:00', name:'阿波罗湾晚餐 + 海滩散步', cat:'美食', d:'La Bimba（需订位）或 Fishermen’s Co-op 海鲜', trans:'步行', cost:'人均 ¥200', tip:'夏季日落约 20:30，饭后去海边走走', coord:[-38.760,143.660]}
+  ]},
+  { day:11, label:'D11 · 12/15(二) 大洋路 Day2：十二门徒日落 → 坎贝尔港', cloth:'防风外套 + 分层（等日落会降温）；墨镜。', pois:[
+    {t:'08:00', name:'玛丽娜观景台全景', cat:'景点', d:'开车上坡 5 分钟，俯瞰阿波罗湾全湾', trans:'自驾', cost:'免费', tip:'晨雾中的海湾很出片', coord:[-38.760,143.660]},
+    {t:'09:30', name:'奥特威灯塔路（慢开找考拉）', cat:'景点', d:'Lighthouse Road 两侧桉树林常能看到野生考拉', trans:'自驾', cost:'灯塔门票另计', tip:'慢开，看到停的车多半就是有人发现了考拉', coord:[-38.860,143.510]},
+    {t:'11:30', name:'Maits Rest 雨林步道', cat:'景点', d:'30 分钟栈道环线，蕨类与古树，像闯进侏罗纪', trans:'步行', cost:'免费', tip:'路面湿滑，穿防滑鞋', coord:[-38.750,143.570]},
+    {t:'13:00', name:'吉布森台阶下到海滩', cat:'景点', d:'台阶下到崖底沙滩，仰看石灰岩崖壁', trans:'步行', cost:'免费', tip:'风大浪急，别靠太近', coord:[-38.670,143.110]},
+    {t:'14:00', name:'十二门徒（+ 可选直升机）', cat:'景点', d:'石灰岩柱矗立南大洋，最高 45m', trans:'步行/直升机', cost:'免费；直升机 ≈A$165/15min', tip:'直升机俯瞰是最震撼的角度，预算允许值得', coord:[-38.660,143.100]},
+    {t:'16:00', name:'洛克阿德峡谷 + 伦敦桥', cat:'景点', d:'1878 年沉船命名的砂岩剧场；伦敦桥 1990 年部分坍塌', trans:'自驾', cost:'免费', tip:'洛克阿德峡谷常被认为比十二门徒更震撼，别跳过', coord:[-38.660,143.080]},
+    {t:'18:30', name:'回十二门徒等日落', cat:'景点', d:'12 月墨尔本日落约 20:40，提前 1h 占位', trans:'自驾', cost:'免费', tip:'看完再留 30min 拍蓝调时刻，光线最柔', coord:[-38.660,143.100]},
+    {t:'21:15', name:'入住坎贝尔港（距十二门徒 10 分钟）', cat:'住宿', d:'看完日落直接开车 10 分钟回酒店，不用赶夜路', trans:'自驾', cost:'AU$180–400/晚', tip:'这是 3 天 2 夜走法的最大好处', coord:[-38.620,143.000]}
+  ]},
+  { day:12, label:'D12 · 12/16(三) 大洋路返程 → 墨尔本市区', cloth:'夏季装 + 外套；墨尔本一天四季。', pois:[
+    {t:'08:00', name:'石窟 The Grotto', cat:'景点', d:'海边洞穴 + 天然拱门 + 潮池，常被跳过但很好看', trans:'自驾', cost:'免费', tip:'步行 5 分钟，安静且出片', coord:[-38.620,143.070]},
+    {t:'09:00', name:'岛屿湾 Bay of Islands', cat:'景点', d:'比十二门徒更西的一组海蚀柱，旺季也几乎没人', trans:'自驾', cost:'免费', tip:'起得来可先回十二门徒看清晨，再来这里', coord:[-38.600,142.950]},
+    {t:'10:00', name:'走 Princes Highway 返回墨尔本', cat:'交通', d:'内陆高速约 3h，比沿海快', trans:'自驾', cost:'油费', tip:'沿途有 Colac 等小镇可休息加油', coord:[-37.818,144.967]},
+    {t:'13:00', name:'抵达墨尔本·还车', cat:'交通', d:'市区还车，加满油', trans:'自驾', cost:'租车', tip:'还车拍油表与车身视频留证；行李可先寄存酒店', coord:[-37.818,144.967]},
+    {t:'13:30', name:'南墨尔本市场 South Melbourne Market', cat:'美食', d:'海鲜、小吃、咖啡，本地人市场（<b>周三营业</b>）', trans:'电车', cost:'人均 ¥120', tip:'⚠️ 维妈市场周一/周三休市、本次赶不上，改来这个；现开生蚝与咖啡都值得', coord:[-37.833,144.956]},
+    {t:'15:00', name:'尤里卡 88 层观景台', cat:'景点', d:'南半球最高公共观景台，285m 俯瞰全城', trans:'步行', cost:'≈A$28/人', tip:'夏季日落约 20:40，下午登塔先看白天全景', coord:[-37.822,144.964]},
+    {t:'16:30', name:'NGV 维多利亚国家美术馆', cat:'文化', d:'澳洲最古老美术馆，彩色玻璃穹顶大厅，免费', trans:'步行', cost:'免费', tip:'躺在大厅看穹顶是经典体验', coord:[-37.822,144.969]},
+    {t:'18:30', name:'墨尔本告别晚餐', cat:'美食', d:'Chin Chin（不接受预订，排队）或 Flinders Lane 餐厅', trans:'步行', cost:'人均 ¥250', tip:'澳洲段最后一顿，可以稍微正式一点', coord:[-37.818,144.967]},
+    {t:'20:45', name:'（可选）圣基尔达栈桥看小企鹅', cat:'景点', d:'栈桥尽头礁石有小蓝企鹅栖息地，<b>免费</b>', trans:'电车', cost:'免费', tip:'日落约 20:40，日落后才出现；请用红光手电，<b>禁开闪光灯</b>', coord:[-37.868,144.978]}
+  ]},
+  { day:13, label:'D13 · 12/17(四) 墨尔本 → 广州（直飞，当天落地）', cloth:'长途飞行舒适装 + 颈枕；广州是冬天，外套随身。', pois:[
+    {t:'07:00', name:'退房 → SkyBus 去机场', cat:'交通', d:'退房后前往 MEL 机场', trans:'SkyBus', cost:'A$20/人', tip:'国际航班提前 3h 到；机场可退税（TRS）', coord:[-37.669,144.841]},
+    {t:'10:20', name:'墨尔本 → 广州 CZ322 直飞', cat:'交通', d:'南航直飞约 9h40m，每日两班', trans:'飞机', cost:'机票', tip:'这趟是整个行程最舒服的回程，不用中转', coord:[23.392,113.299]},
+    {t:'18:00', name:'抵达广州白云机场', cat:'交通', d:'国内到达，身份证即可，无需边检排队', trans:'—', cost:'—', tip:'广州 10–20℃，落地换上外套', coord:[23.392,113.299]},
+    {t:'20:00', name:'市区入住（珠江新城 / 沙面）', cat:'住宿', d:'地铁 3 号线北延段 或 打车约 ¥120', trans:'地铁/打车', cost:'¥900–2,500/晚', tip:'瑰丽/四季（塔景）或白天鹅（沙面江景）', coord:[23.120,113.320]}
+  ]},
+  { day:14, label:'D14 · 12/18(五) 广州长隆野生动物世界', cloth:'舒适走鞋；12 月广州凉爽，薄外套 + 长裤。', pois:[
+    {t:'08:30', name:'酒店 → 长隆北门', cat:'交通', d:'打车约 40min，导航「长隆野生动物世界北门」', trans:'打车', cost:'¥80–120', tip:'小火车只在北门！别坐地铁到南门再绕', coord:[23.006,113.313]},
+    {t:'09:30', name:'北门入园 → 猛兽区小火车', cat:'景点', d:'开园即冲小火车，穿越五大洲散养区约 40min', trans:'小火车', cost:'含门票', tip:'坐右手边动物更多；早一班不用排队', coord:[23.006,113.313]},
+    {t:'10:30', name:'青龙山 + 金蛇秘境', cat:'景点', d:'侏罗纪森林仿真恐龙、科莫多龙、雨林仙踪', trans:'步行', cost:'含门票', tip:'单向生态探险路径，不能回头', coord:[23.001,113.312]},
+    {t:'11:30', name:'百虎山（白虎跳水 12:00 场）', cat:'景点', d:'孟加拉虎/白虎/金虎，白虎每半小时跳水一次', trans:'步行', cost:'含门票', tip:'提前 15min 占前排；长隆镇园之宝', coord:[22.999,113.312]},
+    {t:'12:30', name:'园内午餐', cat:'美食', d:'熊猫餐厅（与熊猫共餐）/ 天鹅美食香草烧鸡 / 萌帅酷美食', trans:'步行', cost:'人均 ¥80–120', tip:'园区谢绝自带食物（婴儿食品与饮用水除外）', coord:[22.998,113.314]},
+    {t:'13:30', name:'长颈鹿广场投喂', cat:'景点', d:'买树枝喂长颈鹿，超长出片位', trans:'步行', cost:'树枝 ¥30/枝', tip:'掰小枝喂，不然一下就被卷走', coord:[22.996,113.315]},
+    {t:'14:15', name:'考拉园（八代同堂）', cat:'景点', d:'澳洲以外最大考拉种群，每天有保育员科普', trans:'步行', cost:'含门票', tip:'刚在澳洲看完考拉，这里可以对比着看', coord:[22.995,113.314]},
+    {t:'15:00', name:'亚洲象园（大象传奇 15:00 场）', cat:'景点', d:'亚洲象群，小心淘气大象喷水', trans:'步行', cost:'含门票', tip:'场次以 App 当日时刻为准', coord:[22.993,113.314]},
+    {t:'15:45', name:'熊猫乐园站 → 空中缆车环线', cat:'景点', d:'720° 俯瞰全园，脚下透明玻璃「水晶车厢」', trans:'缆车', cost:'含门票', tip:'三条线选环线；也是全天最好的休息时机', coord:[22.993,113.316]},
+    {t:'16:30', name:'熊猫村（三胞胎萌帅酷 + 妹猪）', cat:'景点', d:'全球唯一存活的大熊猫三胞胎', trans:'步行', cost:'含门票', tip:'16:30 主干道有动物总动员大巡游，想看需取舍', coord:[22.992,113.317]},
+    {t:'17:00', name:'火烈鸟岛 → 南门出园', cat:'景点', d:'火烈鸟群色彩艳丽，最后拍照点', trans:'步行', cost:'含门票', tip:'南门出园后坐免费穿梭巴士回汉溪长隆站', coord:[22.995,113.316]},
+    {t:'18:30', name:'晚餐（时代芳华里 / 市区炳胜）', cat:'美食', d:'南门商圈选择多；或回市区吃炳胜黑叉烧', trans:'打车/地铁', cost:'人均 ¥120–200', tip:'12 月广州转凉，打边炉（火锅）也很合适', coord:[23.000,113.320]}
+  ]},
+  { day:15, label:'D15 · 12/19(六) 广州老西关 + 珠江夜游', cloth:'长袖 + 外套（冬季 10–20℃）；带雨具备用。', pois:[
+    {t:'08:00', name:'早茶（陶陶居第十甫路总店）', cat:'美食', d:'一盅两件：虾饺、烧卖、叉烧包、红米肠、艇仔粥', trans:'地铁/步行', cost:'人均 ¥60–100', tip:'8:30 前到免排队；也可选广州酒家/点都德/泮溪', coord:[23.115,113.243]},
+    {t:'10:00', name:'陈家祠（广东民间工艺博物馆）', cat:'文化', d:'「岭南建筑明珠」，三雕两塑一铸', trans:'地铁 1 号线', cost:'¥10', tip:'游览 1–1.5h，需提前预约', coord:[23.129,113.244]},
+    {t:'11:30', name:'沙面岛', cat:'景点', d:'19 世纪欧陆建筑群、百年古树、白天鹅宾馆', trans:'步行', cost:'免费', tip:'广州「小欧洲」，蜜月拍照首选', coord:[23.110,113.239]},
+    {t:'13:00', name:'午餐：上下九 / 宝华路小吃', cat:'美食', d:'银记肠粉、陈添记鱼皮、顺记冰室椰子雪糕、南信双皮奶', trans:'步行', cost:'人均 ¥60', tip:'分散多家小店尝，别在一家吃饱', coord:[23.115,113.243]},
+    {t:'14:30', name:'永庆坊 + 恩宁路 + 粤剧艺术博物馆', cat:'文化', d:'西关老城微改造典范，骑楼老街 + 李小龙祖居', trans:'步行', cost:'免费（博物馆需预约）', tip:'钟书阁、广彩体验都在这一带', coord:[23.115,113.238]},
+    {t:'16:00', name:'石室圣心大教堂', cat:'文化', d:'全球四大全石哥特教堂之一，彩色玻璃窗绝美', trans:'地铁 6 号线一德路', cost:'免费（需预约）', tip:'开放 9:00–11:00 / 15:00–17:00，周一闭馆', coord:[23.117,113.255]},
+    {t:'17:30', name:'北京路步行街 + 大佛古寺夜景', cat:'景点', d:'千年古道遗址 + 大佛寺灯光', trans:'步行', cost:'免费', tip:'莲香楼/皇上皇手信在这一带；12 月天黑早，五点多就亮灯', coord:[23.125,113.267]},
+    {t:'18:30', name:'晚餐（炳胜品味 / 广州酒家）', cat:'美食', d:'黑叉烧、菠萝包必点；或珠江新城高端粤菜', trans:'打车', cost:'人均 ¥150–300', tip:'利苑/御宝轩需提前订位', coord:[23.125,113.327]},
+    {t:'20:00', name:'珠江夜游（天字码头）', cat:'景点', d:'约 60min，看两岸灯光、猎德大桥、广州塔', trans:'游船', cost:'¥98–178', tip:'替代方案：广州塔 433m 观光 ¥135–150；二选一即可', coord:[23.117,113.265]},
+    {t:'21:00', name:'回酒店休息', cat:'住宿', d:'明天是最后一天，今晚早点回', trans:'地铁/打车', cost:'—', tip:'夜游后沿江走一段再回，江边夜景很好', coord:[23.120,113.320]}
+  ]},
+  { day:16, label:'D16 · 12/20(日) 广州越秀登高 + 手信 → 返沪', cloth:'长袖 + 外套（冬季 10–20℃）；带雨具备用。', pois:[
+    {t:'08:30', name:'早茶（泮溪酒家 / 点都德）', cat:'美食', d:'换一家试：泮溪酒家是园林式老字号，环境最出片', trans:'地铁/打车', cost:'人均 ¥60–100', tip:'园林式酒家靠窗位风景好，适合拍蜜月照', coord:[23.1145,113.2320]},
+    {t:'10:00', name:'越秀公园 + 五羊石像', cat:'景点', d:'广州城标「五羊石像」，越秀山登高看老城全景', trans:'地铁 2 号线', cost:'免费', tip:'镇海楼（广州博物馆）也在园内，可顺路上', coord:[23.1450,113.2620]},
+    {t:'11:45', name:'中山纪念堂', cat:'文化', d:'全球最大的孙中山纪念堂，八角形宫殿式建筑', trans:'步行', cost:'外部免费；内部 ¥10', tip:'纪念堂站就在地铁 2 号线上，顺路', coord:[23.1298,113.2632]},
+    {t:'13:00', name:'午餐（惠福东路美食街）', cat:'美食', d:'北京路旁的小吃街，选择多、价格实在', trans:'地铁/步行', cost:'人均 ¥60', tip:'吃完顺便逛北京路买手信', coord:[23.1230,113.2680]},
+    {t:'14:30', name:'广州塔登塔（433m 观光）', cat:'景点', d:'「小蛮腰」俯瞰珠江与城市中轴，白天视野最清晰', trans:'地铁 3 号线', cost:'¥135–150/人', tip:'替代方案：白云山登高（¥5）；昨天已夜游珠江，今天登塔俯瞰正好补全景', coord:[23.1065,113.3245]},
+    {t:'16:30', name:'买手信 + 回酒店取行李', cat:'购物', d:'莲香楼/皇上皇（第十甫路）、或太古汇、正佳广场', trans:'地铁/打车', cost:'—', tip:'鸡仔饼、老婆饼、广式腊味、莲香楼礼盒都好带', coord:[23.1155,113.2440]},
+    {t:'18:00', name:'告别晚餐', cat:'美食', d:'广州酒家或珠江新城粤菜，为蜜月收尾', trans:'打车', cost:'人均 ¥150–300', tip:'提前订位，把这顿吃好一点', coord:[23.1250,113.3270]},
+    {t:'19:30', name:'前往白云机场', cat:'交通', d:'地铁 3 号线北延段 或 打车约 ¥120', trans:'地铁/打车', cost:'—', tip:'国内航班提前 2h 到；行李多建议打车', coord:[23.3924,113.2988]},
+    {t:'21:30', name:'广州 → 上海，蜜月收官', cat:'交通', d:'国内段约 2.5h，深夜抵达', trans:'飞机', cost:'¥600–1,200/人', tip:'若嫌太晚，可改 12/21 早班机、多住一晚', coord:[31.15,121.80]}
+  ]}
+];
+
+const PACK = [
+  {lv:'S',t:'护照（有效期 6 个月以上）+ 澳大利亚 600 电子签截图'},
+  {lv:'S',t:'身份证（广州段住宿/入场/国内航班必用）'},
+  {lv:'S',t:'国际信用卡（Visa / Master）+ 少量澳元现金（广州段手机支付即可）'},
+  {lv:'S',t:'境外旅游保险（含医疗 + 自驾 + 天气取消保障，12 月气旋季强烈建议）'},
+  {lv:'S',t:'手机 + 充电宝 + 澳洲 Type I 转换头 + 插线板（广州用国标）'},
+  {lv:'S',t:'常用药品原包装 + 处方（澳洲入境严格，禁肉蛋奶与新鲜果蔬）'},
+  {lv:'S',t:'SPF50+ 防晒霜 + 墨镜 + 宽檐帽（12 月南半球紫外线「极高」）'},
+  {lv:'A',t:'中国驾照原件 + 认可英文翻译件（NAATI / 领事馆认证，大洋路自驾需要）'},
+  {lv:'A',t:'泳衣 + 速干衣（大堡礁浮潜 + 邦迪 + 酒店泳池）'},
+  {lv:'A',t:'Reef-safe 防晒霜（不含氧苯酮，保护珊瑚，部分船只明令禁止普通防晒）'},
+  {lv:'A',t:'晕船药（外堡礁单程约 1.5h，提前 30–60min 吃）'},
+  {lv:'A',t:'手机防水袋 / 防水相机（浮潜拍海龟用）'},
+  {lv:'A',t:'轻薄速干长袖（防晒 + 防蚊；凯恩斯潮湿闷热，纯棉不易干）'},
+  {lv:'A',t:'雨具 / 轻便雨衣（凯恩斯雨季午后雷阵雨、墨尔本也可能突降）'},
+  {lv:'A',t:'驱蚊水（丹翠雨林 + 库兰达 + 广州长隆）'},
+  {lv:'A',t:'薄外套 / 防风衣（墨尔本一天四季、大洋路海风、<b>广州冬季 10–20℃</b>）'},
+  {lv:'A',t:'舒适走鞋 + 防滑鞋（雨林步道 / 大洋路 / 长隆 2 万步）'},
+  {lv:'A',t:'颈枕 + 眼罩（长途飞行）'},
+  {lv:'B',t:'电解质泡腾片（凯恩斯 31℃ 高湿，防中暑）'},
+  {lv:'B',t:'轻婚纱 / 情侣拍照道具 + 相机（蜜月出片）'}
+];
+
+const EMERG = [
+  {n:'澳大利亚紧急',p:'000'},{n:'中国领事保护',p:'12308'},{n:'长隆客服',p:'020-84783333'},{n:'广州紧急',p:'110'}
+];
+
+/* ---------- 预算（12 月旺季，国际开口程 + 内陆 2 段，2 人基准） ---------- */
+const CAR_FIXED = 35000;
+const TIERS = { eco:13000, com:19000, lux:27000 };
+function updateBudget(){
+  const p = +document.getElementById('pax').value;
+  document.getElementById('paxLabel').textContent = p + ' 人';
+  ['eco','com','lux'].forEach(k=>{
+    const tot = CAR_FIXED + TIERS[k]*p;
+    document.getElementById('tot_'+k).textContent = '¥' + tot.toLocaleString();
+    document.getElementById('per_'+k).textContent = '人均 ≈ ¥' + Math.round(tot/p).toLocaleString();
+  });
+}
+
+/* ---------- 行李清单 ---------- */
+function renderPack(){
+  const box = document.getElementById('packList');
+  const saved = JSON.parse(localStorage.getItem('hb_pack_au16')||'{}');
+  box.innerHTML='';
+  PACK.forEach((it,i)=>{
+    const li=document.createElement('li');
+    li.className = saved[i] ? 'done' : '';
+    li.innerHTML = '<input class="cb" type="checkbox" '+(saved[i]?'checked':'')+' onchange="togglePack('+i+',this)"> <span class="lv '+it.lv+'">'+it.lv+'</span>'+it.t;
+    box.appendChild(li);
+  });
+}
+function togglePack(i,el){
+  const saved = JSON.parse(localStorage.getItem('hb_pack_au16')||'{}');
+  saved[i]=el.checked;
+  localStorage.setItem('hb_pack_au16',JSON.stringify(saved));
+  el.closest('li').classList.toggle('done',el.checked);
+}
+
+/* ---------- 紧急电话 ---------- */
+function renderEmerg(){
+  const box=document.getElementById('emergBox');
+  box.innerHTML='';
+  EMERG.forEach(e=>{
+    const b=document.createElement('button');
+    b.innerHTML='<i class="fa-solid fa-copy"></i> '+e.n+' '+e.p;
+    b.onclick=()=>{navigator.clipboard.writeText(e.p); b.innerHTML='<i class="fa-solid fa-check"></i> 已复制 '+e.p; setTimeout(()=>b.innerHTML='<i class="fa-solid fa-copy"></i> '+e.n+' '+e.p,1500);};
+    box.appendChild(b);
+  });
+}
+
+/* ---------- 地图：内嵌矢量地图（默认）＋ 在线瓦片（可选） ----------
+   默认：L A N D 内嵌真实海岸线/国界数据，纯 SVG 绘制 —— 零网络依赖，任何环境都能看到地图
+   可选：点「在线底图」才去加载 Leaflet + Esri 瓦片（街道/卫星/地形，国内可直连）
+   国内段（广州 D14–D16）如走在线模式，用高德栅格 + WGS-84→GCJ-02 转换
+   ⚠️ Esri 瓦片路径是 {z}/{y}/{x}（先 y 后 x），与 OSM 的 {z}/{x}/{y} 相反
+   ⚠️ OSM 主站 / Carto / Wikimedia 在国内均不可达，不要用
+   ⚠️ 本页环境可能拦截一切外部请求（连 Leaflet 库都加载不出），所以默认必须是内嵌数据
+*/
+const LAND=[[[147.69,-40.81],[148.29,-40.87],[148.36,-42.06],[148.02,-42.41],[147.91,-43.21],[147.56,-42.94],[146.87,-43.64],[146.05,-43.55],[145.43,-42.69],[145.3,-42.03],[144.72,-41.16],[144.74,-40.7],[146.36,-41.14],[147.69,-40.81]],[[126.15,-32.22],[124.22,-32.96],[123.66,-33.89],[122.18,-34.0],[121.3,-33.82],[119.89,-33.98],[119.3,-34.51],[119.01,-34.46],[118.03,-35.06],[116.62,-35.03],[115.03,-34.2],[115.05,-33.62],[115.71,-33.26],[115.8,-32.21],[115.0,-30.03],[115.04,-29.46],[114.62,-28.52],[114.17,-28.12],[114.05,-27.33],[113.34,-26.12],[113.78,-26.55],[113.44,-25.62],[114.23,-26.3],[114.22,-25.79],[113.39,-24.38],[113.84,-23.06],[113.74,-22.47],[114.15,-21.76],[114.22,-22.52],[114.65,-21.83],[116.71,-20.7],[117.44,-20.75],[119.25,-19.95],[120.86,-19.68],[122.24,-18.2],[122.31,-17.26],[123.01,-16.41],[123.43,-17.27],[123.86,-17.07],[123.5,-16.6],[123.82,-16.11],[124.26,-16.33],[124.38,-15.57],[125.17,-14.68],[125.67,-14.51],[125.69,-14.23],[126.13,-14.35],[126.14,-14.1],[127.07,-13.82],[128.36,-14.87],[129.62,-14.97],[129.41,-14.42],[129.89,-13.62],[130.34,-13.36],[130.18,-13.11],[130.62,-12.54],[131.22,-12.18],[131.73,-12.3],[132.58,-12.11],[132.56,-11.6],[131.82,-11.27],[132.36,-11.13],[133.55,-11.79],[134.39,-12.04],[134.68,-11.94],[135.3,-12.25],[136.49,-11.86],[136.95,-12.35],[136.31,-13.29],[135.96,-13.32],[136.08,-13.72],[135.43,-14.72],[135.5,-15.0],[138.3,-16.81],[139.11,-17.06],[139.26,-17.37],[140.22,-17.71],[140.87,-17.37],[141.27,-16.39],[141.7,-15.04],[141.52,-13.7],[141.84,-12.74],[141.69,-12.41],[142.14,-11.04],[142.52,-10.67],[142.8,-11.16],[142.87,-11.78],[143.12,-11.9],[143.16,-12.33],[143.52,-12.83],[143.56,-13.76],[143.92,-14.55],[144.56,-14.17],[145.37,-14.99],[145.27,-15.43],[145.49,-16.29],[145.64,-16.78],[145.89,-16.91],[146.16,-17.76],[146.06,-18.28],[146.39,-18.96],[148.85,-20.39],[148.72,-20.63],[149.29,-21.26],[149.68,-22.34],[150.08,-22.12],[150.48,-22.56],[150.73,-22.4],[150.9,-23.46],[152.86,-25.27],[153.14,-26.07],[153.09,-27.26],[153.57,-28.11],[152.89,-31.64],[152.45,-32.55],[151.71,-33.04],[151.01,-34.31],[150.08,-36.42],[150.0,-37.43],[149.42,-37.77],[148.31,-37.81],[147.38,-38.22],[146.32,-39.04],[144.88,-38.42],[145.03,-37.9],[144.49,-38.09],[143.61,-38.81],[140.64,-38.02],[139.99,-37.4],[139.58,-36.14],[139.08,-35.73],[138.12,-35.61],[138.45,-35.13],[138.21,-34.39],[137.72,-35.08],[136.83,-35.26],[137.35,-34.71],[137.51,-34.13],[137.89,-33.64],[137.81,-32.9],[137.0,-33.75],[136.37,-34.09],[135.99,-34.89],[135.21,-34.48],[135.24,-33.95],[134.09,-32.85],[134.27,-32.62],[131.33,-31.5],[129.53,-31.59],[127.1,-32.28],[126.15,-32.22]],[[176.89,-40.07],[176.01,-41.29],[175.24,-41.69],[174.65,-41.28],[175.23,-40.46],[174.9,-39.91],[173.82,-39.51],[173.85,-39.15],[174.57,-38.8],[174.7,-37.38],[174.32,-36.53],[173.06,-35.24],[172.63,-34.53],[173.01,-34.45],[173.55,-35.01],[174.33,-35.27],[174.61,-36.16],[175.34,-37.21],[175.36,-36.53],[175.81,-36.8],[175.96,-37.56],[177.44,-37.96],[178.01,-37.58],[178.52,-37.7],[177.97,-39.17],[177.21,-39.15],[176.94,-39.45],[177.03,-39.88],[176.89,-40.07]],[[169.67,-43.56],[171.13,-42.51],[171.57,-41.77],[171.95,-41.51],[172.1,-40.96],[172.8,-40.49],[173.25,-41.33],[173.96,-40.93],[174.25,-41.35],[174.25,-41.77],[172.71,-43.37],[173.08,-43.85],[172.31,-43.87],[171.45,-44.24],[170.62,-45.91],[169.33,-46.64],[168.41,-46.62],[167.76,-46.29],[166.68,-46.22],[166.51,-45.85],[167.05,-45.11],[168.3,-44.12],[169.67,-43.56]],[[141.0,-2.6],[141.03,-9.12],[140.14,-8.3],[139.13,-8.1],[138.88,-8.38],[137.61,-8.41],[138.04,-7.6],[138.67,-7.32],[138.41,-6.23],[137.93,-5.39],[135.99,-4.55],[135.17,-4.46],[133.66,-3.54],[133.37,-4.02],[132.98,-4.11],[132.75,-3.31],[131.99,-2.82],[133.07,-2.46],[133.78,-2.48],[133.7,-2.21],[132.23,-2.21],[131.84,-1.62],[130.94,-1.43],[130.52,-0.94],[131.87,-0.7],[132.38,-0.37],[133.98,-0.78],[134.42,-2.77],[135.46,-3.37],[136.29,-2.31],[137.44,-1.7],[138.33,-1.7],[139.93,-2.41],[141.0,-2.6]],[[124.97,-8.89],[125.09,-9.39],[124.44,-10.14],[123.58,-10.36],[123.46,-10.24],[123.98,-9.29],[124.97,-8.89]],[[134.21,-6.89],[134.11,-6.14],[134.5,-5.44],[134.73,-5.74],[134.73,-6.21],[134.21,-6.89]],[[117.88,4.14],[117.31,3.24],[118.05,2.29],[117.87,1.83],[119.0,0.9],[117.81,0.78],[117.48,0.1],[117.52,-0.8],[116.56,-1.49],[116.53,-2.48],[116.15,-4.01],[116.0,-3.66],[114.86,-4.11],[114.47,-3.5],[113.76,-3.44],[113.26,-3.12],[112.07,-3.48],[111.7,-3.0],[110.22,-2.93],[110.07,-1.59],[109.57,-1.31],[109.09,-0.46],[108.95,0.42],[109.07,1.34],[109.66,2.01],[109.83,1.34],[110.52,0.77],[111.16,0.98],[111.8,0.9],[112.38,1.41],[112.86,1.5],[113.81,1.22],[114.62,1.43],[115.13,2.82],[115.52,3.17],[115.87,4.31],[117.88,4.14]],[[129.37,-2.8],[130.47,-3.09],[130.83,-3.86],[129.99,-3.45],[127.9,-3.39],[128.13,-2.84],[129.37,-2.8]],[[126.87,-3.79],[126.18,-3.61],[125.99,-3.18],[127.0,-3.13],[127.25,-3.46],[126.87,-3.79]],[[127.93,2.17],[128.0,1.63],[128.6,1.54],[128.69,1.13],[128.63,0.26],[128.12,0.36],[127.97,-0.25],[128.38,-0.78],[128.1,-0.9],[127.7,-0.27],[127.4,1.01],[127.6,1.81],[127.93,2.17]],[[122.93,0.88],[124.08,0.92],[125.07,1.64],[125.24,1.42],[124.44,0.43],[123.68,0.24],[122.72,0.43],[120.18,0.24],[120.04,-0.52],[120.93,-1.41],[121.47,-0.96],[123.34,-0.62],[123.26,-1.08],[122.82,-0.93],[122.39,-1.52],[121.51,-1.91],[122.45,-3.19],[122.27,-3.53],[123.17,-4.68],[123.16,-5.34],[122.63,-5.63],[122.24,-5.28],[122.72,-4.46],[121.74,-4.85],[121.49,-4.57],[121.62,-4.19],[120.9,-3.6],[120.97,-2.63],[120.3,-2.93],[120.43,-5.53],[119.8,-5.67],[119.37,-5.38],[119.65,-4.46],[119.5,-3.49],[119.08,-3.49],[118.77,-2.8],[119.18,-2.15],[119.83,0.15],[120.03,0.57],[120.89,1.31],[121.67,1.01],[122.93,0.88]],[[120.29,-10.26],[118.97,-9.56],[119.9,-9.36],[120.78,-9.97],[120.71,-10.24],[120.29,-10.26]],[[121.34,-8.54],[122.9,-8.09],[122.76,-8.65],[121.25,-8.93],[119.92,-8.81],[119.92,-8.45],[120.71,-8.24],[121.34,-8.54]],[[118.26,-8.36],[118.88,-8.28],[119.13,-8.71],[116.74,-9.03],[117.08,-8.46],[117.63,-8.45],[117.9,-8.09],[118.26,-8.36]],[[108.49,-6.42],[108.62,-6.78],[110.54,-6.88],[110.76,-6.46],[112.61,-6.95],[112.98,-7.59],[114.48,-7.78],[115.71,-8.37],[114.57,-8.75],[113.46,-8.35],[111.52,-8.3],[108.69,-7.64],[108.28,-7.77],[106.45,-7.36],[106.28,-6.93],[105.36,-6.85],[106.05,-5.9],[107.26,-5.96],[108.49,-6.42]],[[104.37,-1.08],[104.89,-2.34],[105.62,-2.43],[106.11,-3.06],[105.86,-4.31],[105.82,-5.85],[104.71,-5.87],[103.87,-5.04],[102.58,-4.22],[101.4,-2.8],[100.14,-0.65],[99.26,0.18],[98.6,1.82],[97.7,2.45],[97.18,3.31],[95.38,4.97],[95.29,5.48],[97.48,5.25],[100.64,2.1],[101.66,2.08],[102.5,1.4],[103.08,0.56],[103.84,0.1],[103.44,-0.71],[104.37,-1.08]],[[141.0,-2.6],[144.58,-3.86],[145.83,-4.88],[145.98,-5.47],[147.65,-6.08],[147.89,-6.61],[146.97,-6.72],[147.19,-7.39],[148.09,-8.04],[148.73,-9.11],[149.31,-9.07],[149.27,-9.51],[150.04,-9.68],[149.74,-9.87],[150.8,-10.29],[150.69,-10.58],[150.03,-10.65],[149.78,-10.39],[147.91,-10.13],[146.57,-8.94],[146.05,-8.07],[144.74,-7.63],[143.29,-8.25],[143.41,-8.98],[142.63,-9.33],[141.03,-9.12],[141.0,-2.6]],[[152.64,-3.66],[153.02,-3.98],[153.14,-4.5],[152.83,-4.77],[152.41,-3.79],[150.66,-2.74],[150.94,-2.5],[152.24,-3.24],[152.64,-3.66]],[[151.3,-5.84],[150.24,-6.32],[149.71,-6.32],[148.32,-5.75],[148.4,-5.44],[149.85,-5.51],[150.14,-5.0],[150.24,-5.53],[150.81,-5.46],[151.65,-4.76],[151.54,-4.17],[152.14,-4.15],[152.34,-4.31],[152.32,-4.87],[151.98,-5.48],[151.46,-5.56],[151.3,-5.84]],[[154.76,-5.34],[156.02,-6.54],[155.88,-6.82],[155.6,-6.92],[155.17,-6.54],[154.73,-5.9],[154.52,-5.14],[154.65,-5.04],[154.76,-5.34]],[[109.48,18.2],[108.65,18.51],[108.63,19.37],[109.12,19.82],[110.79,20.08],[111.01,19.7],[110.57,19.26],[110.34,18.68],[109.48,18.2]],[[80.26,42.35],[80.18,42.92],[80.87,43.18],[79.97,44.92],[82.46,45.54],[83.18,47.33],[85.16,47.0],[85.72,47.45],[85.77,48.46],[86.6,48.55],[87.36,49.22],[87.75,49.3],[88.02,48.6],[88.85,48.07],[90.28,47.69],[90.97,46.89],[90.59,45.72],[90.95,45.29],[93.48,44.98],[94.69,44.35],[95.31,44.24],[95.76,43.32],[96.35,42.73],[99.52,42.52],[100.85,42.66],[101.83,42.51],[103.31,41.91],[104.52,41.91],[104.96,41.6],[106.13,42.14],[107.74,42.48],[109.24,42.52],[110.41,42.87],[111.83,43.74],[111.35,44.46],[111.87,45.1],[113.46,44.81],[114.46,45.34],[115.98,45.73],[116.72,46.39],[117.42,46.67],[119.66,46.69],[119.77,47.05],[118.87,47.75],[118.06,48.07],[117.29,47.7],[116.31,47.85],[115.74,47.73],[115.48,48.14],[116.68,49.89],[117.88,49.51],[119.29,50.14],[119.28,50.58],[120.18,51.64],[120.74,51.96],[120.73,52.52],[120.18,52.75],[121.0,53.25],[122.24,53.43],[123.57,53.46],[125.95,52.79],[127.29,50.74],[127.66,49.76],[129.4,49.44],[130.58,48.73],[130.99,47.79],[132.51,47.79],[133.37,48.18],[135.02,48.48],[134.11,47.21],[133.77,46.12],[133.1,45.14],[131.88,45.32],[131.03,44.97],[131.29,44.11],[131.14,42.93],[130.63,42.9],[130.64,42.4],[130.0,42.98],[129.6,42.42],[128.05,41.99],[128.21,41.47],[127.34,41.5],[126.87,41.82],[126.18,41.11],[124.26,39.93],[122.87,39.64],[122.13,39.17],[121.05,38.9],[121.59,39.36],[121.38,39.75],[122.17,40.42],[121.64,40.95],[119.64,39.9],[119.02,39.25],[118.04,39.2],[117.53,38.74],[118.06,38.06],[118.88,37.9],[118.91,37.45],[119.7,37.16],[120.82,37.87],[121.71,37.48],[122.36,37.46],[122.52,36.93],[121.1,36.65],[120.64,36.11],[119.66,35.61],[119.15,34.91],[120.23,34.36],[120.62,33.38],[121.91,31.69],[121.89,30.95],[121.27,30.68],[121.5,30.14],[122.09,29.83],[121.68,28.23],[121.13,28.14],[118.66,24.55],[115.89,22.78],[114.76,22.67],[114.15,22.22],[113.81,22.55],[113.24,22.05],[111.84,21.55],[110.79,21.4],[110.44,20.34],[109.89,20.28],[109.63,21.01],[109.86,21.39],[107.04,21.81],[106.57,22.22],[106.72,22.79],[105.81,22.98],[105.33,23.35],[104.48,22.82],[102.71,22.71],[101.65,22.32],[101.8,21.17],[101.27,21.2],[101.15,21.85],[100.42,21.56],[99.24,22.12],[99.53,22.95],[98.9,23.14],[98.66,24.06],[97.61,23.9],[97.72,25.08],[98.67,25.92],[98.68,27.51],[98.25,27.75],[97.91,28.34],[96.25,28.41],[96.59,28.83],[96.12,29.45],[95.41,29.03],[94.57,29.28],[92.5,27.9],[91.7,27.77],[91.26,28.04],[90.02,28.3],[89.48,28.04],[88.81,27.3],[88.73,28.09],[88.12,27.88],[85.82,28.2],[84.24,28.84],[83.9,29.32],[83.34,29.46],[82.33,30.11],[81.52,30.42],[81.11,30.18],[78.74,31.52],[78.46,32.62],[79.18,32.48],[79.21,32.99],[78.81,33.51],[78.91,34.32],[77.84,35.49],[76.19,35.9],[75.9,36.67],[74.98,37.42],[74.86,38.38],[74.26,38.61],[73.93,38.51],[73.68,39.43],[73.96,39.66],[73.82,39.89],[74.78,40.37],[75.47,40.56],[76.53,40.43],[76.91,41.07],[78.19,41.19],[78.54,41.58],[80.12,42.12],[80.26,42.35]],[[120.83,12.7],[120.32,13.47],[121.18,13.43],[121.53,13.07],[121.26,12.21],[120.83,12.7]],[[122.59,9.98],[122.84,10.26],[122.95,10.88],[123.5,10.94],[123.34,10.27],[124.08,11.23],[123.98,10.28],[123.0,9.02],[122.38,9.71],[122.59,9.98]],[[126.38,8.41],[126.54,7.19],[126.2,6.27],[125.83,7.29],[125.36,6.79],[125.68,6.05],[125.4,5.58],[124.22,6.16],[123.94,6.89],[124.24,7.36],[123.61,7.83],[123.3,7.42],[122.82,7.46],[122.09,6.9],[121.92,7.19],[122.31,8.04],[123.49,8.69],[123.84,8.24],[124.6,8.51],[124.76,8.96],[125.47,8.99],[125.41,9.76],[126.22,9.29],[126.38,8.41]],[[118.5,9.32],[117.18,8.37],[118.99,10.38],[119.51,11.37],[119.69,10.55],[118.5,9.32]],[[122.34,18.22],[122.17,17.81],[122.51,17.09],[122.25,16.26],[121.66,15.93],[121.51,15.13],[121.73,14.33],[122.7,14.34],[123.95,13.78],[123.85,13.24],[124.18,13.0],[124.08,12.54],[123.3,13.03],[122.93,13.55],[122.67,13.19],[122.04,13.78],[121.13,13.64],[120.63,13.86],[120.68,14.27],[120.99,14.53],[120.69,14.76],[120.56,14.4],[119.92,15.41],[119.88,16.36],[120.29,16.03],[120.39,17.6],[120.71,18.51],[121.32,18.5],[121.94,18.22],[122.24,18.48],[122.34,18.22]],[[122.04,11.42],[121.88,11.89],[122.48,11.58],[123.12,11.58],[123.1,11.17],[122.0,10.44],[122.04,11.42]],[[125.5,12.16],[125.78,11.05],[125.01,11.31],[125.28,10.36],[124.8,10.13],[124.76,10.84],[124.46,10.89],[124.3,11.49],[124.89,11.42],[124.88,11.79],[124.27,12.56],[125.23,12.54],[125.5,12.16]],[[141.88,39.18],[140.96,38.17],[140.98,37.14],[140.6,36.34],[140.77,35.84],[140.25,35.14],[138.97,34.67],[137.22,34.61],[135.79,33.46],[135.12,33.85],[135.08,34.6],[133.34,34.38],[132.16,33.9],[130.99,33.89],[132.0,33.15],[131.33,31.45],[130.69,31.03],[130.2,31.42],[130.45,32.32],[129.82,32.61],[129.41,33.3],[130.36,33.6],[130.88,34.23],[131.89,34.75],[132.62,35.43],[134.61,35.73],[135.68,35.53],[136.72,37.3],[137.39,36.83],[139.43,38.22],[140.05,39.44],[139.88,40.56],[140.31,41.2],[141.37,41.38],[141.92,39.99],[141.88,39.18]],[[144.61,43.96],[145.32,44.38],[145.54,43.26],[144.06,42.99],[143.18,41.99],[141.61,42.68],[141.07,41.59],[139.96,41.57],[139.82,42.56],[140.31,43.33],[141.38,43.39],[141.97,45.55],[143.14,44.51],[144.61,43.96]],[[132.37,33.46],[132.93,34.06],[133.49,33.94],[133.91,34.36],[134.64,34.15],[134.77,33.81],[134.2,33.2],[133.79,33.52],[133.28,33.29],[133.02,32.7],[132.36,32.99],[132.37,33.46]],[[104.33,10.49],[105.2,10.89],[106.25,10.96],[105.81,11.57],[107.49,12.34],[107.61,13.54],[107.38,14.2],[107.56,15.2],[107.31,15.91],[106.56,16.6],[105.09,18.67],[103.9,19.27],[104.18,19.62],[104.82,19.89],[104.44,20.76],[103.2,20.77],[102.17,22.46],[102.71,22.71],[104.48,22.82],[105.33,23.35],[105.81,22.98],[106.72,22.79],[106.57,22.22],[107.04,21.81],[108.05,21.55],[106.71,20.7],[105.88,19.75],[105.66,19.06],[107.36,16.7],[108.27,16.08],[108.88,15.28],[109.33,13.43],[109.2,11.67],[107.22,10.36],[105.16,8.6],[104.8,9.24],[105.08,9.92],[104.33,10.49]],[[105.22,14.27],[104.28,14.42],[102.99,14.23],[102.35,13.39],[102.58,12.19],[101.69,12.65],[100.83,12.63],[100.98,13.41],[100.1,13.41],[100.02,12.31],[99.15,9.96],[99.22,9.24],[99.87,9.21],[100.46,7.43],[101.02,6.86],[101.62,6.74],[102.14,6.22],[101.81,5.81],[101.16,5.69],[101.08,6.21],[100.26,6.64],[100.09,6.46],[99.69,6.85],[99.52,7.34],[98.5,8.38],[98.34,7.79],[98.15,8.35],[98.55,9.93],[99.59,11.89],[99.2,12.8],[99.1,13.83],[98.19,15.12],[98.54,15.31],[98.9,16.18],[97.38,18.45],[97.8,18.63],[98.25,19.71],[98.96,19.75],[100.12,20.42],[100.55,20.11],[100.6,19.51],[101.28,19.46],[101.04,18.41],[101.06,17.51],[102.11,18.11],[102.41,17.93],[103.0,17.96],[103.2,18.31],[103.96,18.24],[104.72,17.43],[104.78,16.44],[105.59,15.57],[105.54,14.72],[105.22,14.27]],[[100.09,6.46],[100.26,6.64],[101.08,6.21],[101.16,5.69],[101.81,5.81],[102.14,6.22],[102.96,5.53],[103.38,4.85],[103.5,2.79],[103.86,2.52],[104.23,1.29],[103.52,1.23],[101.39,2.76],[101.27,3.27],[100.69,3.94],[100.56,4.77],[100.2,5.31],[100.31,6.04],[100.09,6.46]],[[117.88,4.14],[115.87,4.31],[115.52,3.17],[115.13,2.82],[114.62,1.43],[113.81,1.22],[112.86,1.5],[112.38,1.41],[111.8,0.9],[111.16,0.98],[110.52,0.77],[109.83,1.34],[109.66,2.01],[110.4,1.66],[111.17,1.85],[111.37,2.7],[113.0,3.1],[114.21,4.53],[114.66,4.01],[114.87,4.35],[115.35,4.32],[115.45,5.45],[116.22,6.14],[116.73,6.92],[117.13,6.93],[117.64,6.42],[117.69,5.99],[119.18,5.41],[119.11,5.02],[118.44,4.97],[118.62,4.48],[117.88,4.14]],[[102.58,12.19],[102.35,13.39],[102.99,14.23],[104.28,14.42],[105.22,14.27],[106.04,13.88],[106.5,14.57],[107.38,14.2],[107.61,13.54],[107.49,12.34],[105.81,11.57],[106.25,10.96],[105.2,10.89],[104.33,10.49],[103.5,10.63],[102.58,12.19]],[[100.12,20.42],[98.96,19.75],[98.25,19.71],[97.8,18.63],[97.38,18.45],[98.9,16.18],[98.54,15.31],[98.19,15.12],[99.1,13.83],[99.2,12.8],[99.59,11.89],[98.55,9.93],[98.46,10.68],[98.77,11.44],[98.43,12.03],[98.51,13.12],[98.1,13.64],[97.6,16.1],[97.16,16.93],[95.37,15.71],[94.19,16.04],[94.54,17.28],[94.33,18.21],[93.54,19.37],[93.66,19.73],[93.08,19.86],[92.37,20.67],[92.3,21.48],[92.65,21.32],[92.67,22.04],[93.17,22.28],[93.06,22.7],[93.29,23.04],[93.33,24.08],[94.11,23.85],[94.55,24.67],[94.6,25.16],[95.15,26.0],[95.13,26.57],[96.42,27.26],[97.13,27.08],[97.05,27.7],[97.4,27.88],[97.33,28.26],[97.91,28.34],[98.25,27.75],[98.68,27.51],[98.67,25.92],[97.72,25.08],[97.61,23.9],[98.66,24.06],[98.9,23.14],[99.53,22.95],[99.24,22.12],[100.42,21.56],[101.15,21.85],[101.18,21.44],[100.12,20.42]],[[107.38,14.2],[106.5,14.57],[106.04,13.88],[105.22,14.27],[105.54,14.72],[105.59,15.57],[104.78,16.44],[104.72,17.43],[103.96,18.24],[103.2,18.31],[103.0,17.96],[102.41,17.93],[102.11,18.11],[101.06,17.51],[101.04,18.41],[101.28,19.46],[100.6,19.51],[100.55,20.11],[100.12,20.42],[101.18,21.44],[101.27,21.2],[101.8,21.17],[101.65,22.32],[102.17,22.46],[103.2,20.77],[104.44,20.76],[104.82,19.89],[104.18,19.62],[103.9,19.27],[105.09,18.67],[106.56,16.6],[107.31,15.91],[107.56,15.2],[107.38,14.2]],[[124.97,-8.89],[125.09,-8.66],[125.95,-8.43],[126.96,-8.27],[127.34,-8.4],[125.09,-9.39],[124.97,-8.89]],[[115.45,5.45],[115.35,4.32],[114.87,4.35],[114.66,4.01],[114.21,4.53],[115.45,5.45]],[[178.12,-17.51],[178.37,-17.34],[178.72,-17.63],[178.55,-18.15],[177.93,-18.29],[177.38,-18.16],[177.29,-17.72],[177.67,-17.38],[178.12,-17.51]],[[-180.0,-16.07],[-179.79,-16.02],[-180.0,-16.56],[179.36,-16.8],[178.73,-17.01],[178.6,-16.64],[180.0,-16.07],[-180.0,-16.07]],[[165.78,-21.08],[167.12,-22.16],[166.74,-22.4],[165.47,-21.68],[164.17,-20.45],[164.03,-20.11],[164.46,-20.12],[165.78,-21.08]],[[162.12,-10.48],[162.4,-10.83],[161.7,-10.82],[161.32,-10.21],[162.12,-10.48]],[[161.68,-9.6],[161.53,-9.78],[160.79,-8.92],[160.58,-8.32],[160.92,-8.32],[161.68,-9.6]],[[160.85,-9.87],[159.85,-9.79],[159.64,-9.64],[159.7,-9.24],[160.36,-9.4],[160.85,-9.87]],[[159.64,-8.02],[159.92,-8.54],[158.21,-7.42],[158.36,-7.32],[159.64,-8.02]],[[157.14,-7.02],[157.54,-7.35],[156.9,-7.18],[156.49,-6.77],[156.54,-6.6],[157.14,-7.02]]];
+
+const CATC={'交通':'#a8456b','美食':'#a9761f','景点':'#3a5a82','文化':'#6a4f8c','购物':'#3f7d5a','住宿':'#2f7e86'};
+const AMAP_DAYS=[14,15,16];   // 广州段（国内），走高德栅格
+const ONLINE_KEY='hb_au16_map_online';
+const STYLE_KEY='hb_au16_map_style';
+/* Esri 图层（国内可直连）：街道 / 卫星 / 地形 */
+const ESRI={
+  street:{p:'World_Street_Map/MapServer/tile/{z}/{y}/{x}', n:'街道图'},
+  imagery:{p:'World_Imagery/MapServer/tile/{z}/{y}/{x}', n:'卫星图'},
+  topo:{p:'World_Topo_Map/MapServer/tile/{z}/{y}/{x}', n:'地形图'}
+};
+let map=null, tileLayer=null, tileKind=null, tileLoaded=false, markersLayer=null, routeLayer=null, curMapPois=[], mapMode='day';
+/* 默认走内嵌矢量地图（必定可见）；onlineMode=true 才尝试在线瓦片 */
+let onlineMode=(function(){ try{ return localStorage.getItem(ONLINE_KEY)==='1'; }catch(e){ return false; } })();
+let esriStyle=(function(){ try{ return localStorage.getItem(STYLE_KEY)||'street'; }catch(e){ return 'street'; } })();
+
+function isAmapDay(di){ return AMAP_DAYS.indexOf(DAYS[di].day)>=0; }
+function tileKindFor(){ return (mapMode==='day' && isAmapDay(curDay)) ? 'amap' : 'esri'; }
+
+/* WGS-84 → GCJ-02（高德坐标系） */
+function wgs84ToGcj02(lng,lat){
+  const PI=3.1415926535897932384626, A=6378245.0, EE=0.00669342162296594323;
+  function tLat(x,y){
+    let r=-100.0+2.0*x+3.0*y+0.2*y*y+0.1*x*y+0.2*Math.sqrt(Math.abs(x));
+    r+=(20.0*Math.sin(6.0*x*PI)+20.0*Math.sin(2.0*x*PI))*2.0/3.0;
+    r+=(20.0*Math.sin(y*PI)+40.0*Math.sin(y/3.0*PI))*2.0/3.0;
+    r+=(160.0*Math.sin(y/12.0*PI)+320*Math.sin(y*PI/30.0))*2.0/3.0;
+    return r;
+  }
+  function tLng(x,y){
+    let r=300.0+x+2.0*y+0.1*x*x+0.1*x*y+0.1*Math.sqrt(Math.abs(x));
+    r+=(20.0*Math.sin(6.0*x*PI)+20.0*Math.sin(2.0*x*PI))*2.0/3.0;
+    r+=(20.0*Math.sin(x*PI)+40.0*Math.sin(x/3.0*PI))*2.0/3.0;
+    r+=(150.0*Math.sin(x/12.0*PI)+300.0*Math.sin(x/30.0*PI))*2.0/3.0;
+    return r;
+  }
+  if(lng<72.004||lng>137.8347||lat<0.8293||lat>55.8271) return [lat,lng];
+  let dLat=tLat(lng-105.0,lat-35.0), dLng=tLng(lng-105.0,lat-35.0);
+  const radLat=lat/180.0*PI;
+  let magic=Math.sin(radLat); magic=1-EE*magic*magic;
+  const sqrtMagic=Math.sqrt(magic);
+  dLat=(dLat*180.0)/((A*(1-EE))/(magic*sqrtMagic)*PI);
+  dLng=(dLng*180.0)/(A/sqrtMagic*Math.cos(radLat)*PI);
+  return [lat+dLat, lng+dLng];
+}
+function toMapCoord(c){ return (tileKind==='amap') ? wgs84ToGcj02(c[1],c[0]) : c; }
+
+function setMapErr(msg){
+  const el=document.getElementById('mapInfo'); if(el) el.innerHTML='<span class="avoid"><i class="fa-solid fa-triangle-exclamation"></i> '+esc(msg)+'</span>';
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmtInfo(p){
+  return '<div class="iw"><div class="iw-h">'+esc(p.t+' · '+p.name)+' <span class="tag '+p.cat+'">'+p.cat+'</span></div><div class="iw-d">'+esc(p.d)+'</div><div class="iw-r">🚗 '+esc(p.trans)+' &nbsp;|&nbsp; 💰 '+esc(p.cost)+'</div><div class="iw-t">💡 '+esc(p.tip)+'</div></div>';
+}
+
+function setMapHint(t){ const el=document.getElementById('mapHint'); if(el) el.innerHTML=t; }
+function setSrcTag(t){ const el=document.getElementById('mapSrcTag'); if(el) el.textContent='底图：'+t; }
+function showPane(which){
+  const lf=document.getElementById('mapLeaflet'), sv=document.getElementById('mapSvgWrap');
+  if(lf) lf.style.display=(which==='leaflet')?'block':'none';
+  if(sv) sv.style.display=(which==='svg')?'block':'none';
+}
+const HINT_VEC='<b>内嵌矢量地图</b>：真实海岸线与国界（Natural Earth 数据直接内嵌，零网络依赖，一定能显示）。点「在线底图」可切换到 Esri 街道 / 卫星图。';
+const HINT_AMAP='广州段：<b>高德在线底图</b>（国内坐标 GCJ-02，已自动转换）。';
+const HINT_ESRI='澳洲段：<b>Esri 在线底图</b>（下方可切换街道 / 卫星 / 地形图层）。';
+
+function ensureMap(){
+  if(map) return true;
+  if(typeof L==='undefined') return false;
+  try{
+    map=L.map('mapLeaflet',{scrollWheelZoom:false,attributionControl:false}).setView([-25,140],3);
+    markersLayer=L.layerGroup().addTo(map);
+    routeLayer=L.layerGroup().addTo(map);
+    window.addEventListener('resize',()=>{ try{ if(map) map.invalidateSize(); }catch(e){} });
+    return true;
+  }catch(e){ return false; }
+}
+function applyTiles(kind){
+  if(!map) return;
+  if(window.__tileTimer){ clearTimeout(window.__tileTimer); window.__tileTimer=null; }
+  if(tileLayer){ try{ map.removeLayer(tileLayer); }catch(e){} tileLayer=null; }
+  let url, opt;
+  if(kind==='amap'){
+    url='https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}';
+    opt={subdomains:'1234',maxZoom:18,attribution:'© 高德地图'};
+  }else{
+    // Esri：⚠️ 路径顺序是 {z}/{y}/{x}（先 y 后 x），与 OSM 相反
+    url='https://server.arcgisonline.com/ArcGIS/rest/services/'+ESRI[esriStyle].p;
+    opt={maxZoom:19,attribution:'© Esri'};
+  }
+  tileLoaded=false;
+  tileLayer=L.tileLayer(url,opt).addTo(map);
+  tileLayer.on('tileload',()=>{ tileLoaded=true; });
+  tileKind=kind;
+  // 安全网：9 秒内一张瓦片都没加载成功 → 自动降级为 SVG 示意图
+  window.__tileTimer=setTimeout(()=>{
+    if(tileLoaded || !onlineMode) return;
+    onlineMode=false;
+    try{ localStorage.setItem(ONLINE_KEY,'0'); }catch(e){}
+    syncOnlineBtn(); renderCurrent();
+    setMapHint('在线底图未能加载，已<b>切回内嵌矢量地图</b>。稍后点「在线底图」可重试。');
+  },9000);
+}
+function setEsriStyle(s){
+  esriStyle=ESRI[s]?s:'street';
+  try{ localStorage.setItem(STYLE_KEY,esriStyle); }catch(e){}
+  syncStyleBtns();
+  if(onlineMode) renderCurrent();
+}
+function syncStyleBtns(){
+  Object.keys(ESRI).forEach(s=>{
+    const b=document.getElementById('btnStyle_'+s);
+    if(b) b.classList.toggle('on', s===esriStyle);
+  });
+  const bar=document.getElementById('styleBar');
+  if(bar) bar.style.display = (onlineMode && tileKind!=='amap') ? 'flex' : 'none';
+}
+
+/* --- 内嵌矢量地图（零网络依赖；海岸线来自 Natural Earth 110m） ---
+   ① 视窗自适应：POI 只占视野约 1/FIT，既不挤成一团，也不过度放大
+   ② 重合点像素级松弛：同一地点的多个点自动散开，并用细线牵回真实位置
+   ③ 标签避让：左右分栏 + 纵向去重 + 引线，任何密度下都可读
+*/
+function renderSvgMap(pois,title){
+  const wrap=document.getElementById('mapSvgWrap');
+  if(!wrap) return;
+  if(!pois||!pois.length){ wrap.innerHTML='<div class="map-fail">当日暂无坐标数据</div>'; return; }
+
+  // 画布跟随容器实际像素，避免缩放导致字号失真与上下黑边
+  const box=wrap.getBoundingClientRect();
+  const W=Math.max(300,Math.round(box.width||400));
+  const H=Math.max(340,Math.round(box.height||560));
+
+  const lats=pois.map(p=>p.coord[0]), lngs=pois.map(p=>p.coord[1]);
+  const minLat=Math.min.apply(null,lats), maxLat=Math.max.apply(null,lats);
+  const minLng=Math.min.apply(null,lngs), maxLng=Math.max.apply(null,lngs);
+  const cLat=(minLat+maxLat)/2, cLng=(minLng+maxLng)/2;
+  const kx=Math.max(0.15,Math.cos(cLat*Math.PI/180));
+
+  /* 视窗自适应：POI 约占视野 1/FIT；上限 0.16°（约 18km），
+     因为内嵌海岸线是 110m 精度，再放大也没有细节可看 */
+  const isAll=(title==='全部行程');
+  const PADX=Math.max(58,W*0.17), PADY=54, FIT=isAll?1.7:2.4;
+  const latSpan=Math.max(maxLat-minLat,0.004), lngSpan=Math.max(maxLng-minLng,0.004);
+  let s=Math.min((W-2*PADX)/(lngSpan*kx*FIT),(H-2*PADY)/(latSpan*FIT));
+  s=Math.min(s,(H-2*PADY)/0.09);
+
+  const X=v=>W/2+(v-cLng)*kx*s;
+  const Y=v=>H/2-(v-cLat)*s;
+  const vMinLng=cLng-(W/2)/(kx*s), vMaxLng=cLng+(W/2)/(kx*s);
+  const vMinLat=cLat-(H/2)/s, vMaxLat=cLat+(H/2)/s;
+
+  /* 陆地轮廓（视窗外剔除，保证性能） */
+  let land='';
+  if(typeof LAND!=='undefined'){
+    for(let i=0;i<LAND.length;i++){
+      const r=LAND[i]; let hit=false;
+      for(let j=0;j<r.length;j++){
+        if(r[j][0]>vMinLng-2&&r[j][0]<vMaxLng+2&&r[j][1]>vMinLat-2&&r[j][1]<vMaxLat+2){ hit=true; break; }
+      }
+      if(!hit) continue;
+      let d='';
+      for(let j=0;j<r.length;j++){ d+=(j?'L':'M')+X(r[j][0]).toFixed(1)+' '+Y(r[j][1]).toFixed(1); }
+      land+='<path d="'+d+'Z"/>';
+    }
+  }
+  /* 经纬网格 */
+  const wDeg=vMaxLng-vMinLng;
+  const step=wDeg>20?10:wDeg>6?5:wDeg>1.5?1:wDeg>0.35?0.25:0.05;
+  let grid='';
+  for(let g=Math.ceil(vMinLat/step)*step; g<vMaxLat; g+=step){
+    grid+='<line x1="0" y1="'+Y(g).toFixed(1)+'" x2="'+W+'" y2="'+Y(g).toFixed(1)+'"/>';
+  }
+  for(let g=Math.ceil(vMinLng/step)*step; g<vMaxLng; g+=step){
+    grid+='<line x1="'+X(g).toFixed(1)+'" y1="0" x2="'+X(g).toFixed(1)+'" y2="'+H+'"/>';
+  }
+
+  /* 点位：像素级松弛，解决"同一地点多个点完全重合" */
+  const P=pois.map(p=>({x:X(p.coord[1]), y:Y(p.coord[0]), ox:X(p.coord[1]), oy:Y(p.coord[0])}));
+  const MIND=isAll?24:(P.length<=6?36:(P.length<=9?30:26));
+  for(let it=0; it<200; it++){
+    let moved=false;
+    for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){
+      const a=P[i], b=P[j];
+      let dx=b.x-a.x, dy=b.y-a.y, d=Math.sqrt(dx*dx+dy*dy);
+      if(d<0.01){ dx=Math.cos(i*2.399); dy=Math.sin(i*2.399); d=1; }
+      if(d<MIND){
+        const push=(MIND-d)/(2*d);
+        a.x-=dx*push; a.y-=dy*push; b.x+=dx*push; b.y+=dy*push; moved=true;
+      }
+    }
+    if(!moved) break;
+  }
+  const MAXOFF=Math.max(44,Math.min(96,s*0.028));
+  P.forEach(p=>{
+    let dx=p.x-p.ox, dy=p.y-p.oy; const d=Math.sqrt(dx*dx+dy*dy);
+    if(d>MAXOFF){ p.x=p.ox+dx/d*MAXOFF; p.y=p.oy+dy/d*MAXOFF; }
+    p.x=Math.max(PADX*0.45,Math.min(W-PADX*0.45,p.x));
+    p.y=Math.max(PADY*0.55,Math.min(H-PADY*0.85,p.y));
+    p.off=Math.sqrt((p.x-p.ox)*(p.x-p.ox)+(p.y-p.oy)*(p.y-p.oy));
+  });
+
+  /* 标签排布三原则：
+     ① 左右交替（按 y 名次）——纵向上相邻的标签必在不同侧；
+     ② 同侧纵向去重（≥30px），保证任何密度下不互相压字；
+     ③ 迭代避让——若标签横向带里压到别的圆点，就把标签垂直挪开该点。*/
+  const DOTR=11;
+  const NAMEMAX=P.length>12?7:(P.length>9?8:10);
+  const order=P.map((p,i)=>({i:i,p:p,y:p.y})).sort((a,b)=>a.y-b.y);
+  const items=[];
+  const estW=i=>Math.min(pois[i].name.length,NAMEMAX)*11+6;
+  const chooseSide=(o,side)=>{
+    const w=estW(o.i);
+    if(side==='right' && o.p.x+15+w > W-8) return 'left';
+    if(side==='left'  && o.p.x-15-w < 8)   return 'right';
+    return side;
+  };
+  order.forEach((o,r)=>{ items[o.i]={i:o.i, p:o.p, side:chooseSide(o,(r%2)?'left':'right'), y:o.y, py:o.y, ly:o.y, off:15}; });
+  /* 全部行程是"按天聚合"，时间/类别没有意义 —— 只留站名，纵向要求减半，排布更宽松 */
+  const showSub=(title!=='全部行程');
+  const LBL_LO=26, LBL_HI=H-40, LBL_GAP=showSub?32:22, LBL_H=showSub?15:3;
+  function layoutCol(sd){
+    const list=items.filter(o=>o&&o.side===sd).sort((a,b)=>a.py-b.py);
+    if(!list.length) return;
+    const n=list.length;
+    let prev=null;
+    list.forEach(o=>{ let w=o.py; if(prev!==null&&w<prev+LBL_GAP) w=prev+LBL_GAP; o.ly=w; prev=w; });
+    const over=list[n-1].ly-LBL_HI;
+    if(over>0){
+      list.forEach(o=>{ o.ly-=over; });
+      let pp=LBL_LO;
+      list.forEach(o=>{ if(o.ly<pp) o.ly=pp; pp=o.ly+LBL_GAP; });
+    }
+  }
+  function bandOf(o){
+    const w=estW(o.i), r=(o.side==='right');
+    return {x0: r? o.p.x+o.off : o.p.x-o.off-w, x1: r? o.p.x+o.off+w : o.p.x-o.off, y0:o.ly-9, y1:o.ly+LBL_H};
+  }
+  const offFits=(o,off)=>{
+    const w=estW(o.i);
+    return o.side==='right' ? (o.p.x+off+w<=W-8) : (o.p.x-off-w>=8);
+  };
+  /* 障碍 = 别的圆点 + 别的标签文本框；返回需要避开的纵坐标 */
+  function blocker(o){
+    const b=bandOf(o);
+    let best=null, bestd=1e9;
+    for(let j=0;j<P.length;j++){
+      if(j===o.i) continue;
+      const q=P[j];
+      const dx=Math.max(b.x0-q.x,0,q.x-b.x1);
+      const dy=Math.max(b.y0-q.y,0,q.y-b.y1);
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if(d<DOTR+3 && d<bestd){ bestd=d; best=q.y; }
+    }
+    for(let j=0;j<items.length;j++){
+      const q=items[j]; if(!q||q.i===o.i) continue;
+      const qb=bandOf(q);
+      if(Math.min(b.x1,qb.x1)-Math.max(b.x0,qb.x0) <= 2) continue;
+      const d=Math.abs(q.ly-o.ly);
+      if(d<LBL_GAP-2 && d<bestd){ bestd=d; best=q.ly; }
+    }
+    return best;
+  }
+  const pushAway=o=>{
+    const bad=blocker(o);
+    if(bad===null) return false;
+    const step=showSub?32:22;
+    o.py=Math.max(LBL_LO,Math.min(LBL_HI, bad + (bad<o.ly ? step : -step-4)));
+    return true;
+  };
+  const refine=(n)=>{
+    for(let pass=0; pass<n; pass++){
+      let changed=false;
+      for(let k=0;k<items.length;k++){ const o=items[k]; if(o && pushAway(o)) changed=true; }
+      if(!changed) break;
+      layoutCol('left'); layoutCol('right');
+    }
+  };
+  layoutCol('left'); layoutCol('right');
+  /* ① 先把标签往外挪（远离点位密集区） */
+  for(let step=0; step<5; step++){
+    let moved=false;
+    for(let k=0;k<items.length;k++){
+      const o=items[k]; if(!o) continue;
+      if(blocker(o)!==null && o.off<Math.min(120,W*0.32) && offFits(o,o.off+15)){ o.off+=15; moved=true; }
+    }
+    if(!moved) break;
+  }
+  layoutCol('left'); layoutCol('right');
+  /* ② 纵向避让 */
+  refine(6);
+  /* ③ 仍冲突就翻到另一侧再排 */
+  let flipped=false;
+  for(let k=0;k<items.length;k++){
+    const o=items[k]; if(!o) continue;
+    if(blocker(o)!==null){
+      const ns=chooseSide(o, o.side==='right'?'left':'right');
+      if(ns!==o.side){ o.side=ns; o.py=o.y; o.off=15; flipped=true; }
+    }
+  }
+  if(flipped){ layoutCol('left'); layoutCol('right'); refine(4); }
+  /* ④ 兜底：局部最优出不来时，收回外推距离并整体跳开一段再排 */
+  for(let k=0;k<items.length;k++){
+    const o=items[k]; if(!o) continue;
+    if(blocker(o)!==null){
+      o.off=15;
+      o.py=Math.max(LBL_LO,Math.min(LBL_HI, o.y + ((k%2)? 74 : -74)));
+    }
+  }
+  layoutCol('left'); layoutCol('right'); refine(8);
+
+  /* 路线（按显示位置连线，读序更清楚） */
+  let route='';
+  if(P.length>1){
+    route='<polyline points="'+P.map(p=>p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ')+
+      '" fill="none" stroke="#B5462F" stroke-width="2.2" stroke-dasharray="7,5" opacity="0.85" stroke-linejoin="round" stroke-linecap="round"/>';
+  }
+
+  let tick='', lead='', labels='', dots='';
+  P.forEach((p,i)=>{
+    const o=items[i], c=CATC[pois[i].cat]||'#3a5a82';
+    if(p.off>14){
+      tick+='<line x1="'+p.ox.toFixed(1)+'" y1="'+p.oy.toFixed(1)+'" x2="'+p.x.toFixed(1)+'" y2="'+p.y.toFixed(1)+
+        '" stroke="#9a9384" stroke-width="0.9" stroke-dasharray="2,2"/>'+
+        '<circle cx="'+p.ox.toFixed(1)+'" cy="'+p.oy.toFixed(1)+'" r="2.2" fill="none" stroke="#9a9384" stroke-width="1"/>';
+    }
+    const right=o.side==='right';
+    const tx=right ? p.x+o.off : p.x-o.off;
+    const ty=o.ly;
+    lead+='<line x1="'+(right?p.x+9:p.x-9).toFixed(1)+'" y1="'+p.y.toFixed(1)+'" x2="'+(right?tx-3:tx+3).toFixed(1)+
+      '" y2="'+(ty-4).toFixed(1)+'" stroke="#8b8578" stroke-width="0.8" opacity="0.7"/>';
+    const nm=pois[i].name.length>NAMEMAX ? pois[i].name.slice(0,NAMEMAX)+'…' : pois[i].name;
+    labels+='<text class="svg-label" x="'+tx.toFixed(1)+'" y="'+ty.toFixed(1)+'" text-anchor="'+(right?'start':'end')+
+      '" stroke="#eef3f7" stroke-width="3.2" paint-order="stroke">'+esc(nm)+'</text>'+
+      (showSub ? ('<text class="svg-sub" x="'+tx.toFixed(1)+'" y="'+(ty+11).toFixed(1)+'" text-anchor="'+(right?'start':'end')+
+      '" stroke="#eef3f7" stroke-width="3" paint-order="stroke">'+esc(pois[i].t)+' · '+esc(pois[i].cat)+'</text>') : '');
+    dots+='<g style="cursor:pointer" onclick="focusMarker('+i+')">'+
+      '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="11" fill="'+c+'" stroke="#fff" stroke-width="2.5"/>'+
+      '<text x="'+p.x.toFixed(1)+'" y="'+(p.y+4).toFixed(1)+'" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">'+(i+1)+'</text></g>';
+  });
+
+  /* 比例尺 */
+  const kmPerPx=111.32*kx/s;
+  const targets=[0.1,0.2,0.5,1,2,5,10,20,50,100,200,500,1000];
+  let km=targets[0], best=1e9;
+  targets.forEach(t=>{ const dd=Math.abs(t/kmPerPx-70); if(dd<best){ best=dd; km=t; } });
+  const barW=Math.max(32,km/kmPerPx);
+  const by=H-16;
+  const scale='<g opacity="0.95">'+
+    '<line x1="14" y1="'+by+'" x2="'+(14+barW).toFixed(1)+'" y2="'+by+'" stroke="#5b574f" stroke-width="1.4"/>'+
+    '<line x1="14" y1="'+(by-4)+'" x2="14" y2="'+(by+4)+'" stroke="#5b574f" stroke-width="1.4"/>'+
+    '<line x1="'+(14+barW).toFixed(1)+'" y1="'+(by-4)+'" x2="'+(14+barW).toFixed(1)+'" y2="'+(by+4)+'" stroke="#5b574f" stroke-width="1.4"/>'+
+    '<text class="svg-legend" x="'+(14+barW+7).toFixed(1)+'" y="'+(by+4)+'" stroke="#eef3f7" stroke-width="3" paint-order="stroke">'+(km>=1?km+' km':(km*1000)+' m')+'</text></g>';
+
+  const note = title==='全部行程' ? '全程 · 虚线为飞行段，非实际航线' : '内嵌矢量地图 · 海岸线 Natural Earth';
+  wrap.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">'+
+    '<rect width="'+W+'" height="'+H+'" fill="#dbe7f0"/>'+
+    '<g stroke="#c6d5e2" stroke-width="0.6">'+grid+'</g>'+
+    '<g fill="#ece7db" stroke="#b9b2a2" stroke-width="0.9" stroke-linejoin="round">'+land+'</g>'+
+    route+tick+lead+labels+dots+scale+
+    '<text x="'+(W-12)+'" y="22" text-anchor="end" class="svg-legend" stroke="#eef3f7" stroke-width="3" paint-order="stroke">N ↑</text>'+
+    '<text x="12" y="20" class="svg-legend" stroke="#eef3f7" stroke-width="3" paint-order="stroke">'+note+'</text>'+
+    '</svg>';
+}
+
+function initMap(){
+  renderMap(curDay);
+  window.addEventListener('load',()=>{ try{ if(map) map.invalidateSize(); }catch(e){} });
+}
+function markerIcon(i,cat){
+  const c=CATC[cat]||'#3a5a82';
+  return L.divIcon({
+    className:'map-marker',
+    html:'<div style="width:26px;height:26px;border-radius:50%;background:'+c+';color:#fff;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">'+i+'</div>',
+    iconSize:[26,26], iconAnchor:[13,13]
+  });
+}
+function updateMap(pois,title,fit){
+  curMapPois=pois;
+  const mt=document.getElementById('mapTitle'); if(mt) mt.textContent=title;
+  const kind=tileKindFor();
+
+  // 默认：内嵌矢量地图（零外部依赖，任何环境都能显示）
+  if(!onlineMode){
+    showPane('svg'); renderSvgMap(pois,title);
+    setMapHint(HINT_VEC); setSrcTag('内嵌矢量地图');
+    syncStyleBtns();
+    document.getElementById('mapInfo').innerHTML='<span class="muted">点击地图圆点或左侧时间轴条目查看详情</span>';
+    return;
+  }
+  // 可选：在线瓦片（Leaflet + Esri）。若 Leaflet 都加载不出，说明本页环境拦截了外部请求
+  if(!ensureMap()){
+    onlineMode=false;
+    try{ localStorage.setItem(ONLINE_KEY,'0'); }catch(e){}
+    showPane('svg'); renderSvgMap(pois,title);
+    setMapHint('Leaflet 地图库加载不出来（本页环境可能拦截了外部请求），已<b>切回内嵌矢量地图</b>。');
+    setSrcTag('内嵌矢量地图');
+    syncOnlineBtn();
+    return;
+  }
+  showPane('leaflet');
+  try{
+    if(tileKind!==kind) applyTiles(kind);
+    markersLayer.clearLayers();
+    routeLayer.clearLayers();
+    pois.forEach((p,i)=>{
+      const c=toMapCoord(p.coord);
+      const m=L.marker(c,{icon:markerIcon(i+1,p.cat),properties:{idx:i,poi:p}}).addTo(markersLayer);
+      m.bindPopup(fmtInfo(p));
+      m.on('click',()=>{ focusMarker(i); });
+    });
+    if(pois.length>1){
+      L.polyline(pois.map(p=>toMapCoord(p.coord)),{color:'#B5462F',weight:4,dashArray:'6,6',opacity:.9}).addTo(routeLayer);
+    }
+    if(fit && pois.length){
+      map.fitBounds(L.latLngBounds(pois.map(p=>toMapCoord(p.coord))),{padding:[40,40],maxZoom:15});
+    }
+    setTimeout(()=>{ try{ if(map) map.invalidateSize(); }catch(e){} },90);
+    setMapHint(kind==='amap' ? HINT_AMAP : HINT_ESRI);
+    setSrcTag(kind==='amap' ? '高德地图' : ('Esri '+ESRI[esriStyle].n));
+    syncStyleBtns();
+    document.getElementById('mapInfo').innerHTML='<span class="muted">点击地图标记或左侧时间轴条目查看详情</span>';
+  }catch(e){ setMapErr('地图更新失败：'+e.message); }
+}
+function renderCurrent(){ if(mapMode==='day') renderMap(curDay); else renderMapAll(); }
+function syncOnlineBtn(){
+  const b=document.getElementById('btnOffline');
+  if(b) b.textContent = onlineMode ? '内嵌矢量地图' : '在线底图（Esri）';
+  syncStyleBtns();
+}
+function toggleOffline(){
+  onlineMode=!onlineMode;
+  try{ localStorage.setItem(ONLINE_KEY, onlineMode?'1':'0'); }catch(e){}
+  syncOnlineBtn();
+  renderCurrent();
+}
+function renderMap(di){ mapMode='day'; updateMap(DAYS[di].pois.filter(p=>p.coord&&p.coord.length===2),DAYS[di].label,true); }
+/* 全部行程：按"天"聚合为 16 个点（一天一个）——否则上百个点必然叠成一团 */
+function renderMapAll(){
+  const pois=[];
+  DAYS.forEach(d=>{
+    const ps=d.pois.filter(p=>p.coord&&p.coord.length===2);
+    if(!ps.length) return;
+    let la=0, ln=0;
+    ps.forEach(p=>{ la+=p.coord[0]; ln+=p.coord[1]; });
+    la/=ps.length; ln/=ps.length;
+    const m=d.label.match(/^(D\d+)\s*·\s*\S+\s*(.*)$/);
+    const dm=d.label.match(/^(D\d+)/);
+    const short=(((m?m[2]:d.label)||'').replace(/[（(].*$/,'').trim()) || d.label;
+    pois.push({
+      t: dm?dm[1]:'', name:short, cat:ps[0].cat, coord:[la,ln],
+      d:'本日共 '+ps.length+' 个行程点，此处取当日中心点；点左侧时间轴可看逐点详情',
+      trans:'组合交通', cost:'见预算章', tip:'跨洋虚线为飞行段，非实际航线'
+    });
+  });
+  mapMode='all';
+  updateMap(pois,'全部行程',true);
+}
+function focusMarker(i){
+  if(i<0 || i>=curMapPois.length) return;
+  const p=curMapPois[i];
+  const lf=document.getElementById('mapLeaflet');
+  if(map && lf && lf.style.display!=='none'){
+    try{
+      map.flyTo(toMapCoord(p.coord),15,{duration:.8});
+      if(markersLayer) markersLayer.eachLayer(l=>{ if(l.options&&l.options.properties&&l.options.properties.idx===i){ l.openPopup(); }});
+    }catch(e){}
+  }
+  document.getElementById('mapInfo').innerHTML=fmtInfo(p);
+}
+function switchMapMode(m){
+  mapMode=m;
+  document.getElementById('btnDay').classList.toggle('on',m==='day');
+  document.getElementById('btnAll').classList.toggle('on',m==='all');
+  if(m==='day') renderMap(curDay); else renderMapAll();
+  setTimeout(()=>{ try{ if(map) map.invalidateSize(); }catch(e){} },50);
+}
+
+/* ---------- 每日卡片 ---------- */
+let curDay=0, todayIdx=-1;
+function renderDays(){
+  const box=document.getElementById('dayTabs'); box.innerHTML='';
+  DAYS.forEach((d,i)=>{
+    const b=document.createElement('button');
+    b.className='daytab'+(i===curDay?' on':'')+(i===todayIdx?' today':'');
+    b.innerHTML='DAY'+(i+1)+(i===todayIdx?'<span class="today-badge">今日</span>':'');
+    b.onclick=()=>{curDay=i;mapMode='day';document.getElementById('btnDay').classList.add('on');document.getElementById('btnAll').classList.remove('on');renderDays();renderTimeline();renderMap(i);};
+    box.appendChild(b);
+  });
+}
+function renderTimeline(){
+  const d=DAYS[curDay];
+  let h='<p class="muted">'+d.label+'</p><div class="timeline">';
+  d.pois.forEach((p,i)=>{
+    h+='<div class="tl" onclick="flyTo('+i+')"><div class="t">'+p.t+'</div>'+
+       '<div class="n"><span class="tag '+p.cat+'">'+p.cat+'</span>'+p.name+'</div>'+
+       '<div class="d">'+p.d+'</div>'+
+       '<div class="row">🚗 '+p.trans+' &nbsp;|&nbsp; 💰 '+p.cost+'</div>'+
+       '<div class="row">💡 '+p.tip+'</div></div>';
+  });
+  h+='</div><div class="cloth"><i class="fa-solid fa-shirt"></i> 今日穿搭：'+d.cloth+'</div>';
+  document.getElementById('timelineBox').innerHTML=h;
+}
+function flyTo(i){ focusMarker(i); }
+
+/* ---------- 今日高亮 ---------- */
+function syncToday(){
+  const dep=new Date(document.getElementById('depDate').value);
+  const now=new Date();
+  const days=Math.ceil((dep-now)/86400000);
+  const cd=document.getElementById('cdText');
+  if(days>0) cd.textContent='距离 12/5 出发还有 '+days+' 天';
+  else if(days===0) cd.textContent='今天出发！';
+  else cd.textContent='已出发 '+(-days)+' 天';
+  todayIdx=-1;
+  const off=Math.floor((now-dep)/86400000);
+  if(off>=0 && off<DAYS.length) todayIdx=off;
+  renderDays();
+}
+
+/* ---------- init ---------- */
+window.addEventListener('load',()=>{
+  renderPack(); renderEmerg(); updateBudget();
+  renderDays(); renderTimeline(); syncToday(); syncOnlineBtn();
+  initMap();
+});
+</script>
+</body>
+</html>
